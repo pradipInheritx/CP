@@ -1,14 +1,18 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "../../common/models/Dictionary";
 import { texts } from "../LoginComponent/texts";
 import CountUp from "react-countup";
 import AppContext from "../../Contexts/AppContext";
 import styled, { css } from "styled-components";
-import { Modal } from "react-bootstrap";
+import { Modal, Ratio } from "react-bootstrap";
 import { Buttons } from "../Atoms/Button/Button";
 import coinBg from "../../assets/images/coin_bg.png";
-
-
+import coin_bgVET from "../../assets/images/coin_bgVET.png";
+import { ZoomCss as ZoomCss2 } from "../App/App";
+import CoinAnimation from "common/CoinAnimation/CoinAnimation";
+import { claimRewardSound, handleExtraCoin, handleSoundWinCmp } from "common/utils/SoundClick";
+// @ts-ignore
+import Wildwest from '../../assets/avatars/videos/Winter.mp4';
 
 type PAXCardProps = {
   walletId: string;
@@ -19,12 +23,15 @@ type PAXCardProps = {
 };
 
 type ZoomProps = {
-  inOutReward?: number
+  inOutReward?: number,
+  coinIncrement?: boolean,
+  showCoinIncrement: number,
 };
 
 const ZoomCss = css`
-    // transform: scale(1.4);
-//     animation: zoom-in-zoom-out 4s ease ;
+    // transform: scale(1.1);    
+    // z-index:2500;
+//     animation: zoom-in-zoom-out 4s infinite ;
 //     @keyframes zoom-in-zoom-out {
 //   0% {
 //     transform: scale(1);
@@ -38,194 +45,294 @@ const ZoomCss = css`
 // }
 `;
 
-const ForZoom = styled.div`
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
+const Popuphead = styled.p`
+  font-size:25px;
+  font-weight:600;
+background: linear-gradient(180deg, #FFF8A6 29.44%, #FFC00B 73.33%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  // text-shadow: 0px 1px 3px #FFCB35;
+font-family: Poppins;
+font-size: 25px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+letter-spacing: 2px;
+text-transform: uppercase;
+`;
 
+
+
+const ForZoom = styled.div` 
+ ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
+ `;
+
+const ForZoom2 = styled.div`
+//  z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
+//  isolation:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "isolate" : ""}`};  
+ ${(props: ZoomProps) => `${(props.showCoinIncrement === 1 && window.screen.width < 450) ? ZoomCss2 : ""}`} ;
+`;
+
+
+const BoxSet = css`
+background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 100%;
+  z-index:2500;
+`;
+const BoxSet2 = css`
+background-color:none;
+  // position: fixed;
+  // width:100%;
+  // height: 100vh;
+  // z-index:2000;
+`;
+
+const CoinPopup = styled.div`
+${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : BoxSet2}`};   
+`;
+const HamburgerBut = styled.button`
+background:none;
+border:none;
+ &:focus {
+    outline:none;
+  }
 `;
 
 
 const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCardProps) => {
   // const prevCountRef = useRef(PAX)
-  const prevCountRef = (PAX || 0) - (rewardTimer?.data?.thirdRewardDiamonds || 0)
-  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
+  //coin calculation
+  const [prevCountRef, setPrevCountRef] = useState<number>(0);
+  const [latestRewardCoins, setLatestRewardCoins] = useState<number>(0);
+  useEffect(() => {
+    setLatestRewardCoins((rewardTimer?.data?.thirdRewardDiamonds || 0));
+  }, [rewardTimer?.data?.thirdRewardDiamonds]);
+  console.log(latestRewardCoins,"setLatestRewardCoins")
+  useEffect(() => {  
+    
+    setPrevCountRef((PAX || 0) - latestRewardCoins);
+
+  }, [PAX, latestRewardCoins]);
+
+
+  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
+  const [videoShow, setVideoShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
-
-
-  // useEffect(() => {
-  //   // if (PAX != prevCountRef.current) {      
-  //     prevCountRef.current = PAX;
-  //   // }
-  // }, [PAX])
-
-  // console.log(,PAX,"PAXall")
-
-  // console.log(rewardExtraVote, "secondRewardExtraVotes")
+  const handleShow = () => setModalShow(true);  
   const translate = useTranslation();
+  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
+  const [showCountUp, setShowCountUp] = useState<number>(0); //1 =show 1>=hide
+  const [sliverCoin, setSliverCoin] = useState(false);
+  //1 =show 1>=hide
+  useEffect(() => {
+    if (inOutReward === 1 && !modalShow && !showCoinIncrement) {      
+        setShowCoinIncrement(1);  
+      setBackgrounHide(true)
+     var timer = setTimeout(() => {
+        setShowCountUp(1)
+      }, 3000);
+      // setSliverCoin(true)      
+    }
+    return () => {
+      clearTimeout(timer)
+    }
+
+  }, [inOutReward, modalShow]);
+
+  console.log(inOutReward, showReward, rewardExtraVote, "rewardExtraVote")
+
   return (
-    <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3"
-      {...{ inOutReward }}
-    >
-      <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
-        {/* {translate("Coin Parliament Balance")} */}
-        {texts.CoinParliamentBalance}
-      </h6>
-      <div className="d-flex justify-content-center align-items-center flex-column">
-        <div className="circle "
+    <ForZoom2 {...{ showCoinIncrement }} style={{
+      marginTop: "7px",
+    }}>
+      <CoinPopup {...{ showCoinIncrement }} className="">
 
+      </CoinPopup>
+      <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3 "
+        {...{ showCoinIncrement }}
+        style={{
+          zIndex: 2500,
+          // @ts-ignore
+          position: `${window.screen.width > 767 && showCoinIncrement == 1 ? "absolute" : ""}`,
+          height: "160px",
+        }}
+      >
+        <h6 className="box_title card-header " style={{
+          fontSize: '12px', paddingTop: '15px',
+          // paddingBottom: '10px'
+        }}>
+          {texts.CoinParliamentBalance}
+        </h6>
+        <div
           style={{
-            backgroundImage: `url(${coinBg})`,
-            // backgroundImage: `url(${externalImage})`,
-            // backgroundSize: 'cover',
-            backgroundSize: "90px 87px",
-            // backgroundPosition: "2px 0px",
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: '-8px -5px',
-            // height: '500px',
+            cursor: "pointer"
           }}
+        //   onClick={() => {
+        //     setVideoShow(true)
+        // }}
         >
-          <div
-            className="d-flex justify-content-center align-items-center flex-column coin_Bg"
-            style={{ height: 75, color: '#6352E8' }}
-          >
-            <div>
-              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"}` }}>
-                {inOutReward == 1 && showReward == 1 ? <CountUp className="PaxText" start={prevCountRef} end={PAX && PAX} duration={5}
-                  onEnd={() => {
-
-                    setTimeout(() => {
-                      setInOutReward((prev: number) => {
-                        // console.log(prev,"showRewardCheck")
-                        if (prev == 1) {
-                          handleShow()
-                          return 2
-                        } else {
-                          return prev
-                        }
-                      });
-                    }, 1000);
-
-                    // setInOutReward((prev: number) => { 
-                    //     console.log(prev,"showRewardCheck")
-                    //   return prev==1?2:prev
-                    // });
-
-                    // setTimeout(() => {
-
-                    //   setShowReward((prev: number) => {
-
-                    //   return prev==1?2:prev
-                    // })
-                    // }, 1000);
-
-                    // setTimeout(() => {
-                    //   setRewardExtraVote((prev: number) => {
-                    //     setShowReward((Showprev:number) => {
-                    //     if (prev != 0 && Showprev ==2) {
-                    //     setHeaderExtraVote(prev)
-                    //     }
-                    //       return Showprev
-                    //   })
-                    //   return prev
-                    // })
-                    // },3000);
-
-                    // setHeaderExtraVote((prev: number) => {                      
-                    //   console.log(rewardExtraVote,"secondRewardExtraVotes2")                    
-                    //   return rewardExtraVote ? rewardExtraVote :0
-                    // })                    
-                  }
-                  }
-                /> :
-                  <>
-                    {PAX || 0}
-                  </>
-                }
-              </span>
-              {/* <span className="cp_PAX" >PTS</span> */}
-            </div>
-          </div>
+          <img src={coin_bgVET} alt="" width="90px" />
         </div>
-        <p className="cp_wallet mt-3">{walletId}</p>
-      </div>
-
-      <div>
-        <Modal
-          show={
-            modalShow
-          } onHide={handleClose}
-          // size="sm"
-          backdrop="static"
-          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-          contentClassName={"modulebackground"}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+        <span
+          style={{ fontSize: "15px" }}
         >
-          <div className="d-flex justify-content-end">
-            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
-          handleClose()
-          }}></button> */}
-          </div>
-          <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}
-            {/* @ts-ignore */}
-            <div className=''>
-              <p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {rewardExtraVote} votes</p>
+          {showCountUp === 1 ?
+            <>              
+               <CountUp className={`PaxText`} start={(PAX || 0) - latestRewardCoins} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds : 10} delay={2} useEasing={false}  
+                onStart={() => {
+                  // handleExtraCoin.play();                                                      
+                }}
+                onEnd={() => {
+                  
+                  // handleExtraCoin.pause();
+                  handleShow();
+                  setShowCountUp(0);
+                  setShowCoinIncrement(2);
+                  setPrevCountRef(PAX);
+                  setSliverCoin(false)
+                  setBackgrounHide(false);
+                  claimRewardSound.play();
+                  // handleSoundWinCmp.play()
+                  // setTimeout(() => {
+                  //   // handleShow();
+                  //   setShowCoinIncrement(2);
+                  //   setPrevCountRef(PAX);
+                  //   setSliverCoin(false)
+                  //   setBackgrounHide(false)
+                  //   handleSoundWinCmp.play()
+                  //   // setInOutReward((prev: number) => {
+                  //   //   return 2;
+                  //   //   // return prev == 1 ? 2 : prev;
+                  //   // });
+                  // }, 1000);
+                }
+                }
+              /> VTE </>              
+            :
+            <>
+              <span className="coinText">
+                {prevCountRef || 0} VTE
+              </span>
+            </>
+          }
+        </span>        
+        <div>
+          <Modal
+            show={videoShow}
+            onHide={() => (
+              setVideoShow(false)
+            )}
+            //   aria-labelledby="example-modal-sizes-title-sm"
+            backdrop="static"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+            // @ts-ignore
+            contentClassName={"modulebackground ForBigNft"}
+          >
+            <div className="d-flex justify-content-end">
+              <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+                setVideoShow(false)
+              }}
+              >
+
+              </button>
             </div>
-
-
-          </Modal.Body>
-          {/* <Modal.Footer> */}
-          <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={() => {
-              setCountShow(false)
-              setTimeout(() => {
-
-                setShowReward((prev: number) => {
-
-                  return prev == 1 ? 2 : prev
-                })
-              }, 1000);
-
-              // setTimeout(() => {
-              //   setRewardExtraVote((prev: number) => {
-              //     setShowReward((Showprev: number) => {
-              //       if (prev != 0 && Showprev == 2 || false) {
-              //         setHeaderExtraVote(prev)
-              //       }
-              //       return Showprev
-              //     })
-              //     return prev
-              //   })
-              // }, 3000);
-              handleClose();
-              setTimeout(() => {
-                setHeaderExtraVote((prev: any) => {
-                  return {
-                    ...prev,
-                    collect: true
-                  }
-                })
-              }, 2800)
-              setTimeout(() => {
-                setHeaderExtraVote({
-                  vote: 0,
-                  collect: false
-                });
-              }, 3000)
-            }}>Collect your Vote</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
-          </div>
-          {/* </Modal.Footer>       */}
-        </Modal>
-      </div>
+            <Modal.Body>
+              {/* <div>
+                <Ratio               
+                  // style={{
+                  //   width:`300px`,          
+                  // }}
+                >
+                  <embed type="" src={Wildwest} />
+                </Ratio>
+                </div> */}
+              <p className="text-center"
+                style={{
+                  color: "white"
+                }}
+              >Coin Video Here</p>
+            </Modal.Body>
+          </Modal>
+        </div>
 
 
 
-    </ForZoom >
+        <div>
+          {/* reward modal 3 */}
+          <Modal
+            show={
+              modalShow
+            } onHide={handleClose}
+            // size="sm"
+            backdrop="static"
+            // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+            contentClassName={"modulebackground ForBigDiv"}
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          >
+            <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+              style={{
+                width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+                height: "400px"
+              }}
+            >
+
+              <Popuphead>Congrats!</Popuphead>
+              {/* @ts-ignore */}
+              <div className=''>
+                <p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {rewardExtraVote} votes</p>
+              </div>
+
+
+
+              {/* <Modal.Footer> */}
+              <div className="d-flex justify-content-center ">
+                <Buttons.Primary className="mx-2" onClick={() => {
+                  handleSoundWinCmp.pause()
+                  setCountShow(false)
+                  setShowReward((prev: number) => {
+                    return 2;
+                    // return prev == 1 ? 2 : prev
+                  });
+                  setInOutReward((prev: number) => {
+                    return 2;
+                  });
+                  setTimeout(() => {
+                    setShowCoinIncrement(0);
+                  }, 2000);
+                  handleClose();
+                  setTimeout(() => {
+                    setHeaderExtraVote((prev: any) => {
+                      return {
+                        ...prev,
+                        collect: true
+                      }
+                    })
+                  }, 2800)
+                  // setTimeout(() => {
+                  //   setHeaderExtraVote({
+                  //     vote: 0,
+                  //     collect: false
+                  //   });
+                  // }, 3500)
+                }}>Collect your Vote</Buttons.Primary>
+                {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+              </div>
+            </Modal.Body>
+            {/* </Modal.Footer>       */}
+          </Modal>
+        </div>
+      </ForZoom >
+    </ForZoom2>
   );
 };
 

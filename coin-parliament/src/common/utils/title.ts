@@ -45,9 +45,9 @@ export const isAdmin = (pathname: string = "") => {
 };
 
 export const isCoinsPairs = (pathname: string = "") => {
-  return (pathname || "").includes("coins") || (pathname || "").includes("pairs")  || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade");
+  return (pathname || "").includes("coins") || (pathname || "").includes("pairs") || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade") || (pathname || "").includes("paymentList") || (pathname || "").includes("votepayment") || (pathname || "").includes("paymenthistory");
 };
 
 export const isCommanPage = (pathname: string = "") => {
-  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("FAQ") || (pathname || "").includes("gamerule")  || (pathname || "").includes("terms-and-condition") || (pathname || "").includes("partners") || (pathname || "").includes("foundations") ;
+  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("knowledgehub") || (pathname || "").includes("gamerule") || (pathname || "").includes("terms-and-condition") || (pathname || "").includes("Ambassador") || (pathname || "").includes("foundations") ;
 };

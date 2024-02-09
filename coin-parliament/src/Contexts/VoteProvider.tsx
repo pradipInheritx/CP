@@ -8,6 +8,7 @@ export type VoteDataType = {
 export type VoteContextType = {
     activeVotes: VoteDataType,
     lessTimeVote: VoteResultProps | undefined | any,
+    voteNot:string|undefined |number | boolean,
     openResultModal: boolean,
     voteImpact: {
         timeFrame: number,
@@ -16,6 +17,7 @@ export type VoteContextType = {
 }
 const defaultValue = {
     activeVotes: {},
+    voteNot:undefined,
     lessTimeVote: undefined,
     openResultModal: false,
     voteImpact: {

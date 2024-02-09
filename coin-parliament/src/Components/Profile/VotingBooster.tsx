@@ -22,6 +22,7 @@ import votingbooster from "../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
+import { useNavigate } from "react-router-dom";
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -34,7 +35,7 @@ font-weight: 700;
 line-height: 45px;
 color: #FEFEFE;
 text-shadow: 0px 1px 3px 0px #5B03FF;
-font-size: ${window.screen.width > 767 ? "30px" :"20px"};
+font-size: ${window.screen.width > 767 ? "30px" : "20px"};
 font-family: Poppins;
 font-weight: 700;
 letter-spacing: 0.6px;
@@ -101,7 +102,7 @@ font-size:14px;
 
 const VotingBooster = () => {
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -111,49 +112,15 @@ const VotingBooster = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+  let navigate = useNavigate();
 
-  const BoxCard = styled.div`
-  width:${screenWidth()};
-  paddinng-top:20px;
-  background-color:#fff;
-  border:3px solid #6352E8;
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:6px;
-  padding:10px;
-  & 
-  p {
-    color:'#160133';
-    text-algin:"left";
-    font-size:14px
+  const getExtraVote = (amount: any, extravote: any,ExtraPer:any) => {
+    let payvalue = [amount, "EXTRAVOTES", extravote, ExtraPer]
+    let PayValuestring = JSON.stringify(payvalue)
+    localStorage.setItem("PayAmount", PayValuestring);
+    navigate("/votepayment")
   }
-`;
 
-  const PriceCard = styled.div`
-  width:${screenWidth()};
-  background:#fff;
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:50px 0px 50px 50px;
-  border:1px solid #6352E8;
-  font-weight: lighter;
-  boxShadow: 0px 3px 6px #00000029;
-  
-  & 
-  div {
-    color:#6352E8;    
-    padding:14px 18px;
-    & p{
-      font-size:13px;
-      font-weight:600;      
-    }
-    & span{
-      font-size:12px;
-    }
-  }
-`;
   return (
     <>
 
@@ -161,52 +128,62 @@ const VotingBooster = () => {
         style={{
           zIndex: 1,
           marginTop: "35px",
-          fontSize:"1.25rem",
+          fontSize: "1.25rem",
         }}
       >
-        {translate("BOOST YOUR VOTING POWER").toUpperCase()}
+        {/* @ts-ignore */}
+        {userInfo?.isUserUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
       </H2>
       <div className="pt-5 pb-5 d-flex justify-content-center"
         style={{
           flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
-          overflow:"hidden",
-          
-      }}
+          overflow: "hidden",
+
+        }}
       >
         <div className="d-flex justify-content-center"
-        style={{
-          width:`${window.screen.width > 767? "49%" :"100%"}`
-        }}
+          style={{
+            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+          }}
         >
-          <img src={votingbooster} alt=""  />
+          <img src={votingbooster} alt="" />
         </div>
         <div className=""
           style={{
-          width:`${window.screen.width > 767? "49%" :"100%"}`
-        }}
+            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+          }}
         >
           <Row className="">
-            <Col lg={5} sm={6} className="d-flex justify-content-center">
-              <Prices style={{}} >   
-               <div style={{
+            <Col lg={5} sm={6} className="d-flex justify-content-center"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                // @ts-ignore
+                getExtraVote(5, 5,0)
+              }}
+            >
+              <Prices style={{}} >
+                <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
+                  position: "absolute",
                   width: "264px",
-                  height: "330px",
-                  marginTop:"-75px",
-                  marginLeft: "-20px",
+                  height: "330px",                  
+                  // marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <div
                   style={{
-                    position:"relative",
+                    position: "relative",
                     width: "95px",
                     height: "95px",
-                  }}                    
-                  >
+                  }}
+                >
                   {/* <CornerText style={{
                     color: '#FFF',
                     fontSize: '22px',
@@ -215,32 +192,41 @@ const VotingBooster = () => {
                     
                   }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
                 </div>
-                <div style={{ backgroundImage: `url(${Gift}) , url(${BGOBJECTS})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                <div style={{ backgroundImage: `url(${Gift}) `, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
                   <ForOnly>For Only</ForOnly>
                   <Price>$5.00</Price>
                 </div>
-                
+
                 <ExtraText className="text-center">
                   <p>BUY 5 VOTES</p>
                 </ExtraText>
-                  
+
               </Prices>
             </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getExtraVote(10, 12,20)
+              }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
-                }}                
+                }}
                 >
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -261,20 +247,30 @@ const VotingBooster = () => {
             </Col>
           </Row>
           <Row className="mt-5">
-            <Col lg={5} sm={6} className="d-flex justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-center"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                // @ts-ignore
+                getExtraVote(15, 20,25)
+              }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -293,20 +289,29 @@ const VotingBooster = () => {
                 </ExtraText>
               </Prices>
             </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getExtraVote(20, 30,33)
+              }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -327,43 +332,7 @@ const VotingBooster = () => {
             </Col>
           </Row>
         </div >
-      </div >
-      {/* <div
-        className='p-0 m-0 w-100 d-flex justify-content-center'
-        style={{
-          background: "#160133",
-          // height: `${screenHeight()}`,
-        }}
-      >
-        <div
-          className=''
-          style={{
-            background: "#160133",
-            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
-          }}
-        >
-          <div className='d-flex justify-content-around mt-4 text-center px-3 mb-4'>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 100 votes</p>
-                <span>For only <strong>$9.99</strong> </span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 200 votes</p>
-                <span>For only <strong>$19.99</strong></span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 300 votes</p>
-                <span>For only <strong>$29.99</strong></span>
-              </div>
-            </PriceCard>
-          </div>
-        </div>
-      </div> */}
+      </div >      
     </>
   );
 };

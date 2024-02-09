@@ -2,20 +2,20 @@ import React from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import {useWindowSize} from "../../hooks/useWindowSize";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import styled from "styled-components";
 
 
-const responsive = ({gutter = false, items}: { gutter: boolean, items: number }) => {
+const responsive = ({ gutter = false, items }: { gutter: boolean, items: number }) => {
   return {
     desktop: {
-      breakpoint: {max: 3000, min: 969},
+      breakpoint: { max: 3000, min: 969 },
       items,
       slidesToSlide: items,
       partialVisibilityGutter: gutter ? 30 : undefined,
     },
     mobile: {
-      breakpoint: {max: 969, min: 0},
+      breakpoint: { max: 969, min: 0 },
       items,
       slidesToSlide: items,
       partialVisibilityGutter: gutter ? 60 : undefined,
@@ -23,7 +23,7 @@ const responsive = ({gutter = false, items}: { gutter: boolean, items: number })
   };
 };
 
-const deviceType = (width?: number,quotes?:Boolean) => {
+const deviceType = (width?: number, quotes?: Boolean) => {
   if (!width || quotes) {
     return "mobile";
   }
@@ -37,7 +37,7 @@ const deviceType = (width?: number,quotes?:Boolean) => {
 const CarouselWrapper = styled.div`
 
   transition: all 0.3s ease;
-  width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.centerMode ? `${(props.width || 0) + 60 * 2}px` : undefined};
+  width: ${(props: { width?: number; centerMode?: boolean; coin?: boolean }) => props.centerMode ? `${(props.width || 0) + 60 * 2}px` : undefined};
   overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -71,8 +71,8 @@ const CarouselWrapper = styled.div`
   & {
     .react-multi-carousel-item {
       transform: scale(1);
-      max-width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.coin && !props.centerMode ? `130px !important` : undefined};
-     width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.coin && !props.centerMode ? `130px !important` : undefined};
+      max-width: ${(props: { width?: number; centerMode?: boolean; coin?: boolean }) => props.coin && !props.centerMode ? `130px !important` : undefined};
+     width: ${(props: { width?: number; centerMode?: boolean; coin?: boolean }) => props.coin && !props.centerMode ? `130px !important` : undefined};
     }
 
     .react-multi-carousel-item--active {
@@ -100,16 +100,17 @@ const MyCarousel = ({
   items = 3,
   quotes,
   coin,
-  cursorShow
-}: { children: React.ReactNode, centerMode?: boolean, items?: number,quotes?:boolean,coin?:boolean ,cursorShow?:boolean }) => {
+  cursorShow,
+  transitionDuration
+}: { children: React.ReactNode, centerMode?: boolean, items?: number, quotes?: boolean, coin?: boolean, cursorShow?: boolean, transitionDuration?: number }) => {
   // const {width} = useWindowSize();
-  
-  
+
+
   const ButtonGroup = ({ next, previous, goToSlide, ...rest }: any) => {
-      const { carouselState: { currentSlide } } = rest;
+    const { carouselState: { currentSlide } } = rest;
     return (
       <>
-        {window.screen.width >767 ?<SwiperButton className=''>
+        {window.screen.width > 767 ? <SwiperButton className=''>
           <button className='' onClick={() => previous()}>
             {" "}
             {"<"}{" "}
@@ -117,32 +118,32 @@ const MyCarousel = ({
           <button onClick={() => next()}>
             <span className=''> {">"} </span>
           </button>
-        </SwiperButton>:""}
+        </SwiperButton> : ""}
       </>
     );
-     };
+  };
   return (
-    <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin}>
-     {/* @ts-ignore */}
+    <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin} >
+      {/* @ts-ignore */}
       <Carousel
-        customButtonGroup={cursorShow==true?<ButtonGroup />:<></>}
-        arrows={cursorShow!=true?true:false}
+        customButtonGroup={cursorShow == true ? <ButtonGroup /> : <></>}
+        arrows={cursorShow != true ? true : false}
         swipeable={true}
         draggable={true}
         showDots={true}
         renderDotsOutside={true}
         renderButtonGroupOutside={true}
-        autoPlay={quotes?true:false}
+        autoPlay={quotes ? true : false}
         focusOnSelect={true}
-        responsive={centerMode ? responsive({gutter: true, items: 1}) : responsive({gutter: false, items})}
+        responsive={centerMode ? responsive({ gutter: true, items: 1 }) : responsive({ gutter: false, items })}
         centerMode={centerMode || false}
-        additionalTransfrom={centerMode ? -60 : coin? -64: undefined}
+        additionalTransfrom={centerMode ? -60 : coin ? -64 : undefined}
         infinite={true}
         keyBoardControl={true}
-        transitionDuration={quotes?5000:0}
+        transitionDuration={transitionDuration ? transitionDuration : 0}
         containerClass="carousel-container"
         removeArrowOnDeviceType={["mobile"]}
-        deviceType={deviceType(window.screen.width,quotes)}
+        deviceType={deviceType(window.screen.width, quotes)}
         shouldResetAutoplay={false}
       >
         {children}

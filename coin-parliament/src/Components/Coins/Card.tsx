@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
-import {Heart} from "../Atoms/Checkbox/Icon";
-import {BearVsBullRow, getVotes} from "../../common/models/CoinTable";
-import {Image} from "react-bootstrap";
-import {Coin, formatCurrency, precision} from "../../common/models/Coin";
-import CoinsContext, {Totals} from "../../Contexts/CoinsContext";
-import {Buttons} from "../Atoms/Button/Button";
+import { Heart } from "../Atoms/Checkbox/Icon";
+import { BearVsBullRow, getVotes } from "../../common/models/CoinTable";
+import { Image } from "react-bootstrap";
+import { Coin, formatCurrency, precision } from "../../common/models/Coin";
+import CoinsContext, { Totals } from "../../Contexts/CoinsContext";
+import { Buttons } from "../Atoms/Button/Button";
 import Trend from "../Atoms/utils/Trend";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
@@ -22,9 +22,9 @@ const LighCart1 = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${(props: { single: boolean }) =>
-          props.single ? "transparent" : "var(--white)"};
+    props.single ? "transparent" : "var(--white)"};
   border: ${(props: { single: boolean }) =>
-          props.single ? 0 : "1px solid #3712b3"};
+    props.single ? 0 : "1px solid #3712b3"};
   opacity: 1;
   border-radius: 6px;
   margin: 0 auto;
@@ -44,7 +44,7 @@ const Group3991 = styled.div`
   min-height: 35px;
 `;
 
-const Logo = ({symbol, single}: BearVsBullRow & { single: boolean }) => {
+const Logo = ({ symbol, single }: BearVsBullRow & { single: boolean }) => {
   return (
     <Image
       src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
@@ -90,7 +90,7 @@ const Price = styled.div`
           
 
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-18)" : "var(--font-size-16)"};
+    props.single ? "var(--font-size-18)" : "var(--font-size-16)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -101,12 +101,12 @@ const Trend1 = styled.div`
   letter-spacing: 0;
   font-family: var(--font-family-poppins);
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+    props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
   text-align: center;
   line-height: 16px;
   white-space: nowrap;
   color: ${(props: { single: boolean }) =>
-          props.single ? "var(--white)" : ""};
+    props.single ? "var(--white)" : ""};
 `;
 
 const Votes = styled.div`
@@ -121,13 +121,11 @@ const Votes = styled.div`
 `;
 
 const HeartContainer = styled.div`
-display: flex;
-  margin-top: -80px;
+  top: ${(props: { isHeader: boolean, single: boolean }) => props.isHeader ? "5em" : "12.5em"};
+  right: ${(props: { isHeader: boolean, single: boolean }) => props.isHeader ? "5em" : "1em"};
   position: absolute;
   align-self: ${(props: { single: boolean }) =>
     props.single ? "flex-end" : "flex-start"};
-  display: flex;
-  margin-right:25px;
 `;
 
 const Component127371 = styled.div`
@@ -155,6 +153,7 @@ export type CoinCardProps = {
   onClick?: () => void;
   name?: string;
   single?: boolean;
+  isHeader?: boolean;
 };
 
 export const LogoImgContainer = styled.div`
@@ -167,7 +166,7 @@ margin-top:20px;
   // -moz-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
   // box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
   cursor: ${(props: { single: boolean }) =>
-          props.single ? "default" : "pointer"};
+    props.single ? "default" : "pointer"};
 
   &:hover {
     // background: var(--white);
@@ -184,58 +183,83 @@ const Card = ({
   onClick,
   name = "favorites",
   single = false,
+  isHeader = false,
 }: CoinCardProps) => {
-  const {user} = useContext(UserContext);
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  const { user } = useContext(UserContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
   const [changeColor, setChangeColor] = useState<string>("black");
   const [currentPrice, setCurrentPrice] = useState<any>(0)
-  const [zoom, setZoom] = useState(false)  
+  const [zoom, setZoom] = useState(false)
   const prevCountRef = useRef(currentPrice)
 
-// console.log('reference',coins[symbol]?.randomDecimal)
-  const OnlyCheckColor = () => {          
+  // console.log('reference',coins[symbol]?.randomDecimal)
+  // const OnlyCheckColor = () => {
+  //   // setInterval(() => {
+  //   if (coins[symbol]?.price == prevCountRef.current) {
+  //     setChangeColor("black")
+  //   }
+  //   else if (coins[symbol]?.price > prevCountRef.current) {
+  //     console.log("check i am working")
+  //     setChangeColor("Green")
+  //   }
+  //   else if (coins[symbol]?.price < prevCountRef.current) {
+  //     setChangeColor("Red")
+  //   }
+  //   // },5000);
+  //   // console.log(coins[symbol]?.price,"checkprice")
+  //   setCurrentPrice(coins[symbol]?.price)
+  // }
+  // useEffect(() => {
+  //   // console.log(currentPrice,"currentPrice")
+  //   prevCountRef.current = currentPrice;
+  //   OnlyCheckColor()
+  // }, [
+  //   coins[symbol]?.price,
+  // ])
+
+  const OnlyCheckColor = () => {
     // setInterval(() => {            
-    if (coins[symbol]?.price == prevCountRef.current) {   
-      setChangeColor("black")
-      }
-    else if (coins[symbol]?.price > prevCountRef.current) {
-      setChangeColor("Green")            
-      }
-      else if (coins[symbol]?.price < prevCountRef.current) {
-      setChangeColor("Red")            
-      }      
+    if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` == prevCountRef.current) {
+      setChangeColor("white")
+    }
+    else if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` > prevCountRef.current) {
+      setChangeColor("Green")
+    }
+    else if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` < prevCountRef.current) {
+      setChangeColor("Red")
+    }
     // },5000);
-    setCurrentPrice(coins[symbol]?.price)
+    setCurrentPrice(`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`)
   }
   useEffect(() => {
-    prevCountRef.current = currentPrice;    
-    OnlyCheckColor()        
+    prevCountRef.current = currentPrice;
+    OnlyCheckColor()
   }, [
-    coins[symbol]?.price
+    `${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`
   ])
-  
-  
+
+  // console.log(coins[symbol]?.price,"check both price")
 
   let params = useParams();
-  
+
   return (
     <LighCart1
       {...{ single }}
-    style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.07)" : "scale(1)"}` }}
-    onMouseEnter={()=>setZoom(true)}
-      onMouseLeave={() => setZoom(false)}  
-    onClick={onClick}
+      style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.07)" : "scale(1)"}` }}
+      onMouseEnter={() => setZoom(true)}
+      onMouseLeave={() => setZoom(false)}
+      onClick={onClick}
+
     >
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
-        ()=>{
-          if(!user?.uid){
+      <HeartContainer {...{ single, isHeader }} style={{ marginTop: Object.keys(params).length !== 0 ? '' : '-142px' }} onClick={
+        () => {
+          if (!user?.uid) {
             setLoginRedirectMessage('add coin to favorites')
             setLogin(true)
           }
         }
       }>
         <Heart
-       
           checked={favorite}
           setChecked={setFavorite}
           id={`fav-${symbol}`}
@@ -245,11 +269,11 @@ const Card = ({
       </HeartContainer>
       <LogoContainer>
         <LogoImgContainer onClick={onClick} single={single}>
-          <Logo {...{symbol, single}} />
+          <Logo {...{ symbol, single }} />
         </LogoImgContainer>
-        <div className="my-2">
-          <CoinNameXYZ {...{single}}>
-            <Span0 style={{fontSize:"20px" }}>
+        <div className="my-2 ">
+          <CoinNameXYZ {...{ single }}>
+            <Span0 style={{ fontSize: "20px" }}>
               {single && (
                 <span className="fw-bolder" >{coins[symbol]?.name}</span>
               )}
@@ -259,8 +283,8 @@ const Card = ({
                 </Buttons.ClickableText>
               )}
             </Span0>
-            <Span1 style={{fontSize:"20px" }}>
-              {single && <span>{coins[symbol]?.symbol}</span>}
+            <Span1 style={{ fontSize: "20px" }}>
+              {single && <span>{symbol}</span>}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
                   {coins[symbol]?.symbol}
@@ -272,15 +296,15 @@ const Card = ({
       </LogoContainer>
       <Group3991>
         <Price {...{ single }}
-        style={{color:`${changeColor}`}}
-        
-        >{formatCurrency(coins[symbol]?.price, precision[symbol])}{ (symbol!='BTC' && symbol!='ETH') && coins[symbol]?.randomDecimal}</Price>
+          style={{ color: `${changeColor}` }}
+
+        >{formatCurrency(coins[symbol]?.price, precision[symbol])}{(symbol != 'BTC' && symbol != 'ETH') && coins[symbol]?.randomDecimal}</Price>
         {/* <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1> */}
       </Group3991>
       {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
-      
+
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}

@@ -18,6 +18,15 @@ const LeadersContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
+  @media(max-width: 1000px) {
+    max-width: 729px;
+    width: 68%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+	}
 `;
 const Leaderboard = ({
   leaders,
@@ -36,11 +45,12 @@ const Leaderboard = ({
   const pathname = location.pathname;
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
-
+// console.log(leaders ,"leaderscheck")
   return (
     <div>
       <LeadersContainer>
-        {leaders?.map((leader) => {
+        {leaders?.sort((a, b) => ((b?.successful || 1) / (b?.total || 1) * (b?.successful || 1)) - ((a?.successful || 1) / (a?.total || 1) * (a?.successful || 1)))
+          ?.map((leader) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
             <LeaderItem

@@ -69,13 +69,13 @@ const getHeight = (props: Pathname) => {
     return "233px";
   }
   if (
-    props.pathname.replace("/","").toLowerCase()=="about"  ||
+    props.pathname.replace("/", "").toLowerCase() == "about" ||
     props.pathname.replace("/", "").toLowerCase() == "privacy" ||
-    props.pathname.replace("/","").toLowerCase()=="contact" ||
-    props.pathname.replace("/","").toLowerCase()=="faq" ||
+    props.pathname.replace("/", "").toLowerCase() == "contact" ||
+    props.pathname.replace("/", "").toLowerCase() == "knowledgehub" ||
     props.pathname.replace("/", "").toLowerCase() == "terms-and-condition" ||
-    props.pathname.replace("/", "").toLowerCase() == "partners" ||
-    props.pathname.replace("/", "").toLowerCase() == "foundations" 
+    props.pathname.replace("/", "").toLowerCase() == "Ambassador" ||
+    props.pathname.replace("/", "").toLowerCase() == "foundations"
   ) {
     return "auto";
   }
@@ -83,34 +83,34 @@ const getHeight = (props: Pathname) => {
 };
 
 export const isHomeBg = (pathname: string) =>
-  ["/", "/influencers","/coins","/pairs","/nftAlbum"].includes(pathname);
+  ["/", "/influencers", "/coins", "/pairs", "/nftAlbum"].includes(pathname);
 
 export const AppContainer = styled(Container)`
   ${(props: Pathname) =>
     isHomeBg(props.pathname)
       ? Gradient1
       : isCoinsPairs(props.pathname)
-      ? Gradient3
-      : isCommanPage(props.pathname) ?
-        css`background: white`
-      : css`
+        ? Gradient3
+        : isCommanPage(props.pathname) ?
+          css`background: white`
+          : css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
-  background:${window.screen.width < 767 ?"#d4d0f3":"#d4d0f3"};  
+  background:${window.screen.width < 767 ? "#d4d0f3" : "#d4d0f3"};  
 `};
   ${PoppinsMediumWhite12px};
   opacity: 1;
   min-height: ${(props: Pathname) =>
     isSinglePage(props.pathname, "coins") ||
-    isProfile(props.pathname) ||
-    isSinglePage(props.pathname, "pairs")
+      isProfile(props.pathname) ||
+      isSinglePage(props.pathname, "pairs")
       ? ""
       : "100vh"};
   height: ${(props: Pathname) => getHeight(props)};
   border-radius: ${(props: Pathname) =>
     isSinglePage(props.pathname, "coins") ||
-    isProfile(props.pathname) ||
-    isSinglePage(props.pathname, "pairs")
+      isProfile(props.pathname) ||
+      isSinglePage(props.pathname, "pairs")
       ? "0px 0px 87px 0px"
       : ""};
   padding: 0;
@@ -131,6 +131,11 @@ export const HomeContainer = styled(Container)`
     props.width && props.width > 979 ? "233px" : undefined};
   margin-top: ${(props: { width?: number }) =>
     props.width && props.width > 979 ? "170px" : undefined};
+
+  @media (max-width: 768px) {
+    height: 100px;
+  }
+  
   & h2 {
     font-size: var(--font-size-xxxl);
     line-height: 29px;
@@ -140,7 +145,7 @@ export const HomeContainer = styled(Container)`
 
     & span {
       display: ${(props: { width?: number }) =>
-        `${props.width && props.width > 969 ? "inline" : "block"}`};
+    `${props.width && props.width > 969 ? "inline" : "block"}`};
     }
   }
 
@@ -180,24 +185,29 @@ export const PageContainer = styled(Container)`
 `;
 
 export const ZoomCss = css`
-  opacity: 1;
-  position: fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  width: 100%;
-  height: 150vh;
-  left: 50%;
-  transform: translate(-50%, -20%);    
-  transition: opacity .2s;
-  background-color: rgba(0,0,0,0.8);  
+  // opacity: 1;
+  // position: fixed;
+  // top:0;
+  // left:0;
+  // right:0;
+  // bottom:0;
+  // width: 100%;
+  // height: 150vh;
+  // left: 50%;
+  // transform: translate(-50%, -20%);    
+  // transition: opacity .2s;
+  // background-color: rgba(0,0,0,0.8);  
   
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;   
+  // transition:  opacity 1s;   
+  
+  // border:1px solid red;
   display: flex;
-  justify-content: center;
-  align-items: center;   
-  transition:  opacity 1s;   
-  
+justify-content: center;
+align-items: center;
+
 `;
 
 export const CardContainer = styled.div`

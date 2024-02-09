@@ -42,8 +42,8 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
+  // const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
-
 
   return (
     <>

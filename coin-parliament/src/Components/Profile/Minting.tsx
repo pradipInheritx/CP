@@ -8,13 +8,13 @@ import PieChart from "./PieChart";
 import Collapse from "./Collapse";
 import { useTranslation } from "../../common/models/Dictionary";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
-import { Form, Modal } from "react-bootstrap";
+import { Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
-import { stubFalse } from "lodash";
+import { divide, stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
-import { handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
+import { claimRewardSound, handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
@@ -24,13 +24,16 @@ import Swal from 'sweetalert2';
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { afterpaxDistributionToUser } from "common/utils/helper";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
   border-radius: 6px;
   opacity: 1;
   padding: ${(props: { width: number }) =>
-    `${props.width > 767 ? "12px 28px 25px" : "0"}`};
+    `${props.width > 767 ? "12px 28px 41.5px" : "0"}`};
   background: ${(props: { width: number }) =>
     `${props.width > 767 ? "#160133" : "none"}`};
   color: #d4d0f3;
@@ -46,6 +49,7 @@ const Title = styled.div`
   opacity: 1;
   text-align: center;
 `;
+// @ts-ignore
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -157,7 +161,26 @@ const I = styled.i`
 
   text-align: center;
 `;
+
+const Popuphead = styled.p`
+  font-size:25px;
+  font-weight:600;
+background: linear-gradient(180deg, #FFF8A6 29.44%, #FFC00B 73.33%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  // text-shadow: 0px 1px 3px #FFCB35;
+font-family: Poppins;
+font-size: 25px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+letter-spacing: 2px;
+text-transform: uppercase;
+`;
+
+
 type MintingProps = {
+
   score: number;
   setRewardTimer?: any;
   rewardTimer?: any;
@@ -165,7 +188,11 @@ type MintingProps = {
   setCountShow?: any;
 };
 const claimReward = httpsCallable(functions, "claimReward");
+const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
+const addPaxTransactionWithPendingStatus = httpsCallable(functions, "addPaxTransactionWithPendingStatus");
+const sendNotificationForMintAddress = httpsCallable(functions, "sendNotificationForMintAddress");
 const Minting = ({
+
   score,
   setRewardTimer,
   rewardTimer,
@@ -176,32 +203,120 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
+  const { showReward, setShowReward, rewardExtraVote, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab, setWalletTab, setAddPaxWalletPop, addPaxWalletPop } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
+  const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
+  const [upgraeShow, setUpgraeShow] = React.useState(false);
+  const [pendingVoteShow, setPendingVoteShow] = React.useState(false);
+  const [paxDistribution, setPaxDistribution] = React.useState(0);
+  const [pendingPax, setPendingPax] = React.useState(0);
+  const [ClickedOption, setClickedOption] = React.useState(false);
+  const [paxAddShow, setPaxAddShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
+  const handleShow = () => {
+    setModalShow(true)
+    claimRewardSound.play();
+    // handleSoundWinCmp.play()
+  };
+  let navigate = useNavigate();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
     setCmpPopupShow(false);
     setCurrentCMP(0);
+    localStorage.setItem(`${user?.uid}_newScores`, '0');
   };
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
   };
+  
+  const handleUpgraeShow = () => {
+    setUpgraeShow(true)
+  };
+  const handleUpgraeClose = () => {
+    setUpgraeShow(false)
+  };
+
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
+    }    
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+      data: {}
+    }).then((res:any) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res?.data?.result?.paxDistribution)
+    }).catch((err:any) => {
+      console.log(err, "resultdata")
+    })   
+    
+    if (userInfo?.uid) {      
+      axios.post("payment/getAllPendingPaxByUserId", {        
+          userId:userInfo?.uid        
+      }).then((res: any) => {                
+        setPendingPax(res?.data?.data?.result?.pendingPaxTotal)
+      }).catch((err:any) => {
+        console.log(err, "resultdata")
+      })
     }
+
   }, [modalShow, CmpPopupShow]);
+  
+  
+
   useEffect(() => {
-    if (score === 100) {
+    
+    if (score === 100) {             
       setTimeout(() => {
-        handleCmpPopupShow();
-      }, 6100);
+        handleCmpPopupShow();    
+      }, 5100);
     }
-  }, [score]);
+  }, [score, upgraeShow]);
+  
+  // useEffect(() => {
+    
+  //   if (score === 100 && paxDistribution > 0) {   
+      
+  //     if (!userInfo?.paxAddress?.address) {
+  //       sendNotificationForMintAddress({userId: userInfo?.uid})
+
+  //       addPaxTransactionWithPendingStatus({
+  //         userId: userInfo?.uid,
+  //         currentPaxValue: Number(paxDistribution),
+  //         isUserUpgraded: false,
+  //         mintForUserAddress: "",
+  //         eligibleForMint: false
+  //       }).then((res) => {
+  //         console.log(res,"resdata")
+  //         // @ts-ignore
+  //         if (res?.data?.status) {
+  //           afterpaxDistributionToUser(paxDistribution)
+  //         }
+  //       }).catch(() => { });
+  //     }
+  //     if (userInfo?.paxAddress?.address) {
+  //       paxDistributionOnClaimReward({
+  //         userId: userInfo?.uid,
+  //         currentPaxValue: Number(paxDistribution),
+  //         isUserUpgraded: userInfo?.isUserUpgraded,
+  //         mintForUserAddress: userInfo?.paxAddress?.address,
+  //         eligibleForMint: true,
+  //       }).then((res) => {
+  //         console.log(res?.data, "resdata")
+  //         // @ts-ignore
+  //         if (res?.data?.getResultAfterSentPaxToUser?.status) {
+  //           afterpaxDistributionToUser(paxDistribution)
+  //         }
+  //       }).catch(() => { });
+  //     }
+  //   }
+
+  // }, [paxDistribution]);
+
+
+  console.log(pendingPax,"pendingPax")
+
   useEffect(() => {
     if (CmpPopupShow) {
       const Animation = lottie.loadAnimation({
@@ -213,20 +328,132 @@ const Minting = ({
         autoplay: true, // boolean   ,
       });
       handleSoundWinCmp.play();
-      setTimeout(function () {
-        // Animation.destroy();
-        handleSoundWinCmp.pause();
-      }, 3000);  // 5000 milliseconds = 5 seconds
-
-      // setShowBack(false)
+    } else {
+      handleSoundWinCmp.pause();
     }
   }, [CmpPopupShow]);
-  console.log(resultData, "resultData")
+
   const [animateButton, setAnimateButton] = useState<boolean>(false);
+
+  const claimRewardHandler = () => {
+    setAnimateButton(true);
+    setTimeout(() => setAnimateButton(false), 1000);
+    handleSoundClick()
+    if (claim) {
+      setLoading(true);
+      setIsVirtualCall(true);
+      claimReward({
+        uid: user?.uid,
+        isVirtual: false,    }).then((result: any) => {        
+        handleShow();
+        setResultData(result);
+        setRewardTimer(result);
+        setIsVirtualCall(false);
+        if (result?.data) {
+          // @ts-ignore
+          setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
+        }
+        // claimReward({ uid: user?.uid, isVirtual: true });
+        setLoading(false);
+      }).catch((error) => {
+        showToast(error.message, ToastType.ERROR);
+      });      
+
+    } else {
+      // Swal.fire({
+      //   title: '',
+      //   text: `You still need ${(100 - score).toFixed(2)} CMP to claim your reward.`,
+      //   color: 'black',
+      //   confirmButtonText: 'Ok',
+      //   confirmButtonColor: '#6352e8',
+      //   showCloseButton: true,
+      //   customClass: {
+      //     popup: 'popupStyle',
+      //     container: 'popupStyleContainer'
+      //   }
+      // });
+      setPendingVoteShow(true)
+    }
+  }
+
+
+  // const tooltip = (props:any) => {
+
+  // };
+  console.log(claim, "setAnimateButton")
+
+  console.log(inOutReward, "inOutReward")
+  const updateState = () => {
+    setShowReward(1);
+    console.log(inOutReward, "inOutReward2")
+    setInOutReward(1);
+
+    setCountShow(true)
+    // @ts-ignore
+    setAlbumOpen(resultData?.data?.firstRewardCardCollection);
+    // @ts-ignore
+    setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+    // setRewardTimer(resultData); i commented here because i set this when i get result 
+}
 
   return (
     <React.Fragment>
+      {loading && <Modal
+        show={loading}
+        backdrop="static"
+        centered
+        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.80)' }}
+        contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
+      >
+        <Modal.Body>
+          <div style={{
+            position: 'fixed',
+            height: '100%',
+            display: 'flex',
+            textAlign: 'center',
+            justifyContent: 'center',
+            top: '0px',
+            right: '0px',
+            bottom: '0px',
+            zIndex: '9999',
+            overflow: 'hidden',
+            width: '100%',
+            alignItems: 'center',
+
+          }}>
+            <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em' }}>
+              {texts.waitForIt}
+            </span>
+          </div>
+        </Modal.Body>
+      </Modal>}
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
+        {
+          tooltipShow &&
+          <div
+            style={{
+              display: "relative"
+            }}
+          >
+            <div className="newtooltip"
+              style={{
+                // right: "0%",
+                width: `${window.screen.width > 767 ? "25%" : "78%"}`,
+                marginLeft: `${window.screen.width > 767 ? "16.50%" : ""}`,
+                marginTop: `${window.screen.width > 767 ? "1%" : "10%"}`,
+              }}
+            >
+              {/* <p>Your CMP count</p> */}
+              <p className="mt-1 text-end lh-base">This dynamic system amplifies your rewards as you actively vote and impact the game. </p>
+              <p className="mt-3 text-end lh-base">
+                Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones.
+              </p>
+              <p className="mt-3 text-end lh-base">
+                As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
+              </p>
+            </div>
+          </div>
+        }
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
@@ -235,62 +462,28 @@ const Minting = ({
             className='box_title d-md-block text-white d-none mb-4'
             {...{ width }}
           >
-            {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-          <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
-          <CircularProgress percentage={(score || 0)} />
+          <I className='bi bi-info-circle ' style={{ paddingRight: width < 767 ? '8em' : '' }}
+            onMouseDown={(e) => {
+              setTooltipShow(false)
+            }}
+            onMouseUp={(e) => {
+              setTooltipShow(true)
+            }}
+            onMouseEnter={() => setTooltipShow(true)}
+            onMouseLeave={() => setTooltipShow(false)}
+          ></I>
 
-          {/* <PieChart
-            percentage={score || 50}
-            pax={0} // TODO: ask
-            width={width > 767 ? 194 : 154}
-          /> */}
+
+          <CircularProgress percentage={(score.toFixed(3) || 0)} />
         </div>
         {/* width > 767 &&  */(
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >
             <Option0
               style={{ marginTop: "10px" }}
-              {...{
-                onClick: async () => {
-                  handleSoundClick()
-                  if (claim) {
-                    setLoading(true);
-                    const result = await claimReward({ uid: user?.uid }).then((data: any) => {
-                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
-                      // console.log(data.data.firstRewardCard,"full data")
-                      handleShow()
-                      return data;
-                    }).catch((error) => {
-                      // callback={{
-                      //     successFunc: (params) => setUser(params),
-                      showToast(error.message, ToastType.ERROR);
-                      // }}
-                    });
-                    setResultData(result)
-                    console.log(result, 'hello');
-
-                    if (result?.data) {
-                      // @ts-ignore
-                      setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
-                    }
-
-                    setLoading(false);
-                  } else {
-                    Swal.fire({
-                      title: '',
-                      text: `You still need ${100 - score} CMP to claim your reward.`,
-                      color: 'black',
-                      confirmButtonText: 'Ok',
-                      confirmButtonColor: '#6352e8',
-                      customClass: {
-                        popup: 'popupStyle',
-                      }
-                    });
-                  }
-                  setAnimateButton(true);
-                  setTimeout(() => setAnimateButton(false), 1000);
-                },
+              {...{              
+                onClick: !!claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
@@ -300,52 +493,64 @@ const Minting = ({
               {(!!claim) && <Dot>{claim}</Dot>
               }
               {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
+              
             </Option0>
-
+              
           </div>
         )}
       </Container>
       <div>
+        {/* reward modal 1 */}
         <Modal
           show={
             modalShow
           } onHide={handleClose}
           backdrop="static"
-          contentClassName={"modulebackground"}
+          contentClassName={"modulebackground ForBigDiv"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-
+          id="popupid"
         >
 
-          <Modal.Body className="d-flex  justify-content-center align-items-center">
+
+          <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+            style={{
+              width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+              height: "400px"
+            }}
+          >
+            <Popuphead>Congrats!</Popuphead>
             {/* @ts-ignore*/}
-            <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
+            <div className=''><p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
+
+
+            <div className="d-flex justify-content-center ">
+              <Buttons.Primary className="mx-2" onClick={() => {
+                setTimeout(() => {
+                  // setShowReward(1);                  
+                  // setInOutReward(1);
+
+                  // setCountShow(true)
+                  // // @ts-ignore
+                  // setAlbumOpen(resultData?.data?.firstRewardCardCollection);
+                  // // @ts-ignore
+                  // setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+                  // // setRewardTimer(resultData); i commented here because i set this when i get result 
+                  updateState()
+                }, 1000);
+                claimRewardSound.pause()
+                handleClose()
+              }}>COLLECT YOUR COIN</Buttons.Primary>
+              {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+            </div>
           </Modal.Body>
-
-          <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={() => {
-              setTimeout(() => {
-                setShowReward(1);
-                setInOutReward(1);
-                setCountShow(true)
-                // @ts-ignore
-                setAlbumOpen(resultData?.data?.firstRewardCardCollection);
-                // @ts-ignore
-                setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                setRewardTimer(resultData);
-              }, 1000);
-
-              handleClose()
-            }}>COLLECT NOW</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
-          </div>
           {/* </Modal.Footer>       */}
         </Modal>
       </div>
 
-      {/* PopUp for complate 100cmp  */}
 
+      {/* PopUp for complete 100cmp  */}
       <div>
         <Modal
           show={
@@ -356,38 +561,179 @@ const Minting = ({
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={handleCmpPopupClose}></button>
+          </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
-              <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
-              <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
-              <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
+              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Well done, Champ!</strong>
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You've reached your goal.</p>
+              <p className="py-2" style={{ fontSize: "14px", textAlign: "center" }}>Go ahead and claim your reward , You deserve it!</p>
             </div>
           </Modal.Body>
-          <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
+          <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
-                if (claim) {
-                  setLoading(true);
-                  console.log("reward");
-                  const result = await claimReward({ uid: user?.uid }).then((data: any) => {
-                    handleShow()
-                    return data;
-                  }).catch((error) => {
-                    showToast(error.message, ToastType.ERROR);
-                  });
-                  // @ts-ignore
-                  setResultData(result)
-                  // handleShow()
-                  handleCmpPopupClose()
-                  setLoading(false);
-                  console.log("rewardresult", result);
+                if (!userInfo?.isUserUpgraded) {                  
+                  handleCmpPopupClose();
+                  handleUpgraeShow()
+                  return;
                 }
+                // else if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {
+                //   handleCmpPopupClose()
+                //   // setAddPaxWalletPop(true)
+                //   return;
+                // }
+                else {
+                  claimRewardHandler();
+                  handleCmpPopupClose();
+              }
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
-          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
+          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={
+            () => {              
+              if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {                
+                handleCmpPopupClose()
+                // setAddPaxWalletPop(true)
+                  return;
+              }
+              else {
+                handleCmpPopupClose()
+              }
+            }
+          
+          }>Claim later</div>
         </Modal>
+      </div>
+
+      {/* For show upgread your account  */}
+
+      <div>
+        <Modal
+          show={
+            upgraeShow
+          } onHide={handleUpgraeClose}
+          backdrop="static"
+          contentClassName=""
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            {/* <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              
+              handleUpgraeClose();
+              claimRewardHandler();
+
+            }
+            }></button> */}
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center">          
+            <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>              
+              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Don’t miss it!</strong>
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Upgrade before you claim to get the full CMP mining rewards.</p>                    
+            </div>
+          </Modal.Body>  
+          <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
+            <Buttons.Primary className="mx-2"
+              style={{
+                width:"180px"
+              }}
+              onClick={async () => {
+                handleUpgraeClose();
+                navigate("/upgrade")
+              }}
+            >🚀 &nbsp; Let’s do it</Buttons.Primary>
+
+            <Buttons.Primary className="mx-2 mt-3"
+              style={{
+                width:"180px"
+              }}
+              onClick={async () => {
+                handleUpgraeClose();                
+                claimRewardHandler();
+              }}
+            >❌  &nbsp; I give up the benefits</Buttons.Primary>
+          </div>
+        </Modal>
+      </div>
+
+      {/* show Pending vote to get cmp */}
+
+      <div>
+        <Modal
+          show={
+            pendingVoteShow
+          } onHide={() => { setPendingVoteShow(false) }}
+          backdrop="static"
+          contentClassName=""
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              
+              setPendingVoteShow(false) 
+
+            }
+            }></button>
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center">          
+            
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You still need {(100 - score).toFixed(3)} CMP to claim your reward.</p>                    
+            
+          </Modal.Body>  
+          <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
+            <Buttons.Primary className="mx-2"
+              onClick={async () => {
+                 setPendingVoteShow(false) 
+              }}
+            >ok</Buttons.Primary>            
+          </div>
+        </Modal>
+
+        {/* This popup show for add pax data */}        
+        <div>
+          <Modal
+            show={
+              addPaxWalletPop
+            } onHide={() => { setAddPaxWalletPop(false) }}
+            backdrop="static"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+              <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+                setAddPaxWalletPop(false)
+
+              }
+              }></button>
+            </div>
+            <Modal.Body className="d-flex  justify-content-center align-items-center"
+            >
+
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Please add pax address to mint your pending pax</p>
+
+            </Modal.Body>
+            <div className="d-flex justify-content-center">
+            <Buttons.Primary className="mx-2"
+              style={{
+                width: "150px"
+              }}
+              onClick={async () => {
+                // setPendingVoteShow(false)
+                setAddPaxWalletPop(false)
+                setWalletTab("setting")
+                navigate(`/profile/wallet`)
+              }}
+            >Add Now</Buttons.Primary> 
+            </div>
+            
+          </Modal>
+        </div>
+
       </div>
     </React.Fragment >
   );

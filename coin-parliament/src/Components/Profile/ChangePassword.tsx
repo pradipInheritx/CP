@@ -16,7 +16,7 @@ import { Label } from "../Forms/Textfield";
 import Button, { Buttons } from "../Atoms/Button/Button";
 import styled from "styled-components";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
-import { getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { getAuth, reauthenticateWithCredential, signOut, updatePassword } from "firebase/auth";
 import { passwordValidation, validatePassword } from "./utils";
 import infobtn from '../../assets/images/info-btn.png'
 import {
@@ -30,6 +30,9 @@ import Tabs from "./Tabs";
 import GoogleAuthenticator from "./GoogleAuthenticator";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import { Logout } from 'common/models/Login';
+import AppContext from 'Contexts/AppContext';
+import { useNavigate } from 'react-router-dom';
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -64,13 +67,14 @@ const PasswordInfo = styled.div`
 `;
 
 const ChangePassword = () => {
-  const { userInfo, user: u, setUserInfo } = useContext(UserContext);
+  const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
+  const { setLogin} =useContext(AppContext);
   const { showToast } = useContext(NotificationContext);
   const [changePassword, setChangePassword] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+let navigate = useNavigate();
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const validatePassword = passwordValidation(newPassword, confirmPassword, (userInfo?.displayName || ''));
@@ -88,7 +92,20 @@ const ChangePassword = () => {
               setOldPassword("");
               setNewPassword("");
               setConfirmPassword('')
-              showToast(texts.PasswordUpdatSuccess);
+              showToast(texts.PasswordUpdatSuccesslogout);
+              signOut(auth)
+              .then((res) => {
+                Logout(setUser);
+                navigate("/")
+                setLogin(true);
+                  })
+                  .catch((error) => {
+                
+                    navigate("/")
+                    setLogin(true);
+                    const errorMessage = error.message;
+                
+                  });
               // setErrorMessage("");
             })
             .catch((error: any) => {
@@ -221,7 +238,6 @@ const ChangePassword = () => {
                         )}
                       </>
                       <Buttons.Primary
-
                       >
                         UPDATE
                       </Buttons.Primary>

@@ -11,7 +11,7 @@ import { User } from "firebase/auth";
 import { db, functions } from "../firebase";
 import { httpsCallable } from "firebase/functions";
 import { userConverter } from "../common/models/User";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { ICryptoClient } from "@polygon.io/client-js";
 
 export type Rates = { [key: string]: Rate };
@@ -31,15 +31,22 @@ export type Leader = {
   subscribers?: number;
   leaders?: number;
   status?: string;
+  isUserUpgraded?: boolean;
+  successful?: number;
+  total?: number;
 };
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
 
-export const follow = async (leader: Leader, you: User, add: boolean) => {
-  
-  
+export const follow = async (leader: Leader, you: User, add: boolean, setIsLoading?:any) => {
+
+
   const subscribe = httpsCallable(functions, "subscribe");
-  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
+  const setLeadersOnce = httpsCallable(functions, "setLeadersOnce");
+
+  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps).then((res) => {
+    setIsLoading(false)
+  });
 
   if (add) {
     await setDoc(
@@ -48,13 +55,13 @@ export const follow = async (leader: Leader, you: User, add: boolean) => {
       { merge: true }
     );
   } else {
-    console.log("yes i am working")
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
       { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
       { merge: true }
     );
-  } 
+  }
+  await setLeadersOnce({ data: {} });
 };
 
 export const totalsConverter = {
@@ -97,7 +104,7 @@ export const coinDataConverter = {
 };
 
 export type CoinContextProps = {
-  allCoinsSetting:any;
+  allCoinsSetting: any;
   changePrice: any;
   setChangePrice: any;
   myCoins: any;
@@ -110,9 +117,10 @@ export type CoinContextProps = {
   setLeaders: (leaders: Leader[]) => void;
   rest: ICryptoClient;
   ws: WebSocket;
-  socket:WebSocket;
+  socket: WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
+  socketConnect?: boolean
 };
 
 const CoinsContext = React.createContext({ coins: {} } as CoinContextProps);

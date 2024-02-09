@@ -2,9 +2,9 @@
 
 import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import UserContext from "../Contexts/User";
+import UserContext, { getUserInfo } from "../Contexts/User";
 import { Logout } from "../common/models/Login";
 import AppContext from "../Contexts/AppContext";
 import ContentContext from "../Contexts/ContentContext";
@@ -16,25 +16,28 @@ import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
-import Avatars, { AvatarType } from "../assets/avatars/Avatars";
+import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.png";
+import BigLogo2 from "../assets/svg/logoiconxbig2.png";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
 
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "../firebase";
-import firebase from "firebase/compat";
+import { db, firestore, functions } from "../firebase";
+import firebase from "firebase/compat/app";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
-import CoinsContext, { follow } from "../Contexts/CoinsContext";
+import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { handleSoundClick } from "../common/utils/SoundClick";
+import { claimRewardSound, handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
+import { VoteContext } from "Contexts/VoteProvider";
+import Spinner from "./Spinner";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -84,14 +87,18 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 82%;
+  width: 85%;
   height: 30px;
   
-  margin-left:25px;
+  margin-left:30px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
   // align-items: center;
+
+  @media (min-width: 768px) and (max-width: 1000px) {
+		width:9rem
+	}
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -99,7 +106,7 @@ export const MemberText = styled.span`
   background: #d4d0f3;
   color: #6352e8;
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 9px;
 `;
 
 export const PlusButton = styled.div`
@@ -136,21 +143,36 @@ const ZoomCss = css`
   right:0;
   bottom:0;
   width: 100%;
-  height: 150vh;
+  height: 100%;
   z-index:2200;
-  // left: 50%;
-  // transform: translate(-50%, -20%);    
-  transition: opacity .3s;
+//   transition: opacity .3s;
   background-color: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
-transition:  all 1s ease;
-
-`;
+  transition:  all 3s ease;
+  `;
+//   transform: ${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"};
+//   transformOrigin:${window.screen.width > 767 ?"35% 50%" :"50% 90%"};
+// left: 50%;
+// transform: translate(-50%, -20%);    
 
 
 const ForZoom = styled.div`
  ${(props: ZoomProps) => `${props.showReward == 2 && props.inOutReward == 2 ? ZoomCss : ""}`} 
+`;
+
+const I = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+//   top:-27px;
+//   left:180px;
+//   color: #6352e8;
+  color: white;
+//   width: 16px;
+//   height: 16px;
+  text-align: center;
 `;
 
 export const OuterContainer = styled.div`
@@ -168,18 +190,22 @@ export const OuterContainer = styled.div`
 //   border-radius: 0 0 87px 0;
 // `;
 
-const MenuContainer = styled(Menu)``;
+const MenuContainer = styled(Menu)`
+border:1px solid red;
+`;
 
 const Header = ({
 	title,
 	logo = true,
 	pathname,
-	remainingTimer
+	remainingTimer,
+	setMfaLogin 
 }: {
 	title?: React.ReactNode;
 	logo?: boolean;
 	pathname: string;
-	remainingTimer: number;
+		remainingTimer: number;
+	setMfaLogin:any,
 }) => {
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(UserContext);
@@ -188,14 +214,13 @@ const Header = ({
 	const desktop = width && width > 979;
 
 
-
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack } =
-		useContext(AppContext);
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar, avatarImage, setAvatarImage } = useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd, rewardExtraVote } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
+	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
 	const [cmpModalOpen, setCmpModalOpen] = useState(false)
@@ -203,72 +228,97 @@ const Header = ({
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+	const [scrollUp, setScrollUp] = useState<any>(false)
+	const [textBlink, setTextBlink] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
 
 	var urlName = window.location.pathname.split('/');
 	const followerPage = urlName.includes("followerProfile")
+	const votingboosterPage = urlName.includes("votingbooster")
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
-
+	const [tooltipShow, setTooltipShow] = React.useState(false);
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
+	const voteDetails = useContext(VoteContext);
+	// useEffect(() => {
+	// 	if (score > 99.98 && MyPath !== "/profile/mine") {
+	// 		setCmpModalOpen(true)
 
-	console.log(urlName, "")
+	// 	}
+	// 	if (MyPath == "/profile/mine") {
+	// 		setCmpModalOpen(false)
 
-	useEffect(() => {
-
-		if (score > 99.98 && MyPath !== "/profile/mine") {
-			setCmpModalOpen(true)
-			
-		}
-		if (MyPath == "/profile/mine") {
-			setCmpModalOpen(false)
-			
-		}
-	}, [score])
-
+	// 	}
+	// }, [score]);
 
 	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
 
-	const getFollowerData = () => {
+	const getFollowerData = async () => {
 
-		const getCollectionType = firebase
-			.firestore()
-			.collection("users")
-			.where("uid", "==", followerUserId)
-		getCollectionType.get()
-			.then((snapshot) => {
-				snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
-			}).catch((error) => {
-				console.log(error, "error");
-			});
-	}
+		// const getCollectionType = firebase
+		// 	.firestore()
+		// 	.collection("users")
+		// 	.where("uid", "==", followerUserId)
+		// getCollectionType.get()
+		// 	.then((snapshot) => {
+		// 		snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
+		// 	}).catch((error) => {
+		// 		console.log(error, "error");
+		// 	});
+			const userCollection = collection(firestore, 'users');
+			try {
+				const q = query(userCollection, where('uid', '==', followerUserId));
+				const querySnapshot = await getDocs(q);
+
+				querySnapshot.forEach((doc) => {
+					console.log(doc.data(),"followerUserId")
+					setFollowerInfo(doc.data());
+				});
+			} catch (error) {
+				console.error('Error fetching follower info:', error);
+			}		
+	}	
 
 	useEffect(() => {
-		getFollowerData()
+		if (followerUserId) {			
+			getFollowerData()
+		}
 	}, [followerUserId])
 
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
-
-			setShow(true)
-		} else {
-			setShow(false)
+		// @ts-ignore
+		if (userInfo?.leader?.includes(followerUserId)) {
+			setFollowUnfollow(true)
 		}
-
-	}, [voteNumber, votingTimer, afterVotePopup])
-
-	useEffect(() => {
-		if (afterVotePopup) {
-			setShow(true)
-			// setAfterVotePopup(false)
-		} else {
-			setShow(false)
+		else {
+			setFollowUnfollow(false)
 		}
+	}, [followerUserId, userInfo]);
+	useEffect(() => {		
+		// @ts-ignore
+		if (Number(userInfo?.voteValue) == 0 && user?.uid && !login && !userInfo?.lastVoteTime) {
+			console.log("yes i am working", Date.now() )
+			const liveValue = Date.now()
+			// const usereData = firebase
+			// 	.firestore()
+			// 	.collection("users")
+			// 	.doc(user?.uid)
+			// 	.set({ "lastVoteTime": liveValue}, { merge: true });
+			const userDocRef = doc(firestore, 'users', user?.uid)
+			try {
+				 setDoc(userDocRef, { lastVoteTime: liveValue }, { merge: true });
+				console.log("User data updated successfully!");
+			} catch (error) {
+				console.error("Error updating user data:", error);
+			}
+		} else {
+			setAfterVotePopup(false);
+		}
+	}, [voteNumber, /* votingTimer, */ voteDetails])
 
-	}, [afterVotePopup])
 
 
 
@@ -284,16 +334,7 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		// const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-		// @ts-ignore
-		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));
-		// @ts-ignore
-		// console.log(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0), 'mye', headerExtraVote?.vote, userInfo?.rewardStatistics?.extraVote);
-
-		// @ts-ignore
-		console.log(headerExtraVote?.collect || 0, "headerExtraVote")
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));		
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -302,11 +343,10 @@ const Header = ({
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
-
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+	console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
-
-	const onSelect = (eventKey: string | null) => {
+	const onSelect = (eventKey: string | null) => {		
 		// handleSoundClick()
 		const auth = getAuth();
 
@@ -320,17 +360,21 @@ const Header = ({
 				setSignup(true);
 				break;
 			case EventKeys.LOGOUT:
-				// console.log("i am working")
+
 				signOut(auth)
 					.then((res) => {
 						Logout(setUser);
+						navigate("/")
 						setLogin(true);
+						// console.log("i am working error")	
+						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-						// console.log("i am working error")
+						navigate("/")
 						setLogin(true);
+						localStorage.removeItem("userId")
 						const errorMessage = error.message;
-						// console.log(errorMessage,"i am working error");
+
 					});
 				break;
 			case EventKeys.EDIT:
@@ -385,13 +429,20 @@ const Header = ({
 
 	const handleClose = () => {
 		setShow(false)
-
+		setAfterVotePopup(false);
 	};
+
+
+	console.log(followerInfo,"followerInfo")
 	return (
+<>
+{userInfo?
 
 		<MenuContainer
+			setMfaLogin={setMfaLogin}
 			pathname={pathname}
 			onSelect={onSelect}
+
 			items={[
 				{
 					href: "/",
@@ -485,20 +536,29 @@ const Header = ({
 		>
 			{/* {for center modile size} */}
 
-			{!desktop && (
-				<div className='' style={{ width: "75%" }}>
+			{!desktop ? (
+				<div className='' style={{ width: "80%" }}>
 					<div className='d-flex w-100  '>
-						<ForZoom {...{ showReward, inOutReward }} className="w-100">
+						<ForZoom {...{ showReward, inOutReward }} className="w-100"
+						>
 							{user?.uid && !login ? (
 								<div
 									className="d-flex"
 									style={{
 										position: "relative",
-										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
-										transition: `width 1s ease;`
+										margin: '0 auto',
+										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "fit-content"}`,
+										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
+										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+										// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+
 									}}
 								>
-									<div className='' onClick={() => navigate("/profile/mine")}
+									<div className='' onClick={() => {
+										if (!showMenubar && !followerPage) navigate("/profile/mine")
+									}
+									}
 										style={{
 											position: "absolute",
 											marginTop: "7px",
@@ -506,35 +566,36 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (avatarImage || userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "45px",
-												boxShadow: "1px 0px 5px #6352E8",
+												height: "45px",
 												// border: "1px solid #6352E8",
-												backgroundColor: "#6352E8",
+												// @ts-ignore
+												boxShadow: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "#F3D87A" : "#6352E8"}`,
 											}}
 										/>
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
 										<HeaderCenterMob className=''>
-											<div></div>
+											{/* <div></div> */}
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
-														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
-															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
+															<div style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%", textAlign: 'center', }}>
 																{/* @ts-ignore */}
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
-																				Wait {" "}
-																				{hours < 1 ? null : `${hours} :`}
+																			<span style={{ color: '#6352e8', fontSize: window.screen.width <= 340 ? '0.7889em' : '12px', fontWeight: 100, lineHeight: "10%", }}>
+																				{/* Wait {" "} */}
+																				{Number(voteRules?.maxVotes)} Votes in{" "}
+																				{hours < 1 ? null : `${hours}:`}
 																				{minutes < 10 ? `0${minutes}` : minutes}:
-																				{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																				<br />
-																				or buy extra votes now.
+																				{seconds < 10 ? `0${seconds}` : seconds}
+																				{/* for {Number(voteRules?.maxVotes)} votes <br /> or buy extra votes now. */}
 																			</span>
 																		);
 
@@ -543,39 +604,46 @@ const Header = ({
 																/>
 															</div>
 															:
-															<span
-																style={{
-																	color: "#6352E8",
-																	// zoom: `${showReward == 2 ? "150%" : ""}`
-																	// fontSize:"11px",
-																	marginLeft: "10px",
-																}}
-															>
-
-
-																{MyPath == "/profile/mine" ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																		style={{
-																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
+															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
+																{(MyPath == "/profile/mine" && inOutReward === 2) ?
+																			<CountUp useEasing={false} className={"HeaderText "} start={voteNumber == 0 ? 0 : voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																		onStart={() => {
+																			// handleExtraVote.play()
+																			// setTimeout(() => {
+																			// 	setTextBlink(true)
+																			// }, 3000);
 																		}}
-
 																		onEnd={() => {
+																			setTextBlink(false)
+																			handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
-																				return prev == 2 ? 3 : prev
+																				// return prev == 2 ? 3 : prev
+																				claimRewardSound.play();
+																				return 3
 																			});
-																			setHeaderExtraVote((prev: number) => {
-																				if (prev != 0) {
-																					setShowReward((prev: number) => {
-																						return prev == 2 ? 3 : prev
-																					})
-																				}
-																				return prev
-																			})
+																			if (headerExtraVote != 0) {
+																				setShowReward((prev: number) => {
+																					return 3;
+																				});
+																			}
+																			setHeaderExtraVote({
+																				vote: 0,
+																				collect: false
+																			});
+																			// setHeaderExtraVote((prev: number) => {
+																			// 	if (prev != 0) {
+																			// 		setShowReward((prev: number) => {
+																			// 			// return prev == 2 ? 3 : prev
+																			// 			return 3;
+																			// 		})
+																			// 	}
+																			// 	return prev
+																			// })
 																		}
 																		}
 																	/> :
-																	// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																	Number(voteNumber && voteNumber)
+																	// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
 																{" "}
@@ -590,6 +658,7 @@ const Header = ({
 													className="mt-1"
 													bsPrefix="label"
 													onClick={async () => {
+														handleSoundClick()
 														setFollowUnfollow(!followUnfollow)
 														// console.log('folower',followerInfo)
 														const ll = leaders.find((l) => l.userId === followerInfo?.uid);
@@ -609,10 +678,15 @@ const Header = ({
 												</Form.Check.Label>
 												:
 												<PlusButtonMob onClick={() => {
-													handleSoundClick()
-													navigate("/votingbooster")
-												}}>
-													<span>+</span>
+													if (!showMenubar) {
+														handleSoundClick()
+														navigate("/votingbooster")
+													}
+												}}
+												>
+													<span
+														className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+													>+</span>
 												</PlusButtonMob>
 
 											}
@@ -623,16 +697,84 @@ const Header = ({
 										>
 											{/* <p>{"unique_Username"}</p> */}
 
-											{
-												(followerPage && followerInfo != "") ?
-													<></> :
-													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
-													</span>
-											}
-											{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
-												{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-											</MemberText>}
+											<div  className="d-flex">
+												{
+													(followerPage && followerInfo != "") ?
+														<></> :
+																<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1`} 
+																style={{
+																	fontSize: "13px",
+																	width:"3.2rem",
+																	display: 'inline-block',
+																	textOverflow: 'ellipsis',
+																	overflow: 'hidden',
+																	}}>
+															{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
+														</span>
+												}					
+												<span style={{marginLeft:"2px"}}>
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText
+													>{userInfo?.status?.name}</MemberText>}
+												</span>
+											</div>						
+											{!!followerInfo && <div className="d-flex"
+											>
+												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{
+													(!!followerInfo?.bio && followerPage) && <>
+														<div className='mx-2 '>
+															<I className='bi bi-info-circle'
+																onMouseDown={(e) => {
+																	setTooltipShow(false)
+																}}
+																onMouseUp={(e) => {
+																	setTooltipShow(true)
+																}}
+																onMouseEnter={() => setTooltipShow(true)}
+																onMouseLeave={() => setTooltipShow(false)}
+															></I>
+														</div>
+														{
+															tooltipShow &&
+															<div
+																style={{
+																	position: 'fixed',
+																}}
+															>
+																<div className="newtooltip"
+																	style={{
+																		// right: "0%",
+																		width: "270px",
+																		top: "25px",
+																		left:"-70px"
+																		// marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+																		// marginTop: `${window.screen.width > 767 ? "10%" : "1%"}`,
+																		// zIndex:3000
+																	}}
+																>
+																	{/* <p>Your CMP count</p> */}
+																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																	
+																</div>
+															</div>
+														}
+													</>
+												}
+											</div>}
+													{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
+														style={{
+															marginLeft: `${!userInfo?.isUserUpgraded && "-40px"}`
+														}}
+													>{userInfo?.status?.name}</MemberText>} */}
+
+													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black",wordBreak:"break-word"}}
+														onClick={() => {
+															if (!showMenubar) {
+																handleSoundClick()
+																navigate("/upgrade")
+															}
+														}}
+													>UPGRADE NOW</MemberText>}
+
 										</div>
 									</div>
 								</div>
@@ -641,232 +783,385 @@ const Header = ({
 							)}
 						</ForZoom>
 						{showReward == 2 && window.screen.width < 767 && <div className="w-100"></div>}
-						<div className='mt-2'>
+						{/* <div className='mt-2'>
 							<Title
-							// style={{ width: pathname === "/" ? "" : "" }}
-							// onClick={handleSoundClick}
-							// className="border"
+							 style={{ width: pathname === "/" ? "" : "" }}
+							 onClick={handleSoundClick}
+							 className=""
 							>
 								{mounted ? title : ""}
 							</Title>
+						</div> */}
+
+						< div className='' style={{width:"30%"}}>
+							<Navbar.Brand as={Link} to='/'
+									
+								className="ml-1"
+							>
+								<img src={BigLogo} alt='' width="70px" />
+							</Navbar.Brand>
+							
 						</div>
 					</div>
 				</div>
-			)}
+			):
+			(logo ?
+				(
+						<div
+							className=""
+						style={{
+							flexBasis: `${window.screen.width < 979 ?"80%":"100%"}`,
+							textAlign: "center",						
+							// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
+							// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				
+							// transition: `${backgrounHide ? "all 3s" : ""}`,      
+						}}
+					>
+						<div className='d-flex'>
+							<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */
+								style={{
+									// transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
+									// transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
+									// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,								
+								}}
+							>
+								{(user?.uid && !login) && (
+									<div className='d-flex mx-auto w-auto '
+										style={{
+											position: "relative",
+											height: "50px",
+											transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
+											transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
+											transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+										}}>
+										<div onClick={() => {
+											if (!showMenubar && !followerPage) navigate("/profile/mine")
+										}}
+	
+											style={{
+												position: "absolute",
+												marginLeft: "90px",
+												cursor: "pointer"
+											}}
+										>
+											<Avatars
+												type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (avatarImage || userInfo?.avatar || defaultAvatar) as AvatarType}
+												style={{
+													width: "60px",
+													height: "60px",
+													// @ts-ignore
+													boxShadow: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "1px 0px 5px #FAE481" : "1px 0px 5px #6352E8"}`, backgroundColor: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "#FAE481" : "#6352E8"}`,
+													// boxShadow: "1px 0px 5px #6352E8",
+													// backgroundColor: "#6352E8",
+												}}
+											/>
+										</div>
+										<div className='w-100'>
+											<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
+												{followerPage && followerInfo != "" ?
+													<>
+														<span className=""
+															style={{
+																marginLeft: "40px"
+															}}
+														>
+	
+															{followerInfo?.displayName}
+														</span>
+													</>
+	
+													:
+																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
+														// @ts-ignore
+														<>
+															{/* @ts-ignore */}
+															<Countdown date={votingTimer}
+																renderer={({ hours, minutes, seconds, completed }) => {
+																	return (
+																		<span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
+																			{Number(voteRules?.maxVotes)} Votes in {" "}
+																			{hours < 1 ? null : `${hours}:`}
+																			{minutes < 10 ? `0${minutes}` : minutes}:
+																			{seconds < 10 ? `0${seconds}` : seconds}
+																			{/* for {Number(voteRules?.maxVotes)} votes or buy extra votes now. */}
+																		</span>
+																	);
+	
+																}}
+															/>
+														</>
+														:
+														<p className='' style={{ marginRight: '1em' }}>
+															<span
+																style={{
+																	color: "#6352E8",
+																	marginLeft: "40px",
+																	fontSize: window.screen.width <= 340 ? '0.7889em' : '12px'
+																}}
+															>
+																{/* reward modal 4 */}
+																{(MyPath == "/profile/mine" && inOutReward === 2) ?
+																				<CountUp useEasing={false} className={"HeaderText"} start={voteNumber == 0 ? 0 : voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																		onStart={() => {
+																			// handleExtraVote.play()
+																			// setTimeout(() => {
+																			// 	setTextBlink(true)
+																			// }, 3000);
+																		}}
+																		onEnd={() => {
+																			setTextBlink(false)
+																			handleExtraVote.pause()
+	
+																			setInOutReward((prev: number) => {
+																				// return prev == 2 ? 3 : prev
+																				claimRewardSound.play();
+																				return 3
+																			});
+																			if (headerExtraVote != 0) {
+																				setShowReward((prev: number) => {
+																					return 3;
+																				});
+																			}
+	
+																			setHeaderExtraVote({
+																				vote: 0,
+																				collect: false
+																			});
+	
+																			// setHeaderExtraVote((prev: number) => {
+																			// 	if (prev != 0) {
+																			// 		setShowReward((prev: number) => {
+																			// 			// return prev == 2 ? 3 : prev
+																			// 			return 3;
+																			// 		})
+																			// 	}
+																			// 	return prev
+																			// })
+	
+																		}
+																		}
+																	/> :
+																	Number(voteNumber && voteNumber)
+																	// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																}
+																{" "}
+																votes left
+															</span>
+														</p>
+												}
+												{
+													<div style={{ marginRight: '1em' }}>
+														{followerPage && followerInfo != "" ?
+															<Form.Check.Label
+																className=""
+																style={{ cursor: "pointer" }}
+	
+																bsPrefix="label"
+																onClick={async () => {
+																	setFollowUnfollow(!followUnfollow)
+																	const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+																	if (user && ll) {
+	
+																		await follow(ll, user, !followUnfollow);
+																	}
+																}
+																}
+															>
+																{followUnfollow == true ? <Following /> : <AddFollower />}
+															</Form.Check.Label>
+															:
+															<PlusButton onClick={() => {
+	
+																if (!showMenubar) {
+																	handleSoundClick()
+																	navigate("/votingbooster")
+																}
+																// handleSoundClick()
+																// navigate("/votingbooster")
+															}}>
+																<span
+																	className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+																>+</span>
+															</PlusButton>}
+													</div>
+	
+												}
+											</HeaderCenter>
+											{
+												// !(followerPage && followerInfo != "") &&
+												<div
+													className=''
+													style={{ width: "50%", marginLeft: "150px", marginTop: "5px", textAlign: "left", fontWeight: "100px", }}												
+												>
+													{/* {userInfo?.displayName &&
+														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+															{userInfo?.displayName && userInfo?.displayName}
+														</span>
+													}													 */}
+													<div className="d-flex">
+														{
+															(followerPage && followerInfo != "") ?
+																<></> :
+																<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1`}
+																				style={{
+																				fontSize: "13px",
+																				display: 'inline-block',
+																				textOverflow: 'ellipsis',
+																				overflow: 'hidden',
+																				}}>
+																	{`${(userInfo?.displayName ) ? userInfo?.displayName : ''}`}
+																</span>
+														}
+														<span style={{marginLeft:"1px"}}>
+														{(!!userInfo?.status?.name && !followerPage) && <MemberText
+														>{userInfo?.status?.name}</MemberText>}
+														</span>
+													</div>
+
+													{!!followerInfo && <div className="d-flex"													
+													>												
+														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+														{
+															(!!followerInfo?.bio && followerPage) && <>
+																<div className='mx-2 '>
+																	<I className='bi bi-info-circle'
+																		onMouseDown={(e) => {
+																			setTooltipShow(false)
+																		}}
+																		onMouseUp={(e) => {
+																			setTooltipShow(true)
+																		}}
+																		onMouseEnter={() => setTooltipShow(true)}
+																		onMouseLeave={() => setTooltipShow(false)}
+																	></I>
+																</div>
+																{
+																	tooltipShow &&
+																	<div
+																		style={{
+																				position: 'fixed',
+																		}}
+																	>
+																		<div className="newtooltip "
+																			style={{
+																				// right: "0%",
+																				width:"300px",
+																				top:"25px",
+																				// marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+																				// marginTop: `${window.screen.width > 767 ? "10%" : "1%"}`,
+																				// zIndex:3000
+																			}}
+																		>
+																			{/* <p>Your CMP count</p> */}
+																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																		
+																		</div>
+																	</div>
+																}
+															</>
+														}
+													</div>}
+													
+																{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
+																	style={{
+																		marginLeft: `${!userInfo?.isUserUpgraded && "-55px"}`
+																	}}
+																>{userInfo?.status?.name}</MemberText>} */}
+																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black" }}
+																	onClick={() => {
+																		if (!showMenubar) {
+																			handleSoundClick()
+																			navigate("/upgrade")
+																		}
+																}}
+																>UPGRADE NOW</MemberText>}
+																
+																
+												</div>
+											}
+	
+										</div>
+									</div>
+								)}
+							</ForZoom>
+							{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && 
+							<div className='w-100'></div>}
+							<Navbar.Brand as={Link} to='/'>
+											<img src={BigLogo2} alt='' width="90px" />
+											
+							</Navbar.Brand>
+						</div>
+					</div>
+				) : (
+					<div style={{ width: "25%" }}>&nbsp;</div>
+				)
+				)
+			}
 
 			{/* {for center web size} */}
 
-			{logo ? (
-				<div
+			
 
-					style={{
-						flexBasis: "100%",
-						textAlign: "center",
-						//  transform: `${showReward == 2 && "scale(1)"}`,
-						//     marginTop: `${showReward == 2 && "50px"}`
-						// width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-						// textAlign: desktop ? undefined : "center",
-					}}
-				>
-
-					<div className='d-flex'>
-						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
-							{(user?.uid && !login) && (
-								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
-									<div onClick={() => navigate("/profile/mine")} style={{
-										position: "absolute",
-										marginLeft: "90px",
-										cursor: "pointer"
-									}}
-									>
-										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
-											style={{
-												width: "60px",
-												boxShadow: "1px 0px 5px #6352E8",
-												backgroundColor: "#6352E8",
-											}}
-										/>
-									</div>
-									<div className='w-100'>
-										<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
-											{followerPage && followerInfo != "" ?
-												<>
-													<span className=""
-														style={{
-														marginLeft:"40px"
-													}}
-													>
-
-												{followerInfo?.displayName}
-													</span>
-												</>
-												
-												:
-												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
-													// @ts-ignore
-													<>
-														{/* @ts-ignore */}
-														<Countdown date={votingTimer}
-															renderer={({ hours, minutes, seconds, completed }) => {
-																return (
-																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400, paddingLeft: '3.5em' }}>
-																		Wait {" "}
-																		{hours < 1 ? null : `${hours} :`}
-																		{minutes < 10 ? `0${minutes}` : minutes}:
-																		{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																		or buy extra votes now.
-																	</span>
-																);
-
-															}}
-														/>
-													</>
-													:
-													<p className='' style={{ marginRight: '1em' }}>
-														<span
-															style={{
-																color: "#6352E8",
-																fontSize: "11px",
-																marginLeft: "50px",
-															}}
-														>
-															{MyPath == "/profile/mine" ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																	onEnd={() => {
-																		setInOutReward((prev: number) => {
-																			return prev == 2 ? 3 : prev
-																		});
-																		setHeaderExtraVote((prev: number) => {
-																			if (prev != 0) {
-																				setShowReward((prev: number) => {
-																					return prev == 2 ? 3 : prev
-																				})
-																			}
-																			return prev
-																		})
-																	}
-																	}
-																/> :
-																Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
-															}
-															{" "}
-															votes left
-														</span>
-													</p>
-											}
-											{
-												<div style={{ marginRight: '1em' }}>
-													{followerPage && followerInfo != "" ?
-														<Form.Check.Label
-															className=""
-															style={{ cursor: "pointer" }}
-
-															bsPrefix="label"
-															onClick={async () => {
-																setFollowUnfollow(!followUnfollow)
-																const ll = leaders.find((l) => l.userId === followerInfo?.uid);
-																if (user && ll) {
-
-																	await follow(ll, user, !followUnfollow);
-																}
-															}
-															}
-														>
-															{followUnfollow == true ? <Following /> : <AddFollower />}
-														</Form.Check.Label>
-														:
-														<PlusButton onClick={() => {
-															handleSoundClick()
-															navigate("/votingbooster")
-														}}>
-															<span>+</span>
-														</PlusButton>}
-												</div>
-
-											}
-										</HeaderCenter>
-										{
-											!(followerPage && followerInfo != "") &&
-											<div
-												className=''
-												style={{
-													width: "50%",
-													marginLeft: "150px",
-													marginTop: "5px",
-													textAlign: "left",
-													fontWeight: "100px",
-												}}
-											>
-												{userInfo?.displayName &&
-													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-														{userInfo?.displayName && userInfo?.displayName}
-													</span>
-												}
-												{/* {console.log(followerInfo?.status?.name, userInfo?.status?.name, 'pkk')} */}
-												{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
-													{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-												</MemberText>}
-											</div>
-										}
-
-									</div>
-								</div>
-							)}
-						</ForZoom>
-						{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && <div className='w-100'></div>}
-						<Navbar.Brand as={Link} to='/'>
-							<img src={BigLogo} alt='' />
-						</Navbar.Brand>
-					</div>
-				</div>
-			) : (
-				<div style={{ width: "25%" }}>&nbsp;</div>
-			)}
 			<div>
 				<Modal
 					dialogClassName="modal-35w"
-					show={show}
+					show={/* show */afterVotePopup}
 					size="lg"
 					onHide={handleClose}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
-					style={{ opacity: 1, zIndex: 100 }}
+					style={{ opacity: 1, zIndex: 9999, }}
 					className="borderColor"
 					// animation={false}
 					backdrop="static"
+					contentClassName={window.screen.width <= 750 ? "w-100" : 'w-auto'}
 				>
 					{/* <Modal.Header>
 
               </Modal.Header> */}
-					<div className="d-flex justify-content-end">
-						<button type="button" className="btn-close " aria-label="Close" onClick={() => {
-							setShow(false)
-							setAfterVotePopup(false)
-						}}></button>
+					<div className="d-flex justify-content-between">
+						<div className="d-flex flex-grow-1 justify-content-center">
+							<p className="text-uppercase text-center" > Out of votes? &nbsp;
+								{/* <span onClick={() => {
+									setShow(false)
+									setAfterVotePopup(false);
+									navigate('/votingbooster');
+								}} style={{ fontSize: '1.5em', textDecoration: 'none', color: '#775cff' }}>+</span> */}
+
+							</p>
+							<PlusButton className="d-flex justify-content-center" style={{ padding: '1px', fontSize: '17px' }} onClick={() => {
+								setShow(false);
+								setAfterVotePopup(false);
+								if (!showMenubar) {
+									handleSoundClick()
+									navigate("/votingbooster")
+								}
+								// handleSoundClick()
+								// navigate("/votingbooster")
+							}}>
+								<span
+									className={`text-center HeaderText`}
+								>+</span>
+							</PlusButton>
+						</div>
+						<div className="d-flex justify-content-end">
+							<button type="button" className="btn-close " aria-label="Close" onClick={() => {
+								setShow(false)
+								setAfterVotePopup(false)
+							}}></button>
+						</div>
 					</div>
 					<Modal.Body>
 
 						{/* <hr /> */}
-						<p className="text-uppercase text-center mb-3" > Out of votes? </p>
-						{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
+
 						<div className="text-center">
-							<Link className="text-uppercase" to="/votingbooster" onClick={() => {
-								handleSoundClick()
-								navigate("/votingbooster")
-								setShow(false)
-								setAfterVotePopup(false)
-							}} >Buy Extra votes</Link> \
-							{" now or wait,".toUpperCase()}
-							<span className="text-uppercase">
+							WAIT <span className="text-uppercase">
 								{/* @ts-ignore */}
 								{!!new Date(votingTimer).getDate() && <Countdown date={votingTimer}
 									renderer={({ hours, minutes, seconds, completed }) => {
 										return (
 											<span >
-												{/* {hours < 10 ? `0${hours}` : hours}: */}
-												{Number(voteRules?.maxVotes)} votes in {' '}
-												{hours < 1 ? null : `${hours} :`}
+												{hours < 1 ? null : `${hours}:`}
 												{minutes < 10 ? `0${minutes}` : minutes}:
 												{seconds < 10 ? `0${seconds}` : seconds}
 											</span>
@@ -874,23 +1169,29 @@ const Header = ({
 
 									}}
 								/>}
-							</span>
-
+							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR{window.screen.width < 465 ? <br /> : <>&nbsp;</>}
+							<Link style={{ color: "#160133", textDecoration: 'none' }} className="text-uppercase" to="/votingbooster" onClick={() => {
+								handleSoundClick()
+								navigate("/votingbooster")
+								setShow(false)
+								setAfterVotePopup(false)
+							}} >Buy Extra votes</Link>
 						</div>
 					</Modal.Body>
 				</Modal>
 			</div>
-			<div>
+			{/* <div>
 				<Modal show={cmpModalOpen} onHide={() => setCmpModalOpen(false)}
 					backdrop="static"
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
 				>
-					<Modal.Header>
-						
-					</Modal.Header>
+					<div className="d-flex justify-content-end">
+						<button type="button" className="btn-close " aria-label="Close" onClick={() => setCmpModalOpen(false)}></button>
+					</div>
 					<Modal.Body>
-						<p className="text-center" >You have achieved your goal .</p>
+						<p className="text-center">Congratulations 🎉</p>
+						<p className="text-center"> You've reached your  goal! </p>
 						<div className='py-2  d-flex  justify-content-center'>
 							<span style={{ textDecoration: 'none', cursor: 'pointer' }}
 								onClick={() => {
@@ -899,16 +1200,27 @@ const Header = ({
 									setShowBack(true);
 								}}
 							>
-								<Other>{("CLAIM YOUR REWARD")}</Other>
+								<Other>{("CHECK IT OUT")}</Other>
 							</span>
 						</div>
 
 					</Modal.Body>
-					
-				</Modal>
-			</div>
-		</MenuContainer>
 
+				</Modal>
+			</div> */}
+		</MenuContainer >
+	:
+	null
+// 	<div
+// 	className='d-flex justify-content-center align-items-center'
+// 	style={{ height: "100vh", width: "100vw", color: "white" ,
+// overflow:"hidden"
+// }}
+// 	>
+// 	<Spinner />
+// 	</div>
+	}	
+		</>
 	);
 };
 

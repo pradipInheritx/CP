@@ -21,6 +21,14 @@ import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
 import { texts } from "../LoginComponent/texts";
+import Minenew from "Components/icons/minenew";
+import Sharenew from "Components/icons/sharenew";
+import Votesnew from "Components/icons/votesnew";
+import Gallerynew from "Components/icons/Gallerynew";
+import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
+import Notificationsnew from "Components/icons/notificationsnew";
+import PaymentHitory from "Components/icons/PaymentHitory";
+import FoundationIcon from "Components/icons/FoundationIcon";
 
 const OverlapGroup1 = styled.div`
   
@@ -92,6 +100,8 @@ export enum ProfileTabs {
   password = "password",
   wallet = "wallet",
   followers = "followers",
+  history = "history",
+  // foundationshow = "foundationshow",
   mine = "mine",
   edit = "edit",
   votes = "votes",
@@ -122,13 +132,13 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
       <Component515>
         <OverlapGroup1>
            
-          {/* <ElementsAvatarAImage1 onClick={onClick} role="button">
+          {/* <ElementsAvatarAImage1 className="border" onClick={onClick} role="button">
             {user?.avatar && (
               <Avatars type={user?.avatar as AvatarType} width={60}/>
             )}
             {!user?.avatar && <Avatar/>}
-          </ElementsAvatarAImage1>
-          <FlexCol>
+          </ElementsAvatarAImage1> */}
+          {/* <FlexCol>
             <UsernameUnique>
               {user?.displayName || user?.firstName}
             </UsernameUnique>
@@ -141,6 +151,8 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
+              ProfileTabs.history as string,
+              // ProfileTabs.foundationshow as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -160,25 +172,25 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: "Mining",
-                        icon: <Mine />,
+                        icon: <Minenew />,
                         eventKey: ProfileTabs.mine,
                       },
                       {
                         component: <></>,
                         label: "Pool Mining",
-                        icon: <Share />,
+                        icon: <Sharenew />,
                         eventKey: ProfileTabs.share,
                       },
                       {
                         component: <></>,
                         label: ProfileTabs.votes,
-                        icon: <Votes />,
+                        icon: <Votesnew />,
                         eventKey: ProfileTabs.votes,
                       },
                       {
                         component: <></>,
                         label: ProfileTabs.ProfileNftGallery,
-                        icon: <Gallery />,
+                        icon: <Gallerynew />,
                         eventKey: ProfileTabs.ProfileNftGallery,
                       },
                       
@@ -186,13 +198,13 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: ProfileTabs.followers,
-                        icon: <ProfileFollowing />,
+                        icon: <ProfileFollowingnew />,
                         eventKey: ProfileTabs.followers,
                       },
                       {
                         component: <></>,
                         label: ProfileTabs.notifications,
-                        icon: <Notifications />,
+                        icon: <Notificationsnew />,
                         eventKey: ProfileTabs.notifications,
                       },
                       
@@ -204,6 +216,8 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
+              ProfileTabs.history as string,
+              // ProfileTabs.foundationshow as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -238,6 +252,18 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         icon: <Wallet/>,
                         eventKey: ProfileTabs.wallet,
                       },
+                      {
+                        component: <></>,
+                        label: "Payment",
+                        icon: <PaymentHitory />,
+                        eventKey: ProfileTabs.history,
+                      },
+                      // {
+                      //   component: <></>,
+                      //   label: "Foundation",
+                      //   icon: <FoundationIcon />,
+                      //   eventKey: ProfileTabs.foundationshow,
+                      // },
                     ],
                   }}
                 />

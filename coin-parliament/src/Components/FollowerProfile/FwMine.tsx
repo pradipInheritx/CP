@@ -21,9 +21,11 @@ import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
 
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "../../firebase";
-import firebase from "firebase/compat";
+import { db, firestore, functions } from "../../firebase";
+import firebase from "firebase/compat/app";
 import { texts } from "../LoginComponent/texts";
+import RewardHistory from "Components/Profile/rewardHistory";
+import { collection, getDocs, query, where } from "firebase/firestore";
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
@@ -41,9 +43,10 @@ const RewardList = styled.p`
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const FwMine = () => {
-  const {  user } = useContext(UserContext);
-  const{followerUserId,setAlbumOpen}=useContext(AppContext)
-  const[userInfo,setUserInfo]=useState<any>()
+  const { user } = useContext(UserContext);
+  const { setAlbumOpen } = useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
+  const [userInfo, setUserInfo] = useState<any>()
   const { userTypes } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
@@ -52,37 +55,39 @@ const FwMine = () => {
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
   let navigate = useNavigate();
-  
+
   const rewardList = async () => {
-  
-    const result = await getRewardTransactions({ uid: followerUserId });
+
+    const result = await getRewardTransactions({ uid: followerUserId, pageNumber: 1, pageSize: 5 });
     // @ts-ignore
     setData(result?.data);
-  
+
   };
 
-  
-  const getFollowerData =()=>{
-  
 
+  // const getFollowerData = () => {
+  //   const getCollectionType = firebase
+  //     .firestore()
+  //     .collection("users")
+  //     .where("uid", "==", followerUserId)
+  //   getCollectionType.get()
+  //     .then((snapshot) => {
+  //       snapshot.docs?.map(doc => setUserInfo(doc.data()))
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
+  // }
+  const getFollowerData = async () => {
+    const usersCollectionRef = collection(firestore, 'users');
+    const followerQuery = query(usersCollectionRef, where('uid', '==', followerUserId));
 
-  const getCollectionType = firebase
-  .firestore()
-  .collection("users")
-  .where("uid", "==", followerUserId)
-getCollectionType.get()
-.then((snapshot) => {        
-
-snapshot.docs?.map(doc=>setUserInfo(doc.data()))
-
- 
- 
-
-}).catch((error) => {
-console.log(error,"error");
-});    
-  }
-
+    try {
+      const snapshot = await getDocs(followerQuery);
+      snapshot.docs?.forEach((doc:any) => setUserInfo(doc.data()));
+    } catch (error) {
+      console.error("Error fetching follower data:", error);
+    }
+  };
 
   useEffect(() => {
     rewardList();
@@ -100,13 +105,15 @@ console.log(error,"error");
     );
   }
 
+
+
   return (
     <div>
       <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && ( <AnimationReward setRewardTimer={setRewardTimer}rewardTimer={rewardTimer} />)}
+        {!!rewardTimer && (<AnimationReward setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} />)}
 
-              {/* <Player
+        {/* <Player
         autoplay
         loop
         src={animation}
@@ -154,7 +161,7 @@ console.log(error,"error");
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={ userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                 }
               />
             </div>
@@ -167,15 +174,15 @@ console.log(error,"error");
                 <Minting
                   {...{
                     width,
-                      score:
+                    score:
                       // @ts-ignore
                       (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
-                    rewardTimer={rewardTimer}
-                    // @ts-ignore
+                  rewardTimer={rewardTimer}
+                  // @ts-ignore
                   claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                   }
                 />
@@ -201,90 +208,7 @@ console.log(error,"error");
           </Row>
         )}
         <Row className='align-items-stretch mt-1 d-flex justify-content-center'>
-          <div
-            style={{
-              background: "white",
-              textAlign: "center",
-              color: "#6352E8",
-              fontSize: "12px",
-              marginTop: "30px",
-              width:`${window.screen.width>767?"730px":"100%"}`
-            }}
-          >
-            <div
-              style={{
-                marginTop: "20px",
-                marginBottom: "20px",
-                fontSize: "12px",
-              }}
-            >
-              {texts.REWARDHISTORY}
-            </div>
-            {data.map((item, index) => (
-              <>
-                {" "}
-                <div className='d-flex justify-content-around px-5' key={index}>
-                  {/* @ts-ignore */}
-                  <RewardList>
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.secondRewardExtraVotes}
-                    </span>{" "}
-                    {texts.Votes}
-                  </RewardList>
-                  {/* @ts-ignore */}
-                  <RewardList>
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.thirdRewardDiamonds}
-                    </span>{" "}
-                    {texts.GamePts}
-                  </RewardList>
-                  <RewardList onClick={() => {
-                    navigate('/followerProfile/Album')
-                    {/* @ts-ignore */}
-                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                  }}>
-                    {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={()=>navigate('/followerProfile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
-                  </RewardList>
-                </div>
-                {/* @ts-ignore */}
-                <p
-                  className='px-5'
-                  style={{
-                    textAlign: "start",
-                    color: "#868686",
-                    fontSize: "8px",
-                    marginTop: "6px",
-                    marginLeft: "20px",
-                  }}
-                >
-                  {/* @ts-ignore */}
-                  {item?.user}
-                </p>
-                {data?.length - 1 != index ? (
-                  <hr
-                    className='solid'
-                    style={{ margin: "15px 30px 12px 30px" }}
-                  />
-                ) : (
-                  <p className='solid' style={{ margin: "28px" }}></p>
-                )}
-              </>
-            ))}
-            {!data?.length && (
-              <>
-                {" "}
-                <div className='d-flex justify-content-around px-5'>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                </div>
-                <p className='solid' style={{ margin: "28px" }}></p>
-              </>
-            )}
-          </div>
+          <RewardHistory rewardTimer={rewardTimer} userId={followerUserId} isFollower={true} />
         </Row>
       </Container>
     </div>

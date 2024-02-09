@@ -8,6 +8,7 @@ import { VoteResultProps } from "../../common/models/Vote";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { decimal } from "../Profile/utils";
 import { VoteDispatchContext } from "Contexts/VoteProvider";
+import { VoteEndCoinPriceContext } from "Contexts/VoteEndCoinPrice";
 // import * as Motion from 'framer-motion';
 // const { motion, MotionConfig }= Motion
 
@@ -74,7 +75,7 @@ function Speed(props: SpeedProps) {
           // left: 0;
           // right: 0;
           margin: 0 auto;
-          z-index: 2;
+          z-index: 1;
         }
         .span {
           position: absolute;
@@ -97,7 +98,12 @@ function Speed(props: SpeedProps) {
           // right: 13.5%;          
           transform: rotate(84deg);
         }
-        .select {
+        .low.select {
+          color: #fa0202;
+          text-shadow: -1px 1px 25px rgba(255, 57, 57, 1);
+          font-weight: 600;
+        }
+        .high.select {
           color: #5dff6d;
           text-shadow: 0 0px 10px #5dff6d, 0 0px 20px #5dff6d, 0 0px 30px #5dff6d;
           font-weight: 600;
@@ -210,7 +216,6 @@ function Speed(props: SpeedProps) {
               <motion.line
                 stroke="#2d2966"
                 strokeWidth={4}
-
                 animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
               />
             </g>
@@ -243,12 +248,14 @@ function Speed(props: SpeedProps) {
 export default function SpeedTest(
   {
     // lastTenSec,
+    pairCoinResult,
     vote,
     coins,
     symbol1,
     symbol2
   }: {
-    // lastTenSec?: any
+      // lastTenSec?: any
+    pairCoinResult?:any,
     vote: VoteResultProps;
     coins: { [symbol: string]: Coin };
     symbol1: string;
@@ -256,15 +263,13 @@ export default function SpeedTest(
   }
 ) {
   // const { value } = useSpeedTest();
-
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {
     if (action > 100) {
       return 100;
     }
-    return action < 0 ? 0 : action;
+    return action < 0 ? 1 : ((typeof action == 'number' && !isNaN(action)) ? action : state);
   }, 50)
-
-  console.log(persentValue,"persentValueCheck")
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(1);
   // const { value } = useSpeedTest(priceRange);
@@ -290,97 +295,113 @@ export default function SpeedTest(
 
 
     if (symbol2 !== undefined) {
-      // range bar for pair
-      let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
-      if (!vote?.valueVotingTime) {
+      console.log(pairCoinResult.difference,"pairCoinResult")
+
+      if (pairCoinResult.difference < 0) {
+        setPersentValue(Math.floor(Math.random() * 49) + 1)
+      }      
+      if (pairCoinResult.difference  > 0) {
+        setPersentValue(Math.floor(Math.random() * 99) + 51)
+      }      
+      if (pairCoinResult.difference == 0) {
         setPersentValue(50)
-        return false
-      }
-      let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
-      const newPairPrice = [
-        (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
-        (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
-      ]
-      const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
-      const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
-      let diff = [
-        bothCurrentPrice[0] / bothLivePrice[0],
-        bothCurrentPrice[1] / bothLivePrice[1],
-      ];
+      }      
+      // range bar for pair
+      // let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+      // if (!vote?.valueVotingTime) {
+      //   setPersentValue(50)
+      //   return false
+      // }
+      // let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
+      
+      // const newPairPrice = [
+      //   (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
+      //   (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
+      // ]
 
-      let winner = diff[0] < diff[1] ? 1 : 0;
-      const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
+      // const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
+      // const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
+      
+      // let diff = [
+      //   bothCurrentPrice[0] / bothLivePrice[0],
+      //   bothCurrentPrice[1] / bothLivePrice[1],
+      // ];
+      // let winner = diff[0] < diff[1] ? 1 : 0;
+      // console.log(diff, winner, "diffPer")
+      // const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      // console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
 
-      if ((averageValue == averageValue)) {
-        if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
-          setPersentValue(0)
-          return
-        }
-        if (50 + (newPairPrice[0] - newPairPrice[1]) > 100) {
-          setPersentValue(100)
-          return
-        }
-        setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
-      } else {
-        if (vote?.direction == 1) {
-          winner == vote?.direction
-            ?
-            setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1] : 0)
-            :
-            setPersentValue(75 + getPer[1] > 100 ? 100 : 75 + getPer[1])
+      // if ((averageValue == averageValue)) {
+      //   if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
+      //     setPersentValue(0)
+      //     return
+      //   }
+      //   if (50 + (newPairPrice[0] - newPairPrice[1]) > 100) {
+      //     setPersentValue(100)
+      //     return
+      //   }
+      //   console.log(vote?.direction, newPairPrice,"newPairPrice")
+      //   setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
+      // } else {        
+      //   if (vote?.direction == 1) {
+      //     winner == vote?.direction
+      //       ?
+      //       setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1] : 0)
+      //       :
+      //       setPersentValue(75 + getPer[1] > 100 ? 100 : 75 + getPer[1])
 
-        } else if (vote?.direction == 0) {
-          winner != vote?.direction
-            ?
-            setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0] : 0)
-            :
-            setPersentValue(75 + getPer[0] > 100 ? 100 : 75 + getPer[0])
+      //   } else if (vote?.direction == 0) {
+      //     winner != vote?.direction
+      //       ?
+      //       setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0] : 0)
+      //       :
+      //       setPersentValue(75 + getPer[0] > 100 ? 100 : 75 + getPer[0])
 
-        }
-      }
-    } else if (symbol2 == undefined) {
+      //   }
+      // }
+
+    } else if (symbol2 == undefined && !Array.isArray(vote?.valueVotingTime)) {
       // range bar for single coin
       if (!vote?.valueVotingTime) {
         setPersentValue(50)
         return false
       }
 
-      // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
-      let newPrice = 0;
-      if (['BTS', 'ETH'].includes(symbol1)) {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-      } else {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-      }
-
-      console.log(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) ,priceRange,"get price")
-      // console.log(Number(coins[symbol1]?.price),decimal[symbol1].multiply,Number(coins[symbol1]?.randomDecimal),Number(vote?.valueVotingTime),decimal[symbol1].multiply,priceRange, "AllnewPrice")
-      console.log(Number(coins[symbol1]?.price),newPrice,Number(coins[symbol1]?.randomDecimal), "get price 2")
-      // if (50 + newPrice > 100) {
-      //   setPersentValue(100);
-      //   return
+      // let newPrice = 0;
+      // if (['BTS', 'ETH'].includes(symbol1)) {
+      //   newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      // } else {
+      //   newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       // }
-      // if (50 - newPrice < 0) {
-      //   setPersentValue(0);
-      //   return
-      // }      
-      if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 :50 + newPrice);
-      else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);     
+      // if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
+      // else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
+      
+      let tempNewValue = parseFloat(voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0') * decimal[symbol1].multiply;
+      let tempOldValue = vote?.valueVotingTime * decimal[symbol1].multiply;
+      if (tempNewValue === tempOldValue) {
+        setPersentValue(50);
+      } else if (vote?.direction == 0) {
+        const temp = (tempNewValue - tempOldValue) / priceRange;
+        setPersentValue(50 + temp);
+      }
+      else {
+        const temp = (tempOldValue - tempNewValue) / priceRange;
+        setPersentValue(50 + temp);
+      }
     }
   };
 
 
   useEffect(() => {
     getBorderColor()
-  }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal])
+  }, [JSON.stringify(voteEndCoinPrice[`${vote?.coin}_${vote?.timeframe?.seconds}`])/* coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal */])
 
   useEffect(() => {
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
   return (
-    <MotionConfig transition={{ type: "tween", ease: "linear" }} >
+    <MotionConfig transition={{ duration: 0.1, type: "tween", ease: "linear" }} >
       <Speed value={persentValue} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );

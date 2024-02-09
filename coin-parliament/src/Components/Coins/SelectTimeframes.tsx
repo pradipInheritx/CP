@@ -58,7 +58,6 @@ const SelectTimeframes = ({
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
 
-
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
     <div>
@@ -71,7 +70,7 @@ const SelectTimeframes = ({
             value={timeframes.filter((t) => t.chosen)[0].index}
           />
         )}
-      </Row>
+      </Row>      
       <Row
         className={
           voted
@@ -103,7 +102,7 @@ const SelectTimeframes = ({
                   id={"timeframe-" + timeframe.index}
                   value={timeframe.name}
                   iconOn={
-                    <Buttons.TimeframeButton
+                    <Buttons.TimeframeButton                      
                       disabled={voted ? voted : false}
                       {...{ checked: voted ? false : true }}
                       cssDegree={cssDegree?.length > 0 ? cssDegree[k] : 0}
@@ -141,8 +140,7 @@ const SelectTimeframes = ({
               </Col>
             );
           })}
-      </Row>
-
+      </Row>      
       {/* </Container> */}
     </div>
   );

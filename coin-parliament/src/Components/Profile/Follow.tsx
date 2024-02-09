@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import UserContext from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
@@ -23,17 +23,26 @@ const getLeaderUsersByIds = httpsCallable<{}, Leader[]>(
 export const getUsers = ({
   users,
   setUsers,
+  setIsLoading,
 }: {
   users?: string[];
+  setIsLoading?: any;
   setUsers: (newUsers: Leader[]) => void;
 }) => {
-  try {    
-      getLeaderUsersByIds({ userIds: users }).then((u) => {
-        console.log(u.data,"checkdata")
-        setUsers(u.data);
-      });
+  try {
+    // setIsLoading(true)
+    getLeaderUsersByIds({ userIds: users }).then((u) => {
+      console.log(u.data, "checkdata")
+      setUsers(u.data);
+      if(setIsLoading){
+        setIsLoading(false)
+      }
+    });
   } catch (e) {
     setUsers([] as Leader[]);
+    if(setIsLoading){
+      setIsLoading(false)
+    }
   }
 };
 
@@ -42,34 +51,63 @@ const Follow = () => {
   const translate = useTranslation();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-console.log(userInfo,"userInfo")
+  console.log(userInfo, "userInfo")
 
   useEffect(() => {
-    getUsers({ users: userInfo?.leader, setUsers: setLeaders });
-    // getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+    if (userInfo?.leader) {
+      getUsers({ users: userInfo?.leader, setUsers: setLeaders,setIsLoading })
+      setIsLoading(true)
+    }
   }, [userInfo?.leader]);
   useEffect(() => {
-    // getUsers({ users: userInfo?.leader, setUsers: setLeaders });
-    getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+    if (userInfo?.subscribers) {
+      getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers,setIsLoading });
+      setIsLoading(true)
+    }
   }, [userInfo?.subscribers]);
 
 
-console.log(leaders,"allleaders")
+  // console.log(leaders,subscribers,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
       id="profile-follow"
-      onSelect={() => {}}
+      onSelect={() => { }}
       tabs={[
         {
           eventKey: "following",
           title: capitalize(translate(`${texts.Following}`)),
           pane: (
             <div>
+                {isLoading && <div style={{
+                position: 'fixed',
+                height: '68%',
+                // border: "2px solid red",
+                display: 'flex',
+                textAlign: 'center',
+                justifyContent: 'center',
+                // top: '0px',
+                right: '0px',
+                bottom: '0px',
+                zIndex: '9999',
+                overflow: 'hidden',
+                width: '100%',
+                alignItems: 'center',
+
+            }}>
+                <span className="loading" style={{
+                  color: "#7767f7", zIndex: "2220px", fontSize: '1.5em',
+                  // marginTop: `${window.screen.width > 767 ? "50px" : "240px"}`
+                }}>
+                    {texts.waitForIt}
+                </span>
+            </div>}
               {leaders && leaders.map((u, i) => {
                 return (
-                  <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
+                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
+                      
                     <UserCard
                       key={i}
                       leader={u}
@@ -87,6 +125,8 @@ console.log(leaders,"allleaders")
                 );
               })}
             </div>
+              
+
           ),
         },
         {
@@ -96,20 +136,20 @@ console.log(leaders,"allleaders")
             <>
               {(subscribers || []).map((s, i) => {
                 return (
-                  <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
-                  <UserCard
-                    key={i}
-                    leader={s}
-                    checked={!!userInfo?.leader?.includes(s.userId)}
-                    setChecked={() =>
-                      user &&
-                      follow(
-                        s,
-                        user,
-                        toFollow(userInfo?.leader || [], s.userId)
-                      )
-                    }
-                  />
+                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
+                    <UserCard
+                      key={i}
+                      leader={s}
+                      checked={!!userInfo?.leader?.includes(s.userId)}
+                      setChecked={() =>
+                        user &&
+                        follow(
+                          s,
+                          user,
+                          toFollow(userInfo?.leader || [], s.userId)
+                        )
+                      }
+                    />
                   </div>
                 );
               })}
@@ -117,7 +157,11 @@ console.log(leaders,"allleaders")
           ),
         },
       ]}
+
+    
     />
+
+    
   );
 };
 

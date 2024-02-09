@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SignupForm from "./SignupForm";
 import { texts, urls } from "./texts";
-import {  useTranslation } from "../../common/models/Dictionary";
+import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, User } from "firebase/auth";
 import { LoginProviders, providers, SignupPayload } from "../../common/models/Login";
 import { Callback } from "../../common/models/utils";
@@ -18,11 +18,13 @@ import { Buttons } from "../Atoms/Button/Button";
 import Checkbox from "../Atoms/Checkbox/Checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
+import { firestore, functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
-
-
+import firebase from "firebase/compat/app";
+import copy from "copy-to-clipboard";
+import googleLogo from "../../assets/svg/google_Logo.svg"
+import { collection, getDocs, query, where } from "firebase/firestore";
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -51,7 +53,7 @@ export type SignupProps = {
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   authProvider: (
     setUser: (user: AuthUser) => void,
     provider: AuthProvider,
@@ -63,20 +65,110 @@ export type SignupProps = {
   ) => Promise<void>;
 };
 const assign = httpsCallable(functions, "assignReferrer");
-const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
+const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const {setLogin} = useContext(AppContext );
-  const [signupWithProviders,setSignupWithProviders]=useState(true)
-  const [email,setEmail]=useState('')
+  const { setLogin } = useContext(AppContext);
+  const [signupWithProviders, setSignupWithProviders] = useState(true)
+  const [email, setEmail] = useState('')
   const [agree, setAgree] = useState(true);
   const { user, userInfo } = useContext(UserContext);
-  const[smsVerification,setSmsVerification]=useState('')
-  const [signupLoading,setSignupLoading]=useState(false)
+  
+  const [smsVerification, setSmsVerification] = useState('')
+  const [signupLoading, setSignupLoading] = useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
-  const refer = new URLSearchParams(search).get("refer");
-  
+  const refer = new URLSearchParams(search).get("refer") || "VoteToEarn";
+  const [preantId, setPreantId] = useState(null)
+
+  // const getUserId = async () => {    
+  //   const uidValue = refer?.slice(-6);
+  //   const emailValue = refer?.slice(0, 2);
+
+  //   var userdata = { uid: '' };
+  //   if (refer) {
+  //     try {
+  //       const referUser = await firebase
+  //         .firestore()
+  //         .collection('users').where("userName", '==', refer).get();
+  //       if (!referUser.empty) {
+  //         referUser.forEach((doc: any) => {
+  //           userdata = doc.data();
+  //           setPreantId(doc.data().uid)
+  //         });
+  //       }
+  //       else if (referUser.empty) {
+  //         const referUser2 = await firebase
+  //           .firestore()
+  //           .collection('users');
+  //         await referUser2.get().then((snapshot) => {
+  //           let data: any = []
+  //           snapshot.forEach((doc) => {
+  //             data.push({ ...doc.data() });
+  //           });
+  //           console.log(data,"alldat")
+  //           data?.map((item: any, index: number) => {
+  //             if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+  //               setPreantId(item.uid)
+  //               // setParentEmailId(item.email)
+  //             }
+  //           })
+  //         })
+  //       }
+  //     } catch (err) {
+  //       console.log( err, 'email');
+  //     }
+  //     console.log(userdata,"userdata")
+  //   }
+  // }
+
+  const getUserId = async () => {
+    const uidValue = refer?.slice(-6);
+    const emailValue = refer?.slice(0, 2);
+
+    var userdata = { uid: '' };
+    if (refer) {
+      try {
+        const usersCollectionRef = collection(firestore, 'users');
+        const referUserQuery = query(usersCollectionRef, where('userName', '==', refer));
+        const referUserSnapshot = await getDocs(referUserQuery);
+
+        if (!referUserSnapshot.empty) {
+          referUserSnapshot.forEach((doc:any) => {
+            userdata = doc.data();
+            setPreantId(doc.data().uid);
+          });
+        } else {
+          const allUsersQuery = query(usersCollectionRef);
+          const allUsersSnapshot = await getDocs(allUsersQuery);
+
+          let data: any = [];
+          allUsersSnapshot.forEach((doc) => {
+            data.push({ ...doc.data() });
+          });
+
+          data?.map((item: any, index: number) => {
+            if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+              setPreantId(item.uid);
+            }
+          });
+        }
+      } catch (err) {
+        console.log(err, 'email');
+      }
+      console.log(userdata, "userdata");
+    }
+  };
+
+  useEffect(() => {
+    if (refer) {
+      getUserId()
+    }
+  }, [])  
+
+  console.log(preantId,"PreantId")
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
@@ -92,56 +184,64 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   // };
   // https://us-central1-coinparliament-51ae1.cloudfunctions.net/assignReferrer
   return (
-    <> 
-     {signupWithProviders? <>{Object.values(LoginProviders).map((provider, i) => {
+    <>
+      { signupWithProviders ? <>{!isInstagramAvailable ? Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100">
             <LoginWith
               provider={provider}
               onClick={() =>
-                // @ts-ignore
-                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
+              // @ts-ignore
+              { agree ? preantId ? authProvider(setUser, providers[provider], showToast, setSmsVerification, assign, preantId) : authProvider(setUser, providers[provider], showToast, setSmsVerification) : showToast(texts.AgreetNc, ToastType.ERROR) }
               }
             />
           </div>
         );
-      })}
-      <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+      }):<div><img src={googleLogo} alt="" style={{width:"50px",marginLeft:"38%"}}/>
+      
+      <div style={{width:'239px', color:'black'}}>To signup with google, copy this link and open in another browser, <span style={{textAlign:'center',color: 'var(--blue-violet)',fontSize:"9px"}}  onClick={() => {
+        copy(window.location.href);
+        showToast(
+          'Your link is copied to the clipboard.',
+          ToastType.SUCCESS
+        );
+      }}>Copy link</span></div></div>}
+        <div className="my-3 align-self-center">
+          <OR className="mx-auto">{translate("or")}</OR>
+        </div>
         <Form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setEmail(((e.target as HTMLFormElement).elements.namedItem('email') as HTMLInputElement).value)
-      setSignupWithProviders(false)
-      }}
-      className="w-100"
-    >
-        <Form.Group className="mb-3 w-100" controlId="login-email">
-        <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
-          fullWidth={true}
-          type="email"
-          placeholder={strings.email}
-          name="email"
-          required
-        />
-      </Form.Group>
-      <div className="my-1">
-        <Buttons.Primary fullWidth={true} type="submit"  >
-          {strings.continue.toUpperCase()}
-        </Buttons.Primary>
-      </div>
-      <Form.Group className="mb-2 mt-3 text-center" controlId="agree" >
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} >
-       <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate('terms & conditions')}
-                  </Link>  and 
-                  </p>
-                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
-                    privacy policy
-                  </Link> of the site</p>
-          {/* {translate(strings.agree)
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setEmail(((e.target as HTMLFormElement).elements.namedItem('email') as HTMLInputElement).value)
+            setSignupWithProviders(false)
+          }}
+          className="w-100"
+        >
+          <Form.Group className="mb-3 w-100" controlId="login-email">
+            <InputField
+              style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+              fullWidth={true}
+              type="email"
+              placeholder={strings.email}
+              name="email"
+              required
+            />
+          </Form.Group>
+          <div className="my-1">
+            <Buttons.Primary fullWidth={true} type="submit"  >
+              {strings.continue.toUpperCase()}
+            </Buttons.Primary>
+          </div>
+          <Form.Group className="mb-2 mt-3 text-center" controlId="agree" >
+            <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} >
+              <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
+                {translate('terms & conditions')}
+              </Link>  and
+              </p>
+              <p><Link to={'/privacy'} style={{ color: 'var(--blue-violet)' }}>
+                privacy policy
+              </Link> of the site</p>
+              {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
@@ -153,35 +253,34 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
                 )}
               </React.Fragment>
             ))} */}
-        </Checkbox>
-      </Form.Group>
-      </Form> 
-     
-      </>
-      
-      
-      :
-      <SignupForm
-      signupLoading={signupLoading}
-      setSignupLoading={setSignupLoading}
-      emailValue={email}
-        signup={signup}
-        callback={{
-          successFunc:async (params) => {
-            console.log('params',params.uid)
-            if(refer)  await assign({parent: refer, child: params.uid});
-            setSignup(false)
-            setLogin(true)
-            setSignupLoading(false)
-          },
-            
-          errorFunc: (e) => {showToast(e.message, ToastType.ERROR)
-            setSignupLoading(false)},
-        }}
-      />}
-       <div className='d-flex'>
-      <HaveAccountText className="mr-5"> {`${translate(texts.haveAccount)} `}</HaveAccountText>
-      <Login  onClick={() => setSignup(false)}>{`${translate(texts.login)}`}</Login>
+            </Checkbox>
+          </Form.Group>
+        </Form>
+
+      </> :
+        <SignupForm
+          signupLoading={signupLoading}
+          setSignupLoading={setSignupLoading}
+          emailValue={email}
+          signup={signup}
+          callback={{
+            successFunc: async (params) => {
+              console.log('params', params.uid)
+              if (preantId) await assign({ parent: preantId, child: params.uid });
+              setSignup(false)
+              setLogin(true)
+              setSignupLoading(false)
+            },
+
+            errorFunc: (e) => {
+              showToast(e.message, ToastType.ERROR)
+              setSignupLoading(false)
+            },
+          }}
+        />}
+      <div className='d-flex'>
+        <HaveAccountText className="mr-5"> {`${translate(texts.haveAccount)} `}</HaveAccountText>
+        <Login onClick={() => setSignup(false)}>{`${translate(texts.login)}`}</Login>
       </div>
     </>
   );

@@ -1,12 +1,12 @@
 /** @format */
 
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "../common/models/Dictionary";
 import { ContentPage } from "../Contexts/ContentContext";
 import AppContext from "../Contexts/AppContext";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import Hamburger from "./Atoms/Hamburger";
 import { useWindowSize } from "../hooks/useWindowSize";
@@ -14,6 +14,9 @@ import UserContext from "../Contexts/User";
 import { isHomeBg } from "./App/App";
 import BackArrow from "./icons/BackArrow";
 import { handleSoundClick } from "../common/utils/SoundClick";
+import { signOut } from "firebase/auth";
+import { auth } from "firebase";
+import { Logout } from "common/models/Login";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -28,6 +31,7 @@ export type MenuProps = {
   children?: React.ReactNode;
   items: (MenuItem | undefined)[];
   pathname: string;
+  setMfaLogin: any;
 };
 
 export type MenuItem = {
@@ -37,6 +41,7 @@ export type MenuItem = {
 };
 
 const MenuContainer = styled(Offcanvas)`
+// zoom:3;
   & a {
     font: var(--font-style-normal) normal var(--font-weight-normal)
       var(--font-size-13) / 29px var(--font-family-poppins);
@@ -62,6 +67,31 @@ const NavContainer = styled(Navbar)`
   overflow: hidden;
   width: 100%;
   z-index: 1000;
+  // border:1px solid red;  
+`;
+type ZoomProps = {
+  inOutReward?: number,
+  coinIncrement?: boolean,
+  showCoinIncrement: number,
+};
+
+const BoxSet = css`
+background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  width:100%;
+  height: 100vh;
+  z-index:2000;
+`;
+const BoxSet2 = css`
+background-color:none;
+  // position: fixed;
+  // width:100%;
+  // height: 100vh;
+  // z-index:2000;
+`;
+
+const CoinPopup = styled.div`
+${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : BoxSet2}`};   
 `;
 const HamburgerBut = styled.button`
 background:none;
@@ -87,14 +117,19 @@ const Menu = ({
   items = [],
   title,
   pathname,
+  setMfaLogin,
 }: MenuProps) => {
-  const { menuOpen, setMenuOpen, login, firstTimeLogin } =
+  const { menuOpen, setMenuOpen, login, showMenubar, languages, setLang, setLogin, setSignup, setShowBack, setShowMenuBar } =
     useContext(AppContext);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
-  var urlName = window.location.pathname.split('/');
+  const { user, userInfo, setUser } = useContext(UserContext);
+  var urlName = window.location.pathname.split('/');  
   const followerPage = urlName.includes("followerProfile")
+
+  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0);
   const { width } = useWindowSize();
+  const { backgrounHide } = useContext(AppContext);
+  
   const handleClose = () => {
     setMenuOpen(false);
     // handleSoundClick()
@@ -108,12 +143,37 @@ const Menu = ({
       setMenuOpen(true)
     }
   };
+  const BackLogout = () => {
+    
+        Logout(setUser);
+        navigate("/")
+        setLogin(true);
+    setShowMenuBar(false)
+    setMfaLogin(false)
+        // console.log("i am working error")	
+        localStorage.removeItem("userId")    
+  };
   const translate = useTranslation();
 
 
   const desktop = width && width > 979;
+
+  // useEffect(() => {
+  //   if (backgrounHide) {
+  //     setShowCoinIncrement(1)
+  //   } else {
+  //     setShowCoinIncrement(0)
+  //   }
+
+  // }, [backgrounHide]);
+
+  
+
   return (
     <>
+      {/* <CoinPopup {...{ showCoinIncrement }} className="">
+
+      </CoinPopup> */}
       <NavContainer
         pathname={pathname}
         collapseOnSelect
@@ -128,6 +188,24 @@ const Menu = ({
           // boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
+        {
+          backgrounHide &&
+          <div style={{
+          position: 'fixed',
+          height: '120px',
+          display: 'flex',          
+          borderRadius:" 0px 0px 80px 0px",
+          top: '0',
+          right: '0',
+          bottom: '0',
+          left: '0',
+          background: 'rgba(0, 0, 0, 0.8)',
+          zIndex: '1001',
+          overflow: 'hidden',
+          
+          width: '100%',
+          
+        }} />}
         <Container
           className='text-capitalize align-items-center px-2 justify-content-start'
           fluid={true}
@@ -137,7 +215,7 @@ const Menu = ({
               className='d-flex justify-content-start'
               style={{ flexBasis: "20%" }}
             >
-              <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
                 onClick={() => {
                   handleShow()
@@ -146,27 +224,39 @@ const Menu = ({
                 className='position-relative'
                 style={{
 
-
-
                 }}
               >
 
                 {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+              </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>}
             </div>
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
               >
                 {/* <Hamburger /> */}
-                {followerPage ? <BackArrow /> : <Hamburger />}
+                {followerPage ? <BackArrow /> : <Hamburger />}                
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+              </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' &&  <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>}
             </div>
           )}
           {children}
@@ -213,6 +303,7 @@ const Menu = ({
           </Nav>
         </Offcanvas.Body>
       </MenuContainer>
+
     </>
   );
 };

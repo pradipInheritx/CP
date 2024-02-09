@@ -12,12 +12,18 @@ export type PairsRow = {
 export const getData = ({
   pairs,
   totals,
+  str,
 }: {
   pairs: Coin[][];
   totals: { [p: string]: Totals };
-}) => {
-  return pairs
-    .map((combination) => {
+  str?: any;
+  }) => {
+  const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
+
+  // console.log(pairs,"filterpair")
+
+  return filterpair
+    .map((combination:any) => {
       if (!combination) return undefined;
       const [coin1, coin2] = combination;
       return {
@@ -25,15 +31,15 @@ export const getData = ({
         coin2: coin2.symbol,
       };
     })
-    .filter((p) => p && p?.coin1 && p?.coin2)
+    .filter((p:any) => p && p?.coin1 && p?.coin2)
     .sort(
-      (a, b) =>
+      (a:any, b:any) =>
         getVotes(symbolCombination([b?.coin1 + "", b?.coin2 + ""]), totals) -
         getVotes(symbolCombination([a?.coin1 + "", a?.coin2 + ""]), totals)
     ) as PairsRow[];
 };
 
-export const filterData = (
+export const filterData = (  
   result: string[],
   callback: (total: string[], current: string) => string[],
   pairs: Coin[][],
@@ -63,6 +69,7 @@ export const getFilteredData = (
   totals: { [p: string]: Totals }
 ) => {
   const str = filter.toUpperCase();
+  const type="text"
   if (str) {
     const fl = flatten(pairs).filter((p) => p);
 
@@ -73,8 +80,7 @@ export const getFilteredData = (
       ...symbols.filter((s) => s?.indexOf(str) !== -1),
       ...names.filter((s) => s?.indexOf(str) !== -1),
     ]);
-
-    return filterData(
+    return filterData(      
       result,
       (total, current) => {
         if (
@@ -102,24 +108,81 @@ export const getFilteredData = (
 };
 
 export const getFilteredDataByFav = (
+  filter: string,
   result: string[],
   pairs: Coin[][],
   totals: { [p: string]: Totals }
 ) => {
-  return getData({
-    pairs: pairs.filter((p) => {
-      const [coin1, coin2] = p;
-      return result.find((r) => {
-        const [val1, val2] = queryToPair(r);
+  const str = filter.toUpperCase();
+  const type = "fav"
+  
+  // const filterpair = filterpairdata(str, pairs)
+  // console.log(result,"resultvalue")
+
+
+  return getPairData({    
+    pairs:
+      pairs.filter((p: any) => {
+      const [coin1, coin2] = p;      
+        return result.find((r: any) => {
+        console.log(r,"rvalue")
+          const [val1, val2] = queryToPair(r);
+          
         return (
           (coin1.symbol === val1 && coin2.symbol === val2) ||
           (coin1.symbol === val2 && coin2.symbol === val1)
         );
       });
-    }),
-    totals,
+      }),
+      totals,
+      str,
   });
 };
+
+
+export const getPairData = ({
+  pairs,
+  totals,
+  str,
+}: {
+  pairs: Coin[][];
+  totals: { [p: string]: Totals };
+  str?: any;
+}) => {
+  const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
+
+  // console.log(pairs, "onlyfilterpair")
+
+  return filterpair
+    .map((combination: any) => {
+      if (!combination) return undefined;
+      const [coin1, coin2] = combination;
+      return {
+        coin1: coin1.symbol,
+        coin2: coin2.symbol,
+      };
+    })
+    .filter((p: any) => p && p?.coin1 && p?.coin2)
+    .sort(
+      (a: any, b: any) =>
+        getVotes(symbolCombination([b?.coin1 + "", b?.coin2 + ""]), totals) -
+        getVotes(symbolCombination([a?.coin1 + "", a?.coin2 + ""]), totals)
+    ) as PairsRow[];
+};
+
+export const filterpairdata = (
+  str:string,
+  pairs: any,
+) => {
+  let filterValue:any = []
+  pairs.map((item:any,index:any) => {
+    if (item[0]?.symbol.includes(str) || item[1]?.symbol.includes(str)) {
+      filterValue.push(item)
+    }
+  })  
+  return filterValue
+}
+
 
 export const getNumRows = (expanded?: boolean, num: number = 0) => {
   return expanded ? num : 3;

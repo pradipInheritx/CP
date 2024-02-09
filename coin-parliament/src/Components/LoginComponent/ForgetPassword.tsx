@@ -56,7 +56,7 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
   const onForgetPasswordClick = () => {
     const auth = getAuth();
     var actionCodeSettings = {
-      url: 'https://coin-parliament-staging.firebaseapp.com/resetpassword?email=user@example.com',
+      url: `${process.env.REACT_APP_SITE_URL}/resetpassword?email=${email}`,
     };
     sendPasswordResetEmail(auth, email, actionCodeSettings)
       .then(() => {
@@ -76,7 +76,9 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
   }
   return (
     <>
-      <div className="mb-3 w-100">
+      <div className="mb-3 "
+      style={{width:"300px"}}
+      >
         <Form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -103,7 +105,7 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
       </div>
       <div className='d-flex'>
         <DontHaveAccountText className="mr-5"> {`${translate('Go back to login page?')} `}</DontHaveAccountText>
-        <SignUp onClick={() => setForgetPassword(false)}>{`${translate('Click here.'.toUpperCase())}`}</SignUp>
+        <SignUp onClick={() => setForgetPassword(false)}>{`${translate('login.'.toUpperCase())}`}</SignUp>
       </div>
     </>
   );

@@ -10,13 +10,14 @@ import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/Profile/ImageTabs";
 import Votes from "../Components/icons/votes2";
-import Mine from "../Components/icons/mine";
+// import Mine from "../Components/icons/mine";
+import Minenew from "../Components/icons/minenew";
 import Share from "../Components/icons/share";
 import ProfileFollowing from "../Components/icons/ProfileFollowing";
 import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
-import AvatarsModal from "../Components/Profile/AvatarsModal";
+import UpdateAvatars from "../Components/Profile/UpdateAvatars";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AvatarType } from "../assets/avatars/Avatars";
@@ -25,15 +26,25 @@ import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
-import ProfileNftGallery from "./ProfileNftGallery";
+// import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
 import { handleSoundClick } from "../common/utils/SoundClick";
+import Sharenew from "Components/icons/sharenew";
+import Votesnew from "Components/icons/votesnew";
+import Gallerynew from "Components/icons/Gallerynew";
+import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
+import Notificationsnew from "Components/icons/notificationsnew";
+import PaymentHitory from "Components/icons/PaymentHitory";
+import FoundationIcon from "Components/icons/FoundationIcon";
+import AppContext from "Contexts/AppContext";
 
 export enum ProfileTabs {
   profile = "profile",
-  password = "password",  
+  password = "password",
   followers = "followers",
+  history = "history",
+  // foundationshow = "foundationshow",
   mine = "mine",
   edit = "edit",
   wallet = "wallet",
@@ -77,6 +88,7 @@ const MyBadge = styled(Badge)`
 
 const Profile = () => {
   const { userInfo, user } = useContext(UserContext);
+  const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { showToast } = useContext(NotificationContext);
   const [avatarMode, setAvatarMode] = useState(false);
   const location = useLocation();
@@ -87,6 +99,7 @@ const Profile = () => {
 
   useEffect(() => {
     setChosenByDefault(pathname);
+
     return () => setAvatarMode(false);
   }, [pathname]);
 
@@ -106,8 +119,9 @@ const Profile = () => {
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
+        setAvatarImage("")
         showToast(translate(texts.UserInfoUpdate));
-        
+
         toast.dismiss();
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
@@ -115,12 +129,12 @@ const Profile = () => {
     }
   };
 
-  
-  return  (
+
+  return (
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
-        <AvatarsModal
+        <UpdateAvatars
           {...{
             onSubmit: onSubmitAvatar,
             onClose: () => setAvatarMode(false),
@@ -130,26 +144,28 @@ const Profile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          
-          <CardContainer className={`${window.screen.width > 979 ? "BigScreen" : ""}`}>
+
+          <CardContainer className={`${window.screen.width > 979 ? "BigScreen " : ""}`} style={{ backgroundColor: '' }}>
             <>
               {!userInfo?.paid && (
-          <Row
-            className='d-flex justify-content-center'                      
-          >
+                <Row
+                  className='d-flex justify-content-center'
+                >
                   <MyBadge bg='-' onClick={() => {
                     handleSoundClick()
                     navigate("/upgrade")
-                  }} style={{ cursor: "pointer" }} >
+                  }} style={{ cursor: "pointer",boxShadow: `${userInfo?.isUserUpgraded ? "#FFD700 1px 0px 5px 2px" : "none"}`,
+                  }} >
                     {/* {translate("upgrade your account")} */}
-                    {texts.UpgradeYourAccount}
+                    {/* @ts-ignore */}
+                    {userInfo?.isUserUpgraded ? ("Verified Miner").toUpperCase() : texts.UpgradeYourAccount}
                   </MyBadge>
-          </Row>
-        )}
+                </Row>
+              )}
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
                 {window.screen.width < 979 && (
                   <Container
-                    fluid                    
+                    fluid
                     style={{
                       // paddingTop: 60,
                       paddingLeft: "0px",
@@ -160,68 +176,72 @@ const Profile = () => {
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
+                      ProfileTabs.history as string,                      
+                      // ProfileTabs.foundationshow as string,                    
                     ].includes(pathname) && (
-                      <ImageTabs
-                        {...{
-                          chosenByDefault,
-                          handleSelect: (eventKey: string | null) => {
-                            if (isV1() && eventKey === ProfileTabs.mine) {
-                              showToast(
-                                translate(texts.FeatureAvailableSoon),
-                                ToastType.INFO
-                              );
-                              return;
-                            }
-                            navigate("./" + eventKey, { replace: true });
-                          },
-                          tabs: [
-                            {
-                              component: <></>,
-                              label: "Mining",
-                              icon: <Mine />,
-                              eventKey: ProfileTabs.mine,
+                        <ImageTabs
+                          {...{
+                            chosenByDefault,
+                            handleSelect: (eventKey: string | null) => {
+                              if (isV1() && eventKey === ProfileTabs.mine) {
+                                showToast(
+                                  translate(texts.FeatureAvailableSoon),
+                                  ToastType.INFO
+                                );
+                                return;
+                              }
+                              navigate("./" + eventKey, { replace: true });
                             },
-                            {
-                              component: <></>,
-                              label: "Pool Mining",
-                              icon: <Share />,
-                              eventKey: ProfileTabs.share,
-                            },
-                            {
-                              component: <></>,
-                              label: ProfileTabs.votes,
-                              icon: <Votes />,
-                              eventKey: ProfileTabs.votes,
-                            },
-                            {
-                              component: <></>,
-                              label: ProfileTabs.ProfileNftGallery,
-                              icon: <Gallery />,
-                              eventKey: ProfileTabs.ProfileNftGallery,
-                            },
-                            
-                            
-                            {
-                              component: <></>,
-                              label: ProfileTabs.followers,
-                              icon: <ProfileFollowing />,
-                              eventKey: ProfileTabs.followers,
-                            },
-                            {
-                              component: <></>,
-                              label: ProfileTabs.notifications,
-                              icon: <Notifications />,
-                              eventKey: ProfileTabs.notifications,
-                            },
-                            
-                          ],
-                        }}
-                      />
-                    )}
+                            tabs: [
+                              {
+                                component: <></>,
+                                label: "Mining",
+                                icon: <Minenew />,
+                                eventKey: ProfileTabs.mine,
+                              },
+                              {
+                                component: <></>,
+                                label: "Pool Mining",
+                                icon: <Sharenew />,
+                                eventKey: ProfileTabs.share,
+                              },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.votes,
+                                icon: <Votesnew />,
+                                eventKey: ProfileTabs.votes,
+                              },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.ProfileNftGallery,
+                                icon: <Gallerynew />,
+                                eventKey: ProfileTabs.ProfileNftGallery,
+                              },
+
+
+                              {
+                                component: <></>,
+                                label: ProfileTabs.followers,
+                                icon: <ProfileFollowingnew />,
+                                eventKey: ProfileTabs.followers,
+                              },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.notifications,
+                                icon: <Notificationsnew />,
+                                eventKey: ProfileTabs.notifications,
+                              },
+
+                            ],
+                          }}
+                        />
+                      )}
                     {[
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
+                      ProfileTabs.history as string,
+                      // ProfileTabs.foundationshow as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
@@ -253,9 +273,21 @@ const Profile = () => {
                               {
                                 component: <></>,
                                 label: ProfileTabs.wallet,
-                                icon: <Wallet/>,
+                                icon: <Wallet />,
                                 eventKey: ProfileTabs.wallet,
                               },
+                              {
+                                component: <></>,
+                                label: "Payment",
+                                icon: <PaymentHitory/>,
+                                eventKey: ProfileTabs.history,
+                              },
+                              // {
+                              //   component: <></>,
+                              //   label: "Foundation",
+                              //   icon: <FoundationIcon/>,
+                              //   eventKey: ProfileTabs.foundationshow,
+                              // },
                             ],
                           }}
                         />
@@ -271,7 +303,7 @@ const Profile = () => {
         className='p-0'
         style={{ minHeight: window.screen.width < 979 ? "68vh" : "70vh" }}
       >
-        <div  className="w-100"  style={{ color: "var(--black)" }}>
+        <div className="w-100" style={{ color: "var(--black)" }}>
           <div className='p-0 col'>
             {/* <Col > */}
             <Outlet />
@@ -279,7 +311,7 @@ const Profile = () => {
         </div>
       </div>
     </PageContainer>
-  ) 
+  )
   // : (
   //   <div
   //     className='d-flex justify-content-center align-items-center'

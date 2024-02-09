@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Direction, VoteResultProps } from "../common/models/Vote";
 import Countdown from "react-countdown";
-import { Coin } from "../common/models/Coin";
+import { Coin, formatCurrency, precision } from "../common/models/Coin";
 import { useTranslation } from "../common/models/Dictionary";
 import styled from "styled-components";
 import {
@@ -18,11 +18,14 @@ import RangeSilder from "./Users/RangeSilder";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebase";
 import { texts } from "./LoginComponent/texts";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Image, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from "common/utils/helper";
-import { VoteContext } from "Contexts/VoteProvider";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getPairResultColor, getSingleCoinPriceColor } from "common/utils/helper";
+import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import Line from "./icons/line";
+import { VoteEndCoinPriceContext, VoteEndCoinPriceDispatchContext } from "Contexts/VoteEndCoinPrice";
+import { CompletedVotesContext } from "Contexts/CompletedVotesProvider";
 
 
 
@@ -30,7 +33,7 @@ const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
   max-width: ${window.screen.width < 767 ? "345px" : "400px"};
   // height: 75px;
-  padding:20px 0px;
+  // padding:20px 0px;
   background-color: var(--white);  
   border-radius: 38px;
   box-shadow: 0 3px 6px #00000029;
@@ -126,8 +129,7 @@ const VotedCard = ({
 
 
 }) => {
-
-  const [lastTenSec, setLastTenSec] = useState<any>(false);
+  
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
@@ -181,6 +183,7 @@ const VotedCard = ({
     }
   };
 
+  console.log("getpair vote", vote)
 
 
   useEffect(() => {
@@ -205,27 +208,63 @@ const VotedCard = ({
   const { timeframes } = useContext(AppContext);
   const translate = useTranslation();
 
-  // const setVoteDetails = useContext(VoteDispatchContext);
+  const setVoteEndCoinPrice = useContext(VoteEndCoinPriceDispatchContext);
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
   const voteDetails = useContext(VoteContext);
   const [calcPer, setCalcPer] = useState<boolean>(true);
-  const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '', secondCoin: '', difference: '' });
+  const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '0', secondCoin: '0', difference: '0' });
+
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
-      if (!voteDetails?.openResultModal && calcPer) {
-        setPairCoinResult((Prev) => {
-          if (isArray(vote.valueVotingTime)) {
-            return calculateDiffBetweenCoins(vote?.valueVotingTime, [coins[symbol1]?.price, coins[symbol2]?.price], vote?.direction);
-          }
-          return Prev;
-        })
-      }
-    }
-    if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
+      // if (!voteDetails?.openResultModal && calcPer) {
+      // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
+
+      let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
+      let value2 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin2 || '0.00';
+
       setPairCoinResult((Prev) => {
-        return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
+        if (isArray(vote.valueVotingTime) && value1 && value2) {
+          return calculateDiffBetweenCoins(vote?.valueVotingTime, [+value1, +value2], vote?.direction);
+        }
+        return Prev;
       })
+      // }
     }
+    // if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
+    //   setPairCoinResult((Prev) => {
+    //     return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
+    //   })
+    // }
+  }, [JSON.stringify(voteEndCoinPrice[`${vote?.coin}_${vote?.timeframe?.seconds}`])]);
+
+  useEffect(() => {
+    calculateCurrentPrice();
   }, [vote, coins, voteDetails?.lessTimeVote]);
+
+  const calculateCurrentPrice = () => {
+    if (vote?.expiration < new Date().getTime()) {
+      return;
+    }
+    let value1 = `${formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol1.toUpperCase()) ? (coins[symbol1]?.randomDecimal || 0) : ''}`
+    let value2 = symbol2 ? `${formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol2.toUpperCase()) ? (coins[symbol2]?.randomDecimal || 0) : ''}` : '0.00'
+    setVoteEndCoinPrice((prev) => {
+      return {
+        ...prev,
+        [`${vote?.coin}_${vote?.timeframe?.seconds}`]: {
+          coin1: value1,
+          coin2: value2
+        }
+      }
+    })
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 300,
+        behavior: "smooth",
+      });
+    }, 0);
+  }, []);
   if (!coin1) {
     return <></>;
   }
@@ -266,6 +305,8 @@ const VotedCard = ({
     row3 = `${vote.timeframe.name}`
   }
 
+
+
   return (
     <>
       <div className="mt-4" style={{ paddingLeft: symbol2 ? '' : '24px', paddingRight: symbol2 ? '' : '24px', maxWidth: '450px', margin: '0 auto' }}>
@@ -297,52 +338,109 @@ const VotedCard = ({
       {/* @ts-ignore */}
       {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
       {/* <YourVote className="mb-2">Your vote</YourVote> */}
-      <Rectangle2620 className="" style={{ border: `1px solid ${borderColor}` }}>
-        <div className="d-flex justify-content-center w-100">
+      <Rectangle2620 className="pb-3" style={{ border: `1px solid ${borderColor}`, }}>
+        <div className="d-flex justify-content-center w-100 text-dark">
           <div className="w-100 px-3">
-            <div className="d-flex justify-content-center mb-1">
-              <p style={{ color: "#2D2C3C" }} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE </p>
+            <div className="d-flex justify-content-center">
+              <div className={`d-flex w-50 ${symbol2 ? 'align-items-end' : 'align-items-center'} flex-column pt-3`}>
+                <div className="text-center d-flex flex-column justify-content-center align-items-center" >
+                  <Image
+                    src={process.env.PUBLIC_URL + `/images/logos/${symbol1.toUpperCase()}.svg`}
+                    style={{ width: '2.5em', height: '2.5em' }}
+                  />
+                  <div>
+                    <strong>{coins[symbol1]?.name}</strong>
+                  </div>
+                  <div>{symbol1}</div>
+                </div>
+              </div>
+
+              {symbol2 &&
+                <>
+                  <div className="d-flex align-items-center justify-content-center px-3">
+                    <div style={{ height: '97px', width: '19px' }}>
+                      <Line />
+                    </div>
+                  </div>
+                  <div className="d-flex w-50 justify-content-center align-items-start flex-column">
+                    <div className="text-center d-flex flex-column justify-content-center align-items-center" >
+                      <Image
+                        src={process.env.PUBLIC_URL + `/images/logos/${symbol2.toUpperCase()}.svg`}
+                        style={{ width: '2.5em', height: '2.5em' }}
+                      />
+                      <div>
+                        <strong>{coins[symbol2]?.name}</strong>
+                      </div>
+                      <div>{symbol2}</div>
+                    </div>
+                  </div>
+                </>}
             </div>
-            <div className="my-2">
+
+
+            <div className="d-flex justify-content-center">
+              <p style={{ color: "#2D2C3C" }} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE</p>
+            </div>
+            <div className="mb-2">
               <YourVote>YOUR CURRENT VOTE IMPACT</YourVote>
 
             </div>
 
-            {/* selectedTimeFrame == vote?.timeframe?.index &&  */<RangeSilder
-              //  lastTenSec={lastTenSec}
+            <RangeSilder
+              pairCoinResult={pairCoinResult}
               vote={vote}
               coins={coins}
               symbol1={symbol1}
               symbol2={symbol2}
-            />}
+            />
             <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
-              <MyCountdown setCalcPer={setCalcPer} expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
-                setLastTenSec={setLastTenSec}
-              />
+              <MyCountdown setCalcPer={setCalcPer} expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} />
             </div>
-            <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
-              style={{ marginTop: '3em ' }}
-            >
-              {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
+            {symbol2 ?
+              <div className={`container pt-2`}>
+                <div style={{ fontWeight: 'bolder', fontSize: (window.screen.width > 576 ? '1.3em' : (window.screen.width < 370 ? '0.8' : '1em')) }}>
+                  Current change between the coins
+                </div>
+                <div className="d-flex align-items-center justify-content-center" style={{
+                  fontSize: '1.7em',
+                  color: getPairResultColor(parseFloat(pairCoinResult?.firstCoin), parseFloat(pairCoinResult?.secondCoin), vote?.direction),
+                }}>
+                  {`${pairCoinResult?.difference && pairCoinResult?.difference != undefined && pairCoinResult?.difference != "NaN" && pairCoinResult?.difference.replaceAll('-', '') || 0.00}%`}
+                </div>
+                <div className="row justify-content-center align-items-center">
+                  <Row1 style={{ textAlign: 'center', fontSize: window.screen.width <= 400 ? '1em' : '1.1em' }}>{"You voted for "}{voted}</Row1>
+                </div>
+              </div> :
+              <>
+                <div className="container mt-3">
+                  <div style={{ fontWeight: 'bolder', fontSize: (window.screen.width > 576 ? '1.3em' : (window.screen.width < 370 ? '0.8' : '1em')) }}>
+                    Current {symbol1} value
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center" style={{
+                    fontSize: '1.7em',
+                    color: getSingleCoinPriceColor(parseFloat(row2.replaceAll('$', '').replaceAll(',', '')), parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), vote?.direction),
+                  }}>                    
+                    ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 && voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
+                  </div>
+                </div>
+                <BitcoinBTCBULL24H3864490
+                  className={`d-flex justify-content-center`}
 
+                >
+                  <Row1 className="poppins-normal-blackcurrant-14px" style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em', }}>You voted for&nbsp;</Row1>
+                  {window.screen.width < 330 && <br />}
+                  <Row1 className="poppins-normal-blue-violet-14px-2 " style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em' }}>
+                    {row1}  {row2}
+                  </Row1>
+                </BitcoinBTCBULL24H3864490>
+              </>
+            }
 
-              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
-              {/* <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1> */}
-              <Row1 className="poppins-normal-blue-violet-14px-2">
-                {
-                  symbol2 ?
-                    `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
-                    : row2
-                }
-              </Row1>
-            </BitcoinBTCBULL24H3864490>
 
             <ID13020221942>
-              {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
+              {vote.voteId} {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
-
         </div>
       </Rectangle2620 >
     </>
@@ -377,15 +475,15 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const TenSec = expirationTime - (expirationTime - 10000)
   // console.log(TenSec ,"TenSec")
   // if (expirationTime == TenSec) {
-  //   console.log("i am working")
+
   // }
   const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
 
   const checkprice = async () => {
-    if (!getresultFlag) return
-    getresultFlag = false;
-    console.log('price called')
+    // if (!getresultFlag) return
+    // getresultFlag = false;
+    // console.log('price called')
     // const data = await getPriceCalculation({
     //   coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
     //   coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
@@ -397,7 +495,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     //   userId: vote?.userId
     // }).then((data) => {
     //   if (data.data == null) {
-    //     // console.log(data.data,"i am working data.data")
+
     //     // getVotes(index).then(void 0);
     //     // openPopup(true)
 
@@ -409,16 +507,15 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     // });
 
   }
-
+  const completedVotes = useContext(CompletedVotesContext);
 
   return (
     // @ts-ignore
     <Countdown
       date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
-
-        if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
-          setLastTenSec(true)
+        if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 && setLastTenSec instanceof Function) {
+          setLastTenSec(true);
         }
         if (completed) {
           if (vote && !vote?.success) {
@@ -432,18 +529,19 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
             <div
               style={{
                 // border: "1px solid red",
-                padding: "0em 0em 4em 0em",
-                height: "1.4em"
+                padding: `0em 0em 3em 0em`,
+                height: "1.4em",
+                paddingTop: '1em'
               }}
             >
-              <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
-                {texts.Calculatingvoteresult}
+              <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '3px', paddingLeft: '10px', zIndex: "2220px", fontSize: '1.6em' }}>
+                {texts.waitForIt}
               </span>
             </div>
           );
         } else {
           return (
-            <div className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
+            <div className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, }}>
               {hours < 1 ? null : `${hours} :`}
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}

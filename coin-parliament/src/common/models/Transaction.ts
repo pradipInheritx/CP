@@ -1,4 +1,4 @@
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import {WSnap} from "./Snapshot";
 import Timestamp = firebase.firestore.Timestamp;
 import DocumentReference = firebase.firestore.DocumentReference;

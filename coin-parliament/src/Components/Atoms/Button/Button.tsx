@@ -22,7 +22,7 @@ const CPButton = styled.button`
   min-height: 19px;
   letter-spacing: 0;
   white-space: nowrap;
-  text-transform: capitalize;
+ 
   color: var(--blue-violet);
   min-width: ${(props: Props) => (props.fullWidth ? "100%" : "0")};
 
@@ -31,7 +31,7 @@ const CPButton = styled.button`
   }
 
   &:hover {
-    background-color: var(--light-purple);
+    // background-color: var(--light-purple);
   }
 
   &:disabled {
@@ -150,9 +150,9 @@ export default Button;
 const TimeframeButton = ({
   children,
   checked,
+  showTimer,
   setChecked,
   disabled,
-  showTimer,
   cssDegree,
   // votePrice,
   votedDetails,

@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {doc, onSnapshot, setDoc} from "firebase/firestore";
-import {db} from "../../firebase";
+import React, { useEffect, useState } from "react";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import AdminForm from "./AdminForm";
-import {DBCoin, transform, validateCoin, validateCoins} from "../../common/models/Coin";
+import { DBCoin, transform, validateCoin, validateCoins } from "../../common/models/Coin";
 
 const Coins = () => {
   const [coins, setCoins] = useState<DBCoin[]>([]);
@@ -19,8 +19,8 @@ const Coins = () => {
     if (validateCoins(newCoins) && newCoins.every(validateCoin)) {
       await setDoc(
         doc(db, "settings", "coins"),
-        {coins: newCoins},
-        {merge: true},
+        { coins: newCoins },
+        { merge: true },
       );
     }
     setCoins(newCoins);

@@ -6,31 +6,42 @@ import Info from "./Info";
 import { getUsers } from "./FwFollow";
 import { Leader } from "../../Contexts/CoinsContext";
 import PoolMiningCard from "./PoolMiningCard";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import AppContext from "../../Contexts/AppContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { firestore } from "../../firebase";
 const FwPool = () => {
   const { user } = useContext(UserContext);
   const{followerUserId}=useContext(AppContext)
   const[userInfo,setUserInfo]=useState<any>()
   const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
   const [children, setChildren] = useState<Leader[]>([]);
-  const getFollowerData =()=>{
-    const getCollectionType = firebase
-  .firestore()
-  .collection("users")
-  .where("uid", "==", followerUserId)
-getCollectionType.get()
-.then((snapshot) => {        
 
-snapshot.docs?.map(doc=>setUserInfo(doc.data()))
+//   const getFollowerData =()=>{
+//     const getCollectionType = firebase
+//   .firestore()
+//   .collection("users")
+//   .where("uid", "==", followerUserId)
+// getCollectionType.get()
+// .then((snapshot) => {        
+// snapshot.docs?.map(doc=>setUserInfo(doc.data()))
+// }).catch((error) => {
+// console.log(error,"error");
+// });    
+//   }
 
- 
- 
+  const getFollowerData = async () => {
+    const usersCollectionRef = collection(firestore, 'users');
+    const followerQuery = query(usersCollectionRef, where('uid', '==', followerUserId));
 
-}).catch((error) => {
-console.log(error,"error");
-});    
-  }
+    try {
+      const snapshot = await getDocs(followerQuery);
+      snapshot.docs?.forEach((doc) => setUserInfo(doc.data()));
+    } catch (error) {
+      console.error("Error fetching follower data:", error);
+    }
+  };
+
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
   );

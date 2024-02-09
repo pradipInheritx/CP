@@ -2,18 +2,20 @@
 
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import UserContext, { getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
 // import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   Link,
+  Navigate,
   Route,
   Routes,
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -27,20 +29,24 @@ import {
   Coin,
   DBCoin,
   DBPair,
+  formatCurrency,
   getAllCoins,
   getCoins,
+  precision,
   saveAllCoins,
   // saveCoins,
 } from "./common/models/Coin";
 import {
   collection,
   doc,
+  getDoc,
+  getDocs,
   onSnapshot,
   query,
   setDoc,
   where,
 } from "firebase/firestore";
-import { db, functions, messaging } from "./firebase";
+import { auth, db, firestore, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { GetVotesResponse, TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -61,18 +67,19 @@ import VoteRulesManager from "./managers/VoteRulesManager";
 import TimeframesManager from "./managers/TimeframesManager";
 import UserTypeManager from "./managers/UserTypeManager";
 import CoinMain from "./Pages/CoinMain";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import PairsMain from "./Pages/PairsMain";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
-import { Form } from "react-bootstrap";
+import { Form, ListGroup } from "react-bootstrap";
 import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
 import Content from "./Pages/Content";
 import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
+import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
@@ -99,10 +106,10 @@ import Mine from "./Components/Profile/Mine";
 import Follow from "./Components/Profile/Follow";
 import Pool from "./Components/Profile/Pool";
 import { useWindowSize } from "./hooks/useWindowSize";
-import Votes from "./Components/Profile/Votes";
+import Votes from "./Components/Profile/voteHistory/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { myPages, quotes } from "./common/consts/contents";
 import Notifications from "./Components/Profile/Notifications";
 import Background from "./Components/Background";
@@ -115,21 +122,21 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 // import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
-import VotingBooster from "./Components/Profile/VotingBooster";
+import UpgradePageCopy from "./Components/Profile/UpgradePageCopy";
+import VotingBoosterCopy from "./Components/Profile/VotingBoosterCopy";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
-import ProfileNftGalleryCopy from "./Pages/ProfileNftGalleryCopy";
 import GameRule from "./Pages/GameRule";
-import Partners from "./Pages/Partners";
+import Ambassador from "./Pages/Ambassador/Ambassador";
 import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
 import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
-import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwVotes from "./Components/FollowerProfile/voteHistory/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
-import Wallet from "./Components/Profile/Wallet";
+import Wallet from "./Components/Profile/Wallet/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -138,13 +145,82 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import { VoteContext, VoteContextType, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
-import { setTimeout } from "timers";
-import NFTGalleryCopy from "Pages/NFTGalleryCopy";
-import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
+// import { setTimeout } from "timers";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
-import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import CoinsList from "Components/Profile/Payment/CoinsList";
 
+import PaymentFun from "Components/Profile/Payment/PaymentFun";
+import PaymentHistory from "Components/Profile/Payment/PaymentHistory";
+import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
+import Complete100CMPModal from "Components/Complete100CMPModal";
+import { request } from "http";
+import VotingBooster from "Components/Profile/VotingBooster";
+import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
+import Swal from "sweetalert2";
+import SelectBio from "Components/LoginComponent/SelectBio";
+import axios from "axios";
+import { afterpaxDistributionToUser } from "common/utils/helper";
+import SingleCardDetails from "Pages/album/SingleCardDetails";
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { ethers } from "ethers";
+
+const projectId = '1556d7953ee6f664810aacaad77addb1'
+const mainnet = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+
+  {
+    chainId: 56,
+    name: 'Binance',
+    currency: 'BNB',
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
+  },
+  {
+    chainId: 137,
+    name: 'Polygon (MATIC)',
+    currency: 'MATIC',
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
+  },
+  {
+    chainId: 11155111,
+    name: 'Sepolia Test Netwok',
+    currency: 'SepoliaETH',
+    explorerUrl: ' https://sepolia.etherscan.io/',
+    rpcUrl: 'https://1rpc.io/sepolia'
+  }
+
+]
+
+// 3. Create modal
+const metadata = {
+  name: 'Coin parliament',
+  description: 'Coin parliament',
+  url: 'https://coinparliamentstaging.firebaseapp.com',
+  icons: ['https://coinparliament.com/static/media/logoiconxbig2.7f0c3f73.png']
+}
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: mainnet,
+  projectId,
+  themeVariables: {
+    // '--w3m-color-mix': '#160133',
+    // '--w3m-color-mix-strength': 40,
+    '--w3m-z-index':1000
+  }
+})
+// import FoundationData from "Components/Profile/FoundationData";
+
+// import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -174,50 +250,21 @@ function App() {
   const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
-  //   const [displayFullscreen,setDisplayFullscreen]=useState('none')
-  // // fullscreen mode
-  // useEffect(() => {
-  // window.addEventListener('load', () => {
-  //   setDisplayFullscreen('block')
-  // });
-  // }, [])
-  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  // // @ts-ignore
-  // const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
-
-  // const handleClick=()=>{
-  //   setDisplayFullscreen('none')
-  //   if (isMobile && fullscreenEnabled) {
-  //     const elem = document.documentElement;
-  //     if (elem.requestFullscreen) {
-  //       elem.requestFullscreen();
-  //     } 
-  //     // @ts-ignore
-  //     else if (elem?.webkitRequestFullscreen) {
-  //        // @ts-ignore
-  //       elem?.webkitRequestFullscreen();
-  //     }
-  //      // @ts-ignore 
-  //     else if (elem?.mozRequestFullScreen) {
-  //        // @ts-ignore
-  //       elem?.mozRequestFullScreen();
-  //     }
-  //      // @ts-ignore
-  //      else if (elem?.msRequestFullscreen) {
-  //         // @ts-ignore
-  //       elem?.msRequestFullscreen();
-  //     }
-  //   }
-  // }
   useEffect(() => {
+    const urlpath = window.location.pathname
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
+    console.log('scrollUp ');
 
-  }, [pathname])
+    if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
+      console.log("yes i am working")
+      localStorage.removeItem("PayAmount");
+    }
+  }, [JSON.stringify(location.pathname)]);
 
-
+  // console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -241,6 +288,7 @@ function App() {
   );
 
 
+
   useEffect(() => {
 
     if ('serviceWorker' in navigator) {
@@ -248,12 +296,12 @@ function App() {
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
         console.log(message.data, "checknotification")
-        showToast(
-          <div>
-            <h5>{title}</h5>
-            <p>{body}</p>
-          </div>
-        );
+        //   showToast(
+        //   <div>
+        //     <h5>{title}</h5>
+        //     <p>{body}</p>
+        //   </div>
+        // );      
         const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
 
         // if (typeName?.title.includes("-")) {
@@ -309,20 +357,29 @@ function App() {
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
-  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
-  );
+  const [socketConnect, setSocketConnect] = useState<any>(false)
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)
+  const [transactionId, setTransactionId] = useState({});
+  const [withLoginV2e, setWithLoginV2e] = useState(false)
+  const [paxDistribution, setPaxDistribution] = useState(0)
+  const [addPaxWalletPop, setAddPaxWalletPop] = useState(false)
+  const [walletTab, setWalletTab] = useState("Balance")
+  // @ts-ignore  
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
+  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
+
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
-let params = useParams();
+  let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log(symbol1,symbol2 ,params,window.location.pathname,"allCoins")
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
   const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -331,6 +388,7 @@ let params = useParams();
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
@@ -355,7 +413,15 @@ let params = useParams();
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [isVirtualCall, setIsVirtualCall] = useState<any>(false)
+  const [avatarImage, setAvatarImage] = useState<any>(null)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+  const localID = localStorage.getItem("userId") || false;
+  const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
+  // const [localID, setLocalID] = useState<any>(
+
+  // )  
+
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -370,6 +436,11 @@ let params = useParams();
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+
+  // console.log(coins, "allcoinsCheck")
+
+  const Coinkeys = Object.keys(coins && coins) || []
+
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
@@ -382,16 +453,16 @@ let params = useParams();
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  useEffect(() => {
-    const isMFAPassed = window.localStorage.getItem('mfa_passed')
-    if (isMFAPassed == 'true' && !login) {
+  // 2fa problem solve
+  // useEffect(() => {
+  //   const isMFAPassed = localStorage.getItem('mfa_passed')
+  //   if (isMFAPassed == 'true' && !login) {
 
-      console.log('2faCalled')
-      // @ts-ignore
-      Logout(setUser)
-    }
-  }, [])
-
+  //     console.log('2faCalled')
+  //     // @ts-ignore
+  //     Logout(setUser)
+  //   }
+  // }, [])
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
@@ -419,12 +490,13 @@ let params = useParams();
       // }, 2000);
     }
   }, [user, userInfo]);
+
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
-
     const info = await getUserInfo(user);
+    console.log("i am working")
     setUserInfo(info);
-    setDisplayName(info.displayName + "");
+    setDisplayName(info.displayName + "");   
   }, []);
 
 
@@ -433,7 +505,8 @@ let params = useParams();
   //   return Followerinfo
   // }
 
-  console.log(remainingTimer, "remainingTimer")
+  // console.log(remainingTimer, "remainingTimer")
+  // console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -445,12 +518,6 @@ let params = useParams();
     }
   }, [user, userInfo]);
   useEffect(() => {
-    // const buttons = document.getElementsByTagName('button');
-    // console.log('buttondata',buttons);
-    // for (let i = 0; i < buttons.length; i++) {
-    //   buttons[i].addEventListener('click', handleSoundClick);
-    // }
-
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
       setLogin(false);
@@ -462,14 +529,11 @@ let params = useParams();
         setLogin(false);
         setSignup(false);
       }
-
     }
-    // return () => {
-    //   for (let i = 0; i < buttons.length; i++) {
-    //     buttons[i].removeEventListener('click', handleSoundClick);
-    //   }
-    // }
-  }, [location, search]);
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -480,8 +544,10 @@ let params = useParams();
   useEffect(() => {
 
     // @ts-ignore
+
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
+      setShowMenuBar(true)
     }
 
   }, [userInfo]);
@@ -519,11 +585,33 @@ let params = useParams();
     );
   }
 
+  // useEffect(() => {
+  //   if (backgrounHide) {
+  //     window.scrollTo({
+  //       top: 500,
+  //       behavior: 'smooth',
+  //     });
+  //   }
+  // }, [backgrounHide])
+
   useEffect(() => {
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => setFcmToken(token));
-  }, []);
+    getMessageToken();
+  }, [userInfo]);
+  const getMessageToken = async () => {
+    const messagingResolve = await messaging;
+    if (messagingResolve) {
+      getToken(messagingResolve, {
+        vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+      }).then((token) => {
+        setFcmToken(token);
+        console.log('token', token);
+      }).catch((e) => {
+        console.log('token', e);
+      });
+    }
+  }
+
+
 
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
@@ -553,6 +641,21 @@ let params = useParams();
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
+  const getCoinData = async () => {
+    const coinData = doc(db, "stats", "coins");
+    try {
+      const userDocSnapshot = await getDoc(coinData);
+
+      if (userDocSnapshot.exists()) {
+        setCoins(userDocSnapshot.data());
+      } else {
+        console.log("Document does not exist");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  }
+
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
@@ -567,6 +670,7 @@ let params = useParams();
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
+
             return doc.data() as NotificationProps;
           })
         );
@@ -635,14 +739,16 @@ let params = useParams();
     //   // console.log('allcoins',coins)
     //   // saveCoins(newAllCoins);
     // }); 
-     const coinData = firebase
-      .firestore()
-      .collection("stats").doc('coins')
-    coinData.get()
-      .then((snapshot: any) => {
-        //  console.log('allcoin',snapshot.data())
-        setCoins(snapshot.data());
-      }); 
+
+    // const coinData = firebase
+    //   .firestore()
+    //   .collection("stats").doc('coins')
+    // coinData.get()
+    //   .then((snapshot: any) => {
+    //     //  console.log('allcoin',snapshot.data())
+    //     setCoins(snapshot.data());
+    //   });
+    getCoinData();
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -678,18 +784,27 @@ let params = useParams();
           })
       );
     });
+
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {      
+        data: {}      
+    }).then((res) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res.data.result.paxDistribution)
+    }).catch((err) => {
+      console.log(err,"resultdata")      
+    })
   }, [user?.uid]);
 
-
-useEffect(() => {
- 
-}, [])
-
-
+  window.onbeforeunload = function () {
+    //  localStorage.clear();
+    const allCoinPrice = coins
+    localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
+  }
 
   useEffect(() => {
     const auth = getAuth();
     if (!firstTimeLogin) {
+
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
         console.log('provider', user?.providerData[0]?.providerId)
@@ -702,6 +817,9 @@ useEffect(() => {
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
+
+          localStorage.setItem("userId", user.uid)
+
           onSnapshot(doc(db, "users", user.uid), async (doc) => {
             await setUserInfo(doc.data() as UserProps);
             setDisplayName((doc.data() as UserProps).displayName + "");
@@ -720,7 +838,7 @@ useEffect(() => {
           //     );
           //   });
 
-
+          console.log(auth, "getauth", fcmToken)
           try {
             if (fcmToken) {
               try {
@@ -739,154 +857,110 @@ useEffect(() => {
           }
         } else {
           await updateUser();
+
         }
       });
     }
   }, [user, fcmToken, coins]);
-
-  useEffect(() => {
-
-    if (user?.uid) {
-
-      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-      // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-      const votesLast24HoursRef = firebase
-        .firestore()
-        .collection("votes")
-        .where("userId", "==", user?.uid)
-        .where("voteTime", ">=", last24Hour)
-        .where("voteTime", "<=", Date.now());
-      votesLast24HoursRef.get()
-        .then((snapshot) => {
-          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-          // setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          // console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
-
-          // setTimeout(() => {
-          //   if (user?.uid) {
-          //     console.log('hello');
-
-          //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-          //     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-          //     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-          //     const votesLast24HoursRef = firebase
-          //       .firestore()
-          //       .collection("votes")
-          //       .where("userId", "==", user?.uid)
-          //       .where("voteTime", ">=", last24Hour)
-          //       .where("voteTime", "<=", Date.now());
-          //     // console.log('extravote11',votesLast24HoursRef)
-          //     votesLast24HoursRef.get()
-          //       .then((snapshot) => {
-          //         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-          //       })
-          //       .catch((error) => {
-          //         console.log('extravoteError', error);
-          //       });
-          //   }
-          // }, remaining);
-        })
-        .catch((error) => {
-          console.log('extravoteError', error);
-        });
-    }
+  // useEffect(() => {
+  //   auth.signOut();
+  // }, []);
 
 
-  }, [userInfo?.voteStatistics?.total])
-  console.log('usermfa', userInfo)
-  useEffect(() => {
-    if (user?.uid && voteNumberEnd == 0) {
+//   useEffect(() => {
+
+//     if (user?.uid) {
+// console.log()
+//       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+//       // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+//       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+//       const votesLast24HoursRef = firebase
+//         .firestore()
+//         .collection("votes")
+//         .where("userId", "==", user?.uid)
+//         .where("voteTime", ">=", last24Hour)
+//         .where("voteTime", "<=", Date.now());
+//       votesLast24HoursRef.get()
+//         .then((snapshot) => {
+//           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+//           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)         
+//         })
+//         .catch((error) => {
+//           console.log('extravoteError', error);
+//         });
+//     }
+
+
+//   }, [userInfo?.voteStatistics?.total])
+  // console.log('usermfa', userInfo)
+  const fetchVotesLast24Hours = async () => {
+    if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime) {
+      // @ts-ignore
+      let remaining = (userInfo?.lastVoteTime + voteRules.timeLimit * 1000) - Date.now();
+      // @ts-ignore
+      setRemainingTimer(userInfo?.lastVoteTime + voteRules.timeLimit * 1000)
+      console.log(remaining, "remaining")
+      setTimeout(() => {        
+        const userDocRef = doc(firestore, 'users', user?.uid);
+        try {
+          setDoc(userDocRef, {
+            voteValue: voteRules?.maxVotes,
+            lastVoteTime: 0
+          }, { merge: true });
+        } catch (error) {
+          console.error('Error updating user data:', error);
+        }
+      }, remaining);
+
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+      // const votesLast24HoursRef = firebase
+      //   .firestore()
+      //   .collection("votes")
+      //   .where("userId", "==", user?.uid)
+      //   .where("voteTime", ">=", last24Hour)
+      //   .where("voteTime", "<=", Date.now());
+      // votesLast24HoursRef.get()
+      //   .then((snapshot) => {
+      //     console.log(voteNumberEnd)
+      //     console.log("i am working ")
+      //     setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+      //     const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+      //     // @ts-ignore
+      //   }).catch((error) => {
+      //     console.log('extravoteError', error);
+      //   });
+    
+      const votesCollectionRef = collection(firestore, 'votes');    
+      try {
+        const q = query(
+          votesCollectionRef,
+          where('userId', '==', user?.uid),
+          where('voteTime', '>=', last24Hour),
+          where('voteTime', '<=', Date.now())
+        );
 
-      const votesLast24HoursRef = firebase
-        .firestore()
-        .collection("votes")
-        .where("userId", "==", user?.uid)
-        .where("voteTime", ">=", last24Hour)
-        .where("voteTime", "<=", Date.now());
-      votesLast24HoursRef.get()
-        .then((snapshot) => {
-          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          // console.log(remaining ,"allremaining")
-          setTimeout(() => {
-            const usereData = firebase
-              .firestore()
-              .collection("users")
-              .doc(user?.uid)
-              .set({ "voteValue": voteRules?.maxVotes }, { merge: true });
-          }, remaining);
-        }).catch((error) => {
-          console.log('extravoteError', error);
-        });
+        const querySnapshot = await getDocs(q);
+
+        setVotesLast24Hours(
+          querySnapshot.docs.map((doc:any) => doc.data() as unknown as VoteResultProps)
+        );
+        // If you need the data separately
+        const data = querySnapshot.docs.map((doc:any) => doc.data() as unknown as VoteResultProps);
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching votes in the last 24 hours:', error);
+      }
+    
     }
-
-  }, [voteNumberEnd])
-
-
-  // useEffect(() => {
-  //   if (user?.uid && voteNumberEnd==0) { 
-  //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //       const votesLast24HoursRef = firebase
-  //         .firestore()
-  //         .collection("votes")
-  //         .where("userId", "==", user?.uid)
-  //         .where("voteTime", ">=", last24Hour)
-  //         .where("voteTime", "<=", Date.now());
-  //       votesLast24HoursRef.get()
-  //         .then((snapshot) => {
-
-  //           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-  //           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-
-  //           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-
-  //           setTimeout(() => {
-  //             if (user?.uid) {
-  //               console.log('hello');
-
-  //               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //               const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //               const votesLast24HoursRef = firebase
-  //                 .firestore()
-  //                 .collection("votes")
-  //                 .where("userId", "==", user?.uid)
-  //                 .where("voteTime", ">=", last24Hour)
-  //                 .where("voteTime", "<=", Date.now());
-
-  //               votesLast24HoursRef.get()
-  //                 .then((snapshot) => {
-  //                   setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-  //                 })
-  //                 .catch((error) => {
-  //                   console.log('extravoteError', error);
-  //                 });
-  //             }
-  //           }, remaining);
-  //           console.log("yes i am working after vote")
-  //         })
-  //         .catch((error) => {
-  //           console.log('extravoteError', error);
-  //         });
-  //   }
-
-  // }, [voteNumberEnd])
+  };
+  useEffect(() => {
+    if (user?.uid) {      
+      fetchVotesLast24Hours()
+    }
+  }, [voteNumberEnd, userInfo?.lastVoteTime])
 
 
   useEffect(() => {
@@ -902,23 +976,6 @@ useEffect(() => {
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
-
-  // useEffect(() => {
-  //   async function removeData() {
-  //     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
-  //     const batch = firebase.firestore().batch();
-  //     voteData.forEach(doc => {
-  //       batch.delete(doc.ref);
-  //     });
-  //     await batch.commit();
-
-  //     console.log("User vote data deleted");
-  //   }
-  //   removeData()
-  // }, [])
-
-
-
   function connect() {
     if (Object.keys(coins).length === 0) return
     console.log('Browser window called')
@@ -926,28 +983,25 @@ useEffect(() => {
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
+      console.log('WebSocket Open');
+      setSocketConnect(true)
       ws.send(JSON.stringify({
         method: 'SUBSCRIBE',
         params: coinTikerList,
         id: 1
       }));
     };
-
-    socket = new WebSocket('wss://stream.crypto.com/v2/market');
-
-    socket.onopen = () => {
-      const req = {
-        id: 1,
-        method: 'subscribe',
-        params: {
-          channels: ['ticker.CRO_USDT'],
-        },
-      };
-      socket.send(JSON.stringify(req));
-    };
+    var userAgent = navigator.userAgent.toLowerCase();
+    const isInstagramAvailable = /iphone/.test(userAgent);
+    
+    console.log(userAgent,"isInstagramAvailable")
     ws.onclose = (event: any) => {
-      if (!login) window.location.reload()
-      console.log('WebSocket connection closed');
+      if (isInstagramAvailable) {
+        console.log("reloadtrue")
+        window.location.reload()
+      }
+      setSocketConnect(false);
+      console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds...');
         setTimeout(() => {
@@ -957,26 +1011,59 @@ useEffect(() => {
     };
 
     ws.onerror = () => {
-      if (!login) window.location.reload()
+      // if (!login) window.location.reload()
       console.log('WebSocket connection occurred');
     };
+
+    socket = new WebSocket('wss://stream.crypto.com/v2/market');
+    socket.onopen = () => {
+      console.log('WebSocket Open');
+      const req = {
+        id: 1,
+        method: 'subscribe',
+        params: {
+          channels: ['ticker.CRO_USDT'],
+        },
+      };
+      socket.send(JSON.stringify(req));
+    };         
+    socket.onclose = (event: any) => {
+      if (isInstagramAvailable) {
+        console.log("reloadtrue")
+        window.location.reload()
+      }
+      console.log('WebSocket connection closed crypto', event);
+      if (event.code !== 1000) {
+        console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
+        setTimeout(() => {
+          connect();
+        }, 5000);
+      }
+    };
+
+    socket.onerror = () => {
+      // if (!login) window.location.reload()
+      console.log('WebSocket connection occurred crypto');
+    };
+
     const timeout = 30000; // 30 seconds
     let timeoutId: any;
     const checkConnection = () => {
-      if (ws.readyState !== WebSocket.OPEN) {
+      if (ws.readyState !== WebSocket.OPEN || socket.readyState !== WebSocket.OPEN) {
         console.log('WebSocket connection timed out');
         clearInterval(timeoutId);
         connect();
       }
     };
     timeoutId = setInterval(checkConnection, timeout);
-  }
 
+  }
   useEffect(() => {
 
     connect();
-
     return () => {
+      console.log('close websocket connection');
+
       if (ws) ws.close();
       if (socket) socket.close();
       window.localStorage.removeItem('firstTimeloading')
@@ -989,30 +1076,30 @@ useEffect(() => {
 
   //   }
   // }, [])
-  // useEffect(() => {
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   }
-  // }, []);
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
+  }, []);
 
-  // const handleVisibilityChange = () => {
-  //   const isIPhone = /iPhone/i.test(navigator.userAgent);
+  const handleVisibilityChange = () => {
+    const isIPhone = /iPhone/i.test(navigator.userAgent);
 
-  //   if (isIPhone) {
-  //     console.log('This is an iPhone');
-  //   } else {
-  //     console.log('This is not an iPhone');
-  //   }
-  //   if (document.hidden) {
-  //     console.log("Browser window is minimized");
-  //     ws.close();
-  //     socket.close();
-  //   } else {
-  //     connect();
-  //     console.log("Browser window is not minimized");
-  //   }
-  // }
+    if (isIPhone) {
+      console.log('This is an iPhone');
+    } else {
+      console.log('This is not an iPhone');
+    }
+    if (document.hidden) {
+      console.log("Browser window is minimized");
+      // ws.close();
+      // socket.close();
+    } else {
+      connect();
+      console.log("Browser window is not minimized");
+    }
+  }
   const checkprice = async (vote: any) => {
     console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
@@ -1023,7 +1110,7 @@ useEffect(() => {
       coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
       voteId: vote?.id,
       voteTime: vote?.voteTime,
-      valueVotingTime: vote?.valueVotingTime,
+      valueVotingTime: vote?.valueVotingTime,      
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
       expiration: vote?.expiration,
@@ -1046,6 +1133,7 @@ useEffect(() => {
         const newVotes = await getVotesFunc({
           userId: user?.uid,
         });
+
         // @ts-ignore
         let result = JSON.parse(newVotes?.data)
         if (newVotes?.data) {
@@ -1096,6 +1184,11 @@ useEffect(() => {
     }
   }, [user?.uid]);
 
+  /// show 100 CMP complete modal
+  const [completedVoteCMP, setCompletedVoteCMP] = useState<number>(0);
+  const [showComplete100CMP, setShowComplete100CMP] = useState(false);
+  ///show 100 CMP complete modal
+
   ///start vote result //
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
@@ -1104,11 +1197,18 @@ useEffect(() => {
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
-  const [calculateVote, setCalculateVote] = useState<boolean>(true);
-  const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+  const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
+  // const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+  const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
+  const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const currentCMP = useContext(CurrentCMPContext);
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
+
+  
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
+      Swal.close();
       setVoteDetails((prev: VoteContextType) => {
         return {
           ...prev,
@@ -1116,7 +1216,11 @@ useEffect(() => {
           openResultModal: true
         }
       });
-      setCurrentCMP(completedVotes[0]?.score || 0)
+      setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'));
+      if (!pathname.toLowerCase().includes(`profile/mine`)) {
+        localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+      }
+      setCompletedVoteCMP((completedVotes[0]?.score || 0));
     }
   }, [completedVotes, voteDetails.openResultModal]);
 
@@ -1128,12 +1232,12 @@ useEffect(() => {
       }
       return {};
     });
-    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId && !pathname.includes('profile/mine')) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
     }
-  }, [voteDetails?.activeVotes]);
+  }, [JSON.stringify(voteDetails?.activeVotes), pathname]);
   const voteImpact = useRef<{
     timeFrame: number,
     impact: null | number
@@ -1142,57 +1246,104 @@ useEffect(() => {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
+  const latestCoinsPrice = useRef<VoteEndCoinPriceType>({});
+  const latestUserInfo = useRef<UserProps | undefined>();
+  const pathNameRef = useRef<string>();
+  useEffect(() => {
+    pathNameRef.current = pathname;
+  }, [pathname])
+  useEffect(() => {
+    latestCoinsPrice.current = voteEndCoinPrice;
+  }, [voteEndCoinPrice]);
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
   }, [voteDetails]);
+
+
+  const getCalculateDiffBetweenCoins = (valueVotingTime: any, valueExpirationTime:any, direction: number) => {
+
+    const firstCoin = (((valueExpirationTime[0] - valueVotingTime[0]) * 100) / valueVotingTime[0]);
+    const secondCoin = (((valueExpirationTime[1] - valueVotingTime[1]) * 100) / valueVotingTime[1]);
+    const difference = (direction === 0 ? (firstCoin) - (secondCoin) : (secondCoin) - (firstCoin)).toFixed(4);
+    return {
+      firstCoin: firstCoin.toFixed(4) || '0',
+      secondCoin: secondCoin.toFixed(4) || '0',
+      difference: difference || '0'
+    }
+  }
+
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
-
-      console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
 
       // voteTime date
-      let voteTime = new Date(lessTimeVote?.expiration);
-
-      // finding the difference in total seconds between two dates
-      
+      let voteTime = new Date(lessTimeVote?.expiration);      
+      // finding the difference in total seconds between two dates      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      // if (second_diff > 0) {
-      const timer = setTimeout(async () => {      
+      const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+        const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,]
 
-        console.log(coins[coin1.toUpperCase()]?.price,coins[coin2.toUpperCase()],coins,"coinsname")
-        await getPriceCalculation({
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
+        // @ts-ignore
+        var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ?2: 1 : voteImpact.current?.impact;
+
+        console.log(StatusValue, 'StatusValue');
+        if (pathNameRef.current?.includes('profile/mine')) {
+          return
+        }
+        console.log(voteNumberEnd,"voteNumberEnd")
+        const request = {
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
             coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
             voteId: lessTimeVote?.id,
             voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,            
+            valueVotingTime: lessTimeVote?.valueVotingTime,
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
-            userId: lessTimeVote?.userId,
-
+            userId: lessTimeVote?.userId,                                          
+            paxDistributionToUser: {
+              userId: lessTimeVote?.userId,
+              currentPaxValue: Number(paxDistribution),
+              isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+              mintForUserAddress: userInfo?.paxAddress?.address || "",
+              eligibleForMint: userInfo?.paxAddress?.address ? true : false
+            }
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
-                status: voteImpact.current?.impact,                
-                valueExpirationTimeOfCoin1:myCoins[coin1.toUpperCase()]?.price || null,                
-                valueExpirationTimeOfCoin2:myCoins[coin2.toUpperCase()]?.price || null,
-              }                            
+                status: StatusValue,
+                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
+                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
+              }
               :
               {}
           )
-        }).then((response) => {
+        }
+        console.log(lessTimeVote, "ChecklessTimeVote")
+        await getResultAfterVote(request).then(async (response) => {
+        
+          console.log(response?.data, "response?.data?.result?")
+          // @ts-ignore
+          // if (response?.data?.paxDistributionToUser && response?.data?.paxDistributionToUser?.status == true) {
+          // afterpaxDistributionToUser(paxDistribution)
+          // }
+
+          console.log(latestUserInfo.current, 'latestUserInfo.current');
+          getPriceCalculation(request).then(() => { }).catch(() => { });
+          // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
+          //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
+          // }
+
+          // afterpaxDistributionToUser(paxDistribution)
+          
           if (response?.data && Object.keys(response.data).length > 0) {
-            // setpopUpOpen(true);
-            // setModalData(response!.data);
-            // setLessTimeVote(undefined);
             const res: VoteResultProps = response!.data as VoteResultProps;
             // @ts-ignore
             if ((!!latestVote?.current?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
@@ -1201,16 +1352,8 @@ useEffect(() => {
                   ...prev.filter(value => value.voteId != res.voteId),
                   { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' }
                 ]
-              })
-              // setVoteDetails((prev: VoteContextType) => {
-              //   return {
-              //     ...prev,
-              //     lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
-              //     openResultModal: true
-              //   }
-              // })
+              });
             }
-            // setModalData(response!.data);
           }
         }).catch(err => {
           if (err && err.message) {
@@ -1222,19 +1365,67 @@ useEffect(() => {
       // }
     }
   }
+  const claimReward = httpsCallable(functions, "claimReward");
+  
+  const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 
-  // useEffect(() => {
-  // const coinData = firebase
-  //   .firestore()
-  //   .collection("settings").doc('settings')
-  // coinData.get()
-  //   .then((snapshot: any) => {
-  //     console.log('hello', snapshot.data().voteRules.maxVotes)
+  useEffect(() => {
+      
 
-  //     });
-  // }, [])
+    if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0) && !isVirtualCall) {
+      console.log("i am calling again");
+      claimReward({
+        uid: user?.uid,isVirtual: true}).then(() => {        
+      }).catch(() => { });
+      
+      // paxDistributionOnClaimReward({
+      //   paxDistributionToUser: {
+      //     userId: userInfo?.uid,
+      //     currentPaxValue: Number(paxDistribution),
+      //     isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+      //     mintForUserAddress: userInfo?.paxAddress?.address || "",
+      //     eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      //   }      
+      // }).then((res) => { 
+      //   console.log(res?.data, "resdata")
+      //   // @ts-ignore
+      //   if (res?.data?.getResultAfterSentPaxToUser?.status) {
+      //     afterpaxDistributionToUser(paxDistribution)
+      //   }
+      //   // afterpaxDistributionToUser(paxDistribution)
+      // }).catch(() => { });
+      
+    }
+    latestUserInfo.current = userInfo;
+  }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed), isVirtualCall]);
 
   ///END vote result //
+
+
+  // login user using token
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let token = searchParams.get('token');
+    if (token) {
+      firebase.auth().signInWithCustomToken(token)
+        .then((userCredential) => {
+          // User is signed in
+          const user = userCredential.user;
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
+          navigate('/');
+        })
+        .catch((error) => {
+          // Handle sign-in errors
+          console.error('Custom token sign-in error: authenticated', error);
+        });
+    }
+  }, [searchParams]);
+
+
 
   return loader ? (
     <div
@@ -1245,11 +1436,41 @@ useEffect(() => {
     </div>
   ) : (
     <BackDiv
-      style={{
-        // border: "1px solid red",
+        style={{
+                
+        // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
-    >
+      >  
+
+        {!login &&
+          !firstTimeAvatarSlection &&
+          !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
+        <div className='pwaPopup' style={{ display: pwaPopUp }}>
+          <span>{texts.InstallCoinParliament}</span>
+          <button
+            className="link-button"
+            id="setup_button"
+            aria-label="Install app"
+            title="Install app"
+            onClick={onClick}
+            style={{ zIndex: 99999 }}
+          >
+            {texts.Install}
+          </button>
+          <span
+            className="link-button"
+            id="setup_button"
+            aria-label="Install app"
+            title="Install app"
+            onClick={e => setPwaPopUp('none')}
+            style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
+          >
+            x
+            </span>
+           
+        </div>}
+
       <div>
         {enabled && (
           <NotificationContext.Provider
@@ -1277,7 +1498,24 @@ useEffect(() => {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    addPaxWalletPop,
+                    setAddPaxWalletPop,
+                    walletTab,
+                    setWalletTab,
+                    avatarImage,
+                    setAvatarImage,
+                    selectBioEdit,
+                    setSelectBioEdit,
+                    isVirtualCall, 
+                    setIsVirtualCall,
+                  withLoginV2e,
+                  setWithLoginV2e,
+                  transactionId,
+                  setTransactionId,
+                  setBackgrounHide,
+                  backgrounHide,
+                  voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,
                   setAlbumOpen,
@@ -1323,6 +1561,10 @@ useEffect(() => {
                   setSignup,
                   firstTimeLogin,
                   setFirstTimeLogin,
+                  showMenubar,
+                  setShowMenuBar,
+                  firstTimeAvatarSlection,
+                  setFirstTimeAvatarSelection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,
@@ -1334,6 +1576,8 @@ useEffect(() => {
                   languages,
                   setLanguages,
                   translations,
+                  isWLDPEventRegistered,
+                  setIsWLDPEventRegistered,
                   setTranslations: (newTranslations) => {
                     newTranslations = new Map(newTranslations);
                     translations.clear();
@@ -1412,11 +1656,12 @@ useEffect(() => {
                       setChangePrice,
                       ws,
                       socket,
+                      socketConnect,
                       rest,
                       coins,
                       setCoins,
                       myCoins,
-                        setMyCoins,
+                      setMyCoins,
                       leaders,
                       setLeaders,
                       totals,
@@ -1452,9 +1697,10 @@ useEffect(() => {
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
                             >
-
+                              
                               <Header
                                 remainingTimer={remainingTimer}
+                                setMfaLogin={setMfaLogin}
                                 logo={
                                   (login && window.screen.width > 979) ||
                                   window.screen.width > 979
@@ -1512,14 +1758,16 @@ useEffect(() => {
                                     setFirstTimeAvatarSelection
                                   }
                                   generate={generateUsername}
-                                  saveUsername={async (username) => {
+                                  
+                                  saveUsername={async (username:any, DisplayName:any) => {
                                     if (user?.uid) {
                                       await saveUsername(user?.uid, username, "");
+                                      await saveDisplayName(user?.uid, DisplayName, "");
                                       setFirstTimeAvatarSelection(true);
                                       // setFirstTimeFoundationSelection(true);
                                       setFirstTimeLogin(false);
                                     }
-                                  }}
+                                  }}                                  
                                 />
                               )}
 
@@ -1529,6 +1777,21 @@ useEffect(() => {
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
                                   }
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                />
+                              )}
+                              
+                              {!firstTimeLogin && !firstTimeAvatarSlection && selectBioEdit && (
+                                <SelectBio
+                                  userData={user}
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                  // setFirstTimeAvatarSelection={
+                                  //   setFirstTimeAvatarSelection
+                                  // }
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&
@@ -1551,15 +1814,22 @@ useEffect(() => {
                                       }}
                                     />
                                   )}
-                                  {(user || userInfo?.uid) && login && (
+                                  {/* {(user || userInfo?.uid) && login && (
+                                    <Login2fa
+                                      setLogin={setLogin}
+                                      setMfaLogin={setMfaLogin}
+                                    />
+                                  )} */}
+                                  {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
                                     <Login2fa
                                       setLogin={setLogin}
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )}
-                                  {!login &&
+                                  {(
+                                    !login &&
                                     !firstTimeAvatarSlection &&
-                                    !firstTimeFoundationSelection && (
+                                    !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
                                         <Container
                                           fluid
@@ -1575,38 +1845,19 @@ useEffect(() => {
                                             // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
                                             padding: `${pathname === "/" ? 160 : 120
                                               }px 0 0`,
+                                            // transformStyle: "flat",
+                                            // transform: `${backgrounHide ? "scale(1.5)" : "scale(1)"}`,
+                                            transform: `${backgrounHide ? `${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"}` : "scale(1)"}`,
+                                            transformOrigin: `${backgrounHide ? `${window.screen.width > 767 ? "35% 50%" : "50% 90%"}` : ""}`,
+                                            transition: `${backgrounHide ? "all 3s" : ""}`,
+
                                           }}
-                                        >
-                                          <div className='pwaPopup' style={{ display: pwaPopUp }}>
-                                            <span>{texts.InstallCoinParliament}</span>
-                                            <button
-                                              className="link-button"
-                                              id="setup_button"
-                                              aria-label="Install app"
-                                              title="Install app"
-                                              onClick={onClick}
-                                              style={{ zIndex: 99999 }}
-                                            >
-                                              {texts.Install}
-                                            </button>
-                                            <span
-                                              className="link-button"
-                                              id="setup_button"
-                                              aria-label="Install app"
-                                              title="Install app"
-                                              onClick={e => setPwaPopUp('none')}
-                                              style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
-                                            >
-                                              x
-                                            </span>
-                                          </div>
+                                        >                                          
                                           <Routes>
                                             <Route path='/' element={
 
                                               <Home />} />
-                                            <Route path='/firebase-messaging-sw.js#' element={
-
-                                              <Home />} />
+                                            <Route path='/firebase-messaging-sw.js' element={<Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
@@ -1617,7 +1868,7 @@ useEffect(() => {
                                             /> */}
                                             <Route
                                               path='nftAlbum'
-                                              element={<NFTGalleryCopy />}
+                                              element={<NFTGallery />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
@@ -1626,6 +1877,10 @@ useEffect(() => {
                                             <Route
                                               path='singalCard/:type/:id'
                                               element={<SingalCard />}
+                                            />
+                                            <Route
+                                            path='singlecarddetails/:type/:id'
+                                            element={<SingleCardDetails />}
                                             />
                                             <Route
                                               path='coins/:id'
@@ -1642,11 +1897,23 @@ useEffect(() => {
                                             <Route
                                               path={ProfileTabs.profile}
                                               element={<Profile />}
+
                                             >
                                               <Route
                                                 path={ProfileTabs.edit}
+
                                                 element={<PersonalInfo />}
                                               />
+                                              <Route
+                                                path={ProfileTabs.history}
+
+                                                element={<PaymentHistory />}
+                                              />
+                                            {/* <Route
+                                              path={ProfileTabs.foundationshow}
+
+                                                element={<FoundationData />}
+                                              /> */}
                                               <Route
                                                 path={ProfileTabs.password}
                                                 element={<Security />}
@@ -1685,7 +1952,7 @@ useEffect(() => {
                                                 path={
                                                   ProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<ProfileNftGalleryCopy />}
+                                                element={<ProfileNftGallery />}
                                               />
                                               <Route
                                                 path={
@@ -1723,7 +1990,7 @@ useEffect(() => {
                                                 path={
                                                   FollowerProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<FwProfileNftGalleryCopy />}
+                                                element={<FwProfileNftGallery />}
                                               />
                                               <Route
                                                 path={
@@ -1736,11 +2003,32 @@ useEffect(() => {
                                             {/* Fowller component  end*/}
                                             <Route
                                               path='/upgrade'
-                                              element={<UpgradePage />}
+
+                                              element={<UpgradePageCopy />}
+                                            />
+                                            {/* <Route
+                                              path='/paymentList'
+                                              element={<CoinsList />}
+                                          /> */}
+
+                                            <Route path='/paymentList'
+                                              // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                              element={
+
+                                                <PaymentFun
+                                                  isVotingPayment={false}
+                                                />
+                                              }
+                                            />
+                                            <Route path='/VotePayment'
+                                              // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                              element={<PaymentFun
+                                                isVotingPayment={true}
+                                              />}
                                             />
                                             <Route
                                               path='/votingbooster'
-                                              element={<VotingBooster />}
+                                              element={<VotingBoosterCopy />}
                                             />
                                             <Route
                                               path='influencers'
@@ -1748,7 +2036,7 @@ useEffect(() => {
                                             />
 
                                             {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                            <Route path='faq' element={<FAQ />} />
+                                          <Route path='knowledgehub' element={<FAQ />} />
                                             <Route
                                               path='about'
                                               element={<About />}
@@ -1758,8 +2046,8 @@ useEffect(() => {
                                               element={<GameRule />}
                                             />
                                             <Route
-                                              path='partners'
-                                              element={<Partners />}
+                                              path='Ambassador'
+                                              element={<Ambassador />}
                                             />
                                             <Route
                                               path='foundations'
@@ -1792,7 +2080,16 @@ useEffect(() => {
                                                   element={<Content />}
                                                 />
                                               ))}
+
                                             <Route path='*' element={<Content />} />
+
+
+                                            {<Route path='/generic-signup' element={
+                                              !user && !localID ?
+                                                <GenericLoginSignup />
+                                                : <Navigate to="/" />
+                                            } />}
+
                                           </Routes>
                                         </Container>
                                         <Footer />
@@ -1808,12 +2105,16 @@ useEffect(() => {
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && user&&  <ModalForResult
+                      {voteDetails?.lessTimeVote && !pathname.toLowerCase().includes(`profile/mine`) && user && <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
                         setLessTimeVoteDetails={setLessTimeVoteDetails}
+                        setShowComplete100CMP={setShowComplete100CMP}
+                        currentCMP={completedVoteCMP}
                       />}
+                      {/* complete 100 cmp notify  */}
+                      <Complete100CMPModal setCurrentCMP={setCompletedVoteCMP} showComplete100CMP={showComplete100CMP} setShowComplete100CMP={setShowComplete100CMP} />
                     </UserContext.Provider>
                   </CoinsContext.Provider>
                 </ContentContext.Provider>

@@ -7,7 +7,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, PhoneAuthProvider, PhoneMultiFactorGenerator, User } from "firebase/auth";
 import LoginWith from "./LoginWith";
 import styled from "styled-components";
-import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px } from "../../styledMixins";
+import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px, PoppinsNormalBlueViolet12px } from "../../styledMixins";
 import { User as AuthUser } from "@firebase/auth";
 import { Callback } from "../../common/models/utils";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
@@ -16,7 +16,10 @@ import { capitalize } from "lodash";
 import { FormControl, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import AppContext from "../../Contexts/AppContext";
 import { Buttons } from "../Atoms/Button/Button";
-
+import logo from "../../assets/svg/logoiconx2.png";
+import v2elogo from "../../assets/svg/VTElogo.png";
+import copy from "copy-to-clipboard";
+import googleLogo from "../../assets/svg/google_Logo.svg"
 const OR = styled.div`
   ${PoppinsMediumBlack12px};
   min-height: 19px;
@@ -24,7 +27,7 @@ const OR = styled.div`
   letter-spacing: 0;
   line-height: 11px;
   white-space: nowrap;
-  text-transform: uppercase;
+  text-transform: uppercase;  
 `;
 const SignUp = styled.div`
 margin-left:5px;
@@ -45,7 +48,7 @@ ${PoppinsBoldBlueViolet14px};
 const DontHaveAccountText = styled.div`
  color:black;
 `;
-const H1= styled.div`
+const H1 = styled.div`
 margin-bottom:10px;
 background: var(--color-160133) 0 0% no-repeat padding-box;
 border: 2px solid var(--color-6352e8);
@@ -60,8 +63,37 @@ padding:15px;
 // font-size:13px;
 }
 `
+const Image = styled.img`
+  // display: inline;
+`;
+
+const LoginButton = styled.div`
+border:none;
+border-radius:5px;
+  background: var(--white);
+  color: var(--black);
+  width: 100%;
+  align-items: center;
+  justify-content: start;
+  cursor: pointer;
+  &:hover{
+    color: #fff;
+    background-color: #d4d0f3;
+    border-color: #d4d0f3;
+  }
+`;
+const ContinueWith = styled.div`
+  ${PoppinsNormalBlueViolet12px};
+  min-height: 19px;
+  align-self: flex-end;
+  margin-left: 32px;
+  min-width: 131px;
+  letter-spacing: 0;
+  white-space: nowrap;
+`;
+
 export type LoginProps = {
-  setForgetPassword:(s:boolean)=>void;
+  setForgetPassword: (s: boolean) => void;
   setUser: (user?: User | undefined) => void;
   setSignup: (s: boolean) => void;
   authProvider: (
@@ -79,42 +111,85 @@ export type LoginProps = {
   ) => Promise<void>;
 };
 
-const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: LoginProps) => {
+const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const {setLoginRedirectMessage,loginRedirectMessage} = useContext(AppContext);
-  const[smsVerification,setSmsVerification]=useState('')
+  const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e, setLogin } = useContext(AppContext);
+  const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   console.log(smsVerification)
   useEffect(() => {
-    
+
     return () => {
       setLoginRedirectMessage('')
     }
   }, [])
   const handleClose = () => {
     setSmsVerification('')
-    
+
   };
+
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   return (
-    <>
-    {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {Object.values(LoginProviders).map((provider, i) => {
+    <div
+      className="text-center"
+      style={{ width: "300px" }}
+    >      
+      {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
+      {!isInstagramAvailable && !withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith
               provider={provider}
               onClick={() =>
                 // @ts-ignore
-                authProvider(setUser, providers[provider], showToast, setSmsVerification)
+                authProvider(setUser, providers[provider], showToast, setSmsVerification, () => {
+                  setLogin(false)
+                })
               }
             />
           </div>
         );
       })}
-      <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
+      {isInstagramAvailable && <div><img src={googleLogo} alt="" style={{width:"50px"}}/>
+      <div style={{width:'260px', color:'black',margin:"20px"}}>To login with google, copy this link and open in another browser, <span style={{textAlign:'center',color: 'var(--blue-violet)',fontSize:"9px"}}  onClick={() => {
+        copy(window.location.href);
+        showToast(
+          'Your referral link is copied to the clipboard.',
+          ToastType.SUCCESS
+        );
+      }}>Copy link</span></div></div>}
+      <div className="mb-2 w-100">
+        <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+          onClick={() => {
+            setWithLoginV2e(!withLoginV2e)
+          }}
+        >
+          {/* <Image {...{ src: logos[provider] }} /> */}
+          {/* {withLoginV2e && <div className="d-flex py-2 "
+            style={{
+              marginLeft: "25px"
+            }}
+          >
+            <Image src={logo} alt="" width={"25px"} className="pl-3" />
+            <ContinueWith>CONTINUE WITH Coin Parliament</ContinueWith>
+          </div>} */}
+
+          {!withLoginV2e && <div className="d-flex py-2 "
+            style={{
+              marginLeft: "25px"
+            }}
+          >
+            <Image src={v2elogo} alt="" width={"25px"} height={"25px"} className="pl-3" />
+            <ContinueWith>Continue with VoteToEarn</ContinueWith>
+          </div>}
+        </LoginButton>
       </div>
+
+      {!withLoginV2e && <div className="my-3 align-self-center">
+        <OR className="mx-auto">{translate("or")}</OR>
+      </div>}
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
@@ -124,47 +199,54 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           login={login}
         />
       </div>
-      <div className='d-flex'>
-       <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
-      </div>
-      <div className='d-flex  mt-2'>
-      <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
-      </div>
+
+      {withLoginV2e ?
+        <ForgetPasswordText className="d-flex justify-content-center align-items-center cursor-pointer" onClick={() => setWithLoginV2e(false)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
+        </ForgetPasswordText>
+        : <>
+          <div className='d-flex justify-content-center'>
+            <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
+          </div>
+          <div className='d-flex justify-content-center mt-2'>
+            <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText>
+            <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
+          </div>
+        </>}
       <div id="loginId"></div>
-      <Modal show={smsVerification?true:false} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+      <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
-            <p>Please enter verification code which is sent to your number.</p>
-            <FormControl
-              className="mt-2"
-              type="number"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-          </Modal.Body>
-        
+        <Modal.Body>
+          <p>Please enter verification code which is sent to your number.</p>
+          <FormControl
+            className="mt-2"
+            type="number"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+          />
+        </Modal.Body>
+
         <Modal.Footer>
           <Buttons.Default onClick={handleClose}>Close</Buttons.Default>
           <Buttons.Primary
             // disabled={!valid}
             onClick={async () => {
               // @ts-ignore
-              const cred = PhoneAuthProvider.credential( smsVerification?.verificationId, verificationCode);
-            const multiFactorAssertion =
+              const cred = PhoneAuthProvider.credential(smsVerification?.verificationId, verificationCode);
+              const multiFactorAssertion =
                 PhoneMultiFactorGenerator.assertion(cred);
-            // Complete sign-in.
-            // @ts-ignore
-            return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
+              // Complete sign-in.
+              // @ts-ignore
+              return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
             }}
           >
             CONTINUE
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 

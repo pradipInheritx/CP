@@ -120,7 +120,9 @@ const PairsForm = ({
           valueVotingTime: [coinUpdated[coin1?.symbol]?.price || 0 + coinUpdated[coin1?.symbol]?.randomDecimal || 0, coinUpdated[coin2?.symbol]?.price || 0 + coinUpdated[coin2?.symbol]?.randomDecimal || 0],
           voteTime: Date.now(),
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
-          voteId: `${symbolCombination([coin1.symbol, coin2.symbol])}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
+          voteId: `${symbolCombination([coin1.symbol, coin2.symbol])}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`,
+          // @ts-ignore
+          voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));
@@ -128,6 +130,7 @@ const PairsForm = ({
       if (user?.uid) {
         setVoteId(ref.id);
       }
+      console.log("after give vote")
     } catch (e) {
       console.log(e);
       showToast((e as Error).message, ToastType.ERROR);
@@ -162,7 +165,7 @@ const PairsForm = ({
 
   const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
-    <Container className="">
+    <Container className="">      
       {/* @ts-ignore */}
       <VoteForm
         {...{

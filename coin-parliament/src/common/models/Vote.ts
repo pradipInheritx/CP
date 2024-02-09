@@ -34,6 +34,7 @@ export type VoteResultProps = VoteProps & {
   CPMRangePercentage?: number;
   voteId?: string
   voteType?: string
+  paxDistributionToUser?: any;
 };
 
 export type TimeFrame = {
@@ -85,7 +86,6 @@ class Vote implements VoteProps {
     );
 
     const docsSnap = await getDocs(q.withConverter(voteConverter));
-
     if (!docsSnap.empty) {
       const v = docsSnap.docs.find(
         (d) =>
@@ -102,7 +102,7 @@ class Vote implements VoteProps {
       if (data.expiration - Date.now() < 0) {
         return;
       }
-
+      console.log(v,"i am working not")
       return v;
     }
   }

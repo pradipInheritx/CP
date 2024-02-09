@@ -3,7 +3,7 @@ import { Col, Container, Form, Modal, Row, InputGroup } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import User, { UserProps } from "../../common/models/User";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import TextField from "../Forms/Textfield";
 import { Buttons } from "../Atoms/Button/Button";
@@ -14,40 +14,80 @@ import SelectTextfield from "../Forms/SelectTextfield";
 import { CountryCode } from "./utils";
 import styled from "styled-components";
 import { Input } from "../Atoms/styles";
+import Styles from "../LoginComponent/styles";
 import { texts } from "../LoginComponent/texts";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { generateGoogle2faUrl } from "../../common/consts/contents";
 import axios from "axios";
+import Avatars, { AvatarType } from "assets/avatars/Avatars";
+import Avatar from "Components/Users/Avatar";
+import { translate, useTranslation } from "common/models/Dictionary";
+import UpdateAvatars from "./UpdateAvatars";
+import { toast } from "react-toastify";
+import AppContext from "Contexts/AppContext";
+import WalletValidation from "./Wallet/WalletValidation";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
 
 
+const ElementsAvatarAImage1 = styled.div`
+  width: 70px;  
+  margin-top: 1px;    
+`;
 
 
+
+const TextAera = styled.textarea`
+      border-radius:5px;
+      width: ${ window.screen.width > 767 ? "500px" : "100%"};      
+    border:1px solid var(--color-e3e3e3);
+      box-shadow:inset 0 3px 6px #00000029;
+    opacity: 1;
+    padding:10px 10px 10px 20px;
+    color:#6d757d;
+`;
 
 const PersonalInfo = () => {
+  const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [edit, setEdit] = useState(false)
   const [userName, setUserName] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameErr, setDisplayNameErr] = useState(false)
+  const [phoneErr, setPhoneErr] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [bio, setBio] = useState('');
   const [phone, setPhone] = useState<any>({ phone: "" })
   const [countryCode, setCountryCode] = useState('us');
   const [userCurrentCountryCode, setUserCurrentCountryCode] = useState('');
   const [show, setShow] = useState(false);
+  const [mfaLogin, setMfaLogin] = useState(false)  
   let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
+  const [avatarMode, setAvatarMode] = useState(false);
+  const [bioErr, setBioErr] = useState(false);
+  const translate = useTranslation();
+  const [modleShow, setModleShow] = useState(false)
+  const handleModleClose = () => setModleShow(false);
+  const handleModleShow = () => setModleShow(true);
+
   useEffect(() => {
-    setUserName(userInfo?.displayName || '')
+    setDisplayName(userInfo?.displayName || '')
+    setUserName(userInfo?.userName || '')
     setFirstName(userInfo?.firstName || '')
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
+    setBio(userInfo?.bio || '');
     setPhone({ phone: userInfo?.phone })
-  }, []);
+  }, [userInfo]);
+
+  console.log(userInfo?.phone,"userInfo?.phone")
+
 
   const createPost = async (id: string) => {
     if (!id) return
@@ -74,23 +114,28 @@ const PersonalInfo = () => {
     setShow(false)
   }
   const onSubmit = async (newUserInfo: UserProps) => {
+    
     if (u?.uid) {
       const userRef = doc(db, "users", u?.uid);
       try {
         await updateDoc(userRef, newUserInfo);
-        showToast(texts.UserInfoUpdate);
+        showToast(texts.UserInfoUpdate);        
       } catch (e) {
         showToast(texts.UserFailUpdate, ToastType.ERROR);
       }
     }
   };
   const handleOnChange = (value: any, data: any, event: any, formattedValue: any) => {
+    // setPhoneErr(false)
     setPhone({ phone: value });
     if (countryCode === data.country) {
       setCountryCode(data.countryCode);
     }
+
   }
 
+
+  console.log(phone , phoneErr,"Phonenumber")
   useEffect(() => {
     axios
       .get("https://ipapi.co/json/")
@@ -101,36 +146,85 @@ const PersonalInfo = () => {
         console.log(error);
       });
   }, [phone]);
+
+  const onSubmitAvatar = async (type: AvatarType) => {
+    if (u?.uid) {          
+      const userRef = doc(db, "users", u?.uid);
+      try {
+        await setDoc(userRef, { avatar: type }, { merge: true });
+        setAvatarImage("")
+        showToast(translate(texts.UserInfoUpdate));
+        setAvatarMode(false)
+        toast.dismiss();        
+      } catch (e) {
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
+      }
+    }
+  };
+  
+  const UpdateEmail2FA = () => {
+    handleModleClose()
+    setShow(true)
+  }
+
+   console.log(bio.length, "bio.length") 
   return (
     <>
 
       <Form className="mt-1 d-flex flex-column" onSubmit={async (e) => {
         e.preventDefault();
         if (edit) {
-          const newUserInfo = {
+          let newUserInfo = {
             ...(userInfo as UserProps),
             firstName: firstName as string,
             lastName: lastName as string,
             email: email as string,
+            displayName: displayName as string,
+            bio: bio as string,
             phone: countryCode + phone.phone as string,
           };
-          if (email === user?.email) {
+
+          if (displayName.length < 6 || displayName.length > 15 || displayName=="") {                                   
+            setDisplayNameErr(true);
+          }
+          // else if (phone?.phone && phone?.phone.replace(/\D/g, '').length < 6 || phone?.phone == "") {
+          //   console.log(phone?.phone,"phone?.phone")
+          //   setPhoneErr(true)
+          // }          
+          // else if (bio.length < 5 || bio.length > 401 || bio === "") {
+          //   setBioErr(true);
+          // }  
+          else if (email === user?.email) {
+            console.log("i am working234234345")
             setUserInfo(newUserInfo);
             await onSubmit(newUserInfo);
             setEdit(false)
           }
           else {
-            setShow(true)
-          }
+            // setShow(true)
+            handleModleShow()
+          }                      
         } else {
           setEdit(true)
         }
         // await login(e, callback);
       }}>
 
+        
         <Buttons.Primary style={{ maxWidth: '100px', placeSelf: 'end', margin: '20px', marginBottom: '0px' }} >{edit ? 'SAVE' : 'EDIT'}</Buttons.Primary>
-        <Container>
-
+        <Container className="">
+          <ElementsAvatarAImage1 className="m-auto mb-2" onClick={() => {
+            setAvatarMode(true)
+          }} role="button">
+            {user?.avatar && (
+              <Avatars type={avatarImage || user?.avatar as AvatarType} width={70} style={{
+                height:"70px"
+              }}/>
+            )}
+            {!user?.avatar &&                          
+              <Avatar />            
+            }
+          </ElementsAvatarAImage1>                    
           <Row >
 
             <Col >
@@ -144,11 +238,34 @@ const PersonalInfo = () => {
                   onChange: async (e) => {
                     setUserName(e.target.value)
                   },
-                  maxlength: 10,
+                  maxLength: 10,
                   edit: true,
                 }}
 
               />
+              <TextField
+                {...{
+                  label: `${"Display Name"}`,
+                  name: "displayName",
+                  placeholder: "Display Name",
+                  min:6,
+                  max:15,
+                  value: displayName || "",
+                  onChange: async (e) => {
+                    setDisplayName(e.target.value)
+                    setDisplayNameErr(false)
+                  },
+                  edit: !edit,
+                }}
+
+              />
+              {displayNameErr ? <Styles.p className=" mt-1 mb-2 text-danger"
+                style={{
+                  fontSize: "10px"
+                }}
+              >
+                {translate("Display Name should be between 6-15 characters")}
+              </Styles.p> : null}
               <TextField
                 {...{
                   label: `${texts.FIRSTNAME}`,
@@ -185,25 +302,68 @@ const PersonalInfo = () => {
                     setEmail(e.target.value);
                   },
                   edit: !edit,
+                  // edit: true,
                 }}
               />
               <SelectTextfield
-                label={`${texts.PHONE}`}
-                name="Phone"
+                label={`${texts.BIO}`}
+                name="Bio"
+
               >
-                <PhoneInput
-                  inputStyle={{ width: "100%", padding: "20px 0px 20px 50px" }}
-                  inputProps={{
-                    name: 'phone',
-                    required: true,
-                    disabled: !edit
+                <TextAera                                  
+                  name="Bio"                  
+                  placeholder= "Bio"
+                  value= {bio || ""}
+                onChange={(e) => {
+                  setBio(e.target.value)
+                  setBioErr(false)
                   }}
-                  disableDropdown={!edit}
-                  country={!phone?.phone ? userCurrentCountryCode : ''}
-                  value={phone?.phone || ""}
-                  onChange={handleOnChange}
+                  disabled ={!edit}
+                  // edit: true,
+                  style={{                    
+                    background: `${!edit ? "#e9ecef" : "var(--color-ffffff) 0% 0% no-repeat padding-box"}`,                      
+                }}
                 />
-              </SelectTextfield>
+                {bioErr ?
+                  <Styles.p className="mt-1 mb-2 text-danger" style={{ fontSize: "10px" }}>
+                    {translate("Bio should be between 5-400 characters")}
+                  </Styles.p>
+                  : null}
+                </SelectTextfield>
+              <div className="mb-5">
+                <SelectTextfield
+                  label={`${texts.PHONE}`}
+                  name="phone"
+
+                >
+                  <PhoneInput                    
+                    inputStyle={{
+                      width: "100%", padding: "20px 0px 20px 50px",
+                    }}
+                    dropdownStyle={{
+                      maxHeight: "150px"
+                    }}
+                    placeholder=""
+                    inputProps={{
+                      name: 'phone',
+                      required: true,
+                      disabled: !edit
+                    }}
+                    disableDropdown={!edit}
+                    country={phone?.phone == undefined || phone?.phone == "" ? userCurrentCountryCode : ''}
+                    // country={""}
+                    value={phone?.phone && phone?.phone}
+                    onChange={handleOnChange}
+                  />
+                </SelectTextfield>
+                {/* {phoneErr ? <Styles.p className=" mt-1 mb-1 text-danger"
+                  style={{
+                    fontSize: "10px"
+                  }}
+                >
+                  {translate("Phone number must required")}
+                </Styles.p> : null} */}
+              </div>
             </Col>
 
           </Row>
@@ -241,7 +401,9 @@ const PersonalInfo = () => {
                   });
                 // ...
               }).catch((error) => {
-                showToast(texts.UserFailUpdate, ToastType.ERROR);
+                showToast(texts.RequiresRecent, ToastType.ERROR);
+                const errorMessage = error.message;
+                console.log(errorMessage);
                 // ...
               });
               // await triggerSaveUsername();
@@ -252,6 +414,62 @@ const PersonalInfo = () => {
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
+      
+      {/* Avater change modal */}
+
+      <Modal show={avatarMode} onHide={handleClose} size="xl"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        contentClassName={`${window.screen.width > 767 ? "" : "AvatarModalTop"} AvatarModal`}
+      >        
+        <UpdateAvatars
+          {...{
+            onSubmit: onSubmitAvatar,
+            onClose: () => setAvatarMode(false),
+          }}
+        />
+      </Modal>   
+      
+{/* For 2fa */}
+      <div>
+        <Modal
+          className=""
+          show={
+            modleShow
+          } onHide={handleModleClose}
+
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+        // @ts-ignore
+        // contentClassName={"modulebackground ForBigNft"}
+        >
+
+
+          <div className="d-flex justify-content-end"
+            style={{
+              color: "gray",
+              cursor: "pointer"
+            }}
+            onClick={() => {
+              handleModleClose()
+            }}
+          >
+            X
+          </div>
+          <Modal.Body
+          >
+            <div className="d-flex flex-column align-items-center">
+              <WalletValidation
+                setMfaLogin={setMfaLogin}
+                UpdateFunction={UpdateEmail2FA}
+                modalOpen={true}
+              />
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div> 
     </>
   );
 };

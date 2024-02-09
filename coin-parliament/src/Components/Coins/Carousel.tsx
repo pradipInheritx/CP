@@ -135,9 +135,9 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-  const {ws,socket} = useContext(CoinsContext);
-  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
-  const livePrice=useRef(coins)
+  const { ws, socket, socketConnect } = useContext(CoinsContext);
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
+  const livePrice = useRef(coins)
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
       {
@@ -147,25 +147,25 @@ const Carousel = ({
     ],
     []
   );
-  function updateCoin(){
-    for (let obj in  livePrice.current) {
+  function updateCoin() {
+    for (let obj in livePrice.current) {
       // Update the property value of prop1 in each object
-      livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal ||5) + (Math.random()<0.5?-1:1)
+      livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal || 5) + (Math.random() < 0.5 ? -1 : 1)
     }
     // console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
     setCoinUpdated(livePrice.current)
   }
-useEffect(() => {
-  const interval = setInterval(function () {
-  
-   updateCoin()
-        
-  }, 1500);
+  useEffect(() => {
+    const interval = setInterval(function () {
 
-  return () => {
-   clearInterval(interval) 
-  }
-}, [])
+      updateCoin()
+
+    }, 1500);
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
 
   const instance: Modify<TableInstance<BearVsBullRow>, {}> =
     useTable<BearVsBullRow>(
@@ -179,10 +179,10 @@ useEffect(() => {
 
   const { prepareRow, page, pageOptions, gotoPage, setPageSize } =
     instance as unknown as TableInstance<BearVsBullRow> &
-      UsePaginationInstanceProps<BearVsBullRow> &
-      PaginationProps & {
-        page: Row<BearVsBullRow>[];
-      };
+    UsePaginationInstanceProps<BearVsBullRow> &
+    PaginationProps & {
+      page: Row<BearVsBullRow>[];
+    };
 
   const handlers = useSwipeable(
     swipeOptions({
@@ -207,84 +207,83 @@ useEffect(() => {
 
   useEffect(() => {
     if (!ws) return
-    
-
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-const symbol =message?.s?.slice(0, -4)
+      const symbol = message?.s?.slice(0, -4)      
       if (symbol) {
+
         // @ts-ignore
         const dot = decimal[symbol]
         // for (let obj in  livePrice.current) {
         //   // Update the property value of prop1 in each object
         //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
         // }
-        
+
         // @ts-ignore
-         
-    // for (let obj in  livePrice.current) {
-    //   // Update the property value of prop1 in each object
-    //   livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?1:1)
-    // }
-        livePrice.current= {
+
+        // for (let obj in  livePrice.current) {
+        //   // Update the property value of prop1 in each object
+        //   livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?1:1)
+        // }
+        livePrice.current = {
           ...livePrice.current,
           [symbol]: {
             ...livePrice.current[symbol],
-            price:Number(message?.c).toFixed(dot?.decimal || 2), 
-            randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(livePrice.current[symbol]?.price)?livePrice.current[symbol]?.randomDecimal:5
+            price: Number(message?.c).toFixed(dot?.decimal || 2),
+            randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(livePrice.current[symbol]?.price) ? livePrice.current[symbol]?.randomDecimal : 5
           },
         }
 
-      // setCoinUpdated((prevCoins) => ({
-      //   ...prevCoins,
-      //   [symbol]: {
-      //     ...prevCoins[symbol],
-      //     price:Number(message?.c).toFixed(dot?.decimal || 2), 
-      //   },
-      // }));
-    }
+        // setCoinUpdated((prevCoins) => ({
+        //   ...prevCoins,
+        //   [symbol]: {
+        //     ...prevCoins[symbol],
+        //     price:Number(message?.c).toFixed(dot?.decimal || 2), 
+        //   },
+        // }));
+      }
     };
-  }, [ws])
+  }, [ws, socketConnect])
   // console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
+
       const data = JSON.parse(event.data);
       const dot = decimal["CRO"]
       // console.log('cro price',data?.result?.data[0])
       if (data?.result?.data[0].a) {
-  // @ts-ignore
-  livePrice.current= {
-    ...livePrice.current,
-    ['CRO']: {
-      ...livePrice.current['CRO'],
-      // @ts-ignore
-      price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2), 
-      randomDecimal:5
-    },
-  }
-      // setCoinUpdated((prevCoins) => ({
-      //   ...prevCoins,
-      //   ['CRO']: {
-      //     ...prevCoins['CRO'],
-      //     price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
-      //   },
-      // }));
-    }
+        // @ts-ignore
+        livePrice.current = {
+          ...livePrice.current,
+          ['CRO']: {
+            ...livePrice.current['CRO'],
+            // @ts-ignore
+            price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+            randomDecimal: 5
+          },
+        }
+        // setCoinUpdated((prevCoins) => ({
+        //   ...prevCoins,
+        //   ['CRO']: {
+        //     ...prevCoins['CRO'],
+        //     price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+        //   },
+        // }));
+      }
     };
-  
-  }, [socket])
-  
-  // console.log('allcoin1',coinUpdated)
+
+  }, [socket, socketConnect])
+
   return expanded === false ? (
     <form
       id={id}
       className='carousel slide HelloSlide'
       data-bs-ride='carousel'
-      onSubmit={(e) => e.preventDefault()}     
-    >        
+      onSubmit={(e) => e.preventDefault()}
+    >
       <CPCarousel
-      coin={!(window.screen.width && window.screen.width > 969)}
+        coin={!(window.screen.width && window.screen.width > 969)}
         items={window.screen.width && window.screen.width > 969 ? 6 : 3}
         cursorShow={true}
       >
@@ -296,9 +295,10 @@ const symbol =message?.s?.slice(0, -4)
               <div className='m-1' key={i}>
                 <Card
                   // key={i}
+                  
                   favorite={favorites.includes(symbol)}
                   setFavorite={() => {
-                    onFavClick(favorites, user); 
+                    onFavClick(favorites, user);
                     setIndex(index);
                   }}
                   symbol={symbol}
@@ -322,9 +322,9 @@ const symbol =message?.s?.slice(0, -4)
     <form id={id} className='carousel slide' data-bs-ride='carousel'>
       <div className='carousel-inner'>
         <div className='carousel-item active'>
-          <CardsContainer cols={cols} gap={gap} {...handlers}>
-            {page.length > 0 &&
-              page.slice(0, page.length).map((row: Row<BearVsBullRow>,i:number) => {
+            {page.length > 0 ? <CardsContainer cols={cols} gap={gap} {...handlers}>
+              {page.length > 0 &&
+              page.slice(0, page.length).map((row: Row<BearVsBullRow>, i: number) => {
                 prepareRow(row);
                 return (
                   <div {...row.getRowProps()} className='d-flex' key={i}>
@@ -336,6 +336,7 @@ const symbol =message?.s?.slice(0, -4)
                           {cell.column.id === "symbol" ? (
                             <Card
                               // key={i}
+                              
                               favorite={favorites.includes(symbol)}
                               setFavorite={() => {
                                 onFavClick(favorites, user);
@@ -361,7 +362,12 @@ const symbol =message?.s?.slice(0, -4)
                   </div>
                 );
               })}
-          </CardsContainer>
+            </CardsContainer>            
+            :
+            <p className="text-center w-100">
+              Data Not Found
+            </p>
+            }
         </div>
       </div>
 

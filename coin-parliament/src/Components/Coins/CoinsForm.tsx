@@ -62,7 +62,8 @@ const CoinsForm = ({
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
   const { timeframes, voteRules: { maxVotes, timeLimit } } = useContext(AppContext);
-
+  var urlName = window.location.pathname.split('/');
+  const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
@@ -81,7 +82,6 @@ const CoinsForm = ({
       return;
     }
     const chosenTimeframe = timeframes[selectedTimeFrame];
-
     try {
       setLoading(true);
       if (!user?.uid) {
@@ -99,11 +99,13 @@ const CoinsForm = ({
           userId: user?.uid,
           voteTime: Date.now(),
           // @ts-ignore
-          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price || 0 : coinUpdated[coin?.symbol]?.price || 0 + coinUpdated[coin?.symbol]?.randomDecimal || 0,
+          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price || 0 : `${coinUpdated[coin?.symbol]?.price || 0}${coinUpdated[coin?.symbol]?.randomDecimal || 0}`,
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
-          voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
+          voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`,
+          // @ts-ignore
+          voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
         } as VoteResultProps
-      );
+      )
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {
         // const userRef = doc(db, "users", user?.uid);
@@ -184,7 +186,6 @@ const CoinsForm = ({
                 throttled_vote();
                 setDisableVoteButton(prev => !prev);
               }, 700);
-
             }
           },
           option1: {

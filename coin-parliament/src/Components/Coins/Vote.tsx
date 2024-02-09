@@ -9,7 +9,10 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
+import { scrollUp } from "common/utils/helper";
+import { firestore } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -64,7 +67,7 @@ top: 2px;
     cursor:pointer;
   }
   &:not([disabled]) {
-    animation: bull_shake_left 2s ease 2s 3 alternate forwards;
+    animation: bull_shake_left 2s ease 2s infinite;
   }
   &:hover {
   background:#6352E8;
@@ -86,7 +89,7 @@ const Option1 = styled(Buttons.RadiusBottomLeft)`
       box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
   }
   &:not([disabled]) {
-    animation: bull_shake_right 2s ease 2s 3 alternate forwards;
+    animation: bull_shake_right 2s ease 2s infinite ;
   }
   &:hover {
     background:#6352E8;
@@ -147,6 +150,15 @@ const Vote = ({
 
   }
 
+
+
+  const scrollAtVoteFrame = () => {
+    if (pageTrue && user?.uid && !login) {
+      // scrollUp();
+    }
+  }
+
+
   return (
     <div
     // className="container"
@@ -170,12 +182,21 @@ const Vote = ({
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
-                    const usereData = firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(user?.uid)
-                      // @ts-ignore
-                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
+                    // const usereData = firebase
+                    //   .firestore()
+                    //   .collection("users")
+                    //   .doc(user?.uid)
+                    //   // @ts-ignore
+                    //   .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });                    
+// @ts-ignore
+                    const userDocRef = doc(firestore, 'users', user?.uid)
+                    try {
+                      setDoc(userDocRef, { voteValue: userInfo?.voteValue - 1 }, { merge: true });
+                      console.log("User data updated successfully!");
+                    } catch (error) {
+                      console.error("Error updating user data:", error);
+                    }
+
                   }
                   // @ts-ignore
                   if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
@@ -183,26 +204,33 @@ const Vote = ({
                     // @ts-ignore
                     rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
                     console.log(rewardData, "allrewardData")
-                    const usereData = firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(user?.uid)
-                      // @ts-ignore
-                      .set({ "rewardStatistics": rewardData }, { merge: true });
+                    // const usereData = firebase
+                    //   .firestore()
+                    //   .collection("users")
+                    //   .doc(user?.uid)
+                    //   // @ts-ignore
+                    //   .set({ "rewardStatistics": rewardData }, { merge: true });
+                    // @ts-ignore
+                    const userDocRef = doc(firestore, 'users', user?.uid)
+                    try {
+                      setDoc(userDocRef, { "rewardStatistics": rewardData }, { merge: true });
+                      console.log("User data updated successfully!");
+                    } catch (error) {
+                      console.error("Error updating user data:", error);
+                    }
                   }
                   if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {
                       if (!user) {
-
-
-                        setLoginRedirectMessage('test');
+                        setLoginRedirectMessage('');
                         setLogin(true);
                       } else {
                         showToast(disabledText, ToastType.ERROR);
                       }
                       return;
                     }
+                    scrollAtVoteFrame()
                     setSelectedOption(0);
                     setClickedOption0(true);
                     setTimeout(() => setClickedOption0(false), 1000);
@@ -233,12 +261,22 @@ const Vote = ({
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
-                    const usereData = firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(user?.uid)
-                      // @ts-ignore
-                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
+                    // const usereData = firebase
+                    //   .firestore()
+                    //   .collection("users")
+                    //   .doc(user?.uid)
+                    //   // @ts-ignore
+                    //   .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
+                    // @ts-ignore
+                    const userDocRef = doc(firestore, 'users', user?.uid)
+                    try {
+                      setDoc(userDocRef, { voteValue: userInfo?.voteValue - 1 }, { merge: true });
+                      console.log("User data updated successfully!");
+                    } catch (error) {
+                      console.error("Error updating user data:", error);
+                    }
+
+
                   }
                   // @ts-ignore
                   if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
@@ -246,12 +284,20 @@ const Vote = ({
                     // @ts-ignore
                     rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
                     console.log(rewardData, "allrewardData")
-                    const usereData = firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(user?.uid)
-                      // @ts-ignore
-                      .set({ "rewardStatistics": rewardData }, { merge: true });
+                    // const usereData = firebase
+                    //   .firestore()
+                    //   .collection("users")
+                    //   .doc(user?.uid)
+                    //   // @ts-ignore
+                    //   .set({ "rewardStatistics": rewardData }, { merge: true });
+                    // @ts-ignore
+                    const userDocRef = doc(firestore, 'users', user?.uid)
+                    try {
+                      setDoc(userDocRef, { "rewardStatistics": rewardData }, { merge: true });
+                      console.log("User data updated successfully!");
+                    } catch (error) {
+                      console.error("Error updating user data:", error);
+                    }
                   }
                   if (voteNumber > 0) {
                     VoteButton()
@@ -263,6 +309,7 @@ const Vote = ({
                       }
                       return;
                     }
+                    scrollAtVoteFrame()
                     setSelectedOption(1);
                     setClickedOption1(true);
                     setTimeout(() => setClickedOption1(false), 1000);

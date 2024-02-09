@@ -18,6 +18,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { texts } from "../LoginComponent/texts";
+import { handleSoundClick } from "common/utils/SoundClick";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -103,9 +104,11 @@ const Address = styled.p`
 `;
 
 const ElementsAvatarAImage1 = styled.div`
-  width: 40px;
-  margin-top: 1px;
-  display: flex;
+  width: 43px;
+  height: 43px;
+  // margin-top: 1px;
+  // display: flex;
+
 `;
 
 const Component5031 = styled.div`
@@ -166,7 +169,7 @@ const UserCard = ({
   const { setFollowerUserId } = useContext(AppContext)
   const { userInfo, user } = useContext(UserContext);
 
-
+  console.log(leader,"allleader")
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {
@@ -180,10 +183,9 @@ const UserCard = ({
       navigate('/Profile/mine')
     } else {
       navigate('/followerProfile/mine')
-
     }
-
   }
+
 
   return (
     <Component515
@@ -197,21 +199,28 @@ const UserCard = ({
           padding: pathname?.includes("/influencers") ? "10px 0" : "",
         }}
       >
-        <ElementsAvatarAImage1 onClick={e => {
+        <ElementsAvatarAImage1
+          className=" d-flex justify-content-center align-items-center"
+          style={{            
+            borderRadius: "50px",
+            boxShadow: `${leader?.isUserUpgraded && "1px 0px 5px #FAE481"}`,
+            backgroundColor: `${leader?.isUserUpgraded && "#FAE481"}`,          
+          }}
+          onClick={e => {
           if (user) {
             redirectTab()
           }
-
+          
 
         }}>
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>
-          <UsernameUnique>{leader.displayName}</UsernameUnique>
-          <Group4092>
+          <UsernameUnique className="pb-1">{leader.displayName}</UsernameUnique>
+          {leader?.status && <Group4092>
             <Minister>{translate(leader?.status || "")}</Minister>
             {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
-          </Group4092>
+          </Group4092>}
           <Address>
             <span className='mx-1'>
               {leader.subscribers} {translate("Followers")}
@@ -221,14 +230,19 @@ const UserCard = ({
             </span>
             {expanded && (
               <span className='mx-1'>
-                {Number(Number(leader.pct * 100).toFixed(2))}%
+                {/* {Number(Number(leader.pct * 100).toFixed(2))}&nbsp;Score */}
+                {/* { leader?.score || 0}&nbsp;Score */}
+                {/* {leader?.score === Math.floor(leader?.score) ? leader?.score  || 0 : (leader?.score).toFixed(2) || 0}&nbsp;Score */}
+                {/* {((leader?.successful || 1) / ((leader?.total || 1) * (leader?.successful || 1)))?.toFixed(2)} */}
+                {((leader?.successful || 1) / (leader?.total || 1) * (leader?.successful || 1))?.toFixed(2)}
+
               </span>
             )}
             {!expanded && <span className='mx-1'></span>}
           </Address>
         </FlexCol>
         {userInfo?.uid !== leader?.userId ?
-          <Component5031 style={{ background: checked ? "" : "white" }}>
+          <Component5031 style={{ background: checked ? "" : "white" }} onClick={() => { handleSoundClick() }}>
             <Icon
               setChecked={setChecked}
               checked={checked}

@@ -15,6 +15,7 @@ export type UserProps = {
   displayName?: string;
   address?: string;
   firstName?: string;
+  firstTimeLogin?: boolean;
   lastName?: string;
   email?: string;
   avatar?: string;
@@ -33,7 +34,33 @@ export type UserProps = {
   wallet?: string;
   rewardStatistics?: RewardStatistics;
   uid?: string;
-  voteValue?: string;
+  voteValue?: any;
+  bio?: string;
+  userName?: any;
+  lastVoteTime?: any;
+  isUserUpgraded?: boolean;
+  foundationData?: {
+    id:any
+    name:string
+  };
+  wellDAddress?: {
+    coin: string;
+    address: string;
+  },
+  paxAddress?: {
+    coin: string;
+    address: string;
+  },
+  cardAddress?: {
+    coin: string;
+    address: string;
+  },
+  referalReceiveType?: {
+    amount: string;
+    name: string;
+    time: string;
+    limitType: string;
+  }
 };
 
 class User implements UserProps {
@@ -46,6 +73,7 @@ class User implements UserProps {
   private readonly _displayName: string | undefined;
   private readonly _email: string | undefined;
   private readonly _firstName: string | undefined;
+  private readonly _firstTimeLogin: boolean | undefined;
   private readonly _lastName: string | undefined;
   private readonly _leader: string[] | undefined;
   private readonly _mfa: boolean | undefined;
@@ -65,6 +93,7 @@ class User implements UserProps {
     this._displayName = user.displayName;
     this._email = user.email;
     this._firstName = user.firstName;
+    this._firstTimeLogin = user.firstTimeLogin;
     this._lastName = user.lastName;
     this._leader = user.leader;
     this._mfa = user.mfa;
@@ -110,6 +139,9 @@ class User implements UserProps {
 
   get firstName(): string | undefined {
     return this._firstName;
+  }
+  get firstTimeLogin(): boolean | undefined {
+    return this._firstTimeLogin;
   }
 
   get lastName(): string | undefined {
@@ -188,7 +220,10 @@ type HasAvatar = { avatar?: string };
 export const getAvatar = (userInfo: HasAvatar) => {
   if (Object.values(AvatarType).includes(userInfo?.avatar as AvatarType)) {
     return importFile(`./The${userInfo?.avatar}`).default || "";
-  } else {
+  } else if (userInfo?.avatar !="") {    
+    return userInfo?.avatar
+  }
+  else {    
     return importFile("../../../assets/images/no-image", "png").default;
   }
 };
@@ -196,12 +231,15 @@ export const getAvatar = (userInfo: HasAvatar) => {
 export const toFollow = (leaders: string[], id: string) =>
   !leaders?.includes(id);
 
-export const setChecked = (leaders: Leader[], user?: AuthUser) =>
+export const setChecked = (leaders: Leader[], user?: AuthUser, setIsLoading?: any) =>  
   async (userId: string, check: boolean) => {
+    setIsLoading(true)
+    // setIsLoading(true)
     const ll = leaders.find((l) => l.userId === userId);
     if (user && ll) {
       console.log('user follower', ll, user, check)
-      await follow(ll, user, check);
+      await follow(ll, user, check, setIsLoading)
+      // setIsLoading(false)
     } else {
       // showToast("Please login in order to follow influencer.", ToastType.ERROR)
     }

@@ -147,7 +147,8 @@ html[dir="rtl"] .offcanvas-start.show {
     position: fixed;
     bottom: 0px;
     background: white;
-    padding: 20px;
+    padding: 14px;
+    font-size: 12px;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -1433,6 +1434,11 @@ html[dir="rtl"] .accordion-button {
 .popupStyle {
     border-radius:60px 0px 60px 60px !important;
 }
+.popupStyleContainer {
+    position:absolute;
+    top:-10px !important;
+
+}
 .stayInGamePopupStyle {
     border-radius:100px 0px 100px 100px !important;
     width: 25em;
@@ -1441,4 +1447,33 @@ html[dir="rtl"] .accordion-button {
 
 .capitalize{
     text-transform: capitalize;
+}
+.placeholderColor::placeholder{
+    color:white !important;
+}
+iframe[style^="position"]{
+    display: none !important;
+}
+.loading {
+    clip-path: inset(0 1.2ch 0 0);
+    animation: l 1s steps(5) infinite;
+  }
+  
+  @keyframes l {
+    to {
+      clip-path: inset(0 -1ch 0 0)
+    }
+  }
+
+  .popupStyleContainer .swal2-close:hover {
+    color: grey !important;
+  }
+
+  .stayInGamePopupStyle .swal2-close:hover {
+    color: grey !important;
+  }
+
+  .TwoFA{
+    margin-bottom: 20px;
+    font-size: 1rem;
 }

@@ -1,4 +1,4 @@
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 const messaging = firebase.messaging();
 messaging.onMessage((payload) => {

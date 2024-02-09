@@ -1,14 +1,14 @@
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-import { getApp } from "firebase/app";
+import { getApp, initializeApp } from "firebase/app";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  authDomain: `coin-parliament-staging.firebaseapp.com`,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}`,
   storageBucket: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com`,
@@ -18,8 +18,23 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-export const messaging = getMessaging();
+export const messaging = (async () => {
+  try {
+    const isSupportedBrowser = await isSupported();
+    console.log(isSupportedBrowser, 'token');
+    if (isSupportedBrowser) {
+      return getMessaging();
+    }
+    console.log('Firebase not supported this browser');
+    return null;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+})();
+export const firestore = getFirestore(app);
 export const db = getFirestore();
 export const auth = getAuth();
 export const functions = getFunctions(getApp());
