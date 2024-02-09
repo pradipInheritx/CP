@@ -901,7 +901,7 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               <Opctiondiv className="">
-                <div
+                <div className="justify-content-center align-items-center d-flex"
                   style={{
                     cursor: "pointer",
                     marginBottom:'10px',
@@ -916,9 +916,10 @@ const VotingPaymentCopy: React.FC<{
                   <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p>
                 </div>
-                {!!(payamount>24) && <div
+                {!!(payamount>24) && <div className="d-flex flex-column align-items-center justify-content-center"
                   style={{
                     cursor: "pointer",
+                    marginBottom:"10px",
                     background: `${selectPayment==2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
                   onClick={() => {
@@ -936,9 +937,15 @@ const VotingPaymentCopy: React.FC<{
                     }
                   }}
                 >
-                  <i className="bi bi-credit-card-fill "></i>
-                  {/* <p className="mx-2">Debit & Credit cards</p> */}
-                  <p className="mx-2">No Crypto? No problem. <br /> Buy Crypto</p>
+<span className="d-flex align-items-center justify-content-center">
+<i className="bi bi-credit-card-fill me-2"></i> No Crypto? No problem.
+</span>
+<span className="circleBtn mt-2">
+  <span className="inn_btn">Buy Crypto</span>
+  </span>
+
+                  
+                 
                 </div>}
               </Opctiondiv>
             </Boxdiv>
