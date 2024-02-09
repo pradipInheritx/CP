@@ -90,6 +90,9 @@ align-items: center;
 display:flex;
 justify-content: center;
 cursor:pointer;
+@media (max-width: 767px) {
+  margin:0px 4px /* Adjust the styles for smaller screens */
+}
 `;
 
 
@@ -142,8 +145,24 @@ top: 2px;
   background:#6352E8;
   color:white;
  box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+  }
+ @media (max-width: 767px) {
+  max-width: 150px; /* Adjust the styles for smaller screens */
+}
 `;
 
+const ResponsiveContainer = styled.div`
+  width: 350px;
+  height: 400px;
+  border: 1px solid #6352e8;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px #00000029;
+
+  @media (max-width: 767px) {
+    width: 250px;
+    height: 380px;
+  }
+`;
 
 
 function CardShow({coins}: any) {
@@ -381,15 +400,7 @@ useEffect(() => {
             
           }}
           >          
-            <div
-              className=''
-              style={{
-              width: "350px",
-              height: "400px",
-              border: "1px solid #6352e8",
-              borderRadius: "10px",
-              boxShadow: "0 3px 6px #00000029"
-              }}> 
+            <ResponsiveContainer             > 
               <div
                 style={{
                 marginTop:"10px",display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center"
@@ -420,7 +431,7 @@ useEffect(() => {
 
             <CountDown activeTime={activeTime} setLastValue={setLastValue}/>
             </div>
-            </div>
+            </ResponsiveContainer>
             </div>
         }
         {

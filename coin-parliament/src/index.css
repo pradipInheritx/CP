@@ -137,5 +137,6 @@
 @media only screen and (max-width: 1090px) {
     .modal-content {
         width: 75%;
+        padding: 10px;
     }
   }
