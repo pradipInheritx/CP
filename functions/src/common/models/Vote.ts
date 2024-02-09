@@ -316,9 +316,10 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     console.log("incrementKeyValue : ", incrementKeyValue);
     const cpviData = getDocument.data();
     const getTimeStamp = cpviData?.timestamp;
-    const after7daysTimeStamp = getTimeStamp.seconds + (7 * 24 * 3600); //get after 7 days seconds
+    console.log("getTimeStamp : ", getTimeStamp);
+    const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
     const currentTimestamp = (Date.now() / 1000); 
-    
+
     // check document already exist or not and check timestamp to will be not cross the after 7 days
     if (getDocument.exists && after7daysTimeStamp < currentTimestamp) {
         await cpviCollectionReference.update(incrementKeyValue)
