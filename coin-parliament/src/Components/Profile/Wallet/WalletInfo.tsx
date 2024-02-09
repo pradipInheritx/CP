@@ -1024,7 +1024,7 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>                                                              
+                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases)</p>                                                              
                             </div>
                         </div>
                     }
@@ -1083,7 +1083,8 @@ function WalletInfo() {
                             disabled={!walletDetails?.address || saveAddress}
                             style={{
                                 marginLeft: "10px",
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                fontSize: `${window.screen.width > 767 ?"":"18px"}`,
                             }}
                             onClick={() => {
                                 updateAddress()
@@ -1470,7 +1471,7 @@ function WalletInfo() {
 
                                     
                                     width: `${window.screen.width > 767 ? "180%" : "180%"}`,
-                                    marginLeft: `${window.screen.width > 767 ? "-216%" : "-155%"}`,
+                                    marginLeft: `${window.screen.width > 767 ? "-170%" : "-155%"}`,
                                     marginTop: `${window.screen.width > 767 ? "18%" : "17%"}`,
                                 }}
                             >
