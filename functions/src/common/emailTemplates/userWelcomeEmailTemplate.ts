@@ -52,7 +52,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                           <td align="center" valign="bottom" style="padding: 40px 10px 0px 0px;">
                              <a href="#" target="_blank"
                                 style="color:#000;text-decoration:none; display:inline-block;">
-                                <img src="../../../assets/hpbanner.png" alt="Coin Parliament Vote To Earn" class="inx_img"
+                                <img src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Fhpbanner.png?alt=media&token=d12b4d52-4b55-46e4-84be-de9ded2109c0" alt="Coin Parliament Vote To Earn" class="inx_img"
                                    width="600" height="184" border="0"
                                    style="display:block;font-family: 'Poppins', Arial, sans-serif;color:#ffffff;font-weight:bold;font-size:24px;max-width:600px;" />
                              </a>
@@ -77,7 +77,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                        <tr>
                           <td valign="top"
                              style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:16px;line-height: 20px;text-align: left;font-weight:500;padding-bottom: 15px;">
-                             Dear <strong>Dear ${userName},</strong>,
+                             <strong>Dear ${userName},</strong>
                           </td>
                        </tr>
 
@@ -285,7 +285,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://twitter.com/CoinParliament" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="../../../assets/x-twitter.svg" alt="X Twitter" width="30" height="30"
+                                                     src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Fx-twitter.svg?alt=media&token=ec2c54ad-3427-4422-ae6c-c59b5c6d1dac" alt="X Twitter" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -293,7 +293,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.facebook.com/CoinParliament/" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="../../../assets/facebook.svg" alt="facebook" width="30" height="30"
+                                                     src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Ffacebook.svg?alt=media&token=74bfc44b-37bc-479c-a060-24c42e02ce83" alt="facebook" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -301,7 +301,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.instagram.com/coinparliament/" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="../../../assets/instagram.svg" alt="instagram" width="30" height="30"
+                                                     src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Finstagram.svg?alt=media&token=eb740877-6439-4e42-a828-96ab978e8866" alt="instagram" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -309,7 +309,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.tiktok.com/@coinparliament" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="../../../assets/tiktok.svg" alt="tiktok" width="30" height="30"
+                                                     src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Ftiktok.svg?alt=media&token=c4e70d91-76d1-458d-b350-93e6b3fc377b" alt="tiktok" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
