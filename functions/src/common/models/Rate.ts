@@ -1,4 +1,4 @@
-import { ajax_, snapshotAllTickers } from "./Ajax";
+import { snapshotAllTickers } from "./Ajax";
 import { ICryptoSnapshotTickers } from "@polygon.io/client-js";
 import { firestore } from "firebase-admin";
 import axios from "axios";
@@ -8,11 +8,11 @@ import {
   defaultHeaderForgetDataFromTimestamp,
 } from "../consts/config";
 
-export const getRateRemote_: () => Promise<
-  CoinbaseResponse<Rate[]>
-> = async () => {
-  return ajax_("cryptocurrency/listings/latest");
-};
+// export const getRateRemote_: () => Promise<
+//   CoinbaseResponse<Rate[]>
+// > = async () => {
+//   return ajax_("cryptocurrency/listings/latest");
+// };
 
 export const getRateRemote: () => Promise<ICryptoSnapshotTickers> =
   async () => {
