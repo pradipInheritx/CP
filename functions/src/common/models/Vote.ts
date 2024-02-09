@@ -4,11 +4,13 @@ import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import { errorLogging } from "../models/Calculation";
 import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
-
-import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 import { addPaxTransactionWithPendingStatus } from "./PAX";
 
+import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
+export const calculateOffset: (timeframe: TimeFrame) => number = (
+  timeframe: TimeFrame
+) => timeframe.seconds * 1000;
 
 export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
   toFirestore(modelObject: VoteResultProps): FirebaseFirestore.DocumentData {
@@ -21,12 +23,6 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
     return data as VoteResultProps;
   },
 };
-
-
-
-export const calculateOffset: (timeframe: TimeFrame) => number = (
-  timeframe: TimeFrame
-) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
   console.log("Beginning execution of updateVotesTotal 2 --->");
@@ -76,7 +72,6 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
   return;
 };
-
 
 export const getResultAfterVote = async (requestBody: any) => {
   try {
@@ -249,7 +244,6 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
     return { status: false, message: "Something went wrong", error }
   }
 }
-
 
 export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: number) => {
   try {
