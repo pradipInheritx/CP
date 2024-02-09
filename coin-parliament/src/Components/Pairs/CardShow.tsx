@@ -149,6 +149,7 @@ top: 2px;
 function CardShow({coins}: any) {
 // @ts-ignore
   const cardData = { ...listData[0] }
+  const [impactValue, setImpactValue] = useState()
   const [ShowSpdometer, setShowSpdometer] = useState(false) 
   const [showPopUp, setShowPopUp] = useState<any>(false) 
   const [clickedOption1, setClickedOption1] = useState(false);
@@ -221,16 +222,16 @@ useEffect(() => {
 }, [coins,activeTime,allBUtton])
   
   const getLastPrice = () => {
-    console.log(startprice,coins,"yes i am calling")
+    console.log("yes i am calling")
     setVoteLastPrice(coins)
   }
 
   const getstartprice = () =>{
     setStartPrice(coins)
   }
-  // console.log(startprice,"startprivee")
+  console.log(startprice,"startprice444")
 
-  // console.log(voteLastPrice,"last")
+  console.log(voteLastPrice,"lastprice444")
   
 // @ts-ignore
     return (
@@ -405,6 +406,7 @@ useEffect(() => {
                 coins={coins}
                 activeTime={activeTime}
                 voteDirection={voteDirection}  
+                setImpactValue={setImpactValue}
               />
               <div
                 style={{
@@ -429,6 +431,7 @@ useEffect(() => {
                 voteLastPrice={voteLastPrice}
                 startprice={startprice}
                 activeTime={activeTime}
+                impactValue={impactValue}
               />
             </>
             : ""

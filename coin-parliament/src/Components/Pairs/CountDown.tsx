@@ -8,9 +8,7 @@ const CountDown = ({activeTime,setLastValue}:{activeTime:number,setLastValue:any
             {/* @ts-ignore */}
         <Countdown date={Date.now() + activeTime}
             renderer={({ hours, minutes, seconds, completed }) => {
-                if(completed){
-                  return  console.log("notcomple")
-                }
+            
                 // console.log("Countdown Renderer - Hours:", hours, "Minutes:", minutes, "Seconds:", seconds, "Completed:", completed);
                return (
                     <span className="text-uppercase" style={{

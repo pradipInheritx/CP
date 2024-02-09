@@ -41,3 +41,22 @@
         transform: rotate(2deg);
     }
 }
+ /* Modal Content */
+ .modal-content {
+    background-color: #fefefe;
+    top: 30%;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+  }
+  .modal-content{
+    
+    border-radius: 100px 0px 100px 100px !important;
+}
+
+@media only screen and (max-width: 1090px) {
+    .modal-content {
+        width: 75%;
+    }
+  }
