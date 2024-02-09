@@ -139,7 +139,7 @@ export const userVerifyEmailTemplate = (email: any, verifyLink: any, title: any)
                     <!-- start copy -->
                     <tr>
                       <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 24px; line-height: 24px;">
-                        <p style="margin: 0;">Please verify your account with this email <b>${email}</b>. Click here <a href='${verifyLink}'>${verifyLink}</a> to verify.</p>
+                        <p style="margin: 0;">Please verify your account with this email <b>${email}</b>. Click here <a href='${verifyLink}'>verifyLink</a> to verify.</p>
                       </td>
                     </tr>
                     <!-- end copy -->
