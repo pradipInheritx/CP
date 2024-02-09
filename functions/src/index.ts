@@ -40,6 +40,7 @@ import {
   voteConverter,
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
+  addVoteResultForCPVI,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -807,6 +808,7 @@ exports.onVote = functions.firestore
     console.log("data =>", data);
 
     const voteTime = admin.firestore.Timestamp.now().toMillis();
+
     console.log("voteTime =>", voteTime);
 
     await updateVotesTotalForSingleCoin(data.coin);
@@ -828,7 +830,8 @@ exports.onVote = functions.firestore
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
 
-    await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+      await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+      await addVoteResultForCPVI(data); // add cpvi here
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
