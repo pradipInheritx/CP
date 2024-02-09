@@ -229,9 +229,9 @@ useEffect(() => {
   const getstartprice = () =>{
     setStartPrice(coins)
   }
-  console.log(startprice,"startprice444")
+  // console.log(startprice,"startprice444")
 
-  console.log(voteLastPrice,"lastprice444")
+  // console.log(voteLastPrice,"lastprice444")
   
 // @ts-ignore
     return (
@@ -385,7 +385,7 @@ useEffect(() => {
               className=''
               style={{
               width: "300px",
-              height: "250px",
+              height: "268px",
               border: "1px solid #6352e8",
               borderRadius: "10px",
               boxShadow: "0 3px 6px #00000029"

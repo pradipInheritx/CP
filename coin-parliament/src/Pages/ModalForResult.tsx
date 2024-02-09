@@ -40,6 +40,8 @@ const PairsVoteVs = styled.span`
   color: #6352e8;
 `;
 
+
+
 interface ChildComponentProps {
   showPopUp?: any;
   setShowPopUp?: any;
@@ -53,7 +55,6 @@ interface ChildComponentProps {
 
 
 const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice,voteDirection,startprice,activeTime,impactValue }) => {
-
 const [lastPrice, setLastPrice] = useState<any>(coins)
 
 const twoDigitLastPrice = lastPrice && parseFloat(lastPrice)?.toFixed(2)
@@ -84,8 +85,22 @@ const [voteImpact, setVoteImpact] = useState('')
   };
   let params = useParams();
   const {id} = params;
+  // console.log(params,"params")
+  // console.log(window.location,"loaction")
 // @ts-ignore
   const cardData = { ...listData[0] }
+
+  var currentUrl = window.location.search;
+
+// Use the URLSearchParams API to parse the URL and get the value of the "username" parameter
+var urlParams = new URLSearchParams(currentUrl);
+
+if (urlParams.has('username')) {
+  var username = urlParams.get('username');
+  // console.log(username,"usernam 11");
+} else {
+  console.log('Username parameter not found in the URL. 11');
+}
   return (
     <div>      
       <Modal show={show} onHide={handleClose}
@@ -128,7 +143,7 @@ const [voteImpact, setVoteImpact] = useState('')
              
             </div>    
             <div style={{ minHeight: "100%" }} className=" text-center">
-              {console.log("difference :: ",startprice,voteLastPrice,voteDirection)}
+              {/* {console.log("difference :: ",startprice,voteLastPrice,voteDirection)} */}
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
@@ -139,7 +154,7 @@ const [voteImpact, setVoteImpact] = useState('')
                     <p style={{fontSize:"20px"}}>{voteDirection === 1 ? "Bull " : "Bear "}{'$'+twoDigitStartPrice}</p>
                     <p  style={{marginBottom:"0rem",fontSize:"20px",color:"#6352e8"}}>{"Vote Result"}</p>
                     <p style={{fontSize:"20px",color:`${twoDigitLastPrice >= twoDigitStartPrice ? "green" : "red"}`}}>{voteDirection === 1 && twoDigitLastPrice >= twoDigitStartPrice ? "Bull " : "Bear "}{'$'+twoDigitLastPrice}</p>
-                    <p style={{fontSize:"20px"}}>{"Vote impact :"} {impactValue.toUpperCase()}</p>
+                    <p style={{fontSize:"17px"}}>{"Vote impact :"} {impactValue.toUpperCase()}</p>
                   </div>
                 </div>
 
@@ -151,7 +166,8 @@ const [voteImpact, setVoteImpact] = useState('')
             <Buttons.Primary
               onClick={() => {
                 // setLogin(true)
-            }}
+                window.open(`https://coinparliament.com/?refer=${username}`, "_blank");
+              }}
             >
             Join The Parliament
           </Buttons.Primary>
