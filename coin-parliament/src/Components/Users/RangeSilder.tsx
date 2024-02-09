@@ -132,19 +132,19 @@ function Speed(props: SpeedProps) {
           <span className={value < 40 ? "span low red" : "span low"}
             style={{
               top: window.screen.width > 767 ? "50%" : "43%",
-              left: window.screen.width > 767 ? "14%" : "15.5%"
+              left: window.screen.width > 767 ? "14%" : "14.5%"
             }}
           >low</span>
           <span className={value >= 40 && value <= 60 ? "span mid black" : "span mid"}
             style={{
-              top: window.screen.width > 767 ? "10%" : "9.5%",
+              top: window.screen.width > 767 ? "2%" : "1.5%",
               left: window.screen.width > 767 ? "51%" : "51%"
             }}
           >mid</span>
           <span className={value > 60 ? "span high select" : "span high"}
             style={{
               top: window.screen.width > 767 ? "51%" : "43%",
-              right: window.screen.width > 767 ? "13.8%" : "15.5%",
+              right: window.screen.width > 767 ? "13.8%" : "13.3%",
             }}
           >high</span>
         </div>

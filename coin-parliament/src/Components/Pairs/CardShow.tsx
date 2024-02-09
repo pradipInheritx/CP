@@ -36,7 +36,7 @@ const ChildDiv = styled.div`
   // border:1px solid green;
   border-radius:10px;
   margin-top:7rem;
-  width:${window.screen.width>767? "8%" :"20%"};
+  width:${window.screen.width>767? "none" :"20%"};
   display:flex;
   justify-content: space-between;
   &:hover{
@@ -384,17 +384,21 @@ useEffect(() => {
             <div
               className=''
               style={{
-              width: "300px",
-              height: "268px",
+              width: "350px",
+              height: "400px",
               border: "1px solid #6352e8",
               borderRadius: "10px",
               boxShadow: "0 3px 6px #00000029"
               }}> 
               <div
                 style={{
-                marginTop:"20px"
+                marginTop:"10px",display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center"
               }}
               >
+                 <img src={cardData.img1} alt=""  width={"30px"} style={{height:"50px"}} />
+                 <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"13px"}}>{"Bitcoin"}</p>
+                 <p style={{marginBottom:"0rem",fontSize:"13px"}}>{"BTC"}</p>
+                 <p style={{marginBottom:"0rem",fontWeight:"500",fontSize:"14px"}}>{Math.floor(activeTime / 1000) + " Sec Vote"}</p>
                 <p className='text-center'
                   style={{
                   color:"black"
