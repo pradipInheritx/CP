@@ -225,14 +225,26 @@ const PersonalInfo = () => {
         <ElementsAvatarAImage1 className="m-auto mb-2" onClick={() => {
           setAvatarMode(true)
         }} role="button">
-          {user?.avatar && (
+          {user?.avatar !== 'skipped' ? (
             <Avatars type={avatarImage || user?.avatar as AvatarType} width={70} style={{
               height: "70px"
             }} />
+          ) : (
+            <div style={{
+              borderRadius: '100%',
+              height: '50px',
+              width: '50px',
+              fontSize:"1.5rem",
+              border: 'solid 2px black',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'black',
+              fontWeight: 'bold',
+            }}>
+                {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0] : ""}
+            </div>
           )}
-          {!user?.avatar &&
-            <Avatar />
-          }
         </ElementsAvatarAImage1>    
 
        

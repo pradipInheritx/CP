@@ -13,6 +13,7 @@ import { auth } from 'firebase';
 import BackArrow from 'Components/icons/BackArrow';
 import AppContext from 'Contexts/AppContext';
 import styled from 'styled-components';
+import { userInfo } from '../Coins/testData';
 
 const HamburgerBut = styled.button`
  background:none;
@@ -73,7 +74,7 @@ const Header = (setMfaLogin?:any) => {
           {(auth.currentUser && userInfo) && (
             <Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
 
-            {auth.currentUser && userInfo?.avatar ?
+            {auth.currentUser && userInfo?.avatar!!=='skipped' && userInfo?.avatar  ?
                 <Avatars
                   // @ts-ignore
                   type={userInfo?.avatar || defaultAvatar as AvatarType}
@@ -84,9 +85,23 @@ const Header = (setMfaLogin?:any) => {
                     // @ts-ignore                    
                   }}
                 /> :
-              <span className="material-symbols-outlined d-flex align-items-center">
-                account_circle
-              </span>
+              // <span className="material-symbols-outlined d-flex align-items-center">
+              //   account_circle
+              // </span>
+              <div style={{
+                borderRadius: '100%',
+                height: '50px',
+                width: '50px',
+                fontSize:"1.5rem",
+                border: 'solid 2px white',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+              }}>
+                  {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0] : ""}
+              </div>
               }
               {(userInfo?.uid) ?
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
