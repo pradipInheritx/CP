@@ -22,7 +22,7 @@ const Pool = () => {
       const referUser = await coinParliament.firestore().collection('users').where('email', '==', userInfo?.email).get();
       if (!referUser.empty) {
         referUser.forEach((doc: any) => {          
-          setCmpValue(doc.data()?.voteStatistics?.commission || 0)   
+          setCmpValue(doc.data()?.voteStatistics?.commission.toFixed(4) || 0)   
           console.log(doc.data(),"doc.data()")
         });
       }
