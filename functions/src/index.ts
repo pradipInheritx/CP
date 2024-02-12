@@ -25,7 +25,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink
+  // sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -101,9 +101,9 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
-import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
-import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+// import { sendEmail } from "./common/services/emailServices"
+// import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+// import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
@@ -830,8 +830,8 @@ exports.onVote = functions.firestore
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
 
-      await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
-      await addVoteResultForCPVI(data); // add cpvi here
+    await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+    await addVoteResultForCPVI(data); // add cpvi here
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
