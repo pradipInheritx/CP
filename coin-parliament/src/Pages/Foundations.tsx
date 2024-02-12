@@ -272,7 +272,7 @@ const Foundations = () => {
                                     fontWeight:"bold"}}>{item.name}</span>
                               </div>
                               <div className="col-3" style={{width:window.screen.width > 767 ? '15%' : '20%'}}>
-                              <CircularProgressbar value={item.commission*100} text={`${(item.commission*100).toFixed(2)}`}
+                              <CircularProgressbar value={item.commission/100} text={`${(item.commission/100).toFixed(2)}`}
                                styles={buildStyles({
                                 pathColor: "#6352e8",
                                 pathTransition: "none",
