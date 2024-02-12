@@ -1,3 +1,4 @@
+//import axios from "axios";
 import { firestore, messaging } from "firebase-admin";
 
 export const sendNotification = async ({
@@ -34,24 +35,38 @@ export const sendNotification = async ({
   }
 };
 
-
 export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
   try {
-    if (requestBody.pushNotificationCallbackUrl && requestBody.userId) {
-      console.info("Request Body", requestBody);
+    console.info("Request Body", requestBody);
 
-      await firestore()
-        .collection("userPushNotificationCallbackURL").add({ userId: "", payloadKey: "", uniqueId: "", childUserEmail: "", notificationType: "", amount: "", currency: "", commission: "", serverTimestamp: firestore.Timestamp.now() });
-      return "Push Notification Send Successfully";
-    } else {
-      return "UserId & Callback URL not found";
-    }
+    const serverNotificationURL = 'http://127.0.0.1:5001/coin-parliament-staging/us-central1/callBackURLFromServerToServer';
+
+    console.info("serverNotificationURL", serverNotificationURL);
+
+    // const getResponse = await axios.post(serverNotificationURL, {
+    //   userId: "MoyiWw4OY5TG5o8mCQoqVUAtVuow",
+    //   payloadKey: "",
+    //   uniqueId: "",
+    //   childUserEmail: "",
+    //   notificationType: "",
+    //   amount: "",
+    //   currency: "",
+    //   commission: ""
+    // })
+    // console.info("getResponse", getResponse)
+
+
+    return {
+      status: true,
+      message: "",
+      result: {}
+    };
   } catch (error) {
-    return error;
-    // res.status(500).send({
-    //   status: false,
-    //   message: "Something went wrong",
-    //   result: error,
-    // });
+    console.error("Error Found----->", error);
+    throw {
+      status: 500,
+      message: "Something went wrong",
+      result: error
+    };
   }
 }

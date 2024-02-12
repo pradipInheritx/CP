@@ -29,6 +29,8 @@ import {
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
+
+
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
@@ -87,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL, } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -280,10 +282,31 @@ const getMaxVotes = async () => {
 //   }
 // });
 
+exports.callBackURLFromServerToServer = functions.https.onCall(async (data) => {
+  try {
+
+    const { userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission } = data;
+
+
+    console.info("data--->", data)
+    const getResponseAfterInsert = await admin.firestore()
+      .collection("userServerPushNotification").add({ userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission });
+    return {
+      status: true,
+      message: "Push Notification Server Data Added Successfully ",
+      result: getResponseAfterInsert.id
+    }
+  } catch (error) {
+    console.info("catch", (error))
+    return error;
+  }
+}
+)
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
-  await createPushNotificationOnCallbackURL(data);
-  return { data }
+  const getReponse = await createPushNotificationOnCallbackURL(data);
+  console.info("getReponse--->", getReponse);
+  return getReponse
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
