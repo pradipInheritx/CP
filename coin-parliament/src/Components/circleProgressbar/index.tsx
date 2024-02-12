@@ -23,7 +23,7 @@ const CircularProgress = ({ percentage }) => {
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
     const setCurrentCMP = useContext(CurrentCMPDispatchContext);
-    console.log(percentage, currentCMP, 'startValue');
+    console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue && newScore != '0') {

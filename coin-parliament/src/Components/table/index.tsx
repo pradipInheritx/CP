@@ -1,15 +1,15 @@
 import { texts } from 'Components/LoginComponent/texts';
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components';
-import { ButtonGroup } from "react-bootstrap";
+import { ButtonGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
 
 const RewardList = styled.p`
-  font-size: 10px;
+  font-size:${window.screen.width > 767 ? "10px" : "9px"};
   color: white;
   cursor: pointer;   
-   padding:15px;   
+   padding:15px 11px;       
 `;
 // const tableHeader = ["Transaction id", "Date", "Item", "Amount", "Payment method"];
 export type tableColumnType = {
@@ -48,11 +48,33 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
                             headers.map((item: tableColumnType, i: number) => {
                                 return (
                                     <div style={{ width: "19%" }} key={i}>
-                                        <RewardList>
-                                            {item?.Row ?
-                                                <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                : (value[item?.assessorName] || "NA")}
-                                        </RewardList>
+                                        <OverlayTrigger
+                                            trigger={['hover', 'focus']}
+                                            placement="bottom"
+                                            overlay={<Tooltip id={`tooltip-name-${index}`}
+                                                style={{
+                                                    marginTop: "-15px"
+                                                }}
+                                            >{item?.Row ?
+                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
+                                                        : (value[item?.assessorName] || "NA")}</Tooltip>}
+
+                                        >
+                                            <RewardList>
+                                                
+                                                {window.screen.width > 767 ?
+                                                     item?.Row ?
+                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
+                                                        : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")       
+                                                    :
+                                                item?.Row ?
+                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
+                                                        : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+
+                                                }
+                                            
+                                            </RewardList>
+                                        </OverlayTrigger>
                                     </div>
                                 )
                             })
