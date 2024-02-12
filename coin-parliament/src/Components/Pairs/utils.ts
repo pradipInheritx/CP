@@ -69,7 +69,7 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
 export const listData = [
   {
     name1: "Michael  Jordan",
-    name2: "Roger Federer",
+    name2: "LeBron James",
     price1: "123.002",
     price2: "232.003",
     img1: EXTRA,
@@ -77,7 +77,7 @@ export const listData = [
   },
   {
     name1: "Rafael Nadal",
-    name2: "Lionel Messi",
+    name2: "Roger Federer",
     price1: "213.001",
     price2: "423.001",
     img1: EXTRA2,
@@ -85,7 +85,7 @@ export const listData = [
   },
   {
     name1: "Cristiano Ronaldo",
-    name2: "LeBron James",
+    name2: "Lionel Messi",
     price1: "324.012",
     price2: "132.103",
     img1: EXTRA4,

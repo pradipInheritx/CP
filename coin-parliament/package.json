@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.12.3",
+    "@faker-js/faker": "^8.4.1",
     "@lottiefiles/react-lottie-player": "^3.5.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@polygon.io/client-js": "^4.0.3",
