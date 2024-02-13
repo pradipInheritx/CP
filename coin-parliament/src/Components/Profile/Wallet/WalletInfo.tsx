@@ -936,7 +936,7 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>
+                                <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases)</p>
 
                             </div>
                         </div>
@@ -994,7 +994,8 @@ function WalletInfo() {
                             <RemoveButton
                                 style={{
                                     marginLeft: "10px",
-                                    borderRadius: "5px"
+                                    borderRadius: "5px",
+                                    fontSize: `${window.screen.width > 767 ?"":"19px"}`,
                                 }}
                                 onClick={() => {
                                     handleRemoveBox(index)
