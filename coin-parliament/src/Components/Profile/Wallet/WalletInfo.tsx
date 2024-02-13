@@ -995,7 +995,7 @@ function WalletInfo() {
                                 style={{
                                     marginLeft: "10px",
                                     borderRadius: "5px",
-                                    fontSize: `${window.screen.width > 767 ?"":"18px"}`,
+                                    fontSize: `${window.screen.width > 767 ?"":"19px"}`,
                                 }}
                                 onClick={() => {
                                     handleRemoveBox(index)
