@@ -708,6 +708,7 @@ const Header = ({
 																	display: 'inline-block',
 																	textOverflow: 'ellipsis',
 																	overflow: 'hidden',
+																	whiteSpace:"nowrap",
 																	}}>
 															{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 														</span>
@@ -1008,6 +1009,7 @@ const Header = ({
 																				display: 'inline-block',
 																				textOverflow: 'ellipsis',
 																				overflow: 'hidden',
+																				whiteSpace:"nowrap"
 																				}}>
 																	{`${(userInfo?.displayName ) ? userInfo?.displayName : ''}`}
 																</span>
