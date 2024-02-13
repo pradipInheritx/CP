@@ -271,7 +271,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         .set(
           {
             rewardStatistics: {
-              total: newTotal,
+              total: admin.firestore.FieldValue.increment(1),
               claimed: newClaimed,
             },
           },
