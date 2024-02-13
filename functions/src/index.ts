@@ -31,7 +31,7 @@ import { updateAndGetPaxDistribution } from "./common/models/PAX";
 import { getCurrentPaxDistribution } from "./common/models/PAX";
 import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
-// import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate.ts";
+ import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
@@ -255,11 +255,11 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .set(userData);
 
     //Send Welcome Mail To User
-    // await sendEmail(
-    //   userData.email,
-    //   "Welcome To Coin Parliament!",
-    //   userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-    // );
+    await sendEmail(
+      userData.email,
+      "Welcome To the Vote To Earn!",
+      userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+    );
 
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
