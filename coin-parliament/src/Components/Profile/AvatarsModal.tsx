@@ -172,6 +172,19 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
     }
   };
 
+  const SkipAvatar = async (name?:any) => {
+    console.log("avtar skip");
+    
+    if (user?.uid) {
+      console.log("avtar skip1");
+        const userRef = doc(db, "users", user?.uid);
+        await setDoc(userRef, {avatar : name }, { merge: true });
+          setSelectBioEdit(true);
+          setFirstTimeAvatarSelection(false);      
+          setIsLoading(false);
+    }
+}
+
   return (
     <Container className="position-relative">
       {/* <div className="position-absolute top-0" style={{ right: 0 }}>
@@ -278,16 +291,12 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         </Flex>
 
         
-        {/* <div className="d-flex justify-content-center text-center mt-4">
+        <div className="d-flex justify-content-center text-center mt-4">
           <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
-            if (!userInfo?.avatar) {
-              onSubmit(defaultAvatar);
-            }
-            setFirstTimeAvatarSelection(false);
-            setSelectBioEdit(true)
-            // setShowMenuBar(false);
-          }}>{image !=null ?"Next":"Skip"}</span>
-        </div> */}
+          SkipAvatar('skipped')
+          setSelectedAvatar('')
+          }}>Skip</span>
+        </div>
       </>)}
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>
