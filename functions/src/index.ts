@@ -25,9 +25,11 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink
+  // sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+
+
 
 import {
   getLeaderUsers,
@@ -87,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL, } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -101,9 +103,9 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
-import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
-import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+// import { sendEmail } from "./common/services/emailServices"
+// import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+// import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
@@ -245,45 +247,66 @@ const getMaxVotes = async () => {
 };
 
 // user's email verification link
-exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
-  const { email } = data;
+// exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+//   const { email } = data;
 
+//   try {
+//     console.log("user email : ", email);
+//     // Get user data from Firebase Authentication
+//     const userRecord = await admin.auth().getUserByEmail(email);
+//     console.log("user record : ", userRecord)
+
+//     // Create a JWT token with user data
+//     const token = jwt.sign(
+//       { uid: userRecord.uid, email: userRecord.email },
+//       env.JWT_AUTH_SECRET
+//     );
+
+//     // Construct the verification link with the JWT token
+//     const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+
+//     if (email && verificationLink) {
+//       await sendEmail(
+//         email,
+//         "Verify Your Account",
+//         userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+//       );
+//       console.info("Send Email Successfully");
+//     }
+
+//     console.log("Verification link:", verificationLink);
+//     return { verificationLink }
+//   } catch (error) {
+//     console.error("Error sending verification link:", error);
+//     return { error }
+//   }
+// });
+
+exports.callBackURLFromServerToServer = functions.https.onCall(async (data) => {
   try {
-    console.log("user email : ", email);
-    // Get user data from Firebase Authentication
-    const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
 
-    // Create a JWT token with user data
-    const token = jwt.sign(
-      { uid: userRecord.uid, email: userRecord.email },
-      env.JWT_AUTH_SECRET
-    );
+    const { userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission } = data;
 
-    // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
 
-    if (email && verificationLink) {
-      await sendEmail(
-        email,
-        "Verify Your Account",
-        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
-      );
-      console.info("Send Email Successfully");
+    console.info("data--->", data)
+    const getResponseAfterInsert = await admin.firestore()
+      .collection("userServerPushNotification").add({ userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission });
+    return {
+      status: true,
+      message: "Push Notification Server Data Added Successfully ",
+      result: getResponseAfterInsert.id
     }
-
-    console.log("Verification link:", verificationLink);
-    return { verificationLink }
   } catch (error) {
-    console.error("Error sending verification link:", error);
-    return { error }
+    console.info("catch", (error))
+    return error;
   }
-});
-
+}
+)
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
-  await createPushNotificationOnCallbackURL(data);
-  return { data }
+  const getReponse = await createPushNotificationOnCallbackURL(data);
+  console.info("getReponse--->", getReponse);
+  return getReponse
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
@@ -347,17 +370,17 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .set(userData);
 
     //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
+    // await sendEmail(
+    //   userData.email,
+    //   "Welcome To Coin Parliament!",
+    //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    // );
 
-    const getUserEmail: any = (
-      await admin.firestore().collection("users").doc(user.uid).get()
-    ).data();
-    console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+    // const getUserEmail: any = (
+    //   await admin.firestore().collection("users").doc(user.uid).get()
+    // ).data();
+    // console.log("new user email  : ", getUserEmail.email);
+    // await sendEmailVerificationLink(getUserEmail.email);
 
     return newUser;
   } catch (e) {
@@ -830,8 +853,8 @@ exports.onVote = functions.firestore
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
 
-      await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
-      await addVoteResultForCPVI(data); // add cpvi here
+    await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+    await addVoteResultForCPVI(data); // add cpvi here
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
