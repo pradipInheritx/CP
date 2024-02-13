@@ -100,7 +100,7 @@ const Header = (setMfaLogin?:any) => {
                 color: 'white',
                 fontWeight: 'bold',
               }}>
-                  {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0] : ""}
+                  {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0].toUpperCase() : ""}
               </div>
               }
               {(userInfo?.uid) ?

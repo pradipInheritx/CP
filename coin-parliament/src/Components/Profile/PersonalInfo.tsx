@@ -232,9 +232,9 @@ const PersonalInfo = () => {
           ) : (
             <div style={{
               borderRadius: '100%',
-              height: '50px',
-              width: '50px',
-              fontSize:"1.5rem",
+              height: '55px',
+              width: '55px',
+              fontSize:"2.5rem",
               border: 'solid 2px black',
               display: 'flex',
               justifyContent: 'center',
@@ -242,7 +242,7 @@ const PersonalInfo = () => {
               color: 'black',
               fontWeight: 'bold',
             }}>
-                {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0] : ""}
+                {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0].toUpperCase() : ""}
             </div>
           )}
         </ElementsAvatarAImage1>    
