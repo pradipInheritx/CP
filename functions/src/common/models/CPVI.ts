@@ -566,7 +566,7 @@ export const CPVIForCoin = async (coinName: string) => {
     // get all the data in between24 hours
     const timeNow = Date.now();
     const currentTime = timeNow + 30;
-    const before24hoursTime = (currentTime - 1 * 1 * 3600000); //Update 24 hours to 7 days (Updated the again to 1 hour)
+    const before24hoursTime = (currentTime - 1 * 1 * 3600000); //Update 24 hours to 7 days
     console.log("current time: " + currentTime)
     console.log("before24hours time: " + before24hoursTime)
     const getAllCoinListing = (

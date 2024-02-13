@@ -1,4 +1,6 @@
 import { firestore } from "firebase-admin";
+import { Timestamp } from 'firebase-admin/firestore';
+
 //import fetch from "node-fetch";
 import { log } from "firebase-functions/logger";
 import {
@@ -63,7 +65,7 @@ export const callbackFromServer = async (req: any, res: any) => {
     if (req.body.order_buyer) {
       if (req.body.order_status !== "Open") {
         await firestore()
-          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
 
         const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
           .where("timestamp", "==", req.body.p2)
@@ -108,16 +110,16 @@ export const callbackFromServer = async (req: any, res: any) => {
         });
 
       }
-      // await firestore()
-      //   .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+      await firestore()
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
-        message: "Transaction logged in DB and transaction made successfully",
+        message: "Transaction logged in DB on transaction details",
         data: [],
       });
     } else {
       await firestore()
-        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.FieldValue.serverTimestamp() });
+        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -140,6 +142,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     network,
     origincurrency,
     token,
+    event,
     transactionType,
     numberOfVotes,
     paymentDetails,
@@ -152,6 +155,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     network,
     origincurrency,
     token,
+    event,
     transactionType,
     numberOfVotes,
     paymentDetails,
@@ -228,21 +232,29 @@ export const makePayment = async (req: any, res: any) => {
 };
 
 export const storeInDBOfPayment = async (metaData: any) => {
-  console.info("STORE in DB", metaData)
-  if (
-    metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
-    metaData?.userId
-  ) {
-    console.info("For Account Upgrade", metaData.userId);
-    await addIsUpgradedValue(metaData.userId);
+  try {
+    console.info("STORE in DB", metaData)
+    if (
+      metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
+      metaData?.userId && (metaData.event === parentConst.PAYMENT_STATUS_APPROVED || metaData.event === parentConst.PAYMENT_STATUS_CONFIRMED)
+    ) {
+      console.info("For Account Upgrade", metaData.userId);
+      await addIsUpgradedValue(metaData.userId);
+    }
+    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES &&
+      metaData?.userId && (metaData.event === parentConst.PAYMENT_STATUS_APPROVED || metaData.event === parentConst.PAYMENT_STATUS_CONFIRMED)) {
+      console.info("For Vote Purchase", metaData);
+      await addIsExtraVotePurchase(metaData);
+    }
+
+    console.info("Time", Timestamp.now())
+    await firestore()
+      .collection("payments")
+      .add({ ...metaData, timestamp: Timestamp.now() });
+
+  } catch (error) {
+    console.log("Error While Store In DB", error)
   }
-  if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-    console.info("For Vote Purchase", metaData);
-    await addIsExtraVotePurchase(metaData);
-  }
-  await firestore()
-    .collection("payments")
-    .add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() });
 };
 
 export const addIsExtraVotePurchase = async (metaData: any) => {
@@ -309,7 +321,7 @@ export const addIsUpgradedValue = async (userId: string) => {
       secondRewardExtraVotes: parentConst.UPGRADE_USER_VOTE,
       thirdRewardDiamonds: parentConst.UPGRADE_USER_COIN,
     },
-    transactionTime: firestore.FieldValue.serverTimestamp(),
+    transactionTime: firestore.Timestamp.now(),
     user: userId,
     winningTime: rewardStatistics.claimed,
     isUserUpgraded: true
@@ -510,7 +522,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
           parentPendingPaymentId: null,
           address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND,
           receiveType: getParentUserData.referalReceiveType.name,
-          timestamp: firestore.FieldValue.serverTimestamp(),
+          timestamp: firestore.Timestamp.now(),
         };
         console.info("storeInParentData", storeInParentData);
         await firestore().collection("parentPayment").add(storeInParentData);
@@ -555,7 +567,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         userId: transaction.userId,
         walletType: transaction.walletType,
         paymentDetails: transaction.paymentDetails,
-        event: transaction && transaction.event ? transaction.event : "failed"
+        event: transaction && transaction.event ? transaction.event : "Failed"
       });
     });
 
@@ -615,11 +627,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     console.log("requestBody--------->", requestBody)
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => {
-      if (transaction.callbackDetails.data && transaction.callbackDetails.data.p1 && transaction.callbackDetails.data.p1 === userId) {
-        return transaction;
-      }
-    });
+    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
     console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
     if (!getTransactionFromCreditCard) {
       return {
@@ -668,7 +676,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).get()).data();
 
     //TODO Get the data and store in payment collection 
-    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.FieldValue.serverTimestamp() });
+    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.Timestamp.now() });
 
     if (addNewPayment.id) {
       firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).delete().then(() => {
@@ -779,14 +787,12 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
   try {
     await firestore()
-      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
-
-    const redirectUrl = `https://direct.palaris.io/api?ref_id=2&email=${req.body.email}&ftype=1&famount=${req.body.amount}&ctype=2&p1=${req.body.userId}&p2=${req.body.timestamp}`;
+      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.Timestamp.now() });
 
     res.status(200).send({
       status: true,
       message: "Temp payment transaction created successfully",
-      redirectUrl
+      result: "",
     });
   } catch (error) {
     res.status(500).send({

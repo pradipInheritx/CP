@@ -106,5 +106,7 @@
     "PAYMENT_UPDATE_SUCCESS":"Transaction update successfully",
     "WELLDAPP_TRANSACTION_NOT_FOUND": "WellDApp Transaction Not Found",
     "CREDITCARD_TRANSACTION_NOT_FOUND":"Credit Card Transaction Not Found",
-    "ADMIN_UID" : "Zd5mFlq1xPg7TJ97DVlZnILSrVq1"
+    "ADMIN_UID" : "Zd5mFlq1xPg7TJ97DVlZnILSrVq1",
+    "PAYMENT_STATUS_APPROVED" : "Approved",
+    "PAYMENT_STATUS_CONFIRMED" :"Confirmed"
 }
