@@ -11,7 +11,7 @@ import UserContext from "../Contexts/User";
 import CoinsContext from "../Contexts/CoinsContext";
 import AppContext from "../Contexts/AppContext";
 import { setChecked } from "../common/models/User";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { functions } from "../firebase";
 import { httpsCallable } from "@firebase/functions";
@@ -144,6 +144,7 @@ const SingalCard = () => {
           firstName: items?.firstName,
           email: items?.email,
           lastName: items?.lastName,
+          isUserUpgraded: items?.isUserUpgraded,
         }
       })
       setFollowersDetails(FollowerList)
@@ -152,23 +153,38 @@ const SingalCard = () => {
     });;
   }
 
-  const getNftCard = () => {
-    const getCards = firebase
-      .firestore()
-      .collection("nft_gallery")
-      .where("collectionName", "==", type)
-    getCards.get()
-      .then((snapshot) => {
-        let allcollection = snapshot.docs.map((doc) => doc.data())
+  // const getNftCard = () => {
+  //   const getCards = firebase
+  //     .firestore()
+  //     .collection("nft_gallery")
+  //     .where("collectionName", "==", type)
+  //   getCards.get()
+  //     .then((snapshot) => {
+  //       let allcollection = snapshot.docs.map((doc) => doc.data())
 
-        const collectionType = allcollection?.map((allCard: any) => {
-          return allCard?.setDetails
-        })
-      }).catch((error) => {
-        console.log(error, "error");
-      })
-      ;
-  }
+  //       const collectionType = allcollection?.map((allCard: any) => {
+  //         return allCard?.setDetails
+  //       })
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     })
+  //     ;
+  // }
+  const getNftCard = async () => {
+    try {
+      const q = query(collection(db, "nft_gallery"), where("collectionName", "==", type));
+      const querySnapshot = await getDocs(q);
+
+      const allcollection = querySnapshot.docs.map((doc) => doc.data());
+
+      const collectionType = allcollection.map((allCard) => allCard?.setDetails);
+
+      return collectionType;
+    } catch (error) {
+      console.error("Error getting nft cards:", error);
+      return null;
+    }
+  };
   useEffect(() => {
     getFollwersList(id)
     getNftCard()

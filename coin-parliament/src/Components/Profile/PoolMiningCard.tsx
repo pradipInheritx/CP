@@ -38,7 +38,7 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
   return (
     <div className="user_card mx-auto shadow-sm" style={{boxShadow: '0px 3px 6px #00000029',width:window.screen.width<979?'322px':'40%'}} >
       <div className="row hstack">
-        <div className="col-2"  onClick={e=>redirectTab()} style={{cursor:"pointer"}}>
+        <div className="col-2" onClick={e => redirectTab()} style={{ cursor: "pointer" }}>
           <Image
           style={{
             border:`${!isUserUpgraded && " 3px solid var(--blue-violet)"}`,
@@ -47,7 +47,8 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
           }}
             roundedCircle={true}
             // src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
-            src = {(avatar && !avatar.includes('http')) ? importFile(`./The${avatar}`).default: avatar}
+            
+            src={(avatar && !avatar.includes('http')) ? importFile(`./The${avatar}`).default : !avatar ? importFile("./mystery", "png").default : avatar}
             alt="avatar"
             className="avatar_sm"
            

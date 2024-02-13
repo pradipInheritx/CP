@@ -185,7 +185,7 @@ const UserCard = ({
       navigate('/followerProfile/mine')
     }
   }
-
+  console.log(leader,"leader?.isUserUpgraded")
 
   return (
     <Component515
