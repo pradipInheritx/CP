@@ -579,7 +579,7 @@ const Header = ({
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
 										<HeaderCenterMob className=''>
 											{/* <div></div> */}
-											<div className='mt-1'>
+											<div className='mt-1' style={{marginLeft:"18px"}}>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
 																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
