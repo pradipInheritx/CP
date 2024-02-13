@@ -37,6 +37,7 @@ import {
   // saveCoins,
 } from "./common/models/Coin";
 import {
+  Timestamp,
   collection,
   doc,
   getDoc,
@@ -170,7 +171,7 @@ const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
   {
     chainId: 1,
-    name: 'Ethereum',
+    name: 'ETH',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
@@ -178,21 +179,21 @@ const mainnet = [
 
   {
     chainId: 56,
-    name: 'Binance',
+    name: 'BNB',
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
     rpcUrl: 'https://bsc-dataseed.binance.org'
   },
   {
     chainId: 137,
-    name: 'Polygon (MATIC)',
+    name: 'MATIC',
     currency: 'MATIC',
     explorerUrl: 'https://polygonscan.com/',
     rpcUrl: 'https://polygon-pokt.nodies.app'
   },
   {
     chainId: 11155111,
-    name: 'Sepolia Test Netwok',
+    name: 'SepoliaETH',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
     rpcUrl: 'https://1rpc.io/sepolia'
@@ -895,6 +896,7 @@ function App() {
 //   }, [userInfo?.voteStatistics?.total])
   // console.log('usermfa', userInfo)
   const fetchVotesLast24Hours = async () => {
+    console.log(voteNumberEnd, user?.uid, userInfo?.lastVoteTime, "userInfo?.lastVoteTime")
     if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime) {
       // @ts-ignore
       let remaining = (userInfo?.lastVoteTime + voteRules.timeLimit * 1000) - Date.now();
@@ -913,7 +915,9 @@ function App() {
         }
       }, remaining);
 
-      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      // const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      const currentTime = Timestamp.fromDate(new Date());
+      
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
       // const votesLast24HoursRef = firebase
@@ -1278,7 +1282,6 @@ function App() {
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
-
       // voteTime date
       let voteTime = new Date(lessTimeVote?.expiration);      
       // finding the difference in total seconds between two dates      

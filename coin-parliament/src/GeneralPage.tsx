@@ -32,6 +32,7 @@ const Page = styled.div`
 const GeneralPage = ({children}: { children: React.ReactNode | string }) => {
   return (
     <Page>
+      
       {children}
     </Page>
   );

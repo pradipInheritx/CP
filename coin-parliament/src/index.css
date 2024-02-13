@@ -1341,6 +1341,22 @@ html[dir="rtl"] .accordion-button {
     display: block;
     animation: bottomBubbles ease-in-out 0.75s forwards;
 }
+/* Hide the default icon */
+ .tooltip-arrow {
+  display: none !important;
+}
+
+.tooltip-inner::before{
+    display: none !important;
+}
+
+.ellipsisText {
+  display: inline-block;
+  max-width: 100px; /* Adjust as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 @keyframes topBubbles {
     0% {

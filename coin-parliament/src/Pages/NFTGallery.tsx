@@ -132,7 +132,7 @@ const NFTGallery = () => {
   useEffect(() => {
     if (albumOpen !== "") {
       fetchData();
-      setAlbumOpen("");
+      setAlbumOpen("");      
     }
   }, [albumOpen]);
 
@@ -175,6 +175,7 @@ const NFTGallery = () => {
           id: doc.id,
           ...doc.data()
         }));
+        console.log(data,"setAllCardArrayNew")
         setAllCardArrayNew(data);
         setIsLoading(false);
         console.log(data, "allcardData");
@@ -221,6 +222,7 @@ const NFTGallery = () => {
         const data = snapshot.docs.map((doc:any) => ({
           id: doc.id,...doc.data()
         }));
+        console.log(data,"allcardData")
         setCollectionType(data);
         setSetsValue([]);
         setCardShow(false);
@@ -334,18 +336,18 @@ const NFTGallery = () => {
     }
   }
 
-
-  console.log(cardShow,"checkcardshow")
+  
   const onSelectType = (cardType: any) => {
     setCardType(cardType)
     console.log(setsCardId, "setsCardId")
-    if (cardType === 'all') {
+    if (cardType === 'all') {      
+      console.log(allCardArrayNew, "allCardArrayNew1")
       const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)
       forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
       setCardNameNew(forcardName)
-      setAllCardNew(forcardName)
-
+      setAllCardNew(forcardName) 
+      console.log(forcardName, "AllCardNew1")
       setSetsCardName("none")
     }
     else {
@@ -354,34 +356,39 @@ const NFTGallery = () => {
       const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)
       console.log(forcardName, "forcardNamecard")
       setCardNameNew(forcardName)
-      setAllCardNew(forcardName)
+      setAllCardNew(forcardName)    
+      console.log(forcardName, "AllCardNew2")
       setSetsCardName("none")
     }
-  }
-
+  }  
   const onSelectSets = (cardId: any) => {
     setSetsCardId(cardId)
-    if (cardId === 'none') {
+    if (cardId === 'none') {          
+      console.log(allCardArrayNew, "allCardArrayNew2")
       const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumName == selectCollection)
+      console.log(cardWithId,"cardWithId")
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
       setCardNameNew(forcardName)
       setAllCardNew(forcardName)
+      console.log(forcardName, "AllCardNew3")
       setSetsCardName("none")
     }
     else {
-      setCardShow(true);
+      setCardShow(true);      
       const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumName == selectCollection)
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card.cardType !== cardType.toUpperCase() : card.cardType == cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       setCardNameNew(forcardName)
       setAllCardNew(forcardName)
+      console.log(forcardName, "AllCardNew4")
       setSetsCardName("none")
     }
   }
 
   const onSelectName = (mycardName: any) => {
     setSetsCardName(mycardName)
-    if (mycardName === 'none') {
+    if (mycardName === 'none') { 
+      console.log(allCardArrayNew, "allCardArrayNew3")
       const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
@@ -389,6 +396,7 @@ const NFTGallery = () => {
       //  console.log(finalValue,"serchresult")
       finalValue.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
       setAllCardNew(finalValue)
+      console.log(finalValue, "AllCardNew5")
       //  setSearchedCard((pev:any)=>finalValue)
     }
     else {
@@ -397,6 +405,7 @@ const NFTGallery = () => {
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
       setAllCardNew(finalValue)
+      console.log(finalValue, "AllCardNew6")
       //  console.log(finalValue,"serchresult")
       //  setSearchedCard((pev:any)=>finalValue)
     }
@@ -404,7 +413,7 @@ const NFTGallery = () => {
 
 
 
-  console.log(albumOpen, "nftAlbum")
+  console.log(allCardArrayNew, "allCardArrayNew123")
 
   useEffect(() => {
     getNftCardNew()
@@ -651,9 +660,9 @@ const NFTGallery = () => {
         })}
       </GalleryType> 
       
-      
+      {console.log(allCardNew,"setsValue")}
       {
-        !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType == "all" && searchTerm == "" && <>
+        !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType == "all" && <>
           <div className="w-100 d-flex">
             <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {
