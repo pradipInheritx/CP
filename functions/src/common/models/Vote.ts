@@ -89,11 +89,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       userId,
       status,
       //Pax Distribution
-      paxDistributionToUser
+      
     } = requestBody;
 
     console.info("status", status);
-    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
+   
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -119,8 +119,8 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -134,15 +134,15 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
+          // "paxDistributionToUser": paxDistribution
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
           voteId: getVoteData?.voteId,
@@ -156,7 +156,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
+          // "paxDistributionToUser": paxDistribution
         }
       }
     }
@@ -202,11 +202,11 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
-
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
-
+    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
     const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
@@ -232,14 +232,18 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
         await checkAndUpdateRewardTotal(userId);
-        return { status: true, message: "Success" }
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        console.log("paxDistribution : ", paxDistribution)
+        return { status: true, message: "Success","paxDistributionToUser": paxDistribution }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
         await checkAndUpdateRewardTotal(userId);
-        return { status: true, message: "Success" }
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        console.log("paxDistribution : ", paxDistribution)
+        return { status: true, message: "Success","paxDistributionToUser": paxDistribution }
       }
     }
   } catch (error) {
@@ -276,19 +280,19 @@ async function checkAndUpdateRewardTotal(userId: string) {
   }
 }
 
-export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: number) => {
+export const getUserAndCalculatePax = async (paxDetails: any) => {
   try {
-    const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
-    if (!getUser) {
+    const getUserDetails = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
+    if (!getUserDetails) {
       return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
     }
-    console.log("getUser currentVoteCMP,score and total : ", currentVoteCMP, " || ", getUser?.voteStatistics?.score, " || ", getUser?.rewardStatistics?.total);
-    const score = getUser?.voteStatistics?.score + currentVoteCMP
-    const checkCMP = score - (getUser?.rewardStatistics?.total * 100);
-    console.log("score, checkCMP : ", score, " || ", checkCMP)
-    console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
-
-    if (99.99 < checkCMP && checkCMP < 200) {
+    const getUserScore: number = getUserDetails?.voteStatistics?.score;
+    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
+    const checkScore = getUserScore - (getUserTotal * 100);
+    console.log("getUserScore : ",getUserScore);
+    console.log("getUserTotal : ",getUserTotal);
+    console.log("checkScore || checkScore > 99.99: ",checkScore ," || ",checkScore > 99.99 );
+    if (checkScore > 99.99) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
 
