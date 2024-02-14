@@ -8,7 +8,7 @@ export type TextFieldProps = {
   pattern?: string;
   label?: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   value?: string;
   min?: number;
   max?: number;
@@ -52,7 +52,7 @@ const TextField = ({
   edit,
   maxlength,
 }: TextFieldProps) => {
-  let formControl: Partial<FormControlProps> & { name: string; rows?: number } =
+  let formControl: Partial<FormControlProps> & { name: string; rows?: number; placeholder?: string; } =
     {
       name,
       placeholder,

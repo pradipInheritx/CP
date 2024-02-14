@@ -135,11 +135,9 @@ const localhost = window.location.hostname === "localhost";
 //   .transaction("firebaseLocalStorage")
 //   .objectStore("firebaseLocalStorage").getAll().onsuccess = (event:any) => {
 //     userData=event.target.result[0]?.value?.uid
-//     console.log('Got all customers:', event.target.result[0]?.value?.uid);
 
 //   }
 // //   .get("444-44-4444").onsuccess = (event) => {
-// //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
 // // };
 // };
 
@@ -195,7 +193,6 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-    // console.log("scrollTo");
   }, [pathname])
 
   const showToast = useCallback(
@@ -399,7 +396,6 @@ function App() {
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
-      console.log("we are being triggered :D");
       setSupportsPWA(true);
       setPromptInstall(e);
     };
@@ -412,7 +408,6 @@ function App() {
   //   const isMFAPassed = window.localStorage.getItem('mfa_passed')
   //   if (isMFAPassed == 'true' && !login) {
 
-  //     console.log('2faCalled')
   //     // @ts-ignore
   //     Logout(setUser)
   //   }
@@ -421,7 +416,6 @@ function App() {
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
-    console.log('not supported', promptInstall)
     if (!promptInstall) {
       return;
     }
@@ -429,7 +423,7 @@ function App() {
     else promptInstall.prompt();
   };
   if (!supportsPWA) {
-    console.log('not supported')
+
   }
   // useEffect(() => {
   //   if (user?.email && userInfo?.displayName === undefined) {
@@ -463,7 +457,6 @@ function App() {
 
   useEffect(() => {
     // const buttons = document.getElementsByTagName('button');
-    // console.log('buttondata',buttons);
     // for (let i = 0; i < buttons.length; i++) {
     //   buttons[i].addEventListener('click', handleSoundClick);
     // }
@@ -475,7 +468,6 @@ function App() {
     } else {
       const isMFAPassed = window.localStorage.getItem('mfa_passed')
       if (!user && isMFAPassed !== 'true') {
-        console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
       }
@@ -538,14 +530,12 @@ function App() {
     );
   }
 
-  console.log('fmctoken', fcmToken)
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
     if (localStorageLang && languages.includes(localStorageLang)) {
       setMounted(true);
     }
   }, [languages]);
-  // console.log('user', userInfo)
   useEffect(() => {
     if (user?.uid) {
       setDoc(doc(db, "users", user?.uid), { lang }, { merge: true }).then(
@@ -585,13 +575,11 @@ function App() {
                 { token: fcmToken },
                 { merge: true }
               );
-              console.log("push enabled");
             } catch (e) {
               console.log(e);
             }
           }
         } catch (e) {
-          console.log("An error occurred while retrieving token. ", e);
         }
       } else {
         // await updateUser();
@@ -604,7 +592,6 @@ function App() {
   const getpraintId = async () => {
     // let refVale = await getReferUser(V2EParliament.firestore())
     let refVale = await getReferUser(votingParliament.firestore())
-    console.log(refVale,"refValevalue")
   }
   getpraintId()
 
@@ -635,7 +622,6 @@ function App() {
       localStorage.removeItem('parentEmail');
     }
   }, []);
-  // console.log(auth?.currentUser, userInfo, loader, 'pkk');
 
 useEffect(()=>{
   if (userInfo) {
@@ -643,9 +629,6 @@ useEffect(()=>{
   }
 },[JSON.stringify(userInfo)])
 
-     console.log("user1434",userInfo,!login ,
-                                !firstTimeAvatarSlection ,
-                                !firstTimeFoundationSelection , !selectBioEdit , localStorage.getItem('mfa_passed') != 'true')
   return loader ? (
     <Spinner />
   ) : (
