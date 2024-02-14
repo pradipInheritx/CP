@@ -200,7 +200,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
     setImageLoaded(true);
   };
 
-  console.log(MintedTime, "MintedTimecheck")
+  // console.log(MintedTime, "MintedTimecheck")
   return (
     <div
       className="d-flex justify-content-center"      
