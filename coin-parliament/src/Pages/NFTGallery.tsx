@@ -434,7 +434,7 @@ const NFTGallery = () => {
     onSelectSets(setsCardId)
     //  onSelectTypeNew(cardType) 
     onSelectName(setsCardName)
-  }, [cardType, setsCardId, setsCardName])
+  }, [cardType, setsCardId, setsCardName, allCardArrayNew])
 
 
   console.log(setsCardName,"setsCardName")

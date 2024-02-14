@@ -22,8 +22,10 @@ const Pool = () => {
   console.log(userInfo?.userName, userInfo,"userInfo?.userName")
 
   useEffect(() => {
-    getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading: setIsLoading });
-    setIsLoading(true)
+    if (userInfo?.children){    
+      getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading: setIsLoading });
+      setIsLoading(true)
+    }
   }, [userInfo?.children]);
   const navigate = useNavigate()
   console.log(children, "userdata")
