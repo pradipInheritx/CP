@@ -89,11 +89,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       userId,
       status,
       //Pax Distribution
-      
+
     } = requestBody;
 
     console.info("status", status);
-   
+
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -234,7 +234,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         await checkAndUpdateRewardTotal(userId);
         const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
         console.log("paxDistribution : ", paxDistribution)
-        return { status: true, message: "Success","paxDistributionToUser": paxDistribution }
+        return { status: true, message: "Success", "paxDistributionToUser": paxDistribution }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
@@ -243,7 +243,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         await checkAndUpdateRewardTotal(userId);
         const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
         console.log("paxDistribution : ", paxDistribution)
-        return { status: true, message: "Success","paxDistributionToUser": paxDistribution }
+        return { status: true, message: "Success", "paxDistributionToUser": paxDistribution }
       }
     }
   } catch (error) {
@@ -253,14 +253,14 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
 
 async function checkAndUpdateRewardTotal(userId: string) {
   try {
-    const getUserRef =  admin.firestore().collection('users').doc(userId);
+    const getUserRef = admin.firestore().collection('users').doc(userId);
     const getUserDetails: any = (await getUserRef.get()).data();
     const getUserScore: number = getUserDetails?.voteStatistics?.score;
     const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
     const checkScore = getUserScore - (getUserTotal * 100);
-    console.log("getUserScore : ",getUserScore);
-    console.log("getUserTotal : ",getUserTotal);
-    console.log("checkScore || checkScore > 99.99: ",checkScore ," || ",checkScore > 99.99 );
+    console.log("getUserScore : ", getUserScore);
+    console.log("getUserTotal : ", getUserTotal);
+    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
     if (checkScore > 99.99) {
       getUserRef
         .set(
@@ -289,9 +289,9 @@ export const getUserAndCalculatePax = async (paxDetails: any) => {
     const getUserScore: number = getUserDetails?.voteStatistics?.score;
     const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
     const checkScore = getUserScore - (getUserTotal * 100);
-    console.log("getUserScore : ",getUserScore);
-    console.log("getUserTotal : ",getUserTotal);
-    console.log("checkScore || checkScore > 99.99: ",checkScore ," || ",checkScore > 99.99 );
+    console.log("getUserScore : ", getUserScore);
+    console.log("getUserTotal : ", getUserTotal);
+    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
     if (checkScore > 99.99) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
@@ -328,16 +328,11 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     const incrementKeyValue: any = {};
     incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
     console.log("incrementKeyValue : ", incrementKeyValue);
-    const cpviData = getDocument.data();
-    const getTimeStamp = cpviData?.timestamp;
-    console.log("getTimeStamp : ", getTimeStamp);
-    const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
-    const currentTimestamp = (Date.now() / 1000);
+    console.log("getDocument.exists : ",getDocument.exists)
 
     // check document already exist or not and check timestamp to will be not cross the after 7 days
-    if (getDocument.exists && after7daysTimeStamp < currentTimestamp) {
-      await cpviCollectionReference.update(incrementKeyValue)
-    } else {
+    if (getDocument.exists == false) {
+
       const newCPVI = voteData.direction ? {
         bull: 1,
         bear: 0,
@@ -348,6 +343,16 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
         timestamp: admin.firestore.Timestamp.now()
       }
       await cpviCollectionReference.set(newCPVI);
+
+    } else {
+      const cpviData = getDocument.data();
+      const getTimeStamp = cpviData?.timestamp;
+      console.log("getTimeStamp : ", getTimeStamp);
+      const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
+      const currentTimestamp = (Date.now() / 1000);
+      if (getDocument.exists == true && after7daysTimeStamp < currentTimestamp) {
+        await cpviCollectionReference.update(incrementKeyValue)
+      }
     }
     console.log("End addVoteResultForCPVI")
     return null
