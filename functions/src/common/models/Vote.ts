@@ -257,7 +257,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
     console.log("score, checkCMP : ", score, " || ", checkCMP)
     console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
 
-    if (99 < checkCMP && checkCMP < 200) {
+    if (99.99 < checkCMP && checkCMP < 200) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
       // for short time and testing purposes
@@ -271,7 +271,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         .set(
           {
             rewardStatistics: {
-              total: newTotal,
+              total: admin.firestore.FieldValue.increment(1),
               claimed: newClaimed,
             },
           },
