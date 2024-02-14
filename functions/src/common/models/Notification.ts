@@ -47,11 +47,11 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
       return "UserId & Callback URL not found";
     }
   } catch (error) {
-    return error;
-    // res.status(500).send({
-    //   status: false,
-    //   message: "Something went wrong",
-    //   result: error,
-    // });
+    console.error("Error Found----->", error);
+    return {
+      status: 500,
+      message: "Something went wrong",
+      result: error
+    };
   }
 }

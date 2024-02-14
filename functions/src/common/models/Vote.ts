@@ -94,11 +94,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       userId,
       status,
       //Pax Distribution
-      paxDistributionToUser
+
     } = requestBody;
 
     console.info("status", status);
-    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
+
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -124,8 +124,8 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -139,15 +139,15 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
+          // "paxDistributionToUser": paxDistribution
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
           voteId: getVoteData?.voteId,
@@ -161,7 +161,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
+          // "paxDistributionToUser": paxDistribution
         }
       }
     }
@@ -207,11 +207,11 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
-
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
-
+    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
     const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
@@ -236,13 +236,19 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" }
+        await checkAndUpdateRewardTotal(userId);
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        console.log("paxDistribution : ", paxDistribution)
+        return { status: true, message: "Success", "paxDistributionToUser": paxDistribution }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" }
+        await checkAndUpdateRewardTotal(userId);
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        console.log("paxDistribution : ", paxDistribution)
+        return { status: true, message: "Success", "paxDistributionToUser": paxDistribution }
       }
     }
   } catch (error) {
@@ -250,44 +256,51 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
   }
 }
 
-
-export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: number) => {
+async function checkAndUpdateRewardTotal(userId: string) {
   try {
-    const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
-    if (!getUser) {
-      return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
-    }
-    console.log("getUser currentVoteCMP,score and total : ", currentVoteCMP, " || ", getUser?.voteStatistics?.score, " || ", getUser?.rewardStatistics?.total);
-    const score = getUser?.voteStatistics?.score + currentVoteCMP
-    const checkCMP = score - (getUser?.rewardStatistics?.total * 100);
-    console.log("score, checkCMP : ", score, " || ", checkCMP)
-    console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
-
-    if (99 < checkCMP && checkCMP < 200) {
-      let getResultAfterSentPaxToUser: any;
-      let getResultAfterSentPaxToAdmin: any;
-      // for short time and testing purposes
-      // try to update the user total and claim instead of addRewards function
-      const newTotal = getUser?.rewardStatistics?.total + 1;
-      const newClaimed = getUser?.rewardStatistics?.claimed || 0;
-      console.log("newTotal || newClaimed : ", newTotal, " || ",newClaimed);
-      admin.firestore()
-        .collection("users")
-        .doc(paxDetails.userId)
+    const getUserRef = admin.firestore().collection('users').doc(userId);
+    const getUserDetails: any = (await getUserRef.get()).data();
+    const getUserScore: number = getUserDetails?.voteStatistics?.score;
+    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
+    const checkScore = getUserScore - (getUserTotal * 100);
+    console.log("getUserScore : ", getUserScore);
+    console.log("getUserTotal : ", getUserTotal);
+    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
+    if (checkScore > 99.99) {
+      getUserRef
         .set(
           {
             rewardStatistics: {
-              total:newTotal,
-              claimed: newClaimed,
+              total: admin.firestore.FieldValue.increment(1),
+              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
             },
           },
           { merge: true }
         ).then(() => {
           console.log("Total and Claimed are updated Successfully");
-        }).catch(() => {
-          console.error("Failed to update the total and claimed");
-        });
-        // end testing purposes code
+        })
+    }
+  } catch (error) {
+    console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
+  }
+}
+
+export const getUserAndCalculatePax = async (paxDetails: any) => {
+  try {
+    const getUserDetails = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
+    if (!getUserDetails) {
+      return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
+    }
+    const getUserScore: number = getUserDetails?.voteStatistics?.score;
+    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
+    const checkScore = getUserScore - (getUserTotal * 100);
+    console.log("getUserScore : ", getUserScore);
+    console.log("getUserTotal : ", getUserTotal);
+    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
+    if (checkScore > 99.99) {
+      let getResultAfterSentPaxToUser: any;
+      let getResultAfterSentPaxToAdmin: any;
+
       if (paxDetails.isUserUpgraded === true) {
         // Call to user mintFor Address
         getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails);
@@ -306,5 +319,49 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
 
   } catch (error) {
     return errorLogging("getUserAndCalculatePax", "ERROR", error);
+  }
+}
+
+export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
+  try {
+    console.log("start addVoteResultForCPVI")
+    const cpviCollectionReference = admin.firestore().collection('voteResultForCPVI').doc(voteData.coin);
+    const getDocument = await cpviCollectionReference.get();
+
+    const userVote = voteData.direction == 0 ? "bull" : "bear";
+
+    const incrementKeyValue: any = {};
+    incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
+    console.log("incrementKeyValue : ", incrementKeyValue);
+    console.log("getDocument.exists : ", getDocument.exists)
+
+    // check document already exist or not and check timestamp to will be not cross the after 7 days
+    if (getDocument.exists == false) {
+
+      const newCPVI = voteData.direction ? {
+        bull: 1,
+        bear: 0,
+        timestamp: admin.firestore.Timestamp.now()
+      } : {
+        bull: 0,
+        bear: 1,
+        timestamp: admin.firestore.Timestamp.now()
+      }
+      await cpviCollectionReference.set(newCPVI);
+
+    } else {
+      const cpviData = getDocument.data();
+      const getTimeStamp = cpviData?.timestamp;
+      console.log("getTimeStamp : ", getTimeStamp);
+      const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
+      const currentTimestamp = (Date.now() / 1000);
+      if (getDocument.exists == true && after7daysTimeStamp < currentTimestamp) {
+        await cpviCollectionReference.update(incrementKeyValue)
+      }
+    }
+    console.log("End addVoteResultForCPVI")
+    return null
+  } catch (error) {
+    return errorLogging("addVoteResultForCPVI", "Error", error);
   }
 }
