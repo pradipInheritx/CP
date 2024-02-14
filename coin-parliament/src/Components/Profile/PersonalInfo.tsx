@@ -172,7 +172,6 @@ const PersonalInfo = () => {
     }
   };
 
-  console.log(userCurrentCountryCode, phone, "phonenumber");
   return (
     <>
 
@@ -200,7 +199,6 @@ const PersonalInfo = () => {
           //   setBioErr(true);
           // }
           else if (email === user?.email) {
-            console.log("i am working234234345")
             setUserInfo(newUserInfo);
             await onSubmit(newUserInfo);
             setEdit(false)

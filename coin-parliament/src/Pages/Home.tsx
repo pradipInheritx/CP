@@ -211,7 +211,7 @@ function Home() {
         },
       })
       .then((response) => {
-        console.log(response,"responseisLoggedInFromVoteToEarn")
+        // console.log(response,"responseisLoggedInFromVoteToEarn")
         if (response?.data?.result?.token) {
           setSites((prev) => {
             return {
