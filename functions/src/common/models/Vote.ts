@@ -334,31 +334,46 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
 
     // check document already exist or not and check timestamp to will be not cross the after 7 days
     if (getDocument.exists == false) {
-
-      const newCPVI = voteData.direction ? {
-        bull: 1,
-        bear: 0,
-        timestamp: admin.firestore.Timestamp.now()
-      } : {
-        bull: 0,
-        bear: 1,
-        timestamp: admin.firestore.Timestamp.now()
-      }
-      await cpviCollectionReference.set(newCPVI);
-
+      await createNewCPVIDocumnet(voteData)
     } else {
       const cpviData = getDocument.data();
       const getTimeStamp = cpviData?.timestamp;
-      console.log("getTimeStamp : ", getTimeStamp);
       const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
-      const currentTimestamp = (Date.now() / 1000);
-      if (getDocument.exists == true && after7daysTimeStamp < currentTimestamp) {
-        await cpviCollectionReference.update(incrementKeyValue)
+      const currentTimestamp = Math.round(Date.now() / 1000);
+
+      console.log("getTimeStamp : ", getTimeStamp);
+      console.log("currentTimestamp - after7daysTimeStamp", currentTimestamp, " - ", after7daysTimeStamp);
+
+      if (after7daysTimeStamp > currentTimestamp) {
+        await cpviCollectionReference.set(incrementKeyValue, { merge: true }).then(() => {
+          console.log("CPVI updated successfully")
+        })
+      } else {
+        await createNewCPVIDocumnet(voteData)
       }
     }
     console.log("End addVoteResultForCPVI")
     return null
   } catch (error) {
     return errorLogging("addVoteResultForCPVI", "Error", error);
+  }
+}
+async function createNewCPVIDocumnet(voteData: VoteResultProps) {
+  try {
+    const newCPVI = voteData.direction == 0 ? {
+      bull: 1,
+      bear: 0,
+      timestamp: admin.firestore.Timestamp.now()
+    } : {
+      bull: 0,
+      bear: 1,
+      timestamp: admin.firestore.Timestamp.now()
+    }
+    await admin.firestore().collection('voteResultForCPVI').doc(voteData.coin).set(newCPVI).then(() => {
+      console.log("New CPVI is generated")
+    });
+  }
+  catch (error) {
+    errorLogging("createNewCPVIDocumnet", "Error", error);
   }
 }

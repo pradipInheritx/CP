@@ -1302,6 +1302,44 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     await removeTheBefore24HoursData();
   });
 
+  // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
+  export const pendingPaymentSettlement = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    console.log("pendingPaymentSettlement start");
+
+    // Get the current timestamp
+    const currentTimeStamp = Date.now();
+    const twentyFourHoursAgo = currentTimeStamp - (24 * 60 * 60 * 1000);
+
+    try {
+      // Query payments collection for payments within the last 24 hours and with event 'approved'
+      const paymentsSnapshot = await admin.firestore().collection('payments')
+        .where('timestamp', '>', (twentyFourHoursAgo).toString()) 
+        .where('event', '==', 'Approved')
+        .get();
+
+      console.log("paymentsSnapshot >>>>>>>>>>>>>>>", paymentsSnapshot);
+
+      // Update each payment's event to 'confirmed'
+      for (const doc of paymentsSnapshot.docs) {
+        const paymentData = doc.data();
+        const paymentTimestampString = paymentData.timestamp;
+
+        // Check if payment was made within the last 24 hours 
+        if (paymentTimestampString > twentyFourHoursAgo.toString()) {
+          const paymentRef = doc.ref;
+          await paymentRef.update({ event: 'Confirmed' });
+        }
+      }
+
+      console.log('Payments updated successfully.');
+    } catch (error) {
+      console.error('Error updating payments:', error);
+    }
+  });
+
+
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
   .schedule("0 0 * * *")
