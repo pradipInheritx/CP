@@ -1313,24 +1313,25 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     const twentyFourHoursAgo = currentTimeStamp - (24 * 60 * 60 * 1000);
 
     try {
-      // Query payments collection for payments within the last 24 hours and with event 'approved'
+      // Query payments collection for payments within the last 24 hours
       const paymentsSnapshot = await admin.firestore().collection('payments')
         .where('timestamp', '>', (twentyFourHoursAgo).toString()) 
-        .where('event', '==', 'Approved')
         .get();
 
       console.log("paymentsSnapshot >>>>>>>>>>>>>>>", paymentsSnapshot);
 
-      // Update each payment's event to 'confirmed'
-      for (const doc of paymentsSnapshot.docs) {
+      // Filter payments where event is 'Approved'
+      const approvedPayments = paymentsSnapshot.docs.filter(doc => {
         const paymentData = doc.data();
-        const paymentTimestampString = paymentData.timestamp;
+        return paymentData.event === 'Approved';
+      });
 
-        // Check if payment was made within the last 24 hours 
-        if (paymentTimestampString > twentyFourHoursAgo.toString()) {
-          const paymentRef = doc.ref;
-          await paymentRef.update({ event: 'Confirmed' });
-        }
+      console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
+
+      // Update each approved payment's event to 'Confirmed'
+      for (const doc of approvedPayments) {
+        const paymentRef = doc.ref;
+        await paymentRef.update({ event: 'Confirmed' });
       }
 
       console.log('Payments updated successfully.');
@@ -1338,6 +1339,7 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
       console.error('Error updating payments:', error);
     }
   });
+
 
 
 //----------Start Notifications scheduler-------------
