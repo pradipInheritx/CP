@@ -1309,20 +1309,26 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     console.log("pendingPaymentSettlement start");
 
     // Get the current timestamp
-    const currentTimeStamp = Date.now();
-    const twentyFourHoursAgo = currentTimeStamp - (24 * 60 * 60 * 1000);
+    const currentTimeStamp = new Date();
+    const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
+
 
     try {
       // Query payments collection for payments within the last 24 hours
-      const paymentsSnapshot = await admin.firestore().collection('payments')
-        .where('timestamp', '>', (twentyFourHoursAgo).toString()) 
+      const paymentsSnapshot= await admin.firestore().collection('payments')
+        .where("timestamp", ">=", twentyFourHoursAgo) 
         .get();
 
-      console.log("paymentsSnapshot >>>>>>>>>>>>>>>", paymentsSnapshot);
+        paymentsSnapshot.forEach(doc => {
+          console.log("Document ID:", doc.id);
+          console.log("Document Data:", doc.data());
+      });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments = paymentsSnapshot.docs.filter(doc => {
-        const paymentData = doc.data();
+      const approvedPayments:any  = paymentsSnapshot.docs.map((snapshot:any) => {
+        const paymentData = snapshot.data();
+        console.log("paymentData>>>>>>>>>>>>>>>>>>>>",paymentData)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>",paymentData.event === 'Approved')
         return paymentData.event === 'Approved';
       });
 
@@ -1330,7 +1336,9 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
 
       // Update each approved payment's event to 'Confirmed'
       for (const doc of approvedPayments) {
+        console.log("approvedPayments>>>>>>>>>>>>>",doc)
         const paymentRef = doc.ref;
+        console.log("approvedPaymentRef>>>>>>>>>>>>>",doc.ref)
         await paymentRef.update({ event: 'Confirmed' });
       }
 
