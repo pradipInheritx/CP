@@ -88,7 +88,7 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
           {/* {translate("Your Level")} */}
           {texts.YourLevel}
         </h6>
-        {console.log(userInfo?.status,"userInfo?.status")}
+        
         {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {          
           // @ts-ignore
           const opacity = userInfo?.status && userInfo?.status?.name === userType?.name ? "" : " opacity-50";

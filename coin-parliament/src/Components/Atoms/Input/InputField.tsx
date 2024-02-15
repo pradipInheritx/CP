@@ -6,7 +6,8 @@ export type InputProps = Partial<FormControlProps> & {
   name: string;
   required: boolean;
   fullWidth?: boolean;
-  maxlength?: string  | number;
+  maxlength?: string | number;
+  placeholder?: string;
 };
 const InputField = (props: InputProps) => {
   // @ts-ignore

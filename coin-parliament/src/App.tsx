@@ -1011,11 +1011,26 @@ function App() {
       valueVotingTime: vote?.valueVotingTime,      
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
+      paxDistributionToUser: {
+        userId: userInfo?.uid,
+        currentPaxValue: Number(paxDistribution),
+        isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+        mintForUserAddress: userInfo?.paxAddress?.address || "",
+        eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      },
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId
     }).then((data: any) => {
       console.log('success')
+      const raw = {
+        userId: userInfo?.uid
+      }
+      checkAndUpdateRewardTotal(raw).then((res) => {
+        console.log(res.data, "checkAndUpdateRewardTotal")
+      }).catch((error) => {
+        console.log(error, "checkAndUpdateRewardTotal")
+      })
       // if(data.data==null){
       //     getVotes(index).then(void 0);     
       // }
@@ -1054,7 +1069,7 @@ function App() {
 
           let allCoinsPair = [...AllCoins, ...AllPairs]
           let promiseArray: any = []
-          if (allCoinsPair.length > 0) {
+          if (allCoinsPair.length > 0 && paxDistribution > 0) {
             allCoinsPair?.forEach((voteItem: any) => {
               promiseArray.push(checkprice(voteItem))
               // checkprice(voteItem);
@@ -1074,7 +1089,7 @@ function App() {
         }
       }
     },
-    [user?.uid]
+    [user?.uid, paxDistribution]
   );
   useEffect(() => {
     if (user?.uid) {
@@ -1096,6 +1111,7 @@ function App() {
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
+  const checkAndUpdateRewardTotal = httpsCallable(functions, "checkAndUpdateRewardTotal");
   // const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
   const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
   const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
@@ -1234,7 +1250,17 @@ function App() {
           // }
 
           console.log(latestUserInfo.current, 'latestUserInfo.current');
-          getPriceCalculation(request).then(() => { }).catch(() => { });
+          getPriceCalculation(request).then(() => {
+            const raw = {
+              userId: userInfo?.uid
+            }
+            checkAndUpdateRewardTotal(raw).then((res) => {
+              console.log(res.data, "checkAndUpdateRewardTotal")
+            }).catch((error) => {
+              console.log(error, "checkAndUpdateRewardTotal")
+            })
+
+           }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
           // }
