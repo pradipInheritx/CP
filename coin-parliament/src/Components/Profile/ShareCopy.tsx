@@ -158,7 +158,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
   const { showToast } = useContext(NotificationContext);
   const [showShare, setShowShare] = useState(false);
   const [showShare2, setShowShare2] = useState(false);
-  const { user } = useContext(UserContext);
+  const { user,userInfo } = useContext(UserContext);
   const { setLogin } = useContext(AppContext)
   // @ts-ignore
   const getAllId= JSON.parse(localStorage.getItem("userId"))
@@ -206,6 +206,19 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
     // Step 5: Clear the interval when the component unmounts
     return () => clearInterval(interval);
   }, [currentImageIndex]);
+
+
+  const referralUrl = (userInfo: any, url?: any, uid?: any) => {
+   
+
+    if (url == "") {            
+     return `${document.location.protocol}//${document.location.host}/sign-up?refer=${userInfo.userName}`
+    
+    }
+    else {      
+      return `${document.location.protocol}//${url}/?refer=${userInfo.userName}`
+    }
+  }; 
 
   return (
     <div
@@ -334,7 +347,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
                   {/* <img src={item.name} alt="" width={"25px"} /> */}
                   <span className="material-symbols-outlined text-secondary me-2"
                     onClick={() => {
-                      copy(url(item.id, item.url, item.uid));
+                      copy(referralUrl(userInfo, item.url, item.uid));
                       showToast(
                         'Your referral link is copied to the clipboard.',
                         ToastType.SUCCESS
@@ -432,7 +445,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
                   {/* <img src={item.name} alt="" width={"25px"} /> */}
                   <span className="material-symbols-outlined text-secondary me-2"
                     onClick={() => {
-                      copy(url(item.id, item.url, item.uid));
+                      copy(referralUrl(userInfo, item.url, item.uid));
                       showToast(
                         'Your referral link is copied to the clipboard.',
                         ToastType.SUCCESS

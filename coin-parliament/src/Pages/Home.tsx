@@ -157,7 +157,7 @@ enum SiteTypes {
 function Home() {
   const [showShare, setShowShare] = useState<boolean | string>(false);
   const { setLogin } = useContext(AppContext);
-  const { user } = useContext(UserContext);
+  const { user,userInfo } = useContext(UserContext);
   const [sites, setSites] = useState<{ [key: string]: any }>({
     [SiteTypes.coin]: {
       img: COINPARLIAMENT,
@@ -302,6 +302,19 @@ function Home() {
   };  
 const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
 
+const redirectUrl = (userInfo: any, url?: any, uid?: any) => {
+   
+
+  if (url == "") {            
+   return `${document.location.protocol}//${document.location.host}/sign-up?refer=${userInfo.userName}`
+  
+  }
+  else {      
+    return `${document.location.protocol}//${url}/?refer=${userInfo.userName}`
+  }
+}; 
+
+
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
 
@@ -423,7 +436,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                               <span className="material-symbols-outlined text-secondary me-2"
                               onClick={() => {
                                 {/* @ts-ignore */ }
-                                copy(referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName));
+                                copy(redirectUrl(userInfo, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName));
                                   showToast(
                                     'Your referral link is copied to the clipboard.',
                                     ToastType.SUCCESS
