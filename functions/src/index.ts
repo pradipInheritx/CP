@@ -68,7 +68,7 @@ import {
 } from "./common/models/PAX";
 import {
   claimReward,
-  addReward,
+  // addReward,
   cardHolderListing,
   // sendMintForPaxToAdmin,
   // sendMintForPaxToUser
@@ -811,7 +811,7 @@ exports.onUpdateUser = functions.firestore
     console.info("after", after)
     console.info("Send Email Successfully")
 
-    await addReward(snapshot.after.id, before, after);
+    // await addReward(snapshot.after.id, before, after);
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
@@ -1011,11 +1011,13 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     };
   }
 );
-exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
+
+exports.checkAndUpdateRewardTotal = functions.https.onCall(
   async (data) => {
     const {userId} = data;
     await checkAndUpdateRewardTotal(userId)
-  });
+});
+
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
   const users = await admin
