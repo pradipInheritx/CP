@@ -133,7 +133,7 @@ const PairsCopy = ({
             }}></span>              
            </div>
            <ImgName>
-            <img src={items.img1} alt=""   style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
+            <img src={items.img1} alt="" className="img-fluid"  style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
              <CoinText>{ items.name1}</CoinText>
           </ImgName>
            <div className="w-25 d-flex flex-column align-items-center "
@@ -155,7 +155,7 @@ const PairsCopy = ({
              <p style={{color:"#6352e8"}}>VS</p>
           </div>
            <ImgName>
-             <img src={items.img2} alt="" style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
+             <img src={items.img2} alt="" className="img-fluid" style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
              <CoinText>{ items.name2}</CoinText>
             </ImgName>                        
             </div>
