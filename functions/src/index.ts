@@ -811,8 +811,8 @@ exports.onUpdateUser = functions.firestore
     console.info("after", after)
     console.info("Send Email Successfully")
 
-    // for testing purposes, we comment this
     // await addReward(snapshot.after.id, before, after);
+    await checkAndUpdateRewardTotal(snapshot.after.id)
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
@@ -1012,11 +1012,13 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     };
   }
 );
-exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
+
+exports.checkAndUpdateRewardTotal = functions.https.onCall(
   async (data) => {
     const {userId} = data;
-    await checkAndUpdateRewardTotal(userId)
-  });
+    return await checkAndUpdateRewardTotal(userId);
+});
+
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
   const users = await admin

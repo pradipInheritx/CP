@@ -276,9 +276,25 @@ export async function checkAndUpdateRewardTotal(userId: string) {
         ).then(() => {
           console.log("Total and Claimed are updated Successfully");
         })
+       return  {
+          status : true,
+          message : "Total and Claimed are updated Successfully",
+          result  : null  
+        };
+    }else{
+      return  {
+        status : false,
+        message : "Total and Claimed are not updated Successfully",
+        result  : null  
+      };
     }
   } catch (error) {
     console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
+    return {
+      status : false,
+      message : "checkAndUpdateRewardTotal failed to update the reward total.",
+      result  :error 
+    }
   }
 }
 
