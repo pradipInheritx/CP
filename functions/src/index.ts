@@ -1296,6 +1296,50 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     await removeTheBefore24HoursData();
   });
 
+  // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
+  export const pendingPaymentSettlement = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async (context) => {
+    console.log("pendingPaymentSettlement start");
+
+    // Get the current timestamp
+    const currentTimeStamp = Date.now();
+    const twentyFourHoursAgo = currentTimeStamp - (24 * 60 * 60 * 1000);
+
+    try {
+      // Query payments collection for payments within the last 24 hours and with event 'approved'
+      const paymentsSnapshot = await admin.firestore().collection('payments')
+        .where('timestamp', '>', new Date(twentyFourHoursAgo))
+        .where('event', '==', 'Approved')
+        .get();
+
+        console.log("paymentsSnapshot>>>>>>>>>>>>>>>", paymentsSnapshot)
+      // Update each payment's event to 'confirmed'
+      const updatePromises: Promise<void>[] = [];
+      paymentsSnapshot.forEach(doc => {
+        const paymentData = doc.data();
+        const paymentTimestampString = paymentData.timestamp;
+
+        // Convert the timestamp string to a JavaScript Date object
+        const paymentTimestamp = new Date(paymentTimestampString);
+
+        // Check if payment was made within the last 24 hours
+        if (paymentTimestamp.getTime() > twentyFourHoursAgo) {
+          const paymentRef = doc.ref;
+          const updatePromise = paymentRef.update({ event: 'Confirmed' });
+          updatePromises.push(updatePromise.then(() => {}));
+        }
+      });
+
+      // Execute all update promises
+      await Promise.all(updatePromises);
+
+      console.log('Payments updated successfully.', updatePromises);
+    } catch (error) {
+      console.error('Error updating payments:', error);
+    }
+  });
+
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
   .schedule("0 0 * * *")
