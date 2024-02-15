@@ -230,18 +230,18 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
-        const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        console.log("getSuccessAndScore : ", getSuccessAndScore)
-        await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
+        // const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        // console.log("getSuccessAndScore : ", getSuccessAndScore)
+        // await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
         await calc.calc(getVoteRef);
         return { status: true, message: "Success" }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
-        const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        console.log("getSuccessAndScore : ", getSuccessAndScore)
-        await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
+        // const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        // console.log("getSuccessAndScore : ", getSuccessAndScore)
+        // await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
         await calc.calc(getVoteRef);
         return { status: true, message: "Success" }
       }
@@ -251,24 +251,25 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
   }
 }
 
-async function checkAndUpdateRewardTotal(userId: string, currentVoteCMP: number) {
+export async function checkAndUpdateRewardTotal(userId: string, getUserScore: number, getUserTotal: number, getUserClaimed: number) {
   try {
     const getUserRef = admin.firestore().collection('users').doc(userId);
-    const getUserDetails: any = (await getUserRef.get()).data();
-    const getUserScore: number = getUserDetails?.voteStatistics?.score;
-    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
-    const score = getUserScore + currentVoteCMP
-    const checkScore = score - (getUserTotal * 100);
+    // const getUserDetails: any = (await getUserRef.get()).data();
+    // const getUserScore: number = getUserDetails?.voteStatistics?.score;
+    // const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
+    // const score = getUserScore + currentVoteCMP;
+    const checkScore = getUserScore - (getUserTotal * 100);
     console.log("getUserScore : ", getUserScore);
     console.log("getUserTotal : ", getUserTotal);
     console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
     if (checkScore > 99.99) {
+
       await getUserRef
         .set(
           {
             rewardStatistics: {
               total: admin.firestore.FieldValue.increment(1),
-              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
+              claimed: getUserClaimed,
             },
           },
           { merge: true }
