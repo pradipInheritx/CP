@@ -268,7 +268,7 @@ async function checkAndUpdateRewardTotal(userId: string, currentVoteCMP: number)
           {
             rewardStatistics: {
               total: admin.firestore.FieldValue.increment(1),
-              claimed: getUserDetails?.rewardStatistics?.total,
+              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
             },
           },
           { merge: true }
