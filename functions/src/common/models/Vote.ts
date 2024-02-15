@@ -268,7 +268,7 @@ async function checkAndUpdateRewardTotal(userId: string, currentVoteCMP: number)
           {
             rewardStatistics: {
               total: admin.firestore.FieldValue.increment(1),
-              claimed: getUserDetails?.rewardStatistics?.total,
+              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
             },
           },
           { merge: true }
@@ -334,7 +334,7 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     // check document already exist or not and check timestamp to will be not cross the after 7 days
     if (getDocument.exists == false) {
 
-      const newCPVI = voteData.direction ? {
+      const newCPVI = voteData.direction == 0 ? {
         bull: 1,
         bear: 0,
         timestamp: admin.firestore.Timestamp.now()
@@ -352,7 +352,9 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
       const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
       const currentTimestamp = (Date.now() / 1000);
       if (getDocument.exists == true && after7daysTimeStamp < currentTimestamp) {
-        await cpviCollectionReference.update(incrementKeyValue)
+        await cpviCollectionReference.set(incrementKeyValue,{merge: true}).then(()=>{
+          console.log("new vote updated successfully")
+        })
       }
     }
     console.log("End addVoteResultForCPVI")
