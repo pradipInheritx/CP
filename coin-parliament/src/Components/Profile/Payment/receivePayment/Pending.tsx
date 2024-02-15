@@ -45,12 +45,11 @@ const tableHeader: tableColumnType[] = [
             return (
                 <span>
                     {/* {data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"} */}
-                    {window.screen.width > 767 ?
-
+                    {
+                    window.screen.width > 767 ?
                         data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
                         :
                         data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
-
                     }
                 </span>
             )

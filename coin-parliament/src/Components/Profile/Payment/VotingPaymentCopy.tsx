@@ -40,6 +40,7 @@ import { ethers } from "ethers";
 import { showToast } from "../../../App";
 import { texts } from "Components/LoginComponent/texts";
 import { collection, onSnapshot } from "firebase/firestore";
+import SmallBackArrow from '../../../Components/icons/SmallBackArrow';
 
 
 const H2 = styled.h2`
@@ -433,7 +434,7 @@ const VotingPaymentCopy: React.FC<{
   setSelectCoin: React.Dispatch<React.SetStateAction<string>>,
   showOptionList: boolean,
   setShowOptionList: React.Dispatch<React.SetStateAction<boolean>>,
-  cardPayment:Function,
+  cardPayment: Function,
 }> = ({
   checkAndPay,
   setPaymentStatus,
@@ -448,27 +449,28 @@ const VotingPaymentCopy: React.FC<{
   setShowOptionList,
   cardPayment,
 }) => {
-  
+
     const translate = useTranslation();
     const { user, userInfo } = useContext(UserContext);
-    const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, paymentCoinList, setPaymentCoinList, } =
       useContext(AppContext);
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
-  const { width } = useWindowSize();
-  const [isLoading, setIsLoading] = useState(false)
+    const { width } = useWindowSize();
+    const [isLoading, setIsLoading] = useState(false)
     const [coinsList, setCoinsList] = useState([])
-    const [selectPayment, setSelectPayment] = useState(0);    
+    const [selectPayment, setSelectPayment] = useState(0);
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
     const [extraVote, setExtraVote] = useState(0);
     const [extraPer, setExtraPer] = useState(0);
-  const [showText, setShowText] = useState(false);
-  const [comingSoon, setComingSoon] = useState(false);
-  const [paymentCurruntTime, setPaymentCurruntTime] = useState <any>();
-  
-// const 
+    const [showText, setShowText] = useState(false);
+    const [comingSoon, setComingSoon] = useState(false);
+  const [showPayButoom, setShowPayButoom] = useState(false);
+    const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
+
+    // const 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
     const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
@@ -477,17 +479,17 @@ const VotingPaymentCopy: React.FC<{
 
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });      
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, [payType, selectPayment,])
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
-      if (coinInfo) {        
-        if (window.screen.width > 767) {          
-          window.scrollTo({ top:650, behavior: 'smooth' });                        
+      if (coinInfo) {
+        if (window.screen.width > 767) {
+          window.scrollTo({ top: 650, behavior: 'smooth' });
         }
         else {
-          window.scrollTo({ top:630, behavior: 'smooth' });          
-        }        
+          window.scrollTo({ top: 630, behavior: 'smooth' });
+        }
       }
     }, [coinInfo])
 
@@ -498,27 +500,27 @@ const VotingPaymentCopy: React.FC<{
       // })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
-      console.log(AllInfo,"AllInfo")
+      console.log(AllInfo, "AllInfo")
       setPayamount(AllInfo[0])
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])
     }, [])
 
-  
-  const getCoinList = async () => {
-    const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
-    try {
-      const snapshot = await getDoc(coinsDocRef);
-      const allList = snapshot.data()?.coins;
-      const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
-      setCoinsList(filterCoin || allList);
-    } catch (error) {
-      console.log(error, "error");
-    }
-  };
-  
+    const getCoinList = async () => {
+      const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
+
+      try {
+        const snapshot = await getDoc(coinsDocRef);
+        const allList = snapshot.data()?.coins;
+        const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
+        setCoinsList(filterCoin || allList);
+      } catch (error) {
+        console.log(error, "error");
+      }
+    };
+
     useEffect(() => {
       // const getCoinList = firebase
       //   .firestore()
@@ -538,13 +540,13 @@ const VotingPaymentCopy: React.FC<{
     }, [])
 
 
-  const handleClick = () => {
+    const handleClick = () => {
       setShowText(true)
       setPaymentStatus({ type: "", message: '' });
       setPayButton(true);
       // Call the global function and pass the values as arguments    
-    // checkAndPay();
-    sendTransaction()
+      // checkAndPay();
+      sendTransaction()
     };
 
     const startAgainAction = () => {
@@ -562,192 +564,192 @@ const VotingPaymentCopy: React.FC<{
       setSelectCoin("none");
     }
 
-  const {open,close}= useWeb3Modal()
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
-  
-  useEffect(() => {
-    if(address && chainId && isConnected){
-      const data = mainnet?.find(network=>network?.chainId==chainId)
-      if(!data) return
-      setSelectCoin(data?.name)
-      setCoinInfo(data)
-    }
-  
-  }, [address ,chainId ,isConnected])
-  
-  console.log(address, chainId, isConnected, "address,chainId,isConnected")
-  const payNow = (detail?: any) => {
-    const headers = {
-      // 'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-      "content-type": "application/json"
-    }
-    
-    const data = {
-      
-      userId: `${user?.uid}`,
-      userEmail: `${user?.email}`,     
-      walletType: `wallet connect`,
-      // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
-      amount: 0.0001,
-      // @ts-ignore
-      network: `${coinInfo.chainId || ""}`,
-      // @ts-ignore
-      origincurrency: `${coinInfo?.currency.toLowerCase()}`,      
-      token: `${coinInfo?.name}`,
-      event:'Approved',
-      transactionType: payType,
-      numberOfVotes: extraVote,
-      paymentDetails: detail,
+    const { open, close } = useWeb3Modal()
+    const { address, chainId, isConnected } = useWeb3ModalAccount()
+    const { walletProvider } = useWeb3ModalProvider()
 
-    }
-
-    axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
-      {
-        headers: headers
-      }).then(async (response) => {
-        // setApiCalling(false)
-        // console.log(,"response.data.data")
-        console.log(response.data, "response.data")
-        // transactionId.current = response.data
-        
-        // setShowForWait(true)
-      })
-      .catch((error) => {
-        // setPaymentStatus({ type: 'error', message: '' });
-        console.log(error, "response.data")
-        // setShowForWait(true)
-        // setApiCalling(false)
-        // setPayButton(false)
-      })
-  }
-  async function sendTransaction() {
-    setIsLoading(true) 
-    let ethereum = (window as any).ethereum;
-
-    // if (!ethereum) {
-    //   ethereum = (window as any).web3?.currentProvider;
-    // }
-
-    // if (!ethereum) {
-    //   console.error("No Ethereum provider found");
-    //   return;
-    // }
-
-    try {
-      const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
-      // Request access to MetaMask
-      // await ethereum?.request({ method: 'eth_requestAccounts' });
-      // Create a wallet signer
-      const wallet = provider.getSigner();
-      // send a tx
-      // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
-      const transaction = {
-        chainId: chainId,
-        to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
-        value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
-      };
-
-      const txResponse = await wallet.sendTransaction(transaction);
-
-      // Handle the transaction response
-      console.log('Transaction hash:', txResponse.hash);
-      if(txResponse.hash){
-        
-        payNow({...txResponse, orderId:`VTE-${(payType||'')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}`})
-        setIsLoading(false) 
-        setPaymentStatus({ type:"success", message: "" })
-      setShowText(false)      
-      
-      setPayButton(false);
+    useEffect(() => {
+      if (address && chainId && isConnected) {
+        const data = mainnet?.find((network?:any) => network?.chainId == chainId)
+        if (!data) return
+        setSelectCoin(data?.name)
+        setCoinInfo(data)
       }
-      // await txResponse.wait();
-      // setPaymentStatus({ type:"success", message: "" })
-      // setShowText(false)      
-      
-      // setPayButton(false);
-      console.log('Transaction mined!');
 
-    } catch (error: any) {
-      console.log('errorror',error)
-      const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
-      // console.log(errorMessageWithoutTextAfterBracket);
-      // showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
-      // console.log((error as Error).message, 'Hello');
-      setIsLoading(false) 
-      setShowText(false)
-      // setPaymentStatus({ type: "", message: '' });
-      setPayButton(false);
-      setPaymentStatus({ type:"error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction')?'user rejected transaction':errorMessageWithoutTextAfterBracket })
+    }, [address, chainId, isConnected])
+
+    console.log(address, chainId, isConnected, "address,chainId,isConnected")
+    const payNow = (detail?: any) => {
+      const headers = {
+        // 'Content-Type': 'application/json',
+        "accept": "application/json",
+        // @ts-ignore
+        "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+        "content-type": "application/json"
+      }
+
+      const data = {
+
+        userId: `${user?.uid}`,
+        userEmail: `${user?.email}`,
+        walletType: `wallet connect`,
+        // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+        amount: 0.0001,
+        // @ts-ignore
+        network: `${coinInfo.chainId || ""}`,
+        // @ts-ignore
+        origincurrency: `${coinInfo?.currency.toLowerCase()}`,
+        token: `${coinInfo?.name}`,
+        event: 'Approved',
+        transactionType: payType,
+        numberOfVotes: extraVote,
+        paymentDetails: detail,
+
+      }
+
+      axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
+        {
+          headers: headers
+        }).then(async (response) => {
+          // setApiCalling(false)
+          // console.log(,"response.data.data")
+          console.log(response.data, "response.data")
+          // transactionId.current = response.data
+
+          // setShowForWait(true)
+        })
+        .catch((error) => {
+          // setPaymentStatus({ type: 'error', message: '' });
+          console.log(error, "response.data")
+          // setShowForWait(true)
+          // setApiCalling(false)
+          // setPayButton(false)
+        })
     }
-  }
+    async function sendTransaction() {
+      setIsLoading(true)
+      let ethereum = (window as any).ethereum;
 
-  useEffect(() => {
-    if (userInfo?.uid && paymentCurruntTime) {      
-      const colRef = collection(db, "callbackHistory")
-      //real time update    
-      console.log(userInfo, "userInfodata")
-      
-      onSnapshot(colRef, (snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          // setTestData((prev) => [...prev, doc.data()])
-          console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2:"" , "useralldata")   
-          if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {  
-            console.log(doc.data()?.data,"livepaymentdata")            
-            if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {                            
-              setIsLoading(false)
-              window.scrollTo({ top: 650, behavior: 'smooth' }); 
-              setPaymentStatus({ type: "success", message: '' }); 
+      // if (!ethereum) {
+      //   ethereum = (window as any).web3?.currentProvider;
+      // }
+
+      // if (!ethereum) {
+      //   console.error("No Ethereum provider found");
+      //   return;
+      // }
+
+      try {
+        const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
+        // Request access to MetaMask
+        // await ethereum?.request({ method: 'eth_requestAccounts' });
+        // Create a wallet signer
+        const wallet = provider.getSigner();
+        // send a tx
+        // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+        const transaction = {
+          chainId: chainId,
+          to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
+          value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
+        };
+
+        const txResponse = await wallet.sendTransaction(transaction);
+
+        // Handle the transaction response
+        console.log('Transaction hash:', txResponse.hash);
+        if (txResponse.hash) {
+
+          payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
+          setIsLoading(false)
+          setPaymentStatus({ type: "success", message: "" })
+          setShowText(false)
+
+          setPayButton(false);
+        }
+        // await txResponse.wait();
+        // setPaymentStatus({ type:"success", message: "" })
+        // setShowText(false)      
+
+        // setPayButton(false);
+        console.log('Transaction mined!');
+
+      } catch (error: any) {
+        console.log('errorror', error)
+        const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
+        // console.log(errorMessageWithoutTextAfterBracket);
+        // showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
+        // console.log((error as Error).message, 'Hello');
+        setIsLoading(false)
+        setShowText(false)
+        // setPaymentStatus({ type: "", message: '' });
+        setPayButton(false);
+        setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'user rejected transaction' : errorMessageWithoutTextAfterBracket })
+      }
+    }
+
+    useEffect(() => {
+      if (userInfo?.uid && paymentCurruntTime) {
+        const colRef = collection(db, "callbackHistory")
+        //real time update    
+        console.log(userInfo, "userInfodata")
+
+        onSnapshot(colRef, (snapshot) => {
+          snapshot.docs.forEach((doc) => {
+            // setTestData((prev) => [...prev, doc.data()])
+            console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2 : "", "useralldata")
+            if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {
+              console.log(doc.data()?.data, "livepaymentdata")
+              if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {
+                setIsLoading(false)
+                window.scrollTo({ top: 650, behavior: 'smooth' });
+                setPaymentStatus({ type: "success", message: '' });
+              }
+              if (doc.data()?.data?.order_status == "Declined") {
+                console.log(doc.data()?.data, "DeclinedData")
+                window.scrollTo({ top: 650, behavior: 'smooth' });
+                setIsLoading(false)
+                setPaymentStatus({ type: "error", message: '' });
+              }
+            } else {
+              // console.log(doc.data(),"doc.data()")
             }
-            if (doc.data()?.data?.order_status == "Declined") {
-              console.log(doc.data()?.data, "DeclinedData")
-              window.scrollTo({ top: 650, behavior: 'smooth' }); 
-              setIsLoading(false)
-              setPaymentStatus({ type: "error", message: '' });   
-            }
-          } else {
-            // console.log(doc.data(),"doc.data()")
+          })
+        })
+      }
+    }, [userInfo?.uid, paymentCurruntTime])
+
+    const getPayment = () => {
+      const data = {
+        userId: userInfo?.uid,
+        email: userInfo?.email,
+        amount: payamount,
+        transactionType: payType,
+        numberOfVotes: extraVote,
+        timestamp: (new Date().getTime()).toString(),
+      }
+      console.log(data, "datacehck")
+      const headers = {
+        "accept": "application/json",
+      }
+      axios.post(`/payment/make/createTempPaymentTransaction/onCreditCard`, data,
+        {
+          headers: headers
+        }).then(async (response) => {
+          console.log(response, "getresponse")
+          window.open(`${response.data?.redirectUrl}`, '_blank');
+          const regex = /p2=([^&]*)/;
+          const match = response?.data?.redirectUrl.match(regex);
+
+          if (match) {
+            const valueAfterP2 = match[1];
+            setPaymentCurruntTime(valueAfterP2)
+            console.log("P2 value", valueAfterP2)
           }
         })
-      })
+        .catch((error) => {
+          console.log(error)
+        })
     }
-  }, [userInfo?.uid, paymentCurruntTime])
-  
-  const getPayment = () => {
-    const data = {
-      userId: userInfo?.uid,
-      email: userInfo?.email,      
-      amount: payamount,      
-      transactionType: payType,
-      numberOfVotes: extraVote,      
-      timestamp: (new Date().getTime()).toString(),
-    }
-    console.log(data,"datacehck")
-    const headers = {
-      "accept": "application/json",
-    }
-    axios.post(`/payment/make/createTempPaymentTransaction/onCreditCard`, data,
-      {
-        headers: headers
-      }).then(async (response) => {
-        console.log(response,"getresponse")
-        window.open(`${response.data?.redirectUrl}`, '_blank');  
-        const regex = /p2=([^&]*)/;
-        const match = response?.data?.redirectUrl.match(regex);
-
-        if (match) {
-          const valueAfterP2 = match[1];
-          setPaymentCurruntTime(valueAfterP2)
-          console.log("P2 value" ,valueAfterP2)
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
 
     return (
       <>
@@ -805,17 +807,17 @@ const VotingPaymentCopy: React.FC<{
           <div className="d-flex"
             style={{
               width: `${window.screen.width > 767 ? "49%" : "100%"}`,
-              justifyContent: `${window.screen.width < 767 ? "center" : payType == "EXTRAVOTES" ? "center" :"end"}`
+              justifyContent: `${window.screen.width < 767 ? "center" : payType == "EXTRAVOTES" ? "center" : "end"}`
             }}
           >
-            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt=""  className=""/>
+            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" className="" />
 
               : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />}
           </div>
           {payType == "EXTRAVOTES" ?
             <>
             </>
-             :
+            :
             <>
               <div
                 className="m-auto "
@@ -900,93 +902,120 @@ const VotingPaymentCopy: React.FC<{
                 justifyContent: `${selectPayment == 0 ? "" : ""}`
               }}
             >
-              <Opctiondiv className="">
+              {showPayButoom == false ? <Opctiondiv className="">
                 <div className="justify-content-center align-items-center d-flex"
                   style={{
                     cursor: "pointer",
-                    marginBottom:'10px',
+                    marginBottom: '10px',
                     // borderBottom: "1px solid white",
-                    background: `${selectPayment==1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                    background: `${selectPayment == 1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                    padding:`${window.screen.width < 767 ? "45px 10px" :""}`
                   }}
                   onClick={() => {
                     setSelectPayment(1)
+                    setShowPayButoom(true)
                     // setComingSoon(true)                    
                   }}
                 >
                   <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p>
                 </div>
-                {!!(payamount>24) && <div className="d-flex flex-column align-items-center justify-content-center"
+                {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center"
                   style={{
                     cursor: "pointer",
-                    marginBottom:"10px",
-                    background: `${selectPayment==2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                    marginBottom: "10px",
+                    background: `${selectPayment == 2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
                   onClick={() => {
-                    if (payamount > 0) {                      
+                    if (payamount > 0) {
                       // setSelectPayment(2)
-                         
-                        window.scrollTo({ top: 100, behavior: 'smooth' });  
-                        setIsLoading(true)    
-                        getPayment()
-                        // setPaymentCurruntTime(new Date().getTime())
-                        
+
+                      window.scrollTo({ top: 100, behavior: 'smooth' });
+                      setIsLoading(true)
+                      getPayment()
+                      // setPaymentCurruntTime(new Date().getTime())
+
                     }
-                    else {                      
-                      setComingSoon(true)                      
+                    else {
+                      setComingSoon(true)
                     }
                   }}
                 >
-<span className="d-flex align-items-center justify-content-center">
-<i className="bi bi-credit-card-fill me-2"></i> No Crypto? No problem.
-</span>
-<span className="circleBtn mt-2">
-  <span className="inn_btn">Buy Crypto</span>
-  </span>
+                  <span className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-credit-card-fill me-2"></i> No Crypto? No problem.
+                  </span>
+                  <span className="circleBtn mt-2">
+                    <span className="inn_btn">Buy Crypto</span>
+                  </span>
 
-                  
-                 
+
+
                 </div>}
               </Opctiondiv>
+                :
+                <div className="w-100 m-auto d-flex justify-content-center align-items-center">
+                  <SmallBackArrow />
+                  <u className="                  
+                   text-center"
+                    style={{
+                      cursor: "pointer", 
+                      // border: "1px solid white",
+                      // padding: "7px 7px",
+                      marginLeft:"4px",
+                      borderRadius:"5px"
+                      
+                  }}
+                    onClick={() => {
+                    setShowPayButoom(false)
+                    setSelectPayment(0)
+                    }}>                    
+                      
+                    
+                      Back</u>
+                  <div>
+                    
+                  </div>
+                </div>
+            }
             </Boxdiv>
 
             {selectPayment == 1 &&
               <Boxdiv className="mt-4 mb-4"
                 style={{
                   display: "flex",
-                  justifyContent: "center",                  
-                  alignItems: "center",                  
-                  flexDirection:"column",                  
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
                 }}
               >
                 <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  
+
                   <div className={`pay-custom-select-container mb-3`} style={{
                     width: '23em',
-                    zIndex: 4,                    
+                    zIndex: 4,
                   }} >
-                   {selectCoin != "none" && <div
-                   style={{marginBottom:'10px', cursor:'pointer'}}
-                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
+                    {selectCoin != "none" && <div
+                      style={{ marginBottom: '10px', cursor: 'pointer' }}
+                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
-                          return 
-                        }         
-                        open({ view: 'Networks' })               
+                          return
+                        }
+                        open({ view: 'Networks' })
                         // setShowOptionList(prev => !prev)
                       }
 
                       }
                     >
-                       Change coin
+                      Change coin
                     </div>}
                     <div
-                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
+                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
-                          return 
-                        }         
-                        open({ view: 'Networks' })               
+                          return
+                        }
+                        open({ view: 'Networks' })
                         // setShowOptionList(prev => !prev)
                       }
 
@@ -1046,7 +1075,7 @@ const VotingPaymentCopy: React.FC<{
                 }}
                 >Select Coin</button>
                 </Divbutton> */}
-                
+
 
                 {/* {selectPayment == 1 && showText == false && window.screen.width < 767 && <p
                   style={{
@@ -1072,78 +1101,78 @@ const VotingPaymentCopy: React.FC<{
                     >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
                   </Divbutton>
                 } */}
-                
+
                 {
-                  payType == "EXTRAVOTES" && selectCoin != "none" && 
+                  payType == "EXTRAVOTES" && selectCoin != "none" &&
 
-                  
-                    <div
-                        className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                    >
-                        <ButttonDiv className="mt-1">
-                          <button
-                            disabled={payButton}
-                            style={{
-                              // opacity: `${payButton ? "0.6" : "1"}`
-                            }}
-                            onClick={() => {
-                              handleClick()
-                            }}
-                          >
 
-                            {payButton ? "PAY NOW..." : 'PAY NOW !'}
-                          </button>
-                        </ButttonDiv>
-                    </div >                  
-                }
-
-                {payType !== "EXTRAVOTES" && selectCoin != "none" && 
-                  <>
                   <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
-                    <ButttonDivSec className="mt-1">
+                    <ButttonDiv className="mt-1">
                       <button
+                        disabled={payButton}
+                        style={{
+                          // opacity: `${payButton ? "0.6" : "1"}`
+                        }}
                         onClick={() => {
-                          // upgradeProfile(99, 0)
                           handleClick()
                         }}
                       >
-                        <div className='d-flex justify-content-around' >
-                          <div
-                          >
-                            <span
-                              style={{
-                                letterSpacing: "4px",
-                                // display:"inline-block",
-                              }}
-                            >LIMITED
-                            </span>
-                            <br />
-                            <span>TIME OFFER</span>
-                          </div>
-                          <u>$199</u>
-                          <p>$99</p>
-                        </div>
 
-
+                        {payButton ? "PAY NOW..." : 'PAY NOW !'}
                       </button>
-                    </ButttonDivSec>
-                  </div>
+                    </ButttonDiv>
+                  </div >
+                }
+
+                {payType !== "EXTRAVOTES" && selectCoin != "none" &&
+                  <>
+                    <div
+                      className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                    >
+                      <ButttonDivSec className="mt-1">
+                        <button
+                          onClick={() => {
+                            // upgradeProfile(99, 0)
+                            handleClick()
+                          }}
+                        >
+                          <div className='d-flex justify-content-around' >
+                            <div
+                            >
+                              <span
+                                style={{
+                                  letterSpacing: "4px",
+                                  // display:"inline-block",
+                                }}
+                              >LIMITED
+                              </span>
+                              <br />
+                              <span>TIME OFFER</span>
+                            </div>
+                            <u>$199</u>
+                            <p>$99</p>
+                          </div>
+
+
+                        </button>
+                      </ButttonDivSec>
+                    </div>
                   </>
                 }
               </Boxdiv>}
-            
+
             {selectPayment == 2 &&
               <Boxdiv className="mt-4 mb-4"
                 style={{
                   display: "flex",
-                  justifyContent: "center",                  
+                  justifyContent: "center",
                 }}
-              >                                                                               
-                {payType == "EXTRAVOTES"  &&                   
-                    <div
-                        className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+              >
+                {payType == "EXTRAVOTES" &&
+                  <div
+                    className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime() , payType,payamount}`}
                       target="_blank"
@@ -1151,7 +1180,7 @@ const VotingPaymentCopy: React.FC<{
                         textDecoration:"none",
                       }}
                     > */}
-                        {/* <ButttonDiv className="mt-1">
+                    {/* <ButttonDiv className="mt-1">
                           <button
                             disabled={payButton}                                              
                           onClick={() => {    
@@ -1165,22 +1194,22 @@ const VotingPaymentCopy: React.FC<{
                           </button>
                       </ButttonDiv> */}
                     {/* </a>  */}
-                     
-                    </div >                  
+
+                  </div >
                 }
 
-                {payType !== "EXTRAVOTES" && 
+                {payType !== "EXTRAVOTES" &&
                   <>
-                  <div
-                    className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                  >
-                    {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
+                    <div
+                      className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                    >
+                      {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
                       }}
                     >                       */}
-                    {/* <ButttonDivSec className="mt-1">
+                      {/* <ButttonDivSec className="mt-1">
                       <button
                           onClick={() => {
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
@@ -1209,16 +1238,16 @@ const VotingPaymentCopy: React.FC<{
 
                       </button>
                     </ButttonDivSec> */}
-                    {/* </a>  */}
-                  </div>
+                      {/* </a>  */}
+                    </div>
                   </>
                 }
               </Boxdiv>
             }
 
 
-          </div>}  
-        
+          </div>}
+
         <div>
           <Modal
             show={

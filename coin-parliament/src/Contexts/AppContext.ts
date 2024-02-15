@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  paymentCoinList?:any,
+  setPaymentCoinList?:any,
   addPaxWalletPop?:any,
   setAddPaxWalletPop?:any,
   walletTab?:any,

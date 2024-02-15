@@ -48,33 +48,31 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
                             headers.map((item: tableColumnType, i: number) => {
                                 return (
                                     <div style={{ width: "19%" }} key={i}>
-                                        <OverlayTrigger
-                                            trigger={['hover', 'focus']}
-                                            placement="bottom"
-                                            overlay={<Tooltip id={`tooltip-name-${index}`}
-                                                style={{
-                                                    marginTop: "-15px"
-                                                }}
-                                            >{item?.Row ?
-                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                        : (value[item?.assessorName] || "NA")}</Tooltip>}
-
-                                        >
+                                        {item?.Row ?
                                             <RewardList>
-                                                
-                                                {window.screen.width > 767 ?
-                                                     item?.Row ?
-                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                        : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")       
-                                                    :
-                                                item?.Row ?
-                                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                        : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
-
-                                                }
-                                            
+                                                <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
                                             </RewardList>
-                                        </OverlayTrigger>
+                                            : <OverlayTrigger
+                                                trigger={['hover', 'focus']}
+                                                placement="bottom"
+                                                overlay={<Tooltip id={`tooltip-name-${index}`}
+                                                    style={{
+                                                        marginTop: "-15px"
+                                                    }}
+                                                >{value[item?.assessorName] || "NA"}</Tooltip>}
+
+                                            >
+                                                <RewardList>
+
+                                                    {window.screen.width > 767 ?                                                                                                                    
+                                                             ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                        :                                                        
+                                                            ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+
+                                                    }
+
+                                                </RewardList>
+                                            </OverlayTrigger>}
                                     </div>
                                 )
                             })
