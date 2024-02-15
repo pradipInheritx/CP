@@ -1299,7 +1299,7 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
   // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
   export const pendingPaymentSettlement = functions.pubsub
   .schedule("*/5 * * * *")
-  .onRun(async (context) => {
+  .onRun(async () => {
     console.log("pendingPaymentSettlement start");
 
     // Get the current timestamp
@@ -1309,36 +1309,30 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     try {
       // Query payments collection for payments within the last 24 hours and with event 'approved'
       const paymentsSnapshot = await admin.firestore().collection('payments')
-        .where('timestamp', '>', new Date(twentyFourHoursAgo))
+        .where('timestamp', '>', (twentyFourHoursAgo).toString()) 
         .where('event', '==', 'Approved')
         .get();
 
-        console.log("paymentsSnapshot>>>>>>>>>>>>>>>", paymentsSnapshot)
+      console.log("paymentsSnapshot >>>>>>>>>>>>>>>", paymentsSnapshot);
+
       // Update each payment's event to 'confirmed'
-      const updatePromises: Promise<void>[] = [];
-      paymentsSnapshot.forEach(doc => {
+      for (const doc of paymentsSnapshot.docs) {
         const paymentData = doc.data();
         const paymentTimestampString = paymentData.timestamp;
 
-        // Convert the timestamp string to a JavaScript Date object
-        const paymentTimestamp = new Date(paymentTimestampString);
-
-        // Check if payment was made within the last 24 hours
-        if (paymentTimestamp.getTime() > twentyFourHoursAgo) {
+        // Check if payment was made within the last 24 hours 
+        if (paymentTimestampString > twentyFourHoursAgo.toString()) {
           const paymentRef = doc.ref;
-          const updatePromise = paymentRef.update({ event: 'Confirmed' });
-          updatePromises.push(updatePromise.then(() => {}));
+          await paymentRef.update({ event: 'Confirmed' });
         }
-      });
+      }
 
-      // Execute all update promises
-      await Promise.all(updatePromises);
-
-      console.log('Payments updated successfully.', updatePromises);
+      console.log('Payments updated successfully.');
     } catch (error) {
       console.error('Error updating payments:', error);
     }
   });
+
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
