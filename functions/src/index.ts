@@ -1005,11 +1005,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
-    await checkAndUpdateRewardTotal(
-      getAfterVoteUpdatedData?.uid,
-      getAfterVoteUpdatedData?.voteStatistics?.score,
-      getAfterVoteUpdatedData?.rewardStatistics?.total,
-      getAfterVoteUpdatedData?.rewardStatistics?.claimed || 0)
+    await checkAndUpdateRewardTotal(getAfterVoteUpdatedData?.uid)
     return {
       voteId: getAfterUpdatedVoteInstance.id,
       ...getAfterVoteUpdatedData,
