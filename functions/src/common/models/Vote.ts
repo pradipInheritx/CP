@@ -251,12 +251,12 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
   }
 }
 
-export async function checkAndUpdateRewardTotal(userId: string, getUserScore: number, getUserTotal: number, getUserClaimed: number) {
+export async function checkAndUpdateRewardTotal(userId: string) {
   try {
     const getUserRef = admin.firestore().collection('users').doc(userId);
-    // const getUserDetails: any = (await getUserRef.get()).data();
-    // const getUserScore: number = getUserDetails?.voteStatistics?.score;
-    // const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
+    const getUserDetails: any = (await getUserRef.get()).data();
+    const getUserScore: number = getUserDetails?.voteStatistics?.score;
+    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
     // const score = getUserScore + currentVoteCMP;
     const checkScore = getUserScore - (getUserTotal * 100);
     console.log("getUserScore : ", getUserScore);
@@ -269,7 +269,7 @@ export async function checkAndUpdateRewardTotal(userId: string, getUserScore: nu
           {
             rewardStatistics: {
               total: admin.firestore.FieldValue.increment(1),
-              claimed: getUserClaimed,
+              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
             },
           },
           { merge: true }
