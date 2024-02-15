@@ -68,7 +68,7 @@ import {
 } from "./common/models/PAX";
 import {
   claimReward,
-  // addReward,
+  addReward,
   cardHolderListing,
   // sendMintForPaxToAdmin,
   // sendMintForPaxToUser
@@ -811,8 +811,7 @@ exports.onUpdateUser = functions.firestore
     console.info("after", after)
     console.info("Send Email Successfully")
 
-    // for testing purposes, we comment this
-    // await addReward(snapshot.after.id, before, after);
+    await addReward(snapshot.after.id, before, after);
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
