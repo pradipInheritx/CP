@@ -1362,8 +1362,7 @@ function WalletInfo() {
                             }
                         </div>
                     </div>
-                </SelectTextfield>
-                {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
+                </SelectTextfield>                
                 <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,

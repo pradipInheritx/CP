@@ -186,7 +186,6 @@ const Carousel = ({
               key={i}
 
             >
-              {console.log(arr,"arrcheck")}
               {arr?.length > 0 ?<CardsContainer
                 cols={cols}
                 gap={gap}
