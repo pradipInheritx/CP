@@ -63,7 +63,7 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
     };
   } catch (error) {
     console.error("Error Found----->", error);
-    throw {
+    return {
       status: 500,
       message: "Something went wrong",
       result: error
