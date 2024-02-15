@@ -43,6 +43,7 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
   addVoteResultForCPVI,
+  checkAndUpdateRewardTotal,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -1004,13 +1005,18 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    
     return {
       voteId: getAfterUpdatedVoteInstance.id,
       ...getAfterVoteUpdatedData,
     };
   }
 );
-
+exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
+  async (data) => {
+    const {userId} = data;
+    await checkAndUpdateRewardTotal(userId)
+  });
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
   const users = await admin
