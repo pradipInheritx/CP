@@ -1327,13 +1327,14 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
       });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments:any  = paymentsSnapshot.docs.map((snapshot:any) => {
+      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
         const paymentData = snapshot.data();
         console.log("paymentData>>>>>>>>>>>>>>>>>>>>",paymentData)
         console.log(">>>>>>>>>>>>>>>>>>>>>>>>>",paymentData.event === 'Approved')
         return paymentData.event === 'Approved';
       });
 
+      
       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
@@ -1343,7 +1344,6 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
         console.log("approvedPaymentRef>>>>>>>>>>>>>",doc.ref)
         await paymentRef.update({ event: 'Confirmed' });
       }
-
       console.log('Payments updated successfully.');
     } catch (error) {
       console.error('Error updating payments:', error);
