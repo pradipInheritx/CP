@@ -1015,7 +1015,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
 exports.checkAndUpdateRewardTotal = functions.https.onCall(
   async (data) => {
     const {userId} = data;
-    await checkAndUpdateRewardTotal(userId)
+    return await checkAndUpdateRewardTotal(userId);
 });
 
 const checkValidUsername = async (username: string) => {
