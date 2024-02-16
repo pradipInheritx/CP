@@ -234,7 +234,7 @@ const UserCard = ({
                 {/* { leader?.score || 0}&nbsp;Score */}
                 {/* {leader?.score === Math.floor(leader?.score) ? leader?.score  || 0 : (leader?.score).toFixed(2) || 0}&nbsp;Score */}
                 {/* {((leader?.successful || 1) / ((leader?.total || 1) * (leader?.successful || 1)))?.toFixed(2)} */}
-                {((leader?.successful || 1) / (leader?.total || 1) * (leader?.successful || 1))?.toFixed(2)}
+                {((leader?.successful || 1) / (leader?.total || 1) * (leader?.successful || 1))?.toFixed(2)} Score
 
               </span>
             )}
