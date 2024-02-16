@@ -676,16 +676,16 @@ export const addReward: (
   console.log('DIVISION-BEFORE --->', divisionBefore);
   if (divisionAfter > divisionBefore) {
     // console.log('before.rewardStatistics?.total --->', before.rewardStatistics?.total);
-    const newReward = (before.rewardStatistics?.total || 0) + 1;
+    // const newReward = (before.rewardStatistics?.total || 0) + 1;
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
-    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', newReward, " || ", claimedUpdated);
+    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', " || ", claimedUpdated);
     await firestore()
       .collection("users")
       .doc(userId)
       .set(
         {
           rewardStatistics: {
-            total: newReward,
+            total: firestore.FieldValue.increment(1),
             claimed: claimedUpdated,
           },
         },

@@ -88,13 +88,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       timestamp,
       userId,
       status,
-      //Pax Distribution
-      paxDistributionToUser
+     
     } = requestBody;
 
     console.info("status", status);
-    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
-
+    
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
     const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
@@ -119,8 +117,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+       
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -134,15 +131,13 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
+          
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
           voteId: getVoteData?.voteId,
@@ -156,7 +151,6 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          "paxDistributionToUser": paxDistribution
         }
       }
     }
@@ -202,10 +196,12 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
-
+ //Pax Distribution
+ paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
+    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -232,18 +228,24 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.log("getSuccessAndScore : ", getSuccessAndScore)
-        await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" }
+        return { status: true, message: "Success" ,result : {
+          "paxDistributionToUser": paxDistribution
+        }}
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.log("getSuccessAndScore : ", getSuccessAndScore)
-        await checkAndUpdateRewardTotal(userId, getSuccessAndScore?.score)
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" }
+        return { status: true, message: "Success" ,result : {
+          "paxDistributionToUser": paxDistribution
+        }}
       }
     }
   } catch (error) {
@@ -251,18 +253,19 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
   }
 }
 
-async function checkAndUpdateRewardTotal(userId: string, currentVoteCMP: number) {
+export async function checkAndUpdateRewardTotal(userId: string) {
   try {
     const getUserRef = admin.firestore().collection('users').doc(userId);
     const getUserDetails: any = (await getUserRef.get()).data();
     const getUserScore: number = getUserDetails?.voteStatistics?.score;
     const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
-    const score = getUserScore + currentVoteCMP
-    const checkScore = score - (getUserTotal * 100);
+    // const score = getUserScore + currentVoteCMP;
+    const checkScore = getUserScore - (getUserTotal * 100);
     console.log("getUserScore : ", getUserScore);
     console.log("getUserTotal : ", getUserTotal);
     console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
     if (checkScore > 99.99) {
+
       await getUserRef
         .set(
           {
@@ -275,9 +278,25 @@ async function checkAndUpdateRewardTotal(userId: string, currentVoteCMP: number)
         ).then(() => {
           console.log("Total and Claimed are updated Successfully");
         })
+       return  {
+          status : true,
+          message : "Total and Claimed are updated Successfully",
+          result  : null  
+        };
+    }else{
+      return  {
+        status : false,
+        message : "Total and Claimed are not updated Successfully",
+        result  : null  
+      };
     }
   } catch (error) {
     console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
+    return {
+      status : false,
+      message : "checkAndUpdateRewardTotal failed to update the reward total.",
+      result  :error 
+    }
   }
 }
 
