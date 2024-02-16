@@ -195,12 +195,19 @@ export const addNewKeysInCollection = async (
   }
 };
 
-export const sendEmailVerificationLink = async (email:string)=>{
+
+export const sendEmailVerificationLink = async (email: string) => {
   try {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
+    console.log("user record : ", userRecord);
+
+    // Check if the user registered with Google
+    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true }; 
+    }
 
     // Create a JWT token with user data
     const token = jwt.sign(
@@ -208,7 +215,6 @@ export const sendEmailVerificationLink = async (email:string)=>{
       env.JWT_AUTH_SECRET
     );
 
-    // Construct the verification link with the JWT token
     const verificationLink = `${env.USER_VERIFICATION_BASE_URL_VOTETOEARN}/api/v1/user/verified?token=${token}`;
 
     if (email && verificationLink) {
@@ -221,9 +227,10 @@ export const sendEmailVerificationLink = async (email:string)=>{
     }
 
     console.log("Verification link:", verificationLink);
-    return { verificationLink }
+    return { verificationLink };
   } catch (error) {
     console.error("Error sending verification link:", error);
-    return { error }
+    return { error };
   }
-}
+};
+
