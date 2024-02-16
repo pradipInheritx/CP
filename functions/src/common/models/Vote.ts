@@ -323,52 +323,98 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     console.log("start addVoteResultForCPVI")
     const cpviCollectionReference = admin.firestore().collection('voteResultForCPVI').doc(voteData.coin);
     const getDocument = await cpviCollectionReference.get();
-
-    const userVote = voteData.direction == 0 ? "bull" : "bear";
-
     const incrementKeyValue: any = {};
-    incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
-    console.log("incrementKeyValue : ", incrementKeyValue);
-    console.log("getDocument.exists : ", getDocument.exists)
-
-    // check document already exist or not and check timestamp to will be not cross the after 7 days
-    if (getDocument.exists == false) {
-      await createNewCPVIDocumnet(voteData)
-    } else {
-      const cpviData = getDocument.data();
-      const getTimeStamp = cpviData?.timestamp;
-      const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
-      const currentTimestamp = Math.round(Date.now() / 1000);
-
-      console.log("getTimeStamp : ", getTimeStamp);
-      console.log("currentTimestamp - after7daysTimeStamp", currentTimestamp, " - ", after7daysTimeStamp);
-
-      if (after7daysTimeStamp > currentTimestamp) {
-        await cpviCollectionReference.set(incrementKeyValue, { merge: true }).then(() => {
-          console.log("CPVI updated successfully")
-        })
+    const newCPVIObject: any = {};
+    let userVote: string;
+    const checkCoinPair = voteData.coin.split('-');
+    if (checkCoinPair.length < 0) {
+      newCPVIObject[checkCoinPair[0]] = 0
+      newCPVIObject[checkCoinPair[1]] = 0
+      voteData.direction == 0 ? (newCPVIObject[checkCoinPair[0]] = 1) : (newCPVIObject[checkCoinPair[1]] = 1);
+      if (getDocument.exists == false) {
+        // create a new CPVI
+        console.log("newCPVIObject : ", newCPVIObject)
+        await createNewCPVIDocumnet(voteData, newCPVIObject)
       } else {
-        await createNewCPVIDocumnet(voteData)
+
+        userVote = voteData.direction == 0 ? checkCoinPair[0] : checkCoinPair[1];
+        incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
+        console.log("incrementKeyValue : ", incrementKeyValue);
+        console.log("getDocument.exists : ", getDocument.exists)
+        const cpviData = getDocument.data();
+        const getTimeStamp = cpviData?.timestamp;
+        const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
+        const currentTimestamp = Math.round(Date.now() / 1000);
+
+        console.log("getTimeStamp : ", getTimeStamp);
+        console.log("currentTimestamp - after7daysTimeStamp", currentTimestamp, " - ", after7daysTimeStamp);
+
+        if (after7daysTimeStamp > currentTimestamp) {
+          // update the CPVI
+          await cpviCollectionReference.set(incrementKeyValue, { merge: true }).then(() => {
+            console.log("CPVI updated successfully")
+          })
+        } else {
+          // create a new CPVI
+          console.log("newCPVIObject : ", newCPVIObject)
+          await createNewCPVIDocumnet(voteData, newCPVIObject)
+        }
       }
+      console.log("End addVoteResultForCPVI")
+      return null
     }
-    console.log("End addVoteResultForCPVI")
-    return null
+    else {
+
+      const newCPVI = voteData.direction == 0 ? {
+        BULL: 1,
+        BEAR: 0,
+        timestamp: admin.firestore.Timestamp.now()
+      } : {
+        bull: 0,
+        bear: 1,
+        timestamp: admin.firestore.Timestamp.now()
+      }
+     
+      console.log("getDocument.exists : ", getDocument.exists)
+
+      // check document already exist or not and check timestamp to will be not cross the after 7 days
+      if (getDocument.exists == false) {
+        await createNewCPVIDocumnet(voteData,newCPVI)
+      } else {
+        const cpviData = getDocument.data();
+        const getTimeStamp = cpviData?.timestamp;
+        const after7daysTimeStamp = getTimeStamp._seconds + (7 * 24 * 3600); //get after 7 days seconds
+        const currentTimestamp = Math.round(Date.now() / 1000);
+
+        console.log("getTimeStamp : ", getTimeStamp);
+        console.log("currentTimestamp - after7daysTimeStamp", currentTimestamp, " - ", after7daysTimeStamp);
+
+        if (after7daysTimeStamp > currentTimestamp) {
+          userVote = voteData.direction == 0 ? "BULL" : "BEAR";
+          incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
+          console.log("incrementKeyValue : ", incrementKeyValue);
+          await cpviCollectionReference.set(incrementKeyValue, { merge: true }).then(() => {
+            console.log("CPVI updated successfully")
+          })
+        } else {
+          await createNewCPVIDocumnet(voteData,newCPVI)
+        }
+      }
+      console.log("End addVoteResultForCPVI")
+      return null
+    }
+
   } catch (error) {
     return errorLogging("addVoteResultForCPVI", "Error", error);
   }
 }
-async function createNewCPVIDocumnet(voteData: VoteResultProps) {
+
+
+
+async function createNewCPVIDocumnet(voteData: VoteResultProps, newCPVIObject: any) {
   try {
-    const newCPVI = voteData.direction == 0 ? {
-      bull: 1,
-      bear: 0,
-      timestamp: admin.firestore.Timestamp.now()
-    } : {
-      bull: 0,
-      bear: 1,
-      timestamp: admin.firestore.Timestamp.now()
-    }
-    await admin.firestore().collection('voteResultForCPVI').doc(voteData.coin).set(newCPVI).then(() => {
+   
+    await admin.firestore().collection('voteResultForCPVI').doc(voteData.coin).set({ ...newCPVIObject, timestamp: admin.firestore.Timestamp.now() }, { merge: true }).then(() => {
       console.log("New CPVI is generated")
     });
   }
