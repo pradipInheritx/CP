@@ -7,7 +7,7 @@ export async function sendEmail(to: any, subject: any, body: any) {
   sgMail.setApiKey(env.sendgrid_api_key);
   const msg = {
     to,
-    from: "akashpatel.inheritx@gmail.com",
+    from: "support@coinparliament.com",
     subject,
     html: body,
   };
