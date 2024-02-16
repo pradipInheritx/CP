@@ -34,7 +34,7 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
       // @ts-ignore
         navigate('/followerProfile/mine')
     }
-    
+  console.log(avatar,"avatar")
   return (
     <div className="user_card mx-auto shadow-sm" style={{boxShadow: '0px 3px 6px #00000029',width:window.screen.width<979?'322px':'40%'}} >
       <div className="row hstack">
@@ -46,7 +46,8 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
             backgroundColor: `${isUserUpgraded && "#FAE481"}`,    
           }}
             roundedCircle={true}
-            src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
+            // src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
+            src={(avatar && !avatar.includes('http')) ? importFile(`./The${avatar}`).default : !avatar ? importFile("./mystery", "png").default : avatar}
             alt="avatar"
             className="avatar_sm"
            

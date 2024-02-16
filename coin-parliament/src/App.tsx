@@ -166,6 +166,7 @@ import SingleCardDetails from "Pages/album/SingleCardDetails";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+const checkAndUpdateRewardTotal = httpsCallable(functions, "checkAndUpdateRewardTotal");
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws: any;
@@ -1024,7 +1025,7 @@ function App() {
     }).then((data: any) => {
       console.log('success')
       const raw = {
-        userId: userInfo?.uid
+        userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
         console.log(res.data, "checkAndUpdateRewardTotal")
@@ -1111,7 +1112,7 @@ function App() {
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
-  const checkAndUpdateRewardTotal = httpsCallable(functions, "checkAndUpdateRewardTotal");
+  
   // const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
   const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
   const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
@@ -1252,7 +1253,7 @@ function App() {
           console.log(latestUserInfo.current, 'latestUserInfo.current');
           getPriceCalculation(request).then(() => {
             const raw = {
-              userId: userInfo?.uid
+              userId: lessTimeVote?.userId
             }
             checkAndUpdateRewardTotal(raw).then((res) => {
               console.log(res.data, "checkAndUpdateRewardTotal")
