@@ -346,7 +346,7 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     const newCPVIObject: any = {};
     let userVote: string;
     const checkCoinPair = voteData.coin.split('-');
-    if (checkCoinPair.length < 0) {
+    if (checkCoinPair.length > 0) {
       newCPVIObject[checkCoinPair[0]] = 0
       newCPVIObject[checkCoinPair[1]] = 0
       voteData.direction == 0 ? (newCPVIObject[checkCoinPair[0]] = 1) : (newCPVIObject[checkCoinPair[1]] = 1);
