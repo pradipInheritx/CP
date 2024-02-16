@@ -283,13 +283,19 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     const userRecord = await admin.auth().getUserByEmail(email);
     console.log("user record : ", userRecord)
 
+    // Check if the user registered with Google
+    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true }; 
+    }
+
     // Create a JWT token with user data
     const token = jwt.sign(
       { uid: userRecord.uid, email: userRecord.email },
       env.JWT_AUTH_SECRET
     );
 
-    // Construct the verification link with the JWT token
+   
     const verificationLink = `${env.USER_VERIFICATION_BASE_URL_VOTETOEARN}/api/v1/user/verify?token=${token}`;
 
     if (email && verificationLink) {
