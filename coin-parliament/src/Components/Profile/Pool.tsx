@@ -37,21 +37,22 @@ const Pool = () => {
   }, [])
   
 
-  const referralUrl = (value: any, url?: any, uid?: any) => {
-    const lastSixCharacters = uid.slice(-6);
-    // Get the first 2 characters
-    const firstTwoCharacters = value.slice(0, 2);
+  // const referralUrl = (value: any, url?: any, uid?: any) => {
+  //   const lastSixCharacters = uid.slice(-6);
+  //   // Get the first 2 characters
+  //   const firstTwoCharacters = value.slice(0, 2);
     
-    const result = firstTwoCharacters + lastSixCharacters;
+  //   const result = firstTwoCharacters + lastSixCharacters;
 
-    if (url == "") {            
-      return `${document.location.protocol}//${document.location.host}/sign-up?refer=${result}`
-    }
-    else {      
-      return `${document.location.protocol}//${url}/?refer=${value}`
-    }
-  };  
+  //   if (url == "") {            
+  //     return `${document.location.protocol}//${document.location.host}/sign-up?refer=${result}`
+  //   }
+  //   else {      
+  //     return `${document.location.protocol}//${url}/?refer=${value}`
+  //   }
+  // };  
   
+  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
   
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
