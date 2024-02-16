@@ -104,7 +104,7 @@ const Follow = () => {
                     {texts.waitForIt}
                 </span>
             </div>}
-              {leaders && !isLoading && leaders.length > 0 ?  leaders.map((u, i) => {
+              {leaders && leaders.length > 0 ?  leaders.map((u, i) => {
                 return (
                   <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
                       
@@ -123,7 +123,7 @@ const Follow = () => {
                     />
                   </div>
                 );
-              }): !isLoading && leaders &&  leaders.length === 0 ? (
+              }):!isLoading && leaders?.length === 0 ?(
                 <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
               ) : null}
             </div>
@@ -154,7 +154,7 @@ const Follow = () => {
                     />
                   </div>
                 );
-              }) : !isLoading && subscribers.length === 0 ? (
+              }) :  !isLoading && subscribers.length === 0 ? (
                 <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
               ) : null}
             </>
