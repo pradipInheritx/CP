@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
 import cors from "cors";
-import { pullAll, union, uniq } from "lodash";
+import {  pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
@@ -156,6 +156,7 @@ app.use("/admin/FollowTable", Routers.FollowTableRouter);
 app.use("/admin/payments", Routers.adminPaymentRouter);
 app.use("/admin/foundation", Routers.foundationRouter);
 app.use("/payment", Routers.paymentRouter);
+app.patch("/updateReferScore", correctReferScoreToAllUsers)
 
 // global routers
 app.post(
@@ -216,7 +217,27 @@ app.get("/calculatePairCPVI", async (req, res) => {
 
 exports.api = functions.https.onRequest(main);
 
+async function correctReferScoreToAllUsers() {
+  try {
+    const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
+    const filterTheUser = getAllUser.filter((user) =>  user.children?.length > 0 ? { id: user.uid, children: user.children } : null  );
+    console.log("filter the user length : ",filterTheUser.length)
+    for (let index = 0; index < filterTheUser.length; index++) {
+      const user = filterTheUser[index];
+      console.log("user : ", user , index)
+      let commission = 0;
+      for (let child = 0; child < user.children; child++) {
+        const children = (await admin.firestore().collection('users').doc(user.children[child]).get()).data();
+        commission = commission + parseFloat(children?.refereeScrore)
+      }
+      admin.firestore().collection('users').doc(user.id).set({ commission }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+    }
 
+    return { status: true, message: "All user Refer score", result: true }
+  } catch (error) {
+    return { status: false, message: "something went wrong", error }
+  }
+}
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -1005,7 +1026,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
-    
+
     return {
       voteId: getAfterUpdatedVoteInstance.id,
       ...getAfterVoteUpdatedData,
@@ -1015,9 +1036,9 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
 
 exports.checkAndUpdateRewardTotal = functions.https.onCall(
   async (data) => {
-    const {userId} = data;
+    const { userId } = data;
     return await checkAndUpdateRewardTotal(userId);
-});
+  });
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -1304,8 +1325,8 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
     await removeTheBefore24HoursData();
   });
 
-  // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
-  export const pendingPaymentSettlement = functions.pubsub
+// cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
+export const pendingPaymentSettlement = functions.pubsub
   .schedule("*/5 * * * *")
   .onRun(async () => {
     console.log("pendingPaymentSettlement start");
@@ -1317,31 +1338,31 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
 
     try {
       // Query payments collection for payments within the last 24 hours
-      const paymentsSnapshot= await admin.firestore().collection('payments')
-        .where("timestamp", ">=", twentyFourHoursAgo) 
+      const paymentsSnapshot = await admin.firestore().collection('payments')
+        .where("timestamp", ">=", twentyFourHoursAgo)
         .get();
 
-        paymentsSnapshot.forEach(doc => {
-          console.log("Document ID:", doc.id);
-          console.log("Document Data:", doc.data());
+      paymentsSnapshot.forEach(doc => {
+        console.log("Document ID:", doc.id);
+        console.log("Document Data:", doc.data());
       });
 
       // Filter payments where event is 'Approved'
       const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
         const paymentData = snapshot.data();
-        console.log("paymentData>>>>>>>>>>>>>>>>>>>>",paymentData)
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>",paymentData.event === 'Approved')
+        console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
         return paymentData.event === 'Approved';
       });
 
-      
+
       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const doc of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>",doc)
+        console.log("approvedPayments>>>>>>>>>>>>>", doc)
         const paymentRef = doc.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>",doc.ref)
+        console.log("approvedPaymentRef>>>>>>>>>>>>>", doc.ref)
         await paymentRef.update({ event: 'Confirmed' });
       }
       console.log('Payments updated successfully.');
@@ -1542,3 +1563,4 @@ exports.getAllUserOnlyTotalAndScore = functions.https.onCall(async (data: any) =
     return error
   }
 })
+
