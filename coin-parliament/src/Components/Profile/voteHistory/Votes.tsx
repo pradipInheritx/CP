@@ -122,7 +122,7 @@ const Votes = () => {
       userId: vote?.userId
     }).then((data: any) => {
       const raw = {
-        userId: userInfo?.uid
+        userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
         console.log(res.data, "checkAndUpdateRewardTotal")
@@ -134,7 +134,7 @@ const Votes = () => {
       }
     }).catch((err: any) => {
       const raw = {
-        userId: userInfo?.uid
+        userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
         console.log(res.data, "checkAndUpdateRewardTotal")
