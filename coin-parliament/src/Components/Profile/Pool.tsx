@@ -52,7 +52,7 @@ const Pool = () => {
   //   }
   // };  
   
-  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
+  const referralUrl = `${document.location.protocol}//${document.location.host}/sign-up?refer=${userInfo?.userName}`;
   
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
