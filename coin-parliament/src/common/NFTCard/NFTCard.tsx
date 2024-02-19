@@ -33,7 +33,10 @@ import popupline from "../../assets/images/popupline.png"
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import VideoPopup from "Pages/VideoPopup";
 import UserContext from "Contexts/User";
+import useSound from 'use-sound';
 import { firestore } from "../../firebase";
+// @ts-ignore
+import scratchsound from '../../assets/sounds/scratch.mp3';
 
 type MintingProps = {
   cardType?: any;
@@ -83,6 +86,7 @@ const ScratchCard = styled.canvas`
 
 
 function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails, setAddPaxWalletPop }: MintingProps) {
+
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -93,6 +97,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [scratchFinish, setScratchFinish] = useState<any>(false)
   const [Videoshow, setVideoshow] = useState(false)
   const [fulldata, setFulldata] = useState([])
+  const [handleSoundClickCardplay, { pause: handleSoundClickCardpause }] = useSound(scratchsound)
   // const [befornotShow, setBefornotShow] = useState<any>(true)
 
   const { showReward, setShowReward } = useContext(AppContext);
@@ -195,7 +200,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
   // console.log(mintedTime,"getMIntedTime")
-
+  console.log(rewardTimer,"rewardTimer")
   
   const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const rewardTransactionsCollectionRef = collection(firestore, 'reward_transactions');
@@ -251,7 +256,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   // Usage within a React component
   useEffect(() => {
-    fetchData();
+    if (rewardTimer !=null) {      
+      fetchData();
+    }
   }, [user?.uid, rewardTimer?.data?.firstRewardCardId, rewardTimer?.data?.firstRewardCardSerialNo]);
 
 
@@ -341,9 +348,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     if (scratchShound == true) {
-      handleSoundClickCard.play()
+      handleSoundClickCardplay()
     } else {
-      handleSoundClickCard.pause()
+      handleSoundClickCardpause()
     }
     if (!isDrawing) {
       return;
@@ -363,7 +370,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   const scratchEnd = (e: any) => {
     console.log('PcEND');
-    handleSoundClickCard.pause();
+    handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);
@@ -415,7 +422,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     setStartX(offsetX);
     setStartY(offsetY);
     // setScratchShound(true);
-    handleSoundClickCard.play();
+    handleSoundClickCardplay();
     setShowImg(true);
 
     setBefornotShow(false)
@@ -426,7 +433,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     console.log('mobile continue');
     const { clientX, clientY } = e.touches[0];
     // if (scratchShound == true) {
-    handleSoundClickCard.play();
+    handleSoundClickCardplay();
     // }
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
@@ -452,7 +459,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   };
   const scratchEndMobile = () => {
     console.log('mobileEnd');
-    handleSoundClickCard.pause();
+    handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);

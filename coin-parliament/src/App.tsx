@@ -171,32 +171,31 @@ const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
   {
     chainId: 1,
-    name: 'ETH',
+    name: 'Ethereum',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
   },
-
   {
     chainId: 56,
-    name: 'BNB',
+    name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
+    explorerUrl: 'https://bscscan.com/',
+    rpcUrl: 'https://bsc-dataseed.binance.org/'
   },
   {
     chainId: 137,
-    name: 'MATIC',
+    name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
+    explorerUrl: 'https://polygonscan.com',
+    rpcUrl: 'https://polygon-mainnet.infura.io'
   },
   {
     chainId: 11155111,
-    name: 'SepoliaETH',
+    name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://1rpc.io/sepolia'
+    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
   }
 
 ]
@@ -251,6 +250,7 @@ function App() {
   const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
+  const checkAndUpdateRewardTotal = httpsCallable(functions, "checkAndUpdateRewardTotal");
   useEffect(() => {
     const urlpath = window.location.pathname
     window.scrollTo({
@@ -1002,7 +1002,8 @@ function App() {
     ws.onclose = (event: any) => {
       if (isInstagramAvailable) {
         console.log("reloadtrue")
-        window.location.reload()
+        // window.location.reload()
+        connect()
       }
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);
@@ -1034,7 +1035,8 @@ function App() {
     socket.onclose = (event: any) => {
       if (isInstagramAvailable) {
         console.log("reloadtrue")
-        window.location.reload()
+        // window.location.reload()
+        connect()
       }
       console.log('WebSocket connection closed crypto', event);
       if (event.code !== 1000) {
@@ -1121,11 +1123,27 @@ function App() {
       timestamp: Date.now(),
       userId: vote?.userId
     }).then((data: any) => {
+      const raw = {
+        userId: vote?.userId
+      }
+      checkAndUpdateRewardTotal(raw).then((res) => {
+        console.log(res.data, "checkAndUpdateRewardTotal")
+      }).catch((error) => {
+        console.log(error, "checkAndUpdateRewardTotal")
+      })
       console.log('success')
       // if(data.data==null){
       //     getVotes(index).then(void 0);     
       // }
     }).catch((err: any) => {
+      const raw = {
+        userId: vote?.userId
+      }
+      checkAndUpdateRewardTotal(raw).then((res) => {
+        console.log(res.data, "checkAndUpdateRewardTotal")
+      }).catch((error) => {
+        console.log(error, "checkAndUpdateRewardTotal")
+      })
       if (err && err.message) {
         console.log(err.message);
       }
@@ -1200,7 +1218,7 @@ function App() {
   const completedVotes = useContext(CompletedVotesContext);
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
 
-  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");  
   const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
   // const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
   const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
@@ -1339,7 +1357,17 @@ function App() {
           // }
 
           console.log(latestUserInfo.current, 'latestUserInfo.current');
-          getPriceCalculation(request).then(() => { }).catch(() => { });
+          getPriceCalculation(request).then(() => { 
+
+            const raw = {
+              userId: lessTimeVote?.userId
+            }
+            checkAndUpdateRewardTotal(raw).then((res) => {
+              console.log(res.data, "checkAndUpdateRewardTotal")
+            }).catch((error) => {
+              console.log(error, "checkAndUpdateRewardTotal")
+            })
+          }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
           // }

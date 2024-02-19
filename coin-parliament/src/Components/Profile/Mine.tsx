@@ -253,12 +253,11 @@ const Mine = () => {
   const goBack = () => {
     navigate(-1);
   }
-
-  console.log(cardsDetails, "cardsDetails")
+  
   // console.log(cardsDetails?.firstRewardCardCollection, cardsDetails?.firstRewardCard, cardsDetails?.firstRewardCardId, "cardsDetails")
   
   // @ts-ignore
-  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}&cardName=${cardsDetails?.firstRewardCard}`;
+  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}&cardName=${cardsDetails?.firstRewardCard?.replace(" ", "-")}`;
   // const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}`;
   // const url = "https://coinparliament.com/"
   const shareText = "I won this unique card! Join the Parliament and win with me."  

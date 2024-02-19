@@ -11,16 +11,19 @@ import Tabs from "../Tabs";
 import VotedCard from "./VotedCard";
 import { texts } from "../../LoginComponent/texts";
 import { CompletedVotesContext } from "Contexts/CompletedVotesProvider";
+import axios from "axios";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string, isOpenVote: boolean }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+const checkAndUpdateRewardTotal = httpsCallable(functions, "checkAndUpdateRewardTotal");
 const Votes = () => {
   const completedVotes = useContext(CompletedVotesContext);
   const pageSize = useMemo(() => 5, []);
-  const { user } = useContext(UserContext);
+  const { user,userInfo } = useContext(UserContext);
   const translate = useTranslation();
   const [index, setIndex] = useState(0);
   const [runVote, setRunVote] = useState(false);
+  const [paxDistribution, setPaxDistribution] = useState(0)
   // const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
 
   const [votes, setVotes] = useState<GetVotesResponse>({
@@ -59,7 +62,6 @@ const Votes = () => {
         return item
       }
     })
-
     let AllPairs = pairs?.votes.filter((item: any) => {
       if (item.expiration < Date.now() && item.success == undefined) {
 
@@ -82,6 +84,17 @@ const Votes = () => {
       .catch(error => {
         console.error('promiseAll', error);
       });
+    if (userInfo?.uid) {      
+      axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+        data: {}
+      }).then((res) => {
+        console.log(res.data.result, "resultdata")
+        setPaxDistribution(res.data.result.paxDistribution)
+      }).catch((err) => {
+        console.log(err, "resultdata")
+      })
+    }
+
   }, [votes?.coins?.total, votes?.pairs?.total, pageSize,])
 
 
@@ -96,15 +109,38 @@ const Votes = () => {
       voteTime: vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
-      // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,        
+      // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null, 
+      paxDistributionToUser: {
+        userId: userInfo?.uid,
+        currentPaxValue: Number(paxDistribution),
+        isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+        mintForUserAddress: userInfo?.paxAddress?.address || "",
+        eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      },
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId
     }).then((data: any) => {
+      const raw = {
+        userId: vote?.userId
+      }
+      checkAndUpdateRewardTotal(raw).then((res) => {
+        console.log(res.data, "checkAndUpdateRewardTotal")
+      }).catch((error) => {
+        console.log(error, "checkAndUpdateRewardTotal")
+      })
       if (data.data == null) {
         // getVotes(index).then(void 0);     
       }
     }).catch((err: any) => {
+      const raw = {
+        userId: vote?.userId
+      }
+      checkAndUpdateRewardTotal(raw).then((res) => {
+        console.log(res.data, "checkAndUpdateRewardTotal")
+      }).catch((error) => {
+        console.log(error, "checkAndUpdateRewardTotal")
+      })
       if (err && err.message) {
         console.log(err.message);
       }

@@ -25,14 +25,26 @@ const tableHeader: tableColumnType[] = [
         assessorName: 'timestamp',
         Row: ({ value, data }) => {
             return (
-                <span>
+                <OverlayTrigger
+                    trigger={['hover', 'focus']}
+                    placement="bottom"
+                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                        style={{
+                            // marginTop: "-15px"
+                        }}
+                    >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
+
+                >
+                <span className='pt-3'>
                     {window.screen.width > 767 ?
                         
                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                         :
                         value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'
+                        // value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                     }
-                </span>
+                    </span>
+                </OverlayTrigger>
             );
 
         }
@@ -65,15 +77,25 @@ const ChildTableHeader: tableColumnType[] = [
         assessorName: 'timestamp',
         Row: ({ value, data }) => {
             return (
-                <span>
-                    {/* {value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'} */}
-                    {window.screen.width > 767 ?
+                <OverlayTrigger
+                    trigger={['hover', 'focus']}
+                    placement="bottom"
+                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                        style={{
+                            // marginTop: "-15px"
+                        }}
+                    >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
 
+                >
+                <span>
+                    {window.screen.width > 767 ?                        
                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                         :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0, 10) + "..." : '-'
+                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'            
                     }
-                </span>
+                    </span>
+                </OverlayTrigger>
+            
             );
 
         }
@@ -83,15 +105,27 @@ const ChildTableHeader: tableColumnType[] = [
         assessorName: 'item',
         Row: ({ value, data }) => {
             return (
+                <OverlayTrigger
+                    trigger={['hover', 'focus']}
+                    placement="bottom"
+                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                        style={{
+                            // marginTop: "-15px"
+                        }}
+                    >{data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"}</Tooltip>}
+
+                >
                 <span>
                     {window.screen.width > 767 ?
                         
                         data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
                         :
-                        data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
+                        // data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
+                        data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
 
                     }
-                </span>
+                    </span>
+                </OverlayTrigger>
             )
         }
     },
@@ -233,7 +267,7 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                     tableHeader.map((item: tableColumnType, index: number) => {
                         return (
                             <div style={{ width: "19%" }} key={index}>
-                                <OverlayTrigger
+                                {/* <OverlayTrigger
                                     trigger={['hover', 'focus']}
                                     placement="bottom"
                                     overlay={<Tooltip id={`tooltip-name-${index}`}
@@ -261,7 +295,32 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                                                 : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ?"...":""  )|| "NA")
                                         }
                                     </RewardList>
-                                    </OverlayTrigger>
+                                    </OverlayTrigger> */}
+                                {item?.Row ?
+                                    <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
+                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
+                                    </RewardList>
+                                    : <OverlayTrigger
+                                        trigger={['hover', 'focus']}
+                                        placement="bottom"
+                                        overlay={<Tooltip id={`tooltip-name-${index}`}
+                                            style={{
+                                                marginTop: "-15px"
+                                            }}
+                                        >{value[item?.assessorName] || "NA"}</Tooltip>}
+
+                                    >
+                                        <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
+
+                                            {window.screen.width > 767 ?
+                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                :
+                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+
+                                            }
+
+                                        </RewardList>
+                                    </OverlayTrigger>}
                             </div>
                         )
                     })

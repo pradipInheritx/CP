@@ -6,7 +6,10 @@ import { Buttons } from "../Atoms/Button/Button";
 import { Title } from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
-import { handleSoundClick } from "../../common/utils/SoundClick";
+import useSound from "use-sound";
+// import { handleSoundClick } from "../../common/utils/SoundClick";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 
 
 export type SelectTimeframesProps = {
@@ -57,6 +60,7 @@ const SelectTimeframes = ({
   useEffect(() => {
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
+  const [handleSoundClick] = useSound(buttonClick);
 
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>

@@ -27,6 +27,10 @@ import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import { decimal } from "../Profile/utils";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
+
 
 
 
@@ -135,7 +139,7 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-  const { ws, socket, socketConnect } = useContext(CoinsContext);
+  const { ws, socket, socketConnect,setCoins } = useContext(CoinsContext);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   const livePrice = useRef(coins)
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
@@ -160,10 +164,11 @@ const Carousel = ({
 
       updateCoin()
 
-    }, 1500);
+    }, 500);
 
     return () => {
       clearInterval(interval)
+      setCoins(livePrice.current)
     }
   }, [])
 
@@ -274,6 +279,8 @@ const Carousel = ({
     };
 
   }, [socket, socketConnect])
+
+  const [handleSoundClick] = useSound(buttonClick);
 
   return expanded === false ? (
     <form
