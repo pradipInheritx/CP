@@ -88,11 +88,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       timestamp,
       userId,
       status,
-     
+
     } = requestBody;
 
     console.info("status", status);
-    
+
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
     const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
@@ -117,7 +117,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-       
+
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -131,7 +131,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score,
-          
+
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
@@ -196,8 +196,8 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
- //Pax Distribution
- paxDistributionToUser
+      //Pax Distribution
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
@@ -231,9 +231,11 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" ,result : {
-          "paxDistributionToUser": paxDistribution
-        }}
+        return {
+          status: true, message: "Success", result: {
+            "paxDistributionToUser": paxDistribution
+          }
+        }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
@@ -243,9 +245,11 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
-        return { status: true, message: "Success" ,result : {
-          "paxDistributionToUser": paxDistribution
-        }}
+        return {
+          status: true, message: "Success", result: {
+            "paxDistributionToUser": paxDistribution
+          }
+        }
       }
     }
   } catch (error) {
@@ -278,24 +282,24 @@ export async function checkAndUpdateRewardTotal(userId: string) {
         ).then(() => {
           console.log("Total and Claimed are updated Successfully");
         })
-       return  {
-          status : true,
-          message : "Total and Claimed are updated Successfully",
-          result  : null  
-        };
-    }else{
-      return  {
-        status : false,
-        message : "Total and Claimed are not updated Successfully",
-        result  : null  
+      return {
+        status: true,
+        message: "Total and Claimed are updated Successfully",
+        result: null
+      };
+    } else {
+      return {
+        status: false,
+        message: "Total and Claimed are not updated Successfully",
+        result: null
       };
     }
   } catch (error) {
     console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
     return {
-      status : false,
-      message : "checkAndUpdateRewardTotal failed to update the reward total.",
-      result  :error 
+      status: false,
+      message: "checkAndUpdateRewardTotal failed to update the reward total.",
+      result: error
     }
   }
 }
@@ -382,9 +386,7 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
       }
       console.log("End addVoteResultForCPVI")
       return null
-    }
-    // For  Coin
-    else if(checkCoinPair.length == 1) {
+    } else if (checkCoinPair.length == 1) {
 
       const newCPVI = voteData.direction == 0 ? {
         BULL: 1,
@@ -395,12 +397,12 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
         bear: 1,
         timestamp: admin.firestore.Timestamp.now()
       }
-     
+
       console.log("getDocument.exists : ", getDocument.exists)
 
       // check document already exist or not and check timestamp to will be not cross the after 7 days
       if (getDocument.exists == false) {
-        await createNewCPVIDocumnet(voteData,newCPVI)
+        await createNewCPVIDocumnet(voteData, newCPVI)
       } else {
         const cpviData = getDocument.data();
         const getTimeStamp = cpviData?.timestamp;
@@ -418,13 +420,12 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
             console.log("CPVI updated successfully")
           })
         } else {
-          await createNewCPVIDocumnet(voteData,newCPVI)
+          await createNewCPVIDocumnet(voteData, newCPVI)
         }
       }
       console.log("End addVoteResultForCPVI")
       return true
-    }
-    else {
+    } else {
       console.error("Coin/Pair is not valid")
       return false
     }
@@ -438,7 +439,7 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
 
 async function createNewCPVIDocumnet(voteData: VoteResultProps, newCPVIObject: any) {
   try {
-   
+
     await admin.firestore().collection('voteResultForCPVI').doc(voteData.coin).set({ ...newCPVIObject, timestamp: admin.firestore.Timestamp.now() }, { merge: true }).then(() => {
       console.log("New CPVI is generated")
     });
