@@ -86,6 +86,7 @@ const ScratchCard = styled.canvas`
 
 
 function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails, setAddPaxWalletPop }: MintingProps) {
+
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -199,7 +200,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
   // console.log(mintedTime,"getMIntedTime")
-
+  console.log(rewardTimer,"rewardTimer")
   
   const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const rewardTransactionsCollectionRef = collection(firestore, 'reward_transactions');
@@ -255,7 +256,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   // Usage within a React component
   useEffect(() => {
-    fetchData();
+    if (rewardTimer !=null) {      
+      fetchData();
+    }
   }, [user?.uid, rewardTimer?.data?.firstRewardCardId, rewardTimer?.data?.firstRewardCardSerialNo]);
 
 
