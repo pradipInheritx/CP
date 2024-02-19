@@ -5,6 +5,7 @@ import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
+import * as jwt from "jsonwebtoken";
 
 
 import cors from "cors";
@@ -14,6 +15,7 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
+  sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/sportparliament.json";
 import { getPrice } from "./common/models/Rate";
@@ -78,6 +80,16 @@ import {
 import sgMail from "@sendgrid/mail";
 import userRouter from "./routes/genericSignUp.routes";
 // import {ws} from "./common/models/Ajax";
+import { JwtPayload } from "./common/models/User";
+
+
+// import sendGrid Email function and templates 
+import { sendEmail } from "./common/services/emailServices"
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
@@ -141,6 +153,89 @@ exports.getAccessToken = () =>
     });
   });
 
+  // user verification link
+app.get("/user/verified", async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    const auth = admin.auth();
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Token is required",
+        result: null,
+      });
+    }
+
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
+
+    // Use the UID from the decoded token to verify the user in Firebase Authentication
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          const successTemplate = newUserVerifySuccessTemplate();
+          res.send(successTemplate);
+        }
+      })
+  }
+  catch (error: any) {
+    console.error("Error verifying user:", error);
+    const failureTemplate = newUserVerifyFailureTemplate();
+    return res.status(400).send(failureTemplate);
+  }
+});
+
+// user's email verification link
+exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+  const { email } = data;
+
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Check if the user registered with Google
+    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true }; 
+    }
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+});
+
+
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
   const status: UserTypeProps = {
@@ -185,11 +280,29 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
 
   try {
-    return await admin
+    console.log("new user >>>", userData, user.uid);
+    const newUser: any = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+
+      //Send Welcome Mail To User
+    await sendEmail(
+      userData.email,
+      "Welcome To Coin Parliament!",
+      userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+    );
+
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
+    await sendEmailVerificationLink(getUserEmail.email);
+
+    return newUser;
+
   } catch (e) {
     return false;
   }
