@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 
 
@@ -112,15 +113,4 @@ export const deleteSubAdmin = async (req: any, res: any, next: any) => {
     errorLogging("deleteSubAdmin", "ERROR", error);
     res.status(500).send(error);
   }
-};
-
-
-
-
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
 };

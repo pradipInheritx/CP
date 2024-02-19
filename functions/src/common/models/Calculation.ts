@@ -12,6 +12,7 @@ import {
   voteExpireAndGetCpmNotification,
   poolMiningNotification,
 } from "./SendCustomNotification";
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 
 
@@ -881,12 +882,3 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
     .filter((leaderData) => leaderData);
 };
 
-
-
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.log(funcName, type, error); // We will modify later
-};

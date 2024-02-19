@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getUserTypeSettings = async (req: any, res: any, next: any) => {
   try {
@@ -59,10 +60,3 @@ export const updateUserTypeSettings = async (req: any, res: any, next: any) => {
   }
 };
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};

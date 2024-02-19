@@ -64,5 +64,5 @@ export const errorLogging = async (
   type: string,
   error: any
 ) => {
-  console.info(funcName, type, error);
+  console.error(funcName, type, error);
 };

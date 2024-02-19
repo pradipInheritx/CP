@@ -10,6 +10,7 @@ import {
 import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import { getAllPendingPaxByUserId } from "./PAX";
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 
 // export const makePaymentToServer = async (req: any, res: any) => {
@@ -822,11 +823,3 @@ export const getAllPendingPaxByUser = async (req: any, res: any) => {
     });
   }
 }
-
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
