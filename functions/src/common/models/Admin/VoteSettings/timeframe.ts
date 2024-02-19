@@ -1,4 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
+import { errorLogging } from "../../../helpers/commonFunction.helper";
 
 export type timeframeProps = {
   chosen: boolean;
@@ -102,10 +103,3 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
   }
 };
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};

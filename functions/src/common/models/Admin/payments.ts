@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 
 import * as parentConst from "../../consts/payment.const.json";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getAdminPayment = async (req: any, res: any) => {
   try {
@@ -166,10 +167,3 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
   }
 }
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};

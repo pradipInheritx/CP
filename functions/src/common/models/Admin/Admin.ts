@@ -10,6 +10,7 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
   hashPassword,
+  errorLogging,
 } from "../../helpers/commonFunction.helper";
 import env from "../../../env/env.json";
 import constants from "../../config/constants.json";
@@ -656,10 +657,4 @@ export const getUserList = async (req: any, res: any) => {
   }
 }
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+

@@ -2,11 +2,11 @@ import * as admin from "firebase-admin";
 import { VoteResultProps, TimeFrame } from "../interfaces/Vote.interface";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
-import { errorLogging } from "../models/Calculation";
 import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
 import { addPaxTransactionWithPendingStatus } from "./PAX";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
   timeframe: TimeFrame
