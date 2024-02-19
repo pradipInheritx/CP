@@ -219,7 +219,7 @@ exports.api = functions.https.onRequest(main);
 
 async function correctReferScoreToAllUsers() {
   try {
-    const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
+    const getAllUser = (await admin.firestore().collection('users').where('children',"!=",[]).get()).docs.map((user) => user.data());
     const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
     console.log("filter the user length : ", filterTheUser.length)
     for (let index = 0; index < filterTheUser.length; index++) {
@@ -232,7 +232,7 @@ async function correctReferScoreToAllUsers() {
           commission = commission + parseFloat(userData?.refereeScrore);
          })
       }
-      admin.firestore().collection('users').doc(user.id).set({ commission }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+      await admin.firestore().collection('users').doc(user.id).set({ commission },{merge:true}).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
     }
 
     return { status: true, message: "All user Refer score", result: true }
