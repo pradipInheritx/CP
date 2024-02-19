@@ -31,7 +31,7 @@ import { updateAndGetPaxDistribution } from "./common/models/PAX";
 import { getCurrentPaxDistribution } from "./common/models/PAX";
 import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
- import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
@@ -286,7 +286,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      return { skipped: true };
     }
 
     // Create a JWT token with user data
@@ -295,7 +295,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       env.JWT_AUTH_SECRET
     );
 
-   
+
     const verificationLink = `${env.USER_VERIFICATION_BASE_URL_VOTETOEARN}/api/v1/user/verify?token=${token}`;
 
     if (email && verificationLink) {
@@ -1055,4 +1055,36 @@ exports.sendEmail = functions.https.onCall(async () => {
     },
   };
   await sgMail.send(msg);
+});
+
+exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const getAllUsers = (await admin.firestore().collection('users').get()).docs.map(user => user.data());
+    const filterUsernameUsers = getAllUsers.filter((user: any) => user.username == null);
+    console.log("filterUsernameUsers : ",filterUsernameUsers.length)
+    for (let index = 0; index < filterUsernameUsers.length; index++) {
+      let element = filterUsernameUsers[index];
+      if (element.displayName == null) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = ' ';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 5; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        await admin.firestore().collection('users').doc(element.uid).set({ username: result }, { merge: true });
+      } else {
+        let getDisplayName = element.displayName.trim().split(' ')
+        let newUsername: string = getDisplayName.length < 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
+        newUsername = newUsername.length < 15 ? newUsername : newUsername.slice(0, 15);
+        await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
+      }
+      return {
+        status: true,
+        message: "function done successfully."
+      }
+    }
+  } catch (error) {
+    console.error("addUsernameToOldUsers, ERORR : ", error);
+    return error
+  }
 });
