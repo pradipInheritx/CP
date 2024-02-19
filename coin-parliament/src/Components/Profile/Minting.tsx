@@ -27,6 +27,9 @@ import { ToastType } from "Contexts/Notification";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -220,6 +223,7 @@ const Minting = ({
     claimRewardSound.play();
     // handleSoundWinCmp.play()
   };
+  const [handleSoundClick] = useSound(buttonClick);
   let navigate = useNavigate();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {

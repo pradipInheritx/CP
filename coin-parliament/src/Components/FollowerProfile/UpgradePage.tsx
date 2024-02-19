@@ -22,7 +22,10 @@ import upgrade1 from "../../assets/svg/upgrade1.svg";
 import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
-import { handleSoundClick } from "../../common/utils/SoundClick";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
+// import { handleSoundClick } from "../../common/utils/SoundClick";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -50,7 +53,7 @@ const UpgradePage = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
-
+  const [handleSoundClick] = useSound(buttonClick);
   const BoxCard = styled.div`
   width:${screenWidth()};
   paddinng-top:20px;

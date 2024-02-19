@@ -23,7 +23,7 @@ import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./Comingsoon";
 import PaymentPop from "./PaymentPop";
-import { handleSoundClick } from "../../common/utils/SoundClick";
+// import { handleSoundClick } from "../../common/utils/SoundClick";
 import upgrade from "../../assets/images/upgrade_small.png";
 import Gift from "../../assets/images/Framegift.png";
 import Frame from "../../assets/images/Frame.png";
@@ -34,6 +34,9 @@ import XXCOIN from "../../assets/images/XXCOIN.png";
 import XXVote from "../../assets/images/XXVote.png";
 import VOUCHER from "../../assets/images/VOUCHER.png";
 import { useNavigate } from "react-router-dom";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -110,6 +113,7 @@ const UpgradePage = () => {
   const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+  const [handleSoundClick] = useSound(buttonClick);
   useEffect(() => {
     return () => {
       setClicked(false)
@@ -123,6 +127,7 @@ const UpgradePage = () => {
     let PayValuestring = JSON.stringify(payvalue)
     localStorage.setItem("PayAmount", PayValuestring);
     navigate("/paymentList")
+    console.log("yes i am calling ")
   }
   
 

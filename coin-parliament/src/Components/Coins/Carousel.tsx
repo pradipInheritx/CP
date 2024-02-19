@@ -27,6 +27,10 @@ import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import { decimal } from "../Profile/utils";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
+
 
 
 
@@ -160,7 +164,7 @@ const Carousel = ({
 
       updateCoin()
 
-    }, 1500);
+    }, 500);
 
     return () => {
       clearInterval(interval)
@@ -274,6 +278,8 @@ const Carousel = ({
     };
 
   }, [socket, socketConnect])
+
+  const [handleSoundClick] = useSound(buttonClick);
 
   return expanded === false ? (
     <form

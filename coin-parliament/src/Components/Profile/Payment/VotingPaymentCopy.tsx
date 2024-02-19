@@ -398,20 +398,19 @@ const mainnet = [
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
   },
-
   {
     chainId: 56,
-    name: 'Binance',
+    name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
+    explorerUrl: 'https://bscscan.com/',
+    rpcUrl: 'https://bsc-dataseed.binance.org/'
   },
   {
     chainId: 137,
-    name: 'Polygon (MATIC)',
+    name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
+    explorerUrl: 'https://polygonscan.com',
+    rpcUrl: 'https://polygon-mainnet.infura.io'
   },
   {
     chainId: 11155111,
@@ -687,6 +686,22 @@ const VotingPaymentCopy: React.FC<{
       }
     }
 
+  const switchToChain = async () => {
+    try {
+      const chainId = 137; // Chain ID in decimal
+      const hexChainId = '0x' + chainId.toString(16); // Convert to hexadecimal string
+      await (window.ethereum as any).request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: hexChainId }] // Pass the hexadecimal string chainId
+      });
+      // Chain switch was successful
+      console.log("Switched to Ethereum Mainnet");
+    } catch (err) {
+      // setError(err.message || err);
+    }
+  };
+
+  
     useEffect(() => {
       if (userInfo?.uid && paymentCurruntTime) {
         const colRef = collection(db, "callbackHistory")
@@ -776,6 +791,8 @@ const VotingPaymentCopy: React.FC<{
             {texts.waitForIt}
           </span>
         </div>}
+        
+        {/* <button onClick={switchToChain}>Switch to Ethereum Mainnet</button> */}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,

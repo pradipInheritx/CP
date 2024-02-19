@@ -33,7 +33,10 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "public/firebase-messaging-sw.js"
+    "**/*.mp3",
+    "public/firebase-messaging-sw.js",
+    
+    
   ],
   "exclude": [
     "node_modules"

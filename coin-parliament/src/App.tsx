@@ -171,32 +171,31 @@ const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
   {
     chainId: 1,
-    name: 'ETH',
+    name: 'Ethereum',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
   },
-
   {
     chainId: 56,
-    name: 'BNB',
+    name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
+    explorerUrl: 'https://bscscan.com/',
+    rpcUrl: 'https://bsc-dataseed.binance.org/'
   },
   {
     chainId: 137,
-    name: 'MATIC',
+    name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
+    explorerUrl: 'https://polygonscan.com',
+    rpcUrl: 'https://polygon-mainnet.infura.io'
   },
   {
     chainId: 11155111,
-    name: 'SepoliaETH',
+    name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://1rpc.io/sepolia'
+    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
   }
 
 ]

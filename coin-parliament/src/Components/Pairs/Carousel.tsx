@@ -12,7 +12,10 @@ import { useSwipeable } from "react-swipeable";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import CoinsContext from "../../Contexts/CoinsContext";
-import { handleSoundClick } from "../../common/utils/SoundClick";
+// import { handleSoundClick } from "../../common/utils/SoundClick";
+import useSound from "use-sound";
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 
 export type CarouselProps = {
   children?: React.ReactNode | string;
@@ -124,6 +127,8 @@ const Carousel = ({
   // const zoomDiv = (e:any) =>{
   //     e.target.style.transform = 'scale(1.2)';
   //   }
+
+  const [handleSoundClick] = useSound(buttonClick);
 
   return !expanded ? (
     <form id={id} className="carousel slide " data-bs-ride="carousel" onSubmit={e => e.preventDefault()}>

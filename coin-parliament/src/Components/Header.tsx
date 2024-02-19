@@ -33,11 +33,15 @@ import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { claimRewardSound, handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
+import { claimRewardSound, handleExtraVote, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
 import Spinner from "./Spinner";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../assets/sounds/buttonClick.mp3';
+
 
 enum EventKeys {
 	LOGIN = "login",
@@ -242,6 +246,7 @@ const Header = ({
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
 	const voteDetails = useContext(VoteContext);
+	const [handleSoundClick] = useSound(buttonClick);
 	// useEffect(() => {
 	// 	if (score > 99.98 && MyPath !== "/profile/mine") {
 	// 		setCmpModalOpen(true)
