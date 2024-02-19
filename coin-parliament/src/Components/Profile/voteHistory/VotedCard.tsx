@@ -173,7 +173,9 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
               <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0">
                 <span style={{ fontSize: '0.8em' }} className="">VOTE RESULT</span>
                 <div className="fw-normal" style={{ fontSize: (widthLess400 ? '0.9em' : '') }}>
-                  {vote.direction == 0 ? "BULL" : "BEAR"}
+                    {/* {vote.direction == 0 ? "BULL" : "BEAR"} */}
+                    {/* @ts-ignore */}                    
+                    {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : vote?.valueExpirationTime < vote?.valueVotingTime ? 'BEAR' : vote?.direction == 0 ? "BULL" : "BEAR"} 
                   &nbsp;
                   {/* @ts-ignore */}
                   <span style={{ color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote?.valueExpirationTime || 0.00), vote?.direction) }}>

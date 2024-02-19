@@ -139,7 +139,7 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-  const { ws, socket, socketConnect } = useContext(CoinsContext);
+  const { ws, socket, socketConnect,setCoins } = useContext(CoinsContext);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   const livePrice = useRef(coins)
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
@@ -168,6 +168,7 @@ const Carousel = ({
 
     return () => {
       clearInterval(interval)
+      setCoins(livePrice.current)
     }
   }, [])
 
