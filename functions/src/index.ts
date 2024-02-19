@@ -1065,23 +1065,19 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
     for (let index = 0; index < filterUsernameUsers.length; index++) {
       let element = filterUsernameUsers[index];
       if (element.displayName == null) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = ' ';
-        const charactersLength = characters.length;
-        for (let i = 0; i < 5; i++) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        await admin.firestore().collection('users').doc(element.uid).set({ username: result }, { merge: true });
+        let getNewUsername = element.email.split('@')[0];
+        let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
+        await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
       } else {
         let getDisplayName = element.displayName.trim().split(' ')
-        let newUsername: string = getDisplayName.length < 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
-        newUsername = newUsername.length < 15 ? newUsername : newUsername.slice(0, 15);
+        let getNewUsername: string = getDisplayName.length < 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
+        let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
         await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
       }
-      return {
-        status: true,
-        message: "function done successfully."
-      }
+    }
+    return {
+      status: true,
+      message: "function done successfully."
     }
   } catch (error) {
     console.error("addUsernameToOldUsers, ERORR : ", error);
