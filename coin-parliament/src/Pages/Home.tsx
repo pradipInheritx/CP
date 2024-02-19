@@ -50,7 +50,7 @@ const Home = () => {
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
-          <HomeContainer width={width} className='mb-4 p-0 '>
+          <HomeContainer fluid className='mb-4 p-0 w-100'>
             {!(login || firstTimeLogin) && (
               <>
                 <Image
@@ -61,14 +61,14 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : "auto",
-                    marginTop: width && width > 969 ? "0" : "80px",
+                    marginTop: width && width > 969 ? "0" : "0px",
                     // marginTop:'120px',
-                    position: "absolute",
+                    position: "relative",
                   }}
                 />
 
                 <div
-                  className='w-100 '
+                  className='w-100 d-none'
                   style={{
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
@@ -83,7 +83,7 @@ const Home = () => {
             )}
           </HomeContainer>
         </div>
-        <div className='mb-4 mx-0'>
+        <div className='mb-4 mx-0 position-relative'>
           <TextContainer
             className='mt-2 d-xl-none'
             style={{
@@ -112,7 +112,7 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "130px",
+                marginTop: "10px",
               }}
 
               className="mb-4"
@@ -145,7 +145,7 @@ const Home = () => {
                   position: "relative",
                   // marginTop: "200px",
                   fontSize: "30px",
-                  marginTop: window?.screen?.width < 768 ? '100px' : "222px",
+                  marginTop: window?.screen?.width < 768 ? '100px' : "10px",
                 }}
 
                 className="mb-4"
