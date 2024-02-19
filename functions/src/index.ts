@@ -417,52 +417,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-exports.addNewKeysInCollection = functions.https.onCall(async () => {
-  try {
-    const getAllUsers = (
-      await admin.firestore().collection("users").get()
-    ).docs.map((user: any) => user.data());
-    console.log("getAllUsers length : ", getAllUsers.length);
-    if (!getAllUsers) return { message: "No users found" };
-    const getStatusQuery: any = (
-      await admin.firestore().collection("settings").doc("userTypes").get()
-    ).data();
-    const getStatusList = getStatusQuery.userTypes;
-    for (let index = 0; index < getAllUsers.length; index++) {
-      if (typeof getAllUsers[index].status == "string") {
-        let status = getStatusList.filter(
-          (level: any) =>
-            level?.name.toLowerCase() ==
-            getAllUsers[index]?.status?.toLowerCase()
-        );
-        console.log("status : ", status);
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(getAllUsers[index].uid)
-          .set({ status: status[0] }, { merge: true });
-        console.log(`${getAllUsers[index].uid} is updated successfully`);
-      } else if (Array.isArray(getAllUsers[index].status)) {
-        let status = getStatusList.filter(
-          (level: any) =>
-            level?.name.toLowerCase() ==
-            getAllUsers[index]?.status[0].name.toLowerCase()
-        );
-        console.log("status : ", status);
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(getAllUsers[index].uid)
-          .set({ status: status[0] }, { merge: true });
-        console.log(`${getAllUsers[index].uid} is updated successfully`);
-      }
-    }
-    return { message: "update operation complete" };
-  } catch (error) {
-    console.log("addNewKeysInCollection : error", error);
-    return { message: "something went wrong : ", error };
-  }
-});
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
