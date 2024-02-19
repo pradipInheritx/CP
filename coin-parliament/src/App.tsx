@@ -1218,7 +1218,7 @@ function App() {
                                               ? "89vh"
                                               : "92vh",
                                           // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
-                                          padding: `${pathname === "/" ? 160 : 120
+                                          padding: `${pathname === "/" ? 120 : 120
                                             }px 0 0`,
                                         }}
                                       >
