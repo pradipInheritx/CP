@@ -345,8 +345,9 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     const incrementKeyValue: any = {};
     const newCPVIObject: any = {};
     let userVote: string;
-    const checkCoinPair = voteData.coin.split('-');
-    if (checkCoinPair.length > 0) {
+    const checkCoinPair = voteData.coin.trim().split('-');
+    // For Pair 
+    if (checkCoinPair.length == 2) {
       newCPVIObject[checkCoinPair[0]] = 0
       newCPVIObject[checkCoinPair[1]] = 0
       voteData.direction == 0 ? (newCPVIObject[checkCoinPair[0]] = 1) : (newCPVIObject[checkCoinPair[1]] = 1);
@@ -382,7 +383,8 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
       console.log("End addVoteResultForCPVI")
       return null
     }
-    else {
+    // For  Coin
+    else if(checkCoinPair.length == 1) {
 
       const newCPVI = voteData.direction == 0 ? {
         BULL: 1,
@@ -420,7 +422,11 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
         }
       }
       console.log("End addVoteResultForCPVI")
-      return null
+      return true
+    }
+    else {
+      console.error("Coin/Pair is not valid")
+      return false
     }
 
   } catch (error) {
