@@ -10,10 +10,11 @@ import PoolMiningCard from "./PoolMiningCard";
 import VBG from "../../assets/images/VBG.png"
 import VBGM from "../../assets/images/VBGM.png"
 import coinParliament from "firebaseCoinParliament";
+import { texts } from "Components/LoginComponent/texts";
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
   const [cmpValue, setCmpValue] = useState(0)
-  
+  const [isLoading, setIsLoading] = useState(false);
   const [children, setChildren] = useState<Leader[]>([]);
 
 
@@ -55,7 +56,8 @@ const Pool = () => {
   const referralUrl = `${document.location.protocol}//${document.location.host}/sign-up?refer=${userInfo?.userName}`;
   
   useEffect(() => {
-    getUsers({ users: userInfo?.children, setUsers: setChildren });
+    getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading:setIsLoading })
+    setIsLoading(true);
   }, [userInfo?.children]);
 
   return (
@@ -88,7 +90,13 @@ const Pool = () => {
           />
         </div>
         <div className='pb-2'>
-          {children.map((child) => {
+        _{isLoading ?
+            <div className="w-100 text-center">
+              <span className="loading " style={{
+                color:"white",
+              }}>{texts.waitForIt}</span>
+            </div>
+          :children.map((child) => {
             return (
               <div className="mb-2" key={child?.userId}>
                 <PoolMiningCard user={child} />
