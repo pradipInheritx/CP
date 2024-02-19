@@ -75,12 +75,13 @@ const GenericLoginSignup = ({ authProvider }:
       try {
         const referUser = await firebase
           .firestore()
-          .collection('users').where("displayName", '==', refer).get();
+          .collection('users').where("userName", '==', refer).get();
         if (!referUser.empty) {
           referUser.forEach((doc: any) => {
             userdata = doc.data();
             setPreantId(doc.data().uid)
             setParentEmailId(doc.data().email)
+            console.log(userdata, refer,"userdata")
           });
         }
         else if (referUser.empty) {          

@@ -22,17 +22,25 @@ const getLeaderUsersByIds = httpsCallable<{}, Leader[]>(
 export const getUsers = ({
   users,
   setUsers,
+  setIsLoading
 }: {
   users?: string[];
+  setIsLoading?:any
   setUsers: (newUsers: Leader[]) => void;
 }) => {
   try {
     users?.length &&
       getLeaderUsersByIds({ userIds: users }).then((u) => {
         setUsers(u.data);
+        if(setIsLoading){
+          setIsLoading(false)
+        }
       });
   } catch (e) {
     setUsers([] as Leader[]);
+    if(setIsLoading){
+      setIsLoading(false)
+    }
   }
 };
 
@@ -41,11 +49,24 @@ const Follow = () => {
   const translate = useTranslation();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
+  const [isLoading,setIsLoading] = useState(true)
 
+  // useEffect(() => {
+  //   getUsers({ users: userInfo?.leader, setUsers: setLeaders });
+  //   getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+  // }, [userInfo?.leader, userInfo?.subscribers]);
   useEffect(() => {
-    getUsers({ users: userInfo?.leader, setUsers: setLeaders });
-    getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
-  }, [userInfo?.leader, userInfo?.subscribers]);
+    if (userInfo?.leader) {
+      getUsers({ users: userInfo?.leader, setUsers: setLeaders,setIsLoading })
+      setIsLoading(true)
+    }
+  }, [userInfo?.leader]);
+  useEffect(() => {
+    if (userInfo?.subscribers) {
+      getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers,setIsLoading });
+      setIsLoading(true)
+    }
+  }, [userInfo?.subscribers]);
 console.log('leaders',leaders,userInfo)
   return (
     <Tabs
