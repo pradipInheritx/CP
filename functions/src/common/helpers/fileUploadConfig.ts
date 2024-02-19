@@ -5,9 +5,9 @@ import {
   getAlbumDetails,
   getCardDetails,
   updateFileLink,
-  errorLogging,
 } from "../models/Admin/Rewards";
 import { logger } from "firebase-functions/v1";
+import { errorLogging } from "./commonFunction.helper";
 
 
 export const imageUploadFunction = async (req: any, res: any) => {
