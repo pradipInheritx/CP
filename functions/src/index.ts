@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
 import cors from "cors";
-import {  pullAll, union, uniq } from "lodash";
+import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
@@ -220,15 +220,17 @@ exports.api = functions.https.onRequest(main);
 async function correctReferScoreToAllUsers() {
   try {
     const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
-    const filterTheUser = getAllUser.filter((user) =>  user.children?.length > 0 ? { id: user.uid, children: user.children } : null  );
-    console.log("filter the user length : ",filterTheUser.length)
+    const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
+    console.log("filter the user length : ", filterTheUser.length)
     for (let index = 0; index < filterTheUser.length; index++) {
       const user = filterTheUser[index];
-      console.log("user : ", user , index)
+      console.log("user : ", user, index)
       let commission = 0;
       for (let child = 0; child < user.children; child++) {
-        const children = (await admin.firestore().collection('users').doc(user.children[child]).get()).data();
-        commission = commission + parseFloat(children?.refereeScrore)
+        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => { 
+          let userData = snapshot.data();
+          commission = commission + parseFloat(userData?.refereeScrore);
+         })
       }
       admin.firestore().collection('users').doc(user.id).set({ commission }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
     }
