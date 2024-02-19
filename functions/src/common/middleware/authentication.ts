@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 import * as jwt from "jsonwebtoken";
 import * as env from "../../env/env.json";
+import { errorLogging } from "../helpers/commonFunction.helper";
 interface JwtPayload {
   id: string;
 }
@@ -49,10 +50,4 @@ export async function auth(req: any, res: any, next: any) {
     });
   }
 }
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+

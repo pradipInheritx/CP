@@ -2,6 +2,7 @@ import { firestore } from "firebase-admin";
 import * as admin from "firebase-admin";
 import { toUpper } from "lodash";
 import "../../../index"
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 
 // get albums details
@@ -609,10 +610,3 @@ export const updateFileLink = async (forModule: string, fileType: string, id: st
     }
 }
 
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};

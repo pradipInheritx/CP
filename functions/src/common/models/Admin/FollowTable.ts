@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getFollowersAndFollowingCount = async (req: any, res: any) => {
     try {
@@ -123,10 +124,3 @@ export const getFollowingUsers = async (req: any, res: any) => {
     }
 };
 
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};

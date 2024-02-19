@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 
 import { sendPaxToFoundation } from "../Reward"
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 const foundationConst: any = {}
 
@@ -240,12 +241,3 @@ export const sendCPMToUserFoundation = async (req: any, res: any) => {
         });
     }
 }
-
-
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};
