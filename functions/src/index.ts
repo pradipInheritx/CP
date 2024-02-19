@@ -417,8 +417,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-
-
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
   return password === "CPVI2022!";
