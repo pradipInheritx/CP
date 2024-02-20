@@ -692,7 +692,11 @@ function WalletInfo() {
                                     }}
                                 >
                                     {/* <p>Your CMP count</p> */}
-                                        <p className="mt-1 text-end lh-base">This address will be used in case you decide to convert your card reward to a collectible card</p>
+                                        <p className="mt-1 lh-base"
+                                        style={{
+                                            textAlign:"left"
+                                        }}
+                                        >This address will be used in case you decide to convert your card reward to a collectible card</p>
 
                                 </div>
                             </div>
@@ -825,7 +829,11 @@ function WalletInfo() {
                                     }}
                                 >
                                     {/* <p>Your CMP count</p> */}
-                                        <p className="mt-1 text-end lh-base">Pax rewards will be sent automatically to this address every time you achieve the 100 CMP</p>
+                                        <p className="mt-1 lh-base"
+                                        style={{
+                                            textAlign:"left"
+                                        }}
+                                        >Pax rewards will be sent automatically to this address every time you achieve the 100 CMP</p>
 
                                 </div>
                             </div>
@@ -936,7 +944,11 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases)</p>
+                                <p className="mt-1 lh-base"
+                                style={{
+                                    textAlign:"left"
+                                }}
+                                >These addresses will be used to receive payments (50% of all your friends' total purchases)</p>
 
                             </div>
                         </div>
@@ -1025,7 +1037,11 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases)</p>                                                              
+                                    <p className="mt-1 lh-base"
+                                    style={{
+                                        textAlign:"left"
+                                    }}
+                                    >These addresses will be used to receive payments (50% of all your friends' total purchases)</p>                                                              
                             </div>
                         </div>
                     }
@@ -1138,7 +1154,11 @@ function WalletInfo() {
                                     marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
                                 }}
                             >                                                                
-                                <p className="mt-1 text-end lh-base">
+                                <p className="mt-1 lh-base"
+                                style={{
+                                    textAlign:"left"
+                                }}
+                                >
                                     Be aware that the network fee will be deducted from the amount, so choose wisely
                                 </p>
                             </div>
@@ -1477,7 +1497,11 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                    <p className="mt-1 text-end lh-base">We strongly advise activating two-factor authentication (2FA) for enhanced security. With 2FA, your account's security is bolstered, ensuring that even if someone guesses your password, they won't gain access to your account. Please note that we cannot be held responsible for any pending funds.</p>                                                              
+                                    <p className="mt-1 lh-base"
+                                    style={{
+                                        textAlign:"left"
+                                    }}
+                                    >We strongly advise activating two-factor authentication (2FA) for enhanced security. With 2FA, your account's security is bolstered, ensuring that even if someone guesses your password, they won't gain access to your account. Please note that we cannot be held responsible for any pending funds.</p>                                                              
                             </div>
                         </div>
                     }

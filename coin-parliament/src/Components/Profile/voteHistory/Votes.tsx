@@ -70,7 +70,7 @@ const Votes = () => {
     })
     let allCoinsPair = [...AllCoins, ...AllPairs]
     let promiseArray: any = []
-    if (allCoinsPair.length > 0) {
+    if (allCoinsPair.length > 0 && paxDistribution > 0) {
       allCoinsPair?.forEach((voteItem: any) => {
         promiseArray.push(checkprice(voteItem))
         // checkprice(voteItem);
@@ -95,7 +95,7 @@ const Votes = () => {
       })
     }
 
-  }, [votes?.coins?.total, votes?.pairs?.total, pageSize,])
+  }, [votes?.coins?.total, votes?.pairs?.total, pageSize, paxDistribution])
 
 
   const checkprice = async (vote: any) => {

@@ -759,7 +759,11 @@ const Header = ({
 																	}}
 																>
 																	{/* <p>Your CMP count</p> */}
-																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																	
+																				<p className="mt-1 lh-base"
+																				style={{
+																					textAlign:"left"
+																				}}
+																				>{followerInfo?.bio.toUpperCase()}</p>																	
 																</div>
 															</div>
 														}
@@ -1060,7 +1064,11 @@ const Header = ({
 																			}}
 																		>
 																			{/* <p>Your CMP count</p> */}
-																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																		
+																				<p className="mt-1 lh-base"
+																				style={{
+																					textAlign:"left"
+																				}}
+																				>{followerInfo?.bio.toUpperCase()}</p>																		
 																		</div>
 																	</div>
 																}
