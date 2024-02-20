@@ -1003,7 +1003,7 @@ function App() {
       if (isInstagramAvailable) {
         console.log("reloadtrue")
         // window.location.reload()
-        connect()
+        // connect()
       }
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);
@@ -1036,7 +1036,7 @@ function App() {
       if (isInstagramAvailable) {
         console.log("reloadtrue")
         // window.location.reload()
-        connect()
+        // connect()
       }
       console.log('WebSocket connection closed crypto', event);
       if (event.code !== 1000) {
