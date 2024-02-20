@@ -1257,6 +1257,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) => {
   try {
     const userId = data.userId; // Extract userId from data parameter
+    console.log("userId>>>>",userId);
 
     const databaseQuery = await admin
       .firestore()
@@ -1274,8 +1275,11 @@ exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) 
     }
 
     const name = userData.status.name;
+    console.log("name>>>>>",name)
     const totalVotes = userData.voteStatistics.total;
+    console.log("totalVotes>>>>>",userData.voteStatistics.total)
     const totalCMP = userData.voteStatistics.score;
+    console.log("totalCMP>>>>>",userData.voteStatistics.score)
 
     const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
       .where('userId', '==', userId)
@@ -1285,7 +1289,9 @@ exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) 
     let accountUpgrade = false; // Default value if not found
     if (!paxTransactionQuery.empty) {
       const paxTransactionData = paxTransactionQuery.docs[0].data();
+      console.log("paxTransactionData>>>>>",paxTransactionData)
       accountUpgrade = paxTransactionData.isUserUpgraded || false;
+      console.log("accountUpgrade>>>>>",accountUpgrade)
     }
 
     const paymentQuery = await admin.firestore().collection('payments')
@@ -1305,8 +1311,10 @@ exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) 
       .get();
 
     const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
+    console.log("voteTimes>>>>>>>",voteTimes);
     const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
     const numberOfDaysVoted = uniqueDates.length;
+    console.log("numberOfDaysVoted>>>>>>>",numberOfDaysVoted);
 
     return {
       status: true,
