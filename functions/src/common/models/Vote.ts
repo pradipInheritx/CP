@@ -261,20 +261,19 @@ export async function checkAndUpdateRewardTotal(userId: string) {
   try {
     const getUserRef = admin.firestore().collection('users').doc(userId);
     const getUserDetails: any = (await getUserRef.get()).data();
-    const getUserScore: number = getUserDetails?.voteStatistics?.score;
-    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
-    // const score = getUserScore + currentVoteCMP;
-    const checkScore = getUserScore - (getUserTotal * 100);
-    console.log("getUserScore : ", getUserScore);
-    console.log("getUserTotal : ", getUserTotal);
-    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
-    if (checkScore > 99.99) {
+   
+    const scoreString = getUserDetails?.voteStatistics?.score.toString();
+    console.log('scoreString : ', scoreString)
+    const removePointsValue = scoreString.split('.')[0];
+    const newRewardTotal = parseInt(removePointsValue.slice(0, removePointsValue.length - 2) || "0");
+    console.log("newRewardTotal : ", newRewardTotal)
+  
 
       await getUserRef
         .set(
           {
             rewardStatistics: {
-              total: admin.firestore.FieldValue.increment(1),
+              total: newRewardTotal,
               claimed: getUserDetails?.rewardStatistics?.claimed || 0,
             },
           },
@@ -287,13 +286,6 @@ export async function checkAndUpdateRewardTotal(userId: string) {
         message: "Total and Claimed are updated Successfully",
         result: null
       };
-    } else {
-      return {
-        status: false,
-        message: "Total and Claimed are not updated Successfully",
-        result: null
-      };
-    }
   } catch (error) {
     console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
     return {

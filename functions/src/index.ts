@@ -984,9 +984,9 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
       .collection("votes")
       .doc(data?.voteId);
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
-    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
+    // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
 
     return {
       voteId: getAfterUpdatedVoteInstance.id,
