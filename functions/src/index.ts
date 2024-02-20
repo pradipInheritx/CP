@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as firebaseAdmin from 'firebase-admin';
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
@@ -1253,6 +1254,96 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
+// function that return some parameters for coin parliament players
+exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res:any) => {
+  try {
+    const { userId } = req.params; 
+
+    const databaseQuery = await firebaseAdmin
+      .firestore()
+      .collection("users")
+      .doc(userId) 
+      .get();
+
+    const userData = databaseQuery.data();
+    if (!userData) {
+      return res.status(404).send({
+        status: true,
+        message: "User not found.",
+        result: null,
+      });
+    }
+
+    const name = userData.status.name;
+    console.log("name>>>>>",name)
+    const totalVotes = userData.voteStatistics.total;
+    console.log("totalVotes>>>>>",userData.voteStatistics.total)
+    const totalCMP = userData.voteStatistics.score;
+    console.log("totalCMP>>>>>",userData.voteStatistics.score)
+
+    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
+      .where('userId', '==', userId)
+      .limit(1)
+      .get();
+
+      let accountUpgrade = false; // Default value if not found
+      if (!paxTransactionQuery.empty) {
+        const paxTransactionData = paxTransactionQuery.docs[0].data();
+        console.log("paxTransactionData>>>>>",paxTransactionData)
+        accountUpgrade = paxTransactionData.isUserUpgraded || false;
+        console.log("accountUpgrade>>>>>",accountUpgrade)
+      }
+
+      const paymentQuery = await admin.firestore().collection('payments')
+      .where('userId', '==', userId)
+      .where('transactionType', '==', 'EXTRAVOTES')
+      .get();
+
+      // Check if the user has purchased votes based on the payment transactions
+    const hasPurchasedVotes = !paymentQuery.empty;
+    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+
+      // Retrieve user record from Firebase Authentication
+    const userRecord = await admin.auth().getUser(userId);
+
+    // Retrieve votes of the user from the votes collection
+    const votesQuerySnapshot = await firebaseAdmin
+      .firestore()
+      .collection("votes")
+      .where("userId", "==", userId)
+      .get();
+
+      // Extract voteTime values and convert them to dates
+    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
+
+    // Extract unique dates to count the number of days voted
+    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+    const numberOfDaysVoted = uniqueDates.length;
+
+
+    res.status(200).send({
+      status: true,
+      message: "User fetched successfully",
+      result: {
+        name: name,
+        country: userData.country,
+        signupDate: userRecord.metadata.creationTime,
+        totalVotes: totalVotes,
+        totalCMP: totalCMP,
+        accountUpgrade: accountUpgrade,
+        numberOfDaysVoted: numberOfDaysVoted,
+        votePurchase: votePurchaseStatus,
+        userId: userId,
+      },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: false,
+      message: "Error while fetching user data:",
+      error: error,
+    });
+  }
+});
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
 exports.pendingPaymentSettlement = functions.pubsub
