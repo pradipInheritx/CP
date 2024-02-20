@@ -1256,7 +1256,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 // function that return some parameters for coin parliament players
 exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res:any) => {
   try {
-    const { userId } = req.params.userId; 
+    const  userId  = req.params.userId; 
     console.log(userId);
 
     const databaseQuery = await admin
