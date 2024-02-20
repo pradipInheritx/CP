@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import * as firebaseAdmin from 'firebase-admin';
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
@@ -1259,7 +1258,7 @@ exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res
   try {
     const { userId } = req.params; 
 
-    const databaseQuery = await firebaseAdmin
+    const databaseQuery = await admin
       .firestore()
       .collection("users")
       .doc(userId) 
@@ -1307,7 +1306,7 @@ exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res
     const userRecord = await admin.auth().getUser(userId);
 
     // Retrieve votes of the user from the votes collection
-    const votesQuerySnapshot = await firebaseAdmin
+    const votesQuerySnapshot = await admin
       .firestore()
       .collection("votes")
       .where("userId", "==", userId)
