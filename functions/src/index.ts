@@ -1315,10 +1315,12 @@ exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res
 
       // Extract voteTime values and convert them to dates
     const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
+    console.log("voteTimes>>>>>>>",voteTimes);
 
     // Extract unique dates to count the number of days voted
     const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
     const numberOfDaysVoted = uniqueDates.length;
+    console.log("numberOfDaysVoted>>>>>>>",numberOfDaysVoted);
 
 
     res.status(200).send({
@@ -1337,6 +1339,7 @@ exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res
       },
     });
   } catch (error) {
+    console.log("error in >>>>>>>>>.", error);
     res.status(500).send({
       status: false,
       message: "Error while fetching user data:",
