@@ -49,9 +49,9 @@ export const getUsers = ({
 const Follow = () => {
   const { user, userInfo } = useContext(UserContext);
   const translate = useTranslation();
-  const [leaders, setLeaders] = useState<Leader[]>([]);
+  const [leaders, setLeaders] = useState<Leader[] | undefined>();
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   console.log(userInfo, "userInfo")
 
@@ -104,7 +104,7 @@ const Follow = () => {
                     {texts.waitForIt}
                 </span>
             </div>}
-              {leaders && leaders.map((u, i) => {
+              {leaders && leaders.length > 0 ?  leaders.map((u, i) => {
                 return (
                   <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
                       
@@ -123,7 +123,9 @@ const Follow = () => {
                     />
                   </div>
                 );
-              })}
+              }):!isLoading && leaders?.length === 0 ?(
+                <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
+              ) : null}
             </div>
               
 
@@ -134,7 +136,7 @@ const Follow = () => {
           title: capitalize(translate(`${texts.Followers}`)),
           pane: (
             <>
-              {(subscribers || []).map((s, i) => {
+              {subscribers && subscribers.length > 0 ? subscribers.map((s, i) => {
                 return (
                   <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
                     <UserCard
@@ -152,7 +154,9 @@ const Follow = () => {
                     />
                   </div>
                 );
-              })}
+              }) :  !isLoading && subscribers.length === 0 ? (
+                <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
+              ) : null}
             </>
           ),
         },

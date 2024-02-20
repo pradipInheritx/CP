@@ -4,6 +4,8 @@ import {
   QueryDocumentSnapshot,
   setDoc,
   SnapshotOptions,
+  arrayRemove,
+  arrayUnion,
 } from "firebase/firestore";
 import React from "react";
 import { Coin, CoinSnap, Rate } from "../common/models/Coin";
@@ -45,19 +47,21 @@ export const follow = async (leader: Leader, you: User, add: boolean, setIsLoadi
   const setLeadersOnce = httpsCallable(functions, "setLeadersOnce");
 
   await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps).then((res) => {
-    setIsLoading(false)
+    if (setIsLoading) {
+      setIsLoading(false)      
+    }
   });
 
   if (add) {
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayUnion(leader?.userId) },
+      { leader:arrayUnion(leader?.userId) },
       { merge: true }
     );
   } else {
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
+      { leader: arrayRemove(leader?.userId) },
       { merge: true }
     );
   }
