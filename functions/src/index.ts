@@ -1254,76 +1254,61 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 );
 
 // function that return some parameters for coin parliament players
-exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res:any) => {
+exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) => {
   try {
-    const  userId  = req.params.userId; 
-    console.log(userId);
+    const userId = data.userId; // Extract userId from data parameter
 
     const databaseQuery = await admin
       .firestore()
       .collection("users")
-      .doc(userId) 
+      .doc(userId)
       .get();
 
     const userData = databaseQuery.data();
     if (!userData) {
-      return res.status(404).send({
+      return {
         status: true,
         message: "User not found.",
         result: null,
-      });
+      };
     }
 
     const name = userData.status.name;
-    console.log("name>>>>>",name)
     const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>",userData.voteStatistics.total)
     const totalCMP = userData.voteStatistics.score;
-    console.log("totalCMP>>>>>",userData.voteStatistics.score)
 
     const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
       .where('userId', '==', userId)
       .limit(1)
       .get();
 
-      let accountUpgrade = false; // Default value if not found
-      if (!paxTransactionQuery.empty) {
-        const paxTransactionData = paxTransactionQuery.docs[0].data();
-        console.log("paxTransactionData>>>>>",paxTransactionData)
-        accountUpgrade = paxTransactionData.isUserUpgraded || false;
-        console.log("accountUpgrade>>>>>",accountUpgrade)
-      }
+    let accountUpgrade = false; // Default value if not found
+    if (!paxTransactionQuery.empty) {
+      const paxTransactionData = paxTransactionQuery.docs[0].data();
+      accountUpgrade = paxTransactionData.isUserUpgraded || false;
+    }
 
-      const paymentQuery = await admin.firestore().collection('payments')
+    const paymentQuery = await admin.firestore().collection('payments')
       .where('userId', '==', userId)
       .where('transactionType', '==', 'EXTRAVOTES')
       .get();
 
-      // Check if the user has purchased votes based on the payment transactions
     const hasPurchasedVotes = !paymentQuery.empty;
     const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
 
-      // Retrieve user record from Firebase Authentication
     const userRecord = await admin.auth().getUser(userId);
 
-    // Retrieve votes of the user from the votes collection
     const votesQuerySnapshot = await admin
       .firestore()
       .collection("votes")
       .where("userId", "==", userId)
       .get();
 
-      // Extract voteTime values and convert them to dates
     const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>",voteTimes);
-
-    // Extract unique dates to count the number of days voted
     const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
     const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>",numberOfDaysVoted);
 
-
-    res.status(200).send({
+    return {
       status: true,
       message: "User fetched successfully",
       result: {
@@ -1337,16 +1322,16 @@ exports.getCoinParliamentPlayers = functions.https.onRequest(async (req:any, res
         votePurchase: votePurchaseStatus,
         userId: userId,
       },
-    });
+    };
   } catch (error) {
-    console.log("error in >>>>>>>>>.", error);
-    res.status(500).send({
+    console.log("Error while fetching user data:", error);
+    return {
       status: false,
-      message: "Error while fetching user data:",
-      error: error,
-    });
+      result: error,
+    };
   }
 });
+
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
 exports.pendingPaymentSettlement = functions.pubsub
