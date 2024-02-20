@@ -1254,7 +1254,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 );
 
 // function that return some parameters for coin parliament players
-exports.getCoinParliamentPlayers = functions.https.onCall(async (data, context) => {
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
   try {
     const userId = data.userId; // Extract userId from data parameter
     console.log("userId>>>>",userId);
