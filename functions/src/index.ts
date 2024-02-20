@@ -795,7 +795,7 @@ exports.onUpdateUser = functions.firestore
     console.info("Send Email Successfully")
 
     // await addReward(snapshot.after.id, before, after);
-    await checkAndUpdateRewardTotal(snapshot.after.id)
+    // await checkAndUpdateRewardTotal(snapshot.after.id)
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
