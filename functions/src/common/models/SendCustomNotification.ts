@@ -162,7 +162,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
 
-  console.log("UserData:", userData);
+  // console.log("UserData:", userData);
   let score = voteStatistics.score;
   if (voteStatistics && parseInt(voteStatistics.score) > 100) {
     let currentScore = score % 100;

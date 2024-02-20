@@ -314,7 +314,7 @@ class Calculation {
   async updateVote(
     ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
-    console.log("ref ====", ref);
+    // console.log("ref ====", ref);
     console.log("this.voteResult ========", this.voteResult);
     await ref.set(this.voteResult, { merge: true });
   }
@@ -371,7 +371,9 @@ class Calculation {
       );
       console.log("child data : ", voteStatistics, refereeScrore)
       const userRewardStatistics = user.rewardStatistics;
-      const scoreString = score.toString();
+      const scoreString = voteStatistics.score.toString();
+      console.log('scoreString : ', scoreString)
+      console.log('userRewardStatistics : ', userRewardStatistics)
       const removePointsValue = scoreString.split('.')[0];
       const newRewardTotal = removePointsValue.slice(0, removePointsValue.length - 2);
       console.log("newRewardTotal : ", newRewardTotal)
