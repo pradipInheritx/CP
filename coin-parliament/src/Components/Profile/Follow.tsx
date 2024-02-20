@@ -19,7 +19,7 @@ const getLeaderUsersByIds = httpsCallable<{}, Leader[]>(
   "getLeaderUsersByIds"
 );
 
-export const getUsers = ({
+export const getUsers = async({
   users,
   setUsers,
   setIsLoading
@@ -30,17 +30,17 @@ export const getUsers = ({
 }) => {
   try {
     users?.length &&
-      getLeaderUsersByIds({ userIds: users }).then((u) => {
+     await getLeaderUsersByIds({ userIds: users }).then((u) => {
         setUsers(u.data);
-        if(setIsLoading){
-          setIsLoading(false)
-        }
-      });
+        // if(setIsLoading){
+          // }
+        });
+        setIsLoading(false)
   } catch (e) {
     setUsers([] as Leader[]);
-    if(setIsLoading){
+    // if(setIsLoading){
       setIsLoading(false)
-    }
+    // }
   }
 };
 
