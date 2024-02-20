@@ -576,21 +576,42 @@ const VotingPaymentCopy: React.FC<{
 
   useEffect(() => {
     if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {
-      if (coinInfo.chainId != chainId) {
-        setIsLoading(true)
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        switchNetwork(coinInfo.chainId).then((res) => {        
+      if (window.screen.width < 450) { 
+        setTimeout(() => {          
+          if (coinInfo.chainId != chainId) {
+            setIsLoading(true)
+            setShowText(true)
+            setPaymentStatus({ type: "", message: '' });
+            setPayButton(true);
+            switchNetwork(coinInfo.chainId).then((res) => {        
+              sendTransaction()
+            })
+          }
+          else {
+            setShowText(true)
+            setPaymentStatus({ type: "", message: '' });
+            setPayButton(true);
+            setIsLoading(true)
+            sendTransaction()
+          }              
+        }, 5000);
+      } else {
+        if (coinInfo.chainId != chainId) {
+          setIsLoading(true)
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          switchNetwork(coinInfo.chainId).then((res) => {
+            sendTransaction()
+          })
+        }
+        else {
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          setIsLoading(true)
           sendTransaction()
-        })
-      }
-      else {
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        setIsLoading(true)
-        sendTransaction()
+        }
       }
     }
     // return () => {
