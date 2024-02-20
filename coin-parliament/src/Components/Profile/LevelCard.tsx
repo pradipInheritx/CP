@@ -66,9 +66,21 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
                 }}
               >
             {/* <p>User type level</p> */}            
-                  <p className="mt-3 text-end lh-base">Your level reflects your recent voting activities. Regular participation helps maintain or elevate your level.</p>
-                  <p className="mt-3 text-end lh-base">Should your voting frequency decrease, you might move down the levels. </p>
-                  <p className="mt-3 text-end lh-base">The good news? You can always climb back up.</p>
+                  <p className="mt-3 lh-base"
+                  style={{
+                    textAlign:"left"
+                  }}
+                  >Your level reflects your recent voting activities. Regular participation helps maintain or elevate your level.</p>
+                  <p className="mt-3 lh-base"
+                  style={{
+                    textAlign:"left"
+                  }}
+                  >Should your voting frequency decrease, you might move down the levels. </p>
+                  <p className="mt-3 lh-base"
+                  style={{
+                    textAlign:"left"
+                  }}
+                  >The good news? You can always climb back up.</p>
               </div>
               </div>
             }

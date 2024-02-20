@@ -1178,7 +1178,7 @@ function App() {
 
           let allCoinsPair = [...AllCoins, ...AllPairs]
           let promiseArray: any = []
-          if (allCoinsPair.length > 0) {
+          if (allCoinsPair.length > 0 && paxDistribution > 0) {
             allCoinsPair?.forEach((voteItem: any) => {
               promiseArray.push(checkprice(voteItem))
               // checkprice(voteItem);
@@ -1198,7 +1198,7 @@ function App() {
         }
       }
     },
-    [user?.uid]
+    [user?.uid, paxDistribution]
   );
   useEffect(() => {
     if (user?.uid) {

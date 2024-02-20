@@ -448,11 +448,23 @@ const Minting = ({
               }}
             >
               {/* <p>Your CMP count</p> */}
-              <p className="mt-1 text-end lh-base">This dynamic system amplifies your rewards as you actively vote and impact the game. </p>
-              <p className="mt-3 text-end lh-base">
+              <p className="mt-1 lh-base"
+              style={{
+                textAlign:"left"
+              }}
+              >This dynamic system amplifies your rewards as you actively vote and impact the game. </p>
+              <p className="mt-3 lh-base"
+              style={{
+                textAlign:"left"
+              }}
+              >
                 Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones.
               </p>
-              <p className="mt-3 text-end lh-base">
+              <p className="mt-3 lh-base"
+              style={{
+                textAlign:"left"
+              }}
+              >
                 As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
               </p>
             </div>

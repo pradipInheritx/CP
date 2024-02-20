@@ -527,7 +527,11 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     }}
                   >
                     {/* <p>Your CMP count</p> */}
-                    <p className="mt-1 text-end lh-base">
+                    <p className="mt-1 lh-base"
+                    style={{
+                      textAlign:"left"
+                    }}
+                    >
                       As the original Collectible card holder, you get 50% of the royalties from the fee charged on Collectible card sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to Collectible cards
                     </p>
                   </div>
@@ -549,7 +553,11 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     }}
                   >
                     {/* <p>Your CMP count</p> */}
-                    <p className="mt-1 text-end lh-base">
+                    <p className="mt-1 lh-base"
+                    style={{
+                      textAlign:"left"
+                    }}
+                    >
                         Please click on serial number to see all details
                     </p>
                   </div>
