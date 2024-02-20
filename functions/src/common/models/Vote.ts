@@ -226,28 +226,28 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
-        const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        console.log("getSuccessAndScore : ", getSuccessAndScore)
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        // console.log("getSuccessAndScore : ", getSuccessAndScore)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
         return {
           status: true, message: "Success", result: {
-            "paxDistributionToUser": paxDistribution
+            // "paxDistributionToUser": paxDistribution
           }
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
-        const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        console.log("getSuccessAndScore : ", getSuccessAndScore)
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
-        console.log("paxDistribution : ", paxDistribution)
+        // const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        // console.log("getSuccessAndScore : ", getSuccessAndScore)
+        // const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser, getSuccessAndScore?.score) : "";
+        // console.log("paxDistribution : ", paxDistribution)
         await calc.calc(getVoteRef);
         return {
           status: true, message: "Success", result: {
-            "paxDistributionToUser": paxDistribution
+            // "paxDistributionToUser": paxDistribution
           }
         }
       }
