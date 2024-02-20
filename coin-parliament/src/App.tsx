@@ -180,22 +180,22 @@ const mainnet = [
     chainId: 56,
     name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com/',
-    rpcUrl: 'https://bsc-dataseed.binance.org/'
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com',
-    rpcUrl: 'https://polygon-mainnet.infura.io'
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
   },
   {
     chainId: 11155111,
     name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
+    rpcUrl: 'https://1rpc.io/sepolia'
   }
 
 ]
@@ -988,12 +988,14 @@ function App() {
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
       console.log('WebSocket Open');
-      setSocketConnect(true)
-      ws.send(JSON.stringify({
-        method: 'SUBSCRIBE',
-        params: coinTikerList,
-        id: 1
-      }));
+      if (ws.readyState === WebSocket.OPEN) {        
+        setSocketConnect(true)
+        ws.send(JSON.stringify({
+          method: 'SUBSCRIBE',
+          params: coinTikerList,
+          id: 1
+        }));
+      }
     };
     var userAgent = navigator.userAgent.toLowerCase();
     const isInstagramAvailable = /iphone/.test(userAgent);
@@ -1030,7 +1032,9 @@ function App() {
           channels: ['ticker.CRO_USDT'],
         },
       };
-      socket.send(JSON.stringify(req));
+      if (ws.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(req));
+      }
     };         
     socket.onclose = (event: any) => {
       if (isInstagramAvailable) {

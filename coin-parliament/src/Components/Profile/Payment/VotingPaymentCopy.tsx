@@ -402,22 +402,22 @@ const mainnet = [
     chainId: 56,
     name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com/',
-    rpcUrl: 'https://bsc-dataseed.binance.org/'
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com',
-    rpcUrl: 'https://polygon-mainnet.infura.io'
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
   },
   {
     chainId: 11155111,
     name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
+    rpcUrl: 'https://1rpc.io/sepolia'
   }
 
 ]
@@ -507,7 +507,8 @@ const VotingPaymentCopy: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-
+  console.log(selectCoin,"selectCoincheck")
+  
     const getCoinList = async () => {
       const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
@@ -600,6 +601,7 @@ const VotingPaymentCopy: React.FC<{
   useEffect(() => {
     return () => {
       setTransactionInst(false)
+      setSelectCoin("none")
     }
   }, [])
   
@@ -629,15 +631,15 @@ const VotingPaymentCopy: React.FC<{
     const { address, chainId, isConnected } = useWeb3ModalAccount()
     const { walletProvider } = useWeb3ModalProvider()
 
-    useEffect(() => {
-      if (address && chainId && isConnected) {
-        const data = mainnet?.find((network?:any) => network?.chainId == chainId)
-        if (!data) return
-        setSelectCoin(data?.name)
-        setCoinInfo(data)
-      }
+    // useEffect(() => {
+    //   if (address && chainId && isConnected) {
+    //     const data = mainnet?.find((network?:any) => network?.chainId == chainId)
+    //     if (!data) return
+    //     setSelectCoin(data?.name)
+    //     setCoinInfo(data)
+    //   }
 
-    }, [address, chainId, isConnected])
+    // }, [address, chainId, isConnected])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
