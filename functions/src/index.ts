@@ -43,7 +43,6 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
   addVoteResultForCPVI,
-  checkAndUpdateRewardTotal,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -114,6 +113,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
+import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -219,7 +219,7 @@ exports.api = functions.https.onRequest(main);
 
 async function correctReferScoreToAllUsers() {
   try {
-    const getAllUser = (await admin.firestore().collection('users').where('children',"!=",[]).get()).docs.map((user) => user.data());
+    const getAllUser = (await admin.firestore().collection('users').where('children', "!=", []).get()).docs.map((user) => user.data());
     const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
     console.log("filter the user length : ", filterTheUser.length)
     for (let index = 0; index < filterTheUser.length; index++) {
@@ -227,12 +227,12 @@ async function correctReferScoreToAllUsers() {
       console.log("user : ", user, index)
       let commission = 0;
       for (let child = 0; child < user.children; child++) {
-        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => { 
+        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => {
           let userData = snapshot.data();
           commission = commission + parseFloat(userData?.refereeScrore);
-         })
+        })
       }
-      await admin.firestore().collection('users').doc(user.id).set({ commission },{merge:true}).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+      await admin.firestore().collection('users').doc(user.id).set({ commission }, { merge: true }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
     }
 
     return { status: true, message: "All user Refer score", result: true }
@@ -283,7 +283,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      return { skipped: true };
     }
 
     // Create a JWT token with user data
@@ -790,9 +790,12 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    console.info("after", after)
-    console.info("Send Email Successfully")
-
+    // console.info("after", after)
+    // const beforeTotal: number = before.rewardStatistics?.total || 0;
+    // const afterTotal: number = after.rewardStatistics?.total || 0;
+    // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
+    // console.log("snapshot.after.id : ",snapshot.after.id)
+    
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
@@ -1257,7 +1260,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
   try {
     const userId = data.userId; // Extract userId from data parameter
-    console.log("userId>>>>",userId);
+    console.log("userId>>>>", userId);
 
     const databaseQuery = await admin
       .firestore()
@@ -1275,11 +1278,11 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     }
 
     const name = userData.status.name;
-    console.log("name>>>>>",name)
+    console.log("name>>>>>", name)
     const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>",userData.voteStatistics.total)
+    console.log("totalVotes>>>>>", userData.voteStatistics.total)
     const totalCMP = userData.voteStatistics.score;
-    console.log("totalCMP>>>>>",userData.voteStatistics.score)
+    console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
     const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
       .where('userId', '==', userId)
@@ -1289,9 +1292,9 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     let accountUpgrade = false; // Default value if not found
     if (!paxTransactionQuery.empty) {
       const paxTransactionData = paxTransactionQuery.docs[0].data();
-      console.log("paxTransactionData>>>>>",paxTransactionData)
+      console.log("paxTransactionData>>>>>", paxTransactionData)
       accountUpgrade = paxTransactionData.isUserUpgraded || false;
-      console.log("accountUpgrade>>>>>",accountUpgrade)
+      console.log("accountUpgrade>>>>>", accountUpgrade)
     }
 
     const paymentQuery = await admin.firestore().collection('payments')
@@ -1311,10 +1314,10 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       .get();
 
     const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>",voteTimes);
+    console.log("voteTimes>>>>>>>", voteTimes);
     const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
     const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>",numberOfDaysVoted);
+    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
 
     return {
       status: true,
