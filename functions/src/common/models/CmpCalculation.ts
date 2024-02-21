@@ -45,10 +45,6 @@ export async function checkAndUpdateRewardTotal(userId: string) {
     }
 }
 
-export async function sendBlockCompleteNotificationAndFoundationCommission(userId: string, cmp: number) { 
-    await sendCPMToFoundationOfUser(userId, cmp); // add 0.1% cpm to foundation
-}
-
 export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: number) => {
     try {
         const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
@@ -64,6 +60,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         if (99.99 < checkCMP && checkCMP < 200) {
             console.log("pax calling")
             await sendNotificationForCpm(paxDetails.userId); // Block complete notification
+            await sendCPMToFoundationOfUser(paxDetails.userId, currentVoteCMP); // add 0.1% cpm to foundation
             let getResultAfterSentPaxToUser: any;
             let getResultAfterSentPaxToAdmin: any;
 
