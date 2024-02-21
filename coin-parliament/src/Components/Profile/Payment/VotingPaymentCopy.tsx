@@ -525,21 +525,7 @@ const VotingPaymentCopy: React.FC<{
       }
     };
 
-    useEffect(() => {
-      // const getCoinList = firebase
-      //   .firestore()
-      //   .collection("settings").doc("paymentCoins")
-      // getCoinList.get()
-      //   .then((snapshot) => {
-      //     const allList = snapshot.data()?.coins;
-      //     const filterCoin = allList.filter((item: any, index: number) => {
-      //       return item.name == "ETH"
-      //         // || item.name == "BNB" || item.name == "MATIC" && item
-      //     })          
-      //     setCoinsList(filterCoin ? filterCoin : allList && allList );
-      //   }).catch((error) => {
-      //     console.log(error, "error");
-      //   });
+    useEffect(() => {      
       getCoinList()
     }, [])
 
@@ -574,27 +560,7 @@ const VotingPaymentCopy: React.FC<{
     };
 
   useEffect(() => {
-    if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {
-      if (window.screen.width < 450) { 
-        setTimeout(() => {          
-          if (coinInfo.chainId != chainId) {
-            setIsLoading(true)
-            setShowText(true)
-            setPaymentStatus({ type: "", message: '' });
-            setPayButton(true);
-            switchNetwork(coinInfo.chainId).then((res) => {        
-              sendTransaction()
-            })
-          }
-          else {
-            setShowText(true)
-            setPaymentStatus({ type: "", message: '' });
-            setPayButton(true);
-            setIsLoading(true)
-            sendTransaction()
-          }              
-        }, 5000);
-      } else {
+    if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {     
         if (coinInfo.chainId != chainId) {
           setIsLoading(true)
           setShowText(true)
@@ -610,8 +576,7 @@ const VotingPaymentCopy: React.FC<{
           setPayButton(true);
           setIsLoading(true)
           sendTransaction()
-        }
-      }
+        }      
     }
     // return () => {
     //   setTransactionInst(false)
@@ -949,6 +914,7 @@ const VotingPaymentCopy: React.FC<{
         </div>}
         
         {/* <button onClick={addEthereumNetwork}>Switch to Ethereum Mainnet</button> */}
+        {/* <button onClick={()=>open({view:"Networks"})}>Open network</button> */}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
@@ -1286,12 +1252,13 @@ const VotingPaymentCopy: React.FC<{
                           // opacity: `${payButton ? "0.6" : "1"}`
                         }}
                         onClick={() => {
-                          // handleClick()
+                          // handleClick()                          
                           open()
+                          
                         }}
                       >
 
-                        {payButton ? "Connecting..." : 'Connect Now!'}
+                        {payButton ? "Connecting..." : 'Connect Wallet!'}
                       </button>
                     </ButttonDiv>
                   </div >
