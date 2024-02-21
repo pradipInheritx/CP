@@ -485,7 +485,7 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
     // console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
 
     // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
-    
+
     const transaction = { data: true };
     if (transaction.data) {
       const user: any = (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
@@ -661,10 +661,9 @@ export const addReward: (
 ) => void = async (userId: string, before: UserProps, after: UserProps) => {
   console.log("Beginning execution addReward function");
 
-  const changed =
-    (after.voteStatistics?.score || 0) > (before.voteStatistics?.score || 0);
-  console.log("BEFORE VOTE : ", {id : before.uid, rewardStatics :  before.rewardStatistics, voteStatistics : before.voteStatistics});
-  console.log("AFTER VOTE : ", {id : before.uid, rewardStatics :  before.rewardStatistics, voteStatistics : before.voteStatistics});
+  const changed = (after.voteStatistics?.score || 0) > (before.voteStatistics?.score || 0);
+  console.log("BEFORE VOTE : ", { id: before.uid, rewardStatics: before.rewardStatistics, voteStatistics: before.voteStatistics });
+  console.log("AFTER VOTE : ", { id: after.uid, rewardStatics: after.rewardStatistics, voteStatistics: after.voteStatistics });
   console.log("CHANGED BETWEEN VOTE : ", changed);
   if (!changed) {
     return;
@@ -675,22 +674,6 @@ export const addReward: (
   console.log('DIVISION-AFTER --->', divisionAfter);
   console.log('DIVISION-BEFORE --->', divisionBefore);
   if (divisionAfter > divisionBefore) {
-    // console.log('before.rewardStatistics?.total --->', before.rewardStatistics?.total);
-    // const newReward = (before.rewardStatistics?.total || 0) + 1;
-    const claimedUpdated = before.rewardStatistics?.claimed || 0;
-    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', " || ", claimedUpdated);
-    await firestore()
-      .collection("users")
-      .doc(userId)
-      .set(
-        {
-          rewardStatistics: {
-            total: firestore.FieldValue.increment(1),
-            claimed: claimedUpdated,
-          },
-        },
-        { merge: true }
-      );
     console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
     const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
