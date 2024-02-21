@@ -507,7 +507,8 @@ const VotingPaymentCopy: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-
+  console.log(selectCoin,"selectCoincheck")
+  
     const getCoinList = async () => {
       const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
@@ -544,6 +545,7 @@ const VotingPaymentCopy: React.FC<{
 
 
   const handleClick = async () => {
+    console.log("web function")
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {        
       if (coinInfo.chainId != chainId) {        
@@ -566,27 +568,49 @@ const VotingPaymentCopy: React.FC<{
       open()
       // switchNetwork(coinInfo.chainId)
       // open({view:"Networks"})
+
       setTransactionInst(true)
       }
     };
 
   useEffect(() => {
     if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {
-      if (coinInfo.chainId != chainId) {
-        setIsLoading(true)
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        switchNetwork(coinInfo.chainId).then((res) => {        
+      if (window.screen.width < 450) { 
+        setTimeout(() => {          
+          if (coinInfo.chainId != chainId) {
+            setIsLoading(true)
+            setShowText(true)
+            setPaymentStatus({ type: "", message: '' });
+            setPayButton(true);
+            switchNetwork(coinInfo.chainId).then((res) => {        
+              sendTransaction()
+            })
+          }
+          else {
+            setShowText(true)
+            setPaymentStatus({ type: "", message: '' });
+            setPayButton(true);
+            setIsLoading(true)
+            sendTransaction()
+          }              
+        }, 5000);
+      } else {
+        if (coinInfo.chainId != chainId) {
+          setIsLoading(true)
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          switchNetwork(coinInfo.chainId).then((res) => {
+            sendTransaction()
+          })
+        }
+        else {
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          setIsLoading(true)
           sendTransaction()
-        })
-      }
-      else {
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        setIsLoading(true)
-        sendTransaction()
+        }
       }
     }
     // return () => {
@@ -595,6 +619,7 @@ const VotingPaymentCopy: React.FC<{
   }, [events])
 
   const handleClickMob = async () => {
+    console.log("Mobile function ")
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
       if (coinInfo.chainId != chainId) {
@@ -871,6 +896,32 @@ const VotingPaymentCopy: React.FC<{
         })
     }
 
+  // const addEthereumNetwork = async () => {
+  //   let addEthereum= (window as any).ethereum;
+  //   await addEthereum.request({
+  //     method: "wallet_addEthereumChain",      
+  //     params: [
+  //       {
+  //         chainId: "0x1", // Chain ID for Ethereum mainnet
+  //         chainName: "Sepolia Test Netwok",
+  //         rpcUrls: [
+  //           "https://1rpc.io/sepolia", // Replace with your Infura endpoint
+  //           // Add additional RPC endpoints if available
+  //         ],
+  //         nativeCurrency: {
+  //           name: "Ether",
+  //           symbol: "ETH",
+  //           decimals: 18,
+  //         },
+  //         blockExplorerUrls: [
+  //           "https://sepolia.etherscan.io/", // Ethereum block explorer URL
+  //           // Add additional block explorers if available
+  //         ],
+  //       },
+  //     ],
+  //   });
+  // };  
+  
     return (
       <>
         {isLoading && <div style={{
@@ -897,7 +948,7 @@ const VotingPaymentCopy: React.FC<{
           </span>
         </div>}
         
-        {/* <button onClick={switchToChain}>Switch to Ethereum Mainnet</button> */}
+        {/* <button onClick={addEthereumNetwork}>Switch to Ethereum Mainnet</button> */}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
@@ -1156,17 +1207,17 @@ const VotingPaymentCopy: React.FC<{
                           border: " 1px solid #cab7ff",
                         }}
                       >
-                        {coinsList.map((option: any, index: number) => {
+                        {coinsList?.map((option: any, index: number) => {
                                         
                             return (
                               <>
                               <li
                                 style={{
                                 
-                                }}
+                                  }}                                  
                                 className="pay-custom-select-option"
                                 data-name={option.name}
-                                key={option.id}
+                                key={index}
                                 onClick={async () => {
                                   setSelectCoin(option.name)
                                   setCoinInfo(option)
@@ -1235,7 +1286,8 @@ const VotingPaymentCopy: React.FC<{
                           // opacity: `${payButton ? "0.6" : "1"}`
                         }}
                         onClick={() => {
-                          handleClick()
+                          // handleClick()
+                          open()
                         }}
                       >
 

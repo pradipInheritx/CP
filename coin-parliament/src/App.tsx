@@ -988,12 +988,14 @@ function App() {
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
       console.log('WebSocket Open');
-      setSocketConnect(true)
-      ws.send(JSON.stringify({
-        method: 'SUBSCRIBE',
-        params: coinTikerList,
-        id: 1
-      }));
+      if (ws.readyState === WebSocket.OPEN) {        
+        setSocketConnect(true)
+        ws.send(JSON.stringify({
+          method: 'SUBSCRIBE',
+          params: coinTikerList,
+          id: 1
+        }));
+      }
     };
     var userAgent = navigator.userAgent.toLowerCase();
     const isInstagramAvailable = /iphone/.test(userAgent);
@@ -1030,7 +1032,9 @@ function App() {
           channels: ['ticker.CRO_USDT'],
         },
       };
-      socket.send(JSON.stringify(req));
+      if (ws.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(req));
+      }
     };         
     socket.onclose = (event: any) => {
       if (isInstagramAvailable) {

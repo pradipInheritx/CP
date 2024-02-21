@@ -286,13 +286,14 @@ const [comingSoon, setComingSoon] = useState(false)
           >
             <img src={votingbooster} alt="" className="" />
           </div>}
-          {window.screen.width > 766 && PaytypeValue.map((item,index) => {
+          {window.screen.width > 766 && PaytypeValue?.map((item,index) => {
             return <div
               className="d-flex justify-content-center"
               style={{
                 position: "relative",
                 height: "350px",
               }}
+              key={index}
             >
               {item.Extra > 0 && <TopDiv >
                 <img src={VoteTop} alt="" width={"80px"} />
@@ -382,14 +383,15 @@ const [comingSoon, setComingSoon] = useState(false)
               </div>
             </div>
           })}          
-          {window.screen.width <767 && PaytypeValue.map((item, index) => {
+          {window.screen.width <767 && PaytypeValue?.map((item, index) => {
             return <div
               className="d-flex justify-content-center"
               style={{
                 position: "relative",
                 height: "350px",
                 
-              }}                                          
+              }}    
+              key={index}
             >
               {item.Extra  > 0 &&<TopDiv >
                 <img src={VoteTop} alt="" width={"80px"}
@@ -453,7 +455,7 @@ const [comingSoon, setComingSoon] = useState(false)
                 }}
                 >
                   {/* @ts-ignore */}
-                  {Array(item.star).fill().map(() => {
+                  {Array(item.star).fill().map((item,index) => {
                     return <img src={VoteStar} alt="" width={"30px"} className="imgflip mt-2" />
                   })}
                 </div>
