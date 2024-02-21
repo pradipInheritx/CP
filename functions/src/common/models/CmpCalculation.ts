@@ -62,6 +62,8 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
 
         if (99.99 < checkCMP && checkCMP < 200) {
+            console.log("pax calling")
+            await sendNotificationForCpm(paxDetails.userId); // Block complete notification
             let getResultAfterSentPaxToUser: any;
             let getResultAfterSentPaxToAdmin: any;
 
@@ -79,7 +81,6 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
                 console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
                 return getResultAfterSentPaxToAdmin
             }
-            await sendNotificationForCpm(paxDetails.userId); // Block complete notification
         }
 
     } catch (error) {
