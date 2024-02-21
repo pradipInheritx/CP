@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 
-import { sendPaxToFoundation } from "../Reward"
+// import { sendPaxToFoundation } from "../Reward"
 import { errorLogging } from "../../helpers/commonFunction.helper";
 
 const foundationConst: any = {}
