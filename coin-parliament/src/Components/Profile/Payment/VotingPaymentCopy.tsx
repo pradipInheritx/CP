@@ -35,7 +35,7 @@ import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
 import { doc, getDoc } from "firebase/firestore";
-import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError, useWeb3ModalEvents, useDisconnect } from '@web3modal/ethers5/react';
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError, useWeb3ModalEvents } from '@web3modal/ethers5/react';
 import { ethers } from "ethers";
 import { showToast } from "../../../App";
 import { texts } from "Components/LoginComponent/texts";
@@ -469,7 +469,7 @@ const VotingPaymentCopy: React.FC<{
     const [transactionInst, setTransactionInst] = useState(false);
   const [showPayButoom, setShowPayButoom] = useState(false);
     const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
-  const { disconnect } = useDisconnect()
+
     // const 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
@@ -583,30 +583,18 @@ const VotingPaymentCopy: React.FC<{
     // }
   }, [events])
 
-  const handleClickMob = async () => {    
+  const handleClickMob = async () => {
+    console.log("Mobile function ")
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
       if (coinInfo.chainId != chainId) {
-        console.log("i am disconnect")
-        disconnect().then((res) => {
-          open({ view: "Networks" })
-          // setTimeout(() => {
-          //   setIsLoading(true)
-          //   setShowText(true)
-          //   setPaymentStatus({ type: "", message: '' });
-          //   setPayButton(true);
-          //   // switchNetwork(coinInfo.chainId).then((res) => {            
-          //   sendTransaction()
-          //   // })
-          // }, 1000);
-        })          
-        // setShowText(true)
-        // setPaymentStatus({ type: "", message: '' });
-        // setPayButton(true);
-        // setIsLoading(true)
-        // switchNetwork(coinInfo.chainId).then((res) => {
-        //   sendTransaction()
-        // })
+        setShowText(true)
+        setPaymentStatus({ type: "", message: '' });
+        setPayButton(true);
+        setIsLoading(true)
+        switchNetwork(coinInfo.chainId).then((res) => {
+          sendTransaction()
+        })
       }
       else {
         setIsLoading(true)
