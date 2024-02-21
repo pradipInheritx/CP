@@ -43,7 +43,6 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
   addVoteResultForCPVI,
-  checkAndUpdateRewardTotal,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -87,7 +86,6 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
-  sendNotificationForCpm,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
@@ -115,7 +113,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
-import { sendCPMToFoundationOfUser } from "./common/models/Admin/Foundation";
+import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -792,16 +790,12 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    console.info("after", after)
-    const beforeTotal: number = before.rewardStatistics?.total || 0;
-    const afterTotal: number = after.rewardStatistics?.total || 0;
-    console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
-    console.log("snapshot.after.id : ",snapshot.after.id)
-    if (afterTotal > beforeTotal) {
-      await sendNotificationForCpm(snapshot.after.id); // Block complete notification
-      const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
-      await sendCPMToFoundationOfUser(snapshot.after.id, cmp); // add 0.1% cpm to foundation
-    }
+    // console.info("after", after)
+    // const beforeTotal: number = before.rewardStatistics?.total || 0;
+    // const afterTotal: number = after.rewardStatistics?.total || 0;
+    // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
+    // console.log("snapshot.after.id : ",snapshot.after.id)
+    
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
