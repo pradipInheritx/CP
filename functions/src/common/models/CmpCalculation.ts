@@ -45,8 +45,7 @@ export async function checkAndUpdateRewardTotal(userId: string) {
     }
 }
 
-export async function sendBlockCompleteNotificationAndFoundationCommission(userId: string, cmp: number) {
-    await sendNotificationForCpm(userId); // Block complete notification
+export async function sendBlockCompleteNotificationAndFoundationCommission(userId: string, cmp: number) { 
     await sendCPMToFoundationOfUser(userId, cmp); // add 0.1% cpm to foundation
 }
 
@@ -80,6 +79,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
                 console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
                 return getResultAfterSentPaxToAdmin
             }
+            await sendNotificationForCpm(paxDetails.userId); // Block complete notification
         }
 
     } catch (error) {
