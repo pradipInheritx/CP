@@ -1273,7 +1273,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       return {
         status: true,
         message: "User not found.",
-        data: [] // Empty array when user not found
+        data: {} // Empty array when user not found
       };
     }
 
@@ -1322,7 +1322,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: true,
       message: "User fetched successfully",
-      data: [{
+      data:{
         name: name,
         country: userData.country,
         signupDate: userRecord.metadata.creationTime,
@@ -1332,14 +1332,14 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         numberOfDaysVoted: numberOfDaysVoted,
         votePurchase: votePurchaseStatus,
         userId: userId,
-      }]
+      }
     };
   } catch (error) {
     console.log("Error while fetching user data:", error);
     return {
       status: false,
       message: "Error while fetching user data",
-      data: [] 
+      data: {} 
     };
   }
 });
