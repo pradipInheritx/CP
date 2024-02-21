@@ -168,10 +168,12 @@ const Carousel = ({
 
     return () => {
       clearInterval(interval)
-      setCoins(livePrice.current)
+      if (livePrice.current) {        
+        // setCoins(livePrice.current)
+      }
     }
   }, [])
-
+  console.log(livePrice.current,"livePrice.current")
   const instance: Modify<TableInstance<BearVsBullRow>, {}> =
     useTable<BearVsBullRow>(
       {

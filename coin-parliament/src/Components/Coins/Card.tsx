@@ -44,20 +44,25 @@ const Group3991 = styled.div`
   min-height: 35px;
 `;
 
-const Logo = ({ symbol, single }: BearVsBullRow & { single: boolean }) => {
+const Logo = ({ symbol, single }: BearVsBullRow & { single: boolean }) => {  
   return (
-    <Image
-      src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
-      style={{
-        margin: "0 auto",
-        width: single ? 70 : 50,
-        height: single ? 70 : 50,
-      }}
-      onError={(e) =>
-        ((e.target as HTMLImageElement).src = "/images/no_logo.png")
+  <>
+      {        
+      <Image
+        src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
+        style={{
+          margin: "0 auto",
+          width: single ? 70 : 50,
+          height: single ? 70 : 50,
+        }}
+        onError={(e) =>
+          ((e.target as HTMLImageElement).src = "/images/no_logo.png")
+        }
+      />
       }
-    />
+    </>
   );
+  
 };
 
 const CoinNameXYZ = styled.div`
