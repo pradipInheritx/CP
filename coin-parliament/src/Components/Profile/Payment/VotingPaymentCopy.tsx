@@ -1253,7 +1253,8 @@ const VotingPaymentCopy: React.FC<{
                         }}
                         onClick={() => {
                           // handleClick()                          
-                          open()
+                          // open()
+                          open({view:"Networks"})
                           
                         }}
                       >
