@@ -180,22 +180,22 @@ const mainnet = [
     chainId: 56,
     name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com/',
-    rpcUrl: 'https://bsc-dataseed.binance.org/'
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com',
-    rpcUrl: 'https://polygon-mainnet.infura.io'
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
   },
   {
     chainId: 11155111,
     name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
+    rpcUrl: 'https://1rpc.io/sepolia'
   }
 
 ]

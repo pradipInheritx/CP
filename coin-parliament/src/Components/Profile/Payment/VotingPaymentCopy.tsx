@@ -402,22 +402,22 @@ const mainnet = [
     chainId: 56,
     name: 'BNB Chain',
     currency: 'BNB',
-    explorerUrl: 'https://bscscan.com/',
-    rpcUrl: 'https://bsc-dataseed.binance.org/'
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com',
-    rpcUrl: 'https://polygon-mainnet.infura.io'
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
   },
   {
     chainId: 11155111,
     name: 'Sepolia Test Netwok',
     currency: 'SepoliaETH',
     explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
+    rpcUrl: 'https://1rpc.io/sepolia'
   }
 
 ]
@@ -543,7 +543,8 @@ const VotingPaymentCopy: React.FC<{
     }, [])
 
 
-  const handleClick =async () => {
+  const handleClick = async () => {
+    window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {        
       if (coinInfo.chainId != chainId) {        
         setShowText(true)
@@ -551,8 +552,6 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(true);
         setIsLoading(true)
         switchNetwork(coinInfo.chainId).then((res) => {          
-        // Call the global function and pass the values as arguments    
-        // checkAndPay();
         sendTransaction()
       })
       }
@@ -561,8 +560,6 @@ const VotingPaymentCopy: React.FC<{
         setShowText(true)
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
-        // checkAndPay();
-        // Call the global function and pass the values as arguments    
         sendTransaction()        
       }
     } else {      
@@ -597,11 +594,38 @@ const VotingPaymentCopy: React.FC<{
     // }
   }, [events])
 
-  useEffect(() => {
-    return () => {
-      setTransactionInst(false)
+  const handleClickMob = async () => {
+    window.scrollTo({ top: 50, behavior: 'smooth' });
+    if (isConnected) {
+      if (coinInfo.chainId != chainId) {
+        setShowText(true)
+        setPaymentStatus({ type: "", message: '' });
+        setPayButton(true);
+        setIsLoading(true)
+        switchNetwork(coinInfo.chainId).then((res) => {
+          sendTransaction()
+        })
+      }
+      else {
+        setIsLoading(true)
+        setShowText(true)
+        setPaymentStatus({ type: "", message: '' });
+        setPayButton(true);
+        sendTransaction()
+      }
+    } else {
+      open()
+      // switchNetwork(coinInfo.chainId)
+      // open({view:"Networks"})
+      // setTransactionInst(true)
     }
-  }, [])
+  };
+
+  // useEffect(() => {
+  //   return () => {
+  //     setTransactionInst(false)
+  //   }
+  // }, [])
   
   
   
@@ -629,15 +653,15 @@ const VotingPaymentCopy: React.FC<{
     const { address, chainId, isConnected } = useWeb3ModalAccount()
     const { walletProvider } = useWeb3ModalProvider()
 
-    useEffect(() => {
-      if (address && chainId && isConnected) {
-        const data = mainnet?.find((network?:any) => network?.chainId == chainId)
-        if (!data) return
-        setSelectCoin(data?.name)
-        setCoinInfo(data)
-      }
+    // useEffect(() => {
+    //   if (address && chainId && isConnected) {
+    //     const data = mainnet?.find((network?:any) => network?.chainId == chainId)
+    //     if (!data) return
+    //     setSelectCoin(data?.name)
+    //     setCoinInfo(data)
+    //   }
 
-    }, [address, chainId, isConnected])
+    // }, [address, chainId, isConnected])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
@@ -712,7 +736,7 @@ const VotingPaymentCopy: React.FC<{
         // send a tx
         // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
         const transaction = {
-          chainId: 11155111,
+          chainId: coinInfo?.chainId,
           to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
           value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
         };
@@ -1200,12 +1224,8 @@ const VotingPaymentCopy: React.FC<{
                     >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
                   </Divbutton>
                 } */}
-
                 {
-                  payType == "EXTRAVOTES" && selectCoin != "none" &&
-
-
-                  <div
+                 selectCoin != "none" && window.innerWidth < 768 && !isConnected && <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     <ButttonDiv className="mt-1">
@@ -1219,22 +1239,59 @@ const VotingPaymentCopy: React.FC<{
                         }}
                       >
 
-                        {payButton ? "PAY NOW..." : 'PAY NOW!'}
+                        {payButton ? "Connecting..." : 'Connect Now!'}
                       </button>
                     </ButttonDiv>
                   </div >
                 }
 
+                {
+                  payType == "EXTRAVOTES" && selectCoin != "none" &&
+
+                  <>                  
+                    {
+                      (window.innerWidth > 768 ||  isConnected )&& <div
+                        className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                      >
+                        <ButttonDiv className="mt-1">
+                          <button
+                            disabled={payButton}
+                            style={{
+                              // opacity: `${payButton ? "0.6" : "1"}`
+                            }}
+                            onClick={() => {
+                              if (window.innerWidth < 768) {                                
+                                handleClickMob()
+                              } else {
+                                handleClick()
+                              }
+                            }}
+                          >
+
+                            {payButton ? "PAY NOW..." : 'PAY NOW!'}
+                          </button>
+                        </ButttonDiv>
+                      </div >
+                    }                                      
+                  </>
+                }
+
                 {payType !== "EXTRAVOTES" && selectCoin != "none" &&
                   <>
+
                     <div
                       className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                     >
-                      <ButttonDivSec className="mt-1">
+                    {(window.innerWidth > 768 || isConnected) && <ButttonDivSec className="mt-1">
                         <button
                           onClick={() => {
                             // upgradeProfile(99, 0)
+                          // handleClick()
+                          if (window.innerWidth < 768) {
+                            handleClickMob()
+                          } else {
                             handleClick()
+                          }
                           }}
                         >
                           <div className='d-flex justify-content-around' >
@@ -1253,10 +1310,8 @@ const VotingPaymentCopy: React.FC<{
                             <u>$199</u>
                             <p>$99</p>
                           </div>
-
-
                         </button>
-                      </ButttonDivSec>
+                      </ButttonDivSec>}                    
                     </div>
                   </>
                 }
