@@ -734,7 +734,7 @@ const VotingPaymentCopy: React.FC<{
           to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
           value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
         };
-
+        console.log(transaction,"transaction Req")
         const txResponse = await wallet.sendTransaction(transaction);
 
         // Handle the transaction response
