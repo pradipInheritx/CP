@@ -92,7 +92,7 @@ const NavLink = styled(Nav.Link)`
 
     * {
     fill: ${(props: Props) =>
-    `${props.iconName !== ""
+    `${props?.iconName !== ""
       ? 'white'
       : ''
     }`};
@@ -142,7 +142,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                 <NavLink
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}
-                  iconName={tab.label}
+                  iconName={tab?.label}
                   className="d-flex flex-column align-items-center"
                 >
                   <Menubox>                  

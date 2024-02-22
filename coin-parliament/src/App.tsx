@@ -1022,9 +1022,57 @@ function App() {
       console.log('WebSocket connection occurred');
     };
 
-    socket = new WebSocket('wss://stream.crypto.com/v2/market');
-    socket.onopen = () => {
-      console.log('WebSocket Open');
+    // socket = new WebSocket('wss://stream.crypto.com/v2/market');
+    // socket.onopen = () => {
+    //   console.log('WebSocket Open');
+    //   const req = {
+    //     id: 1,
+    //     method: 'subscribe',
+    //     params: {
+    //       channels: ['ticker.CRO_USDT'],
+    //     },
+    //   };
+    //   if (ws.readyState === WebSocket.OPEN) {
+    //     socket.send(JSON.stringify(req));
+    //   }
+    // };
+    // socket.onclose = (event: any) => {
+    //   if (isInstagramAvailable) {
+    //     console.log("reloadtrue")
+    //     // window.location.reload()
+    //     // connect()
+    //   }
+    //   console.log('WebSocket connection closed crypto', event);
+    //   if (event.code !== 1000) {
+    //     console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
+    //     setTimeout(() => {
+    //       connect();
+    //     }, 5000);
+    //   }
+    // };
+
+    // socket.onerror = () => {
+    //   // if (!login) window.location.reload()
+    //   console.log('WebSocket connection occurred crypto');
+    // };
+
+    // const timeout = 30000; // 30 seconds
+    // let timeoutId: any;
+    // const checkConnection = () => {
+    //   if (ws.readyState !== WebSocket.OPEN || socket.readyState !== WebSocket.OPEN) {
+    //     console.log('WebSocket connection timed out');
+    //     clearInterval(timeoutId);
+    //     connect();
+    //   }
+    // };
+    // timeoutId = setInterval(checkConnection, timeout);
+   
+    const newSocket = new WebSocket('wss://stream.crypto.com/v2/market');
+
+    newSocket.onopen = () => {
+      console.log('WebSocket connection established.');
+
+      // Subscription request
       const req = {
         id: 1,
         method: 'subscribe',
@@ -1032,40 +1080,30 @@ function App() {
           channels: ['ticker.CRO_USDT'],
         },
       };
-      if (ws.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(req));
-      }
-    };         
-    socket.onclose = (event: any) => {
-      if (isInstagramAvailable) {
-        console.log("reloadtrue")
-        // window.location.reload()
-        // connect()
-      }
-      console.log('WebSocket connection closed crypto', event);
-      if (event.code !== 1000) {
-        console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
-        setTimeout(() => {
-          connect();
-        }, 5000);
-      }
+
+      // Send subscription request
+      newSocket.send(JSON.stringify(req));
     };
 
-    socket.onerror = () => {
-      // if (!login) window.location.reload()
-      console.log('WebSocket connection occurred crypto');
+    newSocket.onmessage = (event) => {
+      // Handle incoming messages from the WebSocket
+      const message = JSON.parse(event.data);
+      // console.log('Received message:', message);
+      // Handle received market data here
     };
 
-    const timeout = 30000; // 30 seconds
-    let timeoutId: any;
-    const checkConnection = () => {
-      if (ws.readyState !== WebSocket.OPEN || socket.readyState !== WebSocket.OPEN) {
-        console.log('WebSocket connection timed out');
-        clearInterval(timeoutId);
-        connect();
-      }
+    newSocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
     };
-    timeoutId = setInterval(checkConnection, timeout);
+
+    newSocket.onclose = (event) => {
+      console.log('WebSocket closed:', event);
+      // Reconnect to WebSocket after a delay (e.g., 5 seconds)
+      setTimeout(connect, 5000);
+    };
+
+    // Set the socket state
+    // setSocket(newSocket);  
 
   }
   useEffect(() => {
