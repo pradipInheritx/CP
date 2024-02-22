@@ -92,7 +92,7 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
         onMouseLeave={() => setTooltipShow(false)}
       ></I>
       <div className="d-flex justify-content-center align-items-center flex-column">
-        <h6 className="mt-1 box_title card-header mb-2" style={{ fontSize: '12px' }}>
+        <h6 className="mt-1 box_title card-header mb-2" style={{ fontSize: '12px', padding: "0.5rem 1rem"}}>
           {translate("User Level")}a
         </h6>
         {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {
