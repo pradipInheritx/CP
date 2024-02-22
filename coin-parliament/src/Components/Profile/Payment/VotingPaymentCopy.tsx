@@ -645,15 +645,16 @@ const VotingPaymentCopy: React.FC<{
     const { address, chainId, isConnected } = useWeb3ModalAccount()
     const { walletProvider } = useWeb3ModalProvider()
 
-    useEffect(() => {
-      if (address && chainId && isConnected) {
-        const data = mainnet?.find((network?:any) => network?.chainId == chainId)
+  useEffect(() => {
+    let CoinPay = localStorage.getItem("CoinPay")
+    if (CoinPay) {
+      const data = mainnet?.find((network?: any) => network?.chainId == CoinPay)
         if (!data) return
         setSelectCoin(data?.name)
         setCoinInfo(data)
       }
 
-    }, [address, chainId, isConnected])
+  }, [localStorage.getItem("CoinPay")])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
@@ -1111,69 +1112,7 @@ const VotingPaymentCopy: React.FC<{
                     setShowPayButoom(false)
                     setSelectPayment(0)
                     }}>Back</u>
-                  </div>                  
-                  {selectCoin !="none" && isConnected &&<Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-
-                    <div className={`pay-custom-select-container mb-3`} style={{
-                      width: '23em',
-                      zIndex: 4,
-                    }} >                     
-                      <div
-                        className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
-                        onClick={() => {                          
-                          // open({ view: 'Networks' })
-                          if (window.innerWidth < 767) {
-                            disconnect()                            
-                            setSelectCoin("none")
-                          } else {                            
-                            setShowChangeCoin(prev => !prev)
-                          }
-                        }
-
-                        }
-                      >
-                        Change Coin
-                      </div>
-                      {showChangeCoin && (
-                        <ul className="pay-select-options"
-                          style={{
-
-                            maxHeight: "200px",
-                            top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length * 44}px`}` : ""}`,
-                            borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
-                            borderTop: "none",
-                            border: " 1px solid #cab7ff",
-                          }}
-                        >
-                          {coinsList?.map((option: any, index: number) => {
-
-                            return (
-                              <>
-                                <li
-                                  style={{
-
-                                  }}
-                                  className="pay-custom-select-option"
-                                  data-name={option.name}
-                                  key={index}
-                                  onClick={async () => {
-                                    setSelectCoin(option.name)
-                                    setCoinInfo(option)
-                                    setShowChangeCoin(!showOptionList)
-                                    // switchNetwork(option.chainId)
-                                  }}
-                                >
-                                  {option.name}
-
-                                </li>
-                              </>
-                            );
-
-                          })}
-                        </ul>
-                      )}
-                    </div>
-                  </Sidediv>}
+                  </div>                                    
                 </div>
             }
             </Boxdiv>
@@ -1248,6 +1187,7 @@ const VotingPaymentCopy: React.FC<{
                                   setSelectCoin(option.name)
                                   setCoinInfo(option)
                                   setShowOptionList(!showOptionList)  
+                                  localStorage.setItem("CoinPay", option.chainId)
                                   // switchNetwork(option.chainId)
                                 }}
                               >
@@ -1313,13 +1253,11 @@ const VotingPaymentCopy: React.FC<{
                         }}
                         onClick={() => {
                           // handleClick()                          
-                          if (window.innerWidth < 767) {                            
-                            open({view:"Networks"})
-                          } else {
-                            open()                            
-                          }
-
-                          
+                          // if (window.innerWidth < 767) {                            
+                          //   open({view:"Networks"})
+                          // } else {
+                          // }
+                          open()                                                      
                         }}
                       >
 
