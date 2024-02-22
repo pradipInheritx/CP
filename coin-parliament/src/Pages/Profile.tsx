@@ -29,7 +29,7 @@ import SecurityIcon from "../Components/icons/securityIcon";
 // import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
-import { handleSoundClick } from "../common/utils/SoundClick";
+// import { handleSoundClick } from "../common/utils/SoundClick";
 import Sharenew from "Components/icons/sharenew";
 import Votesnew from "Components/icons/votesnew";
 import Gallerynew from "Components/icons/Gallerynew";
@@ -38,6 +38,9 @@ import Notificationsnew from "Components/icons/notificationsnew";
 import PaymentHitory from "Components/icons/PaymentHitory";
 import FoundationIcon from "Components/icons/FoundationIcon";
 import AppContext from "Contexts/AppContext";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../assets/sounds/buttonClick.mp3';
 
 export enum ProfileTabs {
   profile = "profile",
@@ -87,6 +90,7 @@ const MyBadge = styled(Badge)`
 `;
 
 const Profile = () => {
+  const [handleSoundClick] = useSound(buttonClick);
   const { userInfo, user } = useContext(UserContext);
   const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { showToast } = useContext(NotificationContext);

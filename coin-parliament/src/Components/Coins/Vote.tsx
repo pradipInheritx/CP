@@ -13,6 +13,9 @@ import firebase from "firebase/compat/app";
 import { scrollUp } from "common/utils/helper";
 import { firestore } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../../assets/sounds/mail-sent.mp3';
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -133,6 +136,8 @@ const Vote = ({
   //   // console.log('votenumber',voteNumber, Number(voted))
   // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
+  const [handleSoundClick] = useSound(buttonClick);
+
   useEffect(() => {
 
     // @ts-ignore
@@ -179,6 +184,7 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
+                  handleSoundClick()
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
@@ -258,7 +264,9 @@ const Vote = ({
               {...{
                 ...option1.buttonProps,
                 onClick: () => {
+                  handleSoundClick()
                   openPopup()
+                  
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
                     // const usereData = firebase
