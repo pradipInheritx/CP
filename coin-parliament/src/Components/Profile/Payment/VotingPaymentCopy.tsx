@@ -567,6 +567,7 @@ const VotingPaymentCopy: React.FC<{
           setShowText(true)
           setPaymentStatus({ type: "", message: '' });
           setPayButton(true);
+
           switchNetwork(coinInfo.chainId).then((res) => {
             sendTransaction()
           })
@@ -593,9 +594,9 @@ const VotingPaymentCopy: React.FC<{
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
         setIsLoading(true)
-        switchNetwork(coinInfo.chainId).then((res) => {
+        // switchNetwork(coinInfo.chainId).then((res) => {
           sendTransaction()
-        })
+        // })
       }
       else {
         setIsLoading(true)
