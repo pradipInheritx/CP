@@ -14,7 +14,7 @@ import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { divide, stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
-import { claimRewardSound, handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
+// import { claimRewardSound, handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
@@ -30,6 +30,10 @@ import { afterpaxDistributionToUser } from "common/utils/helper";
 import useSound from "use-sound";
 // @ts-ignore
 import buttonClick from '../../assets/sounds/buttonClick.mp3';
+// @ts-ignore
+import claimSound from '../../assets/sounds/claimReward.m4a';
+// @ts-ignore
+import WinCmp from '../../assets/sounds/WinCmp.mp3';
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -217,13 +221,17 @@ const Minting = ({
   const [pendingPax, setPendingPax] = React.useState(0);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const [paxAddShow, setPaxAddShow] = React.useState(false);
+  const [claimRewardSoundplay ,{ pause: claimRewardSoundpause }] = useSound(claimSound);
+  const [handleSoundWinCmpplay, { pause: handleSoundWinCmppause }] = useSound(WinCmp)
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
-    claimRewardSound.play();
+    // claimRewardSound.play();
+    claimRewardSoundplay()
     // handleSoundWinCmp.play()
   };
   const [handleSoundClick] = useSound(buttonClick);
+  
   let navigate = useNavigate();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
@@ -331,9 +339,9 @@ const Minting = ({
         loop: true, // boolean
         autoplay: true, // boolean   ,
       });
-      handleSoundWinCmp.play();
+      handleSoundWinCmpplay();
     } else {
-      handleSoundWinCmp.pause();
+      handleSoundWinCmppause();
     }
   }, [CmpPopupShow]);
 
@@ -555,7 +563,7 @@ const Minting = ({
                   // // setRewardTimer(resultData); i commented here because i set this when i get result 
                   updateState()
                 }, 1000);
-                claimRewardSound.pause()
+                claimRewardSoundpause()
                 handleClose()
               }}>COLLECT YOUR COIN</Buttons.Primary>
               {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
