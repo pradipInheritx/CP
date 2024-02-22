@@ -538,7 +538,7 @@ const getTotalCountOfUserType = async () => {
 function influencersScoreCalculation(totalSuccessVotes: number, totalVotes: number) {
   console.log("totalSuccessVotes , totalVotes: ", totalSuccessVotes, totalVotes)
   console.log("totalSuccessVotes/ (totalVotes * totalSuccessVotes) : ", totalSuccessVotes / (totalVotes * totalSuccessVotes));
-  return totalSuccessVotes && totalVotes ? totalSuccessVotes / (totalVotes * totalSuccessVotes) : 0;
+  return totalSuccessVotes && totalVotes ? parseFloat((totalSuccessVotes / (totalVotes * totalSuccessVotes)).toFixed(5)) : 0;
 }
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
