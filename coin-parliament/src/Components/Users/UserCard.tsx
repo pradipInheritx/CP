@@ -18,7 +18,11 @@ import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { texts } from "../LoginComponent/texts";
-import { handleSoundClick } from "common/utils/SoundClick";
+// import { handleSoundClick } from "common/utils/SoundClick";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
+
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -187,6 +191,7 @@ const UserCard = ({
   }
   console.log(leader,"leader?.isUserUpgraded")
 
+  const [handleSoundClick] = useSound(buttonClick);
   return (
     <Component515
       style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}
