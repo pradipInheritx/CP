@@ -295,7 +295,7 @@ const [comingSoon, setComingSoon] = useState(false)
               }}
               key={index}
             >
-              {item.Extra > 0 && <TopDiv >
+              {item?.Extra > 0 && <TopDiv >
                 <img src={VoteTop} alt="" width={"80px"} />
                 <div
                   className="text-center w-100"
@@ -315,7 +315,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     style={{
                       fontSize: "20px"
                     }}
-                  >{item.Extra}</strong>%</p>
+                  >{item?.Extra}</strong>%</p>
                   
                 </div>
               </TopDiv>}
@@ -341,10 +341,10 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "40px",
                     lineHeight: 1.1
                   }}
-                >$ {item.value}.00</NumberText>
+                >$ {item?.value}.00</NumberText>
                 <div className="d-flex mt-3">
                   {/* @ts-ignore */}
-                  {Array(item.star).fill().map(() => {
+                  {Array(item?.star).fill().map(() => {
                     return <img src={VoteStar} alt="" width={"50px"} className=""/>
                   })}                                    
                 </div>                
@@ -362,7 +362,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     style={{
                       fontSize: "100px"
                     }}
-                  >{item.vote}</NumberText>
+                  >{item?.vote}</NumberText>
                   
                   <VotText>votes</VotText>
                 </div>
@@ -370,8 +370,8 @@ const [comingSoon, setComingSoon] = useState(false)
                   <button
                     onClick={() => {
                       handleSoundClick()
-                      if (item.vote > 0) {                        
-                        getExtraVote(item.value, item.vote, item.Extra)
+                      if (item?.vote > 0) {                        
+                        getExtraVote(item?.value, item?.vote, item?.Extra)
                       } else {
                       setComingSoon(true)
                       }
@@ -393,7 +393,7 @@ const [comingSoon, setComingSoon] = useState(false)
               }}    
               key={index}
             >
-              {item.Extra  > 0 &&<TopDiv >
+              {item?.Extra  > 0 &&<TopDiv >
                 <img src={VoteTop} alt="" width={"80px"}
                   style={{
                     textShadow: "1.5px 1.3px #000",
@@ -417,12 +417,12 @@ const [comingSoon, setComingSoon] = useState(false)
                     style={{
                       fontSize: "20px"
                     }}
-                  >{item.Extra}</strong>%</p>
+                  >{item?.Extra}</strong>%</p>
                   {/* <p className=""><strong
                     style={{
                       fontSize: "25px"
                     }}
-                  >{item.Extra}</strong>%</p>
+                  >{item?.Extra}</strong>%</p>
                 <p>Extra</p> */}
                 </div>
               </TopDiv>}
@@ -449,14 +449,14 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "30px",
                     lineHeight: 1.1
                   }}
-                >$ {item.value}.00</NumberText>
+                >$ {item?.value}.00</NumberText>
                 <div className="d-flex justify-content-center"
                   style={{
                 }}
                 >
                   {/* @ts-ignore */}
-                  {Array(item.star).fill().map((item,index) => {
-                    return <img src={VoteStar} alt="" width={"30px"} className="imgflip mt-2" />
+                  {Array(item?.star).fill().map((item,index) => {
+                    return <img src={VoteStar} alt="" width={"30px"} className="imgflip mt-2" key={index}/>
                   })}
                 </div>
                 {/* <img src={BuyText} alt="" /> */}
@@ -476,7 +476,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     style={{
                       fontSize: "75px"
                     }}
-                  >{item.vote}</NumberText>
+                  >{item?.vote}</NumberText>
                   {/* <img src={BuyText} alt="" /> */}
                   <VotText
                     style={{
@@ -487,12 +487,12 @@ const [comingSoon, setComingSoon] = useState(false)
                 <ButttonDivMob className="mt-1">
                   <button
                     onClick={() => {
-                      if (item.vote > 0) {
-                        getExtraVote(item.value, item.vote, item.Extra)
+                      if (item?.vote > 0) {
+                        getExtraVote(item?.value, item?.vote, item?.Extra)
                       } else {
                         setComingSoon(true)
                       }
-                      // getExtraVote(item.value, item.vote, item.Extra)
+                      // getExtraVote(item?.value, item?.vote, item?.Extra)
                       // showModal(<Upgrade />)
                       // setComingSoon(true)
                     }}

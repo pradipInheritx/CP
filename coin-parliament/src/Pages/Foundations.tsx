@@ -114,7 +114,7 @@ const Foundations = () => {
         await setDoc(userRef, { foundationData }, { merge: true });
         showToast("user foundation was updated");
         setFoundationEdit(false)
-        toast.dismiss();
+        // toast.dismiss();
         // setShowMenuBar(false)        
       } catch (e) {
         setFoundationEdit(false)
