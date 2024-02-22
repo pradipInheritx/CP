@@ -457,7 +457,7 @@ const VotingPaymentCopy: React.FC<{
     const { quotes } = useContext(ContentContext);
     const { width } = useWindowSize();
     const [isLoading, setIsLoading] = useState(false)
-    const [coinsList, setCoinsList] = useState([])
+  const [coinsList, setCoinsList] = useState(mainnet)
     const [selectPayment, setSelectPayment] = useState(0);
   const [showChangeCoin, setShowChangeCoin] = useState(false);
 
@@ -467,6 +467,7 @@ const VotingPaymentCopy: React.FC<{
     const [extraPer, setExtraPer] = useState(0);
     const [showText, setShowText] = useState(false);
     const [comingSoon, setComingSoon] = useState(false);
+  const [chainNetworkTest, setChainNetworkTest] = useState(false);
     const [transactionInst, setTransactionInst] = useState(false);
   const [showPayButoom, setShowPayButoom] = useState(false);
     const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
@@ -527,7 +528,7 @@ const VotingPaymentCopy: React.FC<{
     };
 
     useEffect(() => {      
-      getCoinList()
+      // getCoinList()
     }, [])
 
 
@@ -587,18 +588,21 @@ const VotingPaymentCopy: React.FC<{
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
+    const data = mainnet?.find((network?: any) => network?.chainId == chainId)
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
-      if (coinInfo.chainId != chainId) {
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        setIsLoading(true)
+      if (localStorage.getItem("CoinPay") != data?.name) {
+        open({view:"Networks"})
+        // setShowText(true)
+        // setPaymentStatus({ type: "", message: '' });
+        // setPayButton(true);
+        // setIsLoading(true)
+        setChainNetworkTest(true)
         // switchNetwork(coinInfo.chainId).then((res) => {
-          sendTransaction()
+        //   sendTransaction()
         // })
       }
-      else {
+      else {        
         setIsLoading(true)
         setShowText(true)
         setPaymentStatus({ type: "", message: '' });
@@ -647,15 +651,18 @@ const VotingPaymentCopy: React.FC<{
     const { walletProvider } = useWeb3ModalProvider()
 
   useEffect(() => {
-    let CoinPay = localStorage.getItem("CoinPay")
-    if (CoinPay) {
-      const data = mainnet?.find((network?: any) => network?.chainId == CoinPay)
+    // let CoinPay = localStorage.getItem("CoinPay")
+    if (chainId && isConnected) {
+      const data = mainnet?.find((network?: any) => network?.chainId == chainId)
         if (!data) return
         setSelectCoin(data?.name)
-        setCoinInfo(data)
+      setCoinInfo(data)
+      if (localStorage.getItem("CoinPay") == data?.name) {        
+        setChainNetworkTest(false)
+      }
       }
 
-  }, [localStorage.getItem("CoinPay")])
+  }, [chainId, isConnected, localStorage.getItem("CoinPay")])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
@@ -1099,7 +1106,7 @@ const VotingPaymentCopy: React.FC<{
                 <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column">
                   <div>
                   <SmallBackArrow />
-                  <u className="                  
+                  <span className="                  
                    text-center"
                     style={{
                       cursor: "pointer", 
@@ -1112,8 +1119,79 @@ const VotingPaymentCopy: React.FC<{
                     onClick={() => {
                     setShowPayButoom(false)
                     setSelectPayment(0)
-                    }}>Back</u>
-                  </div>                                    
+                    }}>Back</span>
+                  </div>   
+                  {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
+
+                    <div className={`pay-custom-select-container mb-3`} style={{
+                      width: '23em',
+                      zIndex: 10,
+                    }} >                     
+                      <div
+                        className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
+                        onClick={() => {
+                          if (payButton) {
+                            return
+                          }
+                          // open({ view: 'Networks' })
+                          setShowOptionList(prev => !prev)
+                        }
+
+                        }
+                      >
+                        {/* {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"} */}
+                        Change Coin
+                      </div>
+                      {showOptionList && (
+                        <ul className="pay-select-options"
+                          style={{
+
+                            maxHeight: "200px",
+                            top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length * 44}px`}` : ""}`,
+                            borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
+                            borderTop: "none",
+                            border: " 1px solid #cab7ff",
+                          }}
+                        >
+                          {coinsList?.map((option: any, index: number) => {
+
+                            return (
+                              <>
+                                <li
+                                  style={{
+
+                                  }}
+                                  className="pay-custom-select-option"
+                                  data-name={option.name}
+                                  key={index}
+                                  onClick={async () => {
+                                    if (chainId == option.chainId || window.screen.width > 768) {
+                                      setSelectCoin(option.name)
+                                      setCoinInfo(option)
+                                      // setChainNetworkTest(false)
+                                    } 
+                                    setShowOptionList(!showOptionList)
+                                    localStorage.setItem("CoinPay", option.name)                                     
+                                    // else {                            
+                                    //   open({view:"Networks"})
+                                    //   setShowOptionList(!showOptionList)
+                                    //   setChainNetworkTest(true)
+                                    //   localStorage.setItem("CoinPay", option.name)                                     
+                                    // }
+                                    // switchNetwork(option.chainId)
+                                  }}
+                                >
+                                  {option.currency}
+
+                                </li>
+                              </>
+                            );
+
+                          })}
+                        </ul>
+                      )}
+                    </div>
+                  </Sidediv>}
                 </div>
             }
             </Boxdiv>
@@ -1154,15 +1232,18 @@ const VotingPaymentCopy: React.FC<{
                         if (payButton) {
                           return
                         }
+                        if (selectCoin == "none" && isConnected == false) {
+                          
+                          setShowOptionList(prev => !prev)
+                        }
                         // open({ view: 'Networks' })
-                        setShowOptionList(prev => !prev)
                       }
 
                       }
                     >
-                      {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
+                      {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${coinInfo?.currency}` : "Select coin"}
                     </div>
-                    {showOptionList && (
+                    {selectCoin == "none" && isConnected == false && showOptionList && (
                       <ul className="pay-select-options"
                         style={{
 
@@ -1188,11 +1269,12 @@ const VotingPaymentCopy: React.FC<{
                                   setSelectCoin(option.name)
                                   setCoinInfo(option)
                                   setShowOptionList(!showOptionList)  
-                                  localStorage.setItem("CoinPay", option.chainId)
+                                  localStorage.setItem("CoinPay", option.name)
+                                  setChainNetworkTest(false)
                                   // switchNetwork(option.chainId)
                                 }}
                               >
-                                {option.name}
+                                  {option.currency}
   
                                 </li>
                               </>
@@ -1267,7 +1349,7 @@ const VotingPaymentCopy: React.FC<{
                     </ButttonDiv>
                   </div >
                 }
-
+                {chainNetworkTest && <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>}
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
 
@@ -1276,17 +1358,23 @@ const VotingPaymentCopy: React.FC<{
                       (window.innerWidth > 768 ||  isConnected )&& <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                       >
-                        <ButttonDiv className="mt-1">
+                        <ButttonDiv className="mt-1"
+                          style={{
+                            opacity: `${chainNetworkTest ? 0.7 :1}`
+                        }}
+                        >
                           <button
                             disabled={payButton}
                             style={{
                               // opacity: `${payButton ? "0.6" : "1"}`
                             }}
                             onClick={() => {
-                              if (window.innerWidth < 768) {                                
-                                handleClickMob()
-                              } else {
-                                handleClick()
+                              if (!chainNetworkTest) {                                
+                                if (window.innerWidth < 768) {                                
+                                  handleClickMob()
+                                } else {
+                                  handleClick()
+                                }
                               }
                             }}
                           >
@@ -1305,15 +1393,21 @@ const VotingPaymentCopy: React.FC<{
                     <div
                       className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                     >
-                    {(window.innerWidth > 768 || isConnected) && <ButttonDivSec className="mt-1">
+                    {(window.innerWidth > 768 || isConnected) && <ButttonDivSec className="mt-1"
+                      style={{
+                        opacity: `${chainNetworkTest ? 0.7 : 1}`
+                      }}
+                    >
                         <button
                           onClick={() => {
                             // upgradeProfile(99, 0)
                           // handleClick()
-                          if (window.innerWidth < 768) {
-                            handleClickMob()
-                          } else {
-                            handleClick()
+                          if (!chainNetworkTest) { 
+                            if (window.innerWidth < 768) {
+                              handleClickMob()
+                            } else {
+                              handleClick()
+                            }
                           }
                           }}
                         >
