@@ -370,7 +370,7 @@ class Calculation {
         ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(4)
       );
       console.log("child data : ", voteStatistics, refereeScrore)
-     
+
       await ref.set(
         { voteStatistics, refereeScrore: refereeScrore },
         { merge: true }
@@ -535,6 +535,11 @@ const getTotalCountOfUserType = async () => {
   return { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman }
 };
 
+function influencersScoreCalculation(totalSuccessVotes: number, totalVotes: number) {
+  console.log("totalSuccessVotes , totalVotes: ", totalSuccessVotes, totalVotes)
+  console.log("totalSuccessVotes/ (totalVotes * totalSuccessVotes) : ", totalSuccessVotes / (totalVotes * totalSuccessVotes));
+  return totalSuccessVotes && totalVotes ? totalSuccessVotes / (totalVotes * totalSuccessVotes) : 0;
+}
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
@@ -567,11 +572,13 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
             console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
             eachUser.status = "Speaker";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForSpeaker.push(eachUser);
           } else {
             console.log("Come Here Total Else ", typeof eachUser.total, "Value", eachUser.total);
             let tempArrayAfterSliced = leaderStatusForSpeaker.slice(1);
             eachUser.status = "Speaker";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForSpeaker = [...tempArrayAfterSliced]
             leaderStatusForSpeaker.push(eachUser);
           }
@@ -602,10 +609,12 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
           if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
             eachUser.status = "Council";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForCouncil.push(eachUser);
           } else {
             let tempArrayAfterSliced = leaderStatusForCouncil.slice(1);
             eachUser.status = "Council";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForCouncil = [...tempArrayAfterSliced]
             leaderStatusForCouncil.push(eachUser);
           }
@@ -639,10 +648,12 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
           if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
             eachUser.status = "Ambassador";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForAmbassador.push(eachUser);
           } else {
             let tempArrayAfterSliced = leaderStatusForAmbassador.slice(1);
             eachUser.status = "Ambassador";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForAmbassador = [...tempArrayAfterSliced]
             leaderStatusForAmbassador.push(eachUser);
           }
@@ -670,10 +681,12 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
           if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
             eachUser.status = "Minister";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForMinister.push(eachUser);
           } else {
             let tempArrayAfterSliced = leaderStatusForMinister.slice(1);
             eachUser.status = "Minister";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForMinister = [...tempArrayAfterSliced]
             leaderStatusForMinister.push(eachUser);
           }
@@ -702,10 +715,12 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
           if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
             eachUser.status = "Chairman";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForChairman.push(eachUser);
           } else {
             let tempArrayAfterSliced = leaderStatusForChairman.slice(1);
             eachUser.status = "Chairman";
+            eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
             leaderStatusForChairman = [...tempArrayAfterSliced]
             leaderStatusForChairman.push(eachUser);
           }
