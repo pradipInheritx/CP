@@ -54,7 +54,7 @@ const FwFollow = () => {
   // const { followerUserId } = useContext(AppContext)
   const followerUserId = localStorage.getItem("followerId")
   const translate = useTranslation();
-  const [leaders, setLeaders] = useState<Leader[]>([]);
+  const [leaders, setLeaders] = useState<Leader[] | undefined>();
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // const getFollowerData = () => {
@@ -120,9 +120,9 @@ const FwFollow = () => {
                 </span>
             </div>}
 
-              {(leaders || []).map((u, i) => {
+            {leaders && leaders.length > 0 ?  leaders.map((u, i) => {
                 return (
-                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
+                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>                     
                     <UserCard
                       key={i}
                       leader={u}
@@ -138,7 +138,9 @@ const FwFollow = () => {
                     />
                   </div>
                 );
-              })}
+              }):!isLoading && !leaders ?(
+                <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
+              ) : null}
             </div>
           ),
         },
@@ -147,7 +149,7 @@ const FwFollow = () => {
           title: capitalize(translate("followers")),
           pane: (
             <>
-              {(subscribers || []).map((s, i) => {
+               {subscribers && subscribers.length > 0 ? subscribers.map((s, i) => {
                 return (
                   <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
                     <UserCard
@@ -165,7 +167,9 @@ const FwFollow = () => {
                     />
                   </div>
                 );
-              })}
+              }) :  !isLoading && !subscribers.length ? (
+                <div style={{display:"flex", justifyContent:"center", justifyItems:"center" , textTransform:"uppercase"}}>No record found</div>
+              ) : null}
             </>
           ),
         },
