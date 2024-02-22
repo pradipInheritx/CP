@@ -102,8 +102,9 @@ function PaymentHistory() {
                   }}
                 >
                   {
-                    tableHeader.map((item: string, index: number) => {
+                    tableHeader?.map((item: string, index: number) => {
                       return (<div className=''
+                        key={index}
                         style={{
                           width: `19%`,
                           fontSize:`${window.screen.width >767? "12px":"10px"}`,
@@ -114,9 +115,10 @@ function PaymentHistory() {
                     })
                   }
                 </div>
-                {rowData.map((item: any, index: number) => {
+                {rowData?.map((item: any, index: number) => {
                   return (
                     <div className='d-flex justify-content-around'
+                      key={index}
                       style={{
                         textAlign: "center",
 
@@ -294,9 +296,10 @@ function PaymentHistory() {
                     {" "}
                     <div className='d-flex justify-content-around w-100 mt-4'>
                       {
-                        tableHeader.map((item: string, index: number) => {
+                        tableHeader?.map((item: string, index: number) => {
                           return (
                             <div className=''
+                              key={index}
                               style={{
                                 width: `${(100 / tableHeader.length) - 1}`,
                               }}

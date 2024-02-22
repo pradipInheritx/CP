@@ -966,9 +966,11 @@ function WalletInfo() {
                         ></I>
                     </div>
                     
-                {walletDetailsObj.map((item,index) => {                                            
+                {walletDetailsObj?.map((item,index) => {                                            
                     return <>
-                    <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-3 w-100`}>
+                        <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-3 w-100`}
+                            key={index}
+                        >
                             <input                                
                             name="coin"
                             id="coin"

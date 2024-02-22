@@ -1316,7 +1316,7 @@ function App() {
 
         const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
         // @ts-ignore
-        var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ?2: 1 : voteImpact.current?.impact;
+        var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
 
         console.log(StatusValue, 'StatusValue');
         if (pathNameRef.current?.includes('profile/mine')) {

@@ -50,7 +50,7 @@ const WalletBalance = () => {
         axios.post("payment/getAllPendingPaxByUserId", {              
                 userId: userInfo?.uid            
         }).then((res: any) => {
-            console.log(res.data.result, "resultdata")
+            console.log(res.data.data.result.pendingPaxTotal, "resultdatapax")
             setPendingPax(res?.data?.data?.result?.pendingPaxTotal || 0)
         }).catch((err: any) => {
             console.log(err, "resultdata")

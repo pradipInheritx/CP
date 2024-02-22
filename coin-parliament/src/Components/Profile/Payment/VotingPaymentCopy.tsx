@@ -35,7 +35,7 @@ import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
 import { doc, getDoc } from "firebase/firestore";
-import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError, useWeb3ModalEvents } from '@web3modal/ethers5/react';
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError, useWeb3ModalEvents, useDisconnect } from '@web3modal/ethers5/react';
 import { ethers } from "ethers";
 import { showToast } from "../../../App";
 import { texts } from "Components/LoginComponent/texts";
@@ -459,6 +459,7 @@ const VotingPaymentCopy: React.FC<{
     const [isLoading, setIsLoading] = useState(false)
     const [coinsList, setCoinsList] = useState([])
     const [selectPayment, setSelectPayment] = useState(0);
+  const [showChangeCoin, setShowChangeCoin] = useState(false);
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
@@ -635,6 +636,7 @@ const VotingPaymentCopy: React.FC<{
     }
 
   const { open, close } = useWeb3Modal()
+  const {disconnect} = useDisconnect()
   
 
   
@@ -643,15 +645,15 @@ const VotingPaymentCopy: React.FC<{
     const { address, chainId, isConnected } = useWeb3ModalAccount()
     const { walletProvider } = useWeb3ModalProvider()
 
-    // useEffect(() => {
-    //   if (address && chainId && isConnected) {
-    //     const data = mainnet?.find((network?:any) => network?.chainId == chainId)
-    //     if (!data) return
-    //     setSelectCoin(data?.name)
-    //     setCoinInfo(data)
-    //   }
+    useEffect(() => {
+      if (address && chainId && isConnected) {
+        const data = mainnet?.find((network?:any) => network?.chainId == chainId)
+        if (!data) return
+        setSelectCoin(data?.name)
+        setCoinInfo(data)
+      }
 
-    // }, [address, chainId, isConnected])
+    }, [address, chainId, isConnected])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
@@ -1092,7 +1094,8 @@ const VotingPaymentCopy: React.FC<{
                 </div>}
               </Opctiondiv>
                 :
-                <div className="w-100 m-auto d-flex justify-content-center align-items-center">
+                <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column">
+                  <div>
                   <SmallBackArrow />
                   <u className="                  
                    text-center"
@@ -1107,13 +1110,70 @@ const VotingPaymentCopy: React.FC<{
                     onClick={() => {
                     setShowPayButoom(false)
                     setSelectPayment(0)
-                    }}>                    
-                      
-                    
-                      Back</u>
-                  <div>
-                    
-                  </div>
+                    }}>Back</u>
+                  </div>                  
+                  {selectCoin !="none" && isConnected &&<Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
+
+                    <div className={`pay-custom-select-container mb-3`} style={{
+                      width: '23em',
+                      zIndex: 4,
+                    }} >                     
+                      <div
+                        className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
+                        onClick={() => {                          
+                          // open({ view: 'Networks' })
+                          if (window.innerWidth < 767) {
+                            disconnect()                            
+                            setSelectCoin("none")
+                          } else {                            
+                            setShowChangeCoin(prev => !prev)
+                          }
+                        }
+
+                        }
+                      >
+                        Change Coin
+                      </div>
+                      {showChangeCoin && (
+                        <ul className="pay-select-options"
+                          style={{
+
+                            maxHeight: "200px",
+                            top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length * 44}px`}` : ""}`,
+                            borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
+                            borderTop: "none",
+                            border: " 1px solid #cab7ff",
+                          }}
+                        >
+                          {coinsList?.map((option: any, index: number) => {
+
+                            return (
+                              <>
+                                <li
+                                  style={{
+
+                                  }}
+                                  className="pay-custom-select-option"
+                                  data-name={option.name}
+                                  key={index}
+                                  onClick={async () => {
+                                    setSelectCoin(option.name)
+                                    setCoinInfo(option)
+                                    setShowChangeCoin(!showOptionList)
+                                    // switchNetwork(option.chainId)
+                                  }}
+                                >
+                                  {option.name}
+
+                                </li>
+                              </>
+                            );
+
+                          })}
+                        </ul>
+                      )}
+                    </div>
+                  </Sidediv>}
                 </div>
             }
             </Boxdiv>
@@ -1253,8 +1313,12 @@ const VotingPaymentCopy: React.FC<{
                         }}
                         onClick={() => {
                           // handleClick()                          
-                          // open()
-                          open({view:"Networks"})
+                          if (window.innerWidth < 767) {                            
+                            open({view:"Networks"})
+                          } else {
+                            open()                            
+                          }
+
                           
                         }}
                       >
