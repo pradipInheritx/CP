@@ -340,7 +340,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   return getReponse
 })
 // create user
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -384,6 +384,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -400,18 +401,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .doc(user.uid)
       .set(userData);
 
-    //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
-
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
     console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+
+    //Send Welcome Mail To User
+    if (user.isVoteToEarn == false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      )
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
 
     return newUser;
   } catch (e) {
@@ -796,7 +799,7 @@ exports.onUpdateUser = functions.firestore
     // const afterTotal: number = after.rewardStatistics?.total || 0;
     // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
     // console.log("snapshot.after.id : ",snapshot.after.id)
-    
+
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
@@ -1323,7 +1326,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: true,
       message: "User fetched successfully",
-      data:{
+      data: {
         name: name,
         country: userData.country,
         signupDate: userRecord.metadata.creationTime,
@@ -1340,7 +1343,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {} 
+      data: {}
     };
   }
 });
@@ -1417,12 +1420,12 @@ export const pendingPaymentSettlement = functions.pubsub
         const paymentRef = transaction.ref;
         console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus : any = await checkTransactionStatus(transaction?.paymentDetails);
-        if(transactionStatus.status){
-          console.log("transactionStatus : ",transactionStatus.message)
+        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        if (transactionStatus.status) {
+          console.log("transactionStatus : ", transactionStatus.message)
           await paymentRef.update({ event: 'Confirmed' });
-        }else{
-          console.error("transactionStatus : ",transactionStatus)
+        } else {
+          console.error("transactionStatus : ", transactionStatus)
         }
       }
       console.log('Payments updated successfully.');
