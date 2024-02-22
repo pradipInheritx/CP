@@ -7,7 +7,7 @@ import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
-import { handleSoundClickCard, claimRewardSound } from "../utils/SoundClick";
+// import { handleSoundClickCard, claimRewardSound } from "../utils/SoundClick";
 import scratchCArdImg from '../../assets/images/scratchCArd.jpg';
 import common from '../../assets/images/commonText.png';
 import epic from '../../assets/images/epicText.png';
@@ -37,6 +37,8 @@ import useSound from 'use-sound';
 import { firestore } from "../../firebase";
 // @ts-ignore
 import scratchsound from '../../assets/sounds/scratch.mp3';
+// @ts-ignore
+import claimSound from '../../assets/sounds/claimReward.m4a';
 
 type MintingProps = {
   cardType?: any;
@@ -103,7 +105,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const { showReward, setShowReward } = useContext(AppContext);
   const [mintedTime, setMintedTime] = useState("");
   const { user } = useContext(UserContext);
-
+  const [claimRewardSoundplay, { pause: claimRewardSoundpause }] = useSound(claimSound);
 
   const [allFrontImg, setAllFrontImg] = useState<any>({
     COMMON: common,
@@ -386,7 +388,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setRotateCard(true);
       setScratchShound(false)
       openpopup()
-      claimRewardSound.play()
+      claimRewardSoundplay()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -400,7 +402,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setTimeout(function () {
         Animation.pause();
         // Animation.destroy();
-        claimRewardSound.pause()
+        claimRewardSoundpause()
       }, 9000); // 5000 milliseconds = 5 seconds
       setScratchFinish(true)
     }
@@ -474,7 +476,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setCressShow(true);
       setRotateCard(true);
       openpopup()
-      claimRewardSound.play()
+      claimRewardSoundplay()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -488,7 +490,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
       setTimeout(function () {
         Animation.pause();
-        claimRewardSound.pause()
+        claimRewardSoundpause()
         // Animation.destroy();
       }, 9000); // 5000 milliseconds = 5 seconds
       setScratchFinish(true)
@@ -687,7 +689,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           handleShareModleShow()
           handleCardClose()
           setCountShow(false)
-          claimRewardSound.pause()
+          claimRewardSoundpause()
           setCardsDetails(rewardTimer?.data)
         }}
           style={{
@@ -705,7 +707,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           setCountShow(false);
           localStorage.setItem('filterCollection', JSON.stringify({ name: rewardTimer?.data?.firstRewardCardCollection }));
           navigate("/profile/Album");
-          claimRewardSound.pause();
+          claimRewardSoundpause();
         }}
           style={{
             backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,

@@ -12,7 +12,12 @@ import { ZoomCss as ZoomCss2 } from "../App/App";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import { claimRewardSound, handleExtraCoin, handleSoundWinCmp } from "common/utils/SoundClick";
 // @ts-ignore
+import WinCmp from '../../assets/sounds/WinCmp.mp3';
+// @ts-ignore
 import Wildwest from '../../assets/avatars/videos/Winter.mp4';
+import useSound from "use-sound";
+// @ts-ignore
+import claimSound from '../../assets/sounds/claimReward.m4a';
 
 type PAXCardProps = {
   walletId: string;
@@ -129,6 +134,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
   const [showCountUp, setShowCountUp] = useState<number>(0); //1 =show 1>=hide
   const [sliverCoin, setSliverCoin] = useState(false);
+  const [claimRewardSoundplay, { pause: claimRewardSoundpause }] = useSound(claimSound);
+  const [handleSoundWinCmpplay, { pause: handleSoundWinCmppause }] = useSound(WinCmp)
   //1 =show 1>=hide
   useEffect(() => {
     if (inOutReward === 1 && !modalShow && !showCoinIncrement) {      
@@ -197,7 +204,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   setPrevCountRef(PAX);
                   setSliverCoin(false)
                   setBackgrounHide(false);
-                  claimRewardSound.play();
+                  claimRewardSoundplay();
                   // handleSoundWinCmp.play()
                   // setTimeout(() => {
                   //   // handleShow();
@@ -297,7 +304,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
               {/* <Modal.Footer> */}
               <div className="d-flex justify-content-center ">
                 <Buttons.Primary className="mx-2" onClick={() => {
-                  handleSoundWinCmp.pause()
+                  handleSoundWinCmppause()
                   setCountShow(false)
                   setShowReward((prev: number) => {
                     return 2;
