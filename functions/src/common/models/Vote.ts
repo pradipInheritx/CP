@@ -314,8 +314,8 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
         BEAR: 0,
         timestamp: admin.firestore.Timestamp.now()
       } : {
-        bull: 0,
-        bear: 1,
+        BULL: 0,
+        BEAR: 1,
         timestamp: admin.firestore.Timestamp.now()
       }
 
