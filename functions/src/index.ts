@@ -405,9 +405,9 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
     console.log("new user email  : ", getUserEmail.email);
-    
+
     //Send Welcome Mail To User
-    if (user.isVoteToEarn) {
+    if (user.isVoteToEarn == false) {
       await sendEmail(
         userData.email,
         "Welcome To Coin Parliament!",
