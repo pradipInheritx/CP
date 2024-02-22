@@ -11,7 +11,7 @@ import { timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
-import { VoteButton } from '../common/utils/SoundClick';
+// import { VoteButton } from '../common/utils/SoundClick';
 import { VoteContext, VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
@@ -19,6 +19,9 @@ import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
 import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getPairResultColor, getSingleCoinPriceColor } from 'common/utils/helper';
 import UserContext from 'Contexts/User';
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../assets/sounds/voteResultFinish.mp3';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -103,13 +106,15 @@ function ModalForResult({
   const setVoteDetails = useContext(VoteDispatchContext);
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
   const { userInfo } = useContext(UserContext);
+  const [handleSoundClick] = useSound(buttonClick,{interrupt:true});
 
   useEffect(() => {
     if (popUpOpen) {
-      VoteButton(true);
+      handleSoundClick()
+      // VoteButton(true);
       handleShow();
     }
-  }, [popUpOpen])
+  }, [popUpOpen,handleSoundClick])
   const [show, setShow] = useState(false);
 
   /// show 100 CMP complete modal

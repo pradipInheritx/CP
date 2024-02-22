@@ -34,8 +34,11 @@ import VoteTop from '../../assets/images/VoteTop.png';
 import VBG from '../../assets/images/VBG.png';
 import VBGM from '../../assets/images/VBGM.png';
 import Upgrade from "./Comingsoon";
-import { handleSoundClick } from "common/utils/SoundClick";
+// import { handleSoundClick } from "common/utils/SoundClick";
 import { Buttons } from "Components/Atoms/Button/Button";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -234,7 +237,7 @@ const [comingSoon, setComingSoon] = useState(false)
     navigate("/votepayment")
   }
 
-
+  const [handleSoundClick] = useSound(buttonClick);
   return (
     <div
       style={{        

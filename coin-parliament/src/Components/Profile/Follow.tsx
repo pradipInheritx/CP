@@ -53,23 +53,24 @@ const Follow = () => {
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(userInfo, "userInfo")
 
   useEffect(() => {
     if (userInfo?.leader) {
       getUsers({ users: userInfo?.leader, setUsers: setLeaders,setIsLoading })
       setIsLoading(true)
+    }else{
+      setLeaders([]);
     }
   }, [userInfo?.leader]);
   useEffect(() => {
     if (userInfo?.subscribers) {
       getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers,setIsLoading });
       setIsLoading(true)
+    }else{
+      setSubscribers([])
     }
   }, [userInfo?.subscribers]);
 
-
-  // console.log(leaders,subscribers,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
