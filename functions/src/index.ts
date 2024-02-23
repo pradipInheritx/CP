@@ -1058,60 +1058,59 @@ exports.sendEmail = functions.https.onCall(async () => {
   await sgMail.send(msg);
 });
 
+
 exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
-
-  const {pageSize, startAfter} = data;
+  const { sliceLimit } = data;
+  await updateQuery(sliceLimit)
+});
+async function updateQuery(limit: number) {
   try {
+    const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => {
+      let userdata = user.data();
+      if (userdata['userName'] == undefined) {
+        return {
+          ...user.data(), id: user.id
+        }
+      }
+    });
 
-    let query = admin.firestore().collection('users').orderBy(admin.firestore.FieldPath.documentId());
-    
-    // If startAfter is provided, start the query after that document
-    if (startAfter) {
-      query = query.startAfter(startAfter);
-    }
-
-    // Limit the number of documents fetched
-    query = query.limit(pageSize);
-
-    const querySnapshot = await query.get();
-    const users = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      data: doc.data()
-    }));
-    // const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => { return { ...user.data(), id: user.id } });
-    // const filterUsernameUsers = getAllUsers.filter((user: any) => user.userName == null);
-    console.log("filterUsernameUsers : ", users.length)
-    for (let index = 0; index < users.length; index++) {
-      let element: any = users[index];
-      console.log("user : ", element)
-      console.log("displayname : ", element.displayname, element.displayname == null);
-      if (element.displayName == undefined || element.displayName == null) {
-        if (element.email) {
-          let getNewUsername = (element.email).toString().split('@')[0];
-          let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-          await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-          await admin.firestore().collection('users').doc(element.id).set({
-            username: admin.firestore.FieldValue.delete()
-          }, { merge: true })
+    let startIndex = 0;
+    let sliceSize = limit;
+    while (startIndex < getAllUsers.length) {
+      let selectUser = getAllUsers.slice(startIndex, startIndex + sliceSize)
+      for (let index = 0; index < selectUser.length; index++) {
+        let element: any = selectUser[index];
+        console.log("user : ", element)
+        console.log("displayname : ", element.displayname, element.displayname == null);
+        if (element.displayName == undefined || element.displayName == null) {
+          if (element.email) {
+            let getNewUsername = (element.email).toString().split('@')[0];
+            let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
+            await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
+            await admin.firestore().collection('users').doc(element.id).set({
+              username: admin.firestore.FieldValue.delete()
+            }, { merge: true })
+          } else {
+            let getNewUsername = generateRandomName()
+            let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
+            await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
+            await admin.firestore().collection('users').doc(element.id).set({
+              username: admin.firestore.FieldValue.delete()
+            }, { merge: true })
+          }
         } else {
-          let getNewUsername = generateRandomName()
+          console.log("else part")
+          let getDisplayName = (element.displayName).toString().trim().split(' ');
+          console.log("getDisplayName : ", getDisplayName)
+          let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
           let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
           await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
           await admin.firestore().collection('users').doc(element.id).set({
             username: admin.firestore.FieldValue.delete()
           }, { merge: true })
         }
-      } else {
-        console.log("else part")
-        let getDisplayName = (element.displayName).toString().trim().split(' ');
-        console.log("getDisplayName : ", getDisplayName)
-        let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
-        let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-        await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-        await admin.firestore().collection('users').doc(element.id).set({
-          username: admin.firestore.FieldValue.delete()
-        }, { merge: true })
       }
+      startIndex += sliceSize;
     }
     return {
       status: true,
@@ -1121,7 +1120,7 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
     console.error("addUsernameToOldUsers, ERROR : ", error);
     return error
   }
-});
+}
 
 const usedNames = new Set();
 
@@ -1139,5 +1138,3 @@ function generateRandomName() {
   usedNames.add(name);
   return name;
 }
-
-console.log();
