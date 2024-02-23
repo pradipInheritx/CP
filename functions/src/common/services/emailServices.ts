@@ -1,8 +1,7 @@
-
 import env from "../../env/env.json";
 import sgMail from "@sendgrid/mail";
 
-export async function sendEmail(to: any, subject: any, body: any) {
+export async function sendEmail(to: any, subject: any, body: any): Promise<{ status: boolean; message: string; result?: any }> {
   try {
     console.log("email>>>>>>>>");
 
@@ -18,15 +17,18 @@ export async function sendEmail(to: any, subject: any, body: any) {
     console.log("RESPONSE EMAIL==>", response);
 
     console.log("Email sent");
-  } catch (error:unknown) {
-    if (error instanceof Error ){
-      console.error("Error sending email:", error.message);
-      return {
-        status: false,
-        message: error.message,
-      };
-    }
-    
+
+    return {
+      status: true,
+      message: "Email sent successfully",
+    };
+  } catch (error:any) {
+    console.error("Error sending email:", error.message);
+    return {
+      status: false,
+      message: error.message,
+      result: null
+    };
   }
 }
 
