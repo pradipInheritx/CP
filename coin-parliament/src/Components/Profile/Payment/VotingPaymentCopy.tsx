@@ -400,7 +400,7 @@ const mainnet = [
   },
   {
     chainId: 1,
-    name: 'Ethereum',
+    name: 'USDT ERC20',
     currency: 'USDT ERC20',
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
@@ -429,91 +429,95 @@ const mainnet = [
 
 ]
 
+// const ContractABI = [
+//   {
+//     "constant": true,
+//     "inputs": [],
+//     "name": "name",
+//     "outputs": [
+//       {
+//         "name": "",
+//         "type": "string"
+//       }
+//     ],
+//     "payable": false,
+//     "stateMutability": "view",
+//     "type": "function"
+//   },
+//   {
+//     "constant": true,
+//     "inputs": [],
+//     "name": "symbol",
+//     "outputs": [
+//       {
+//         "name": "",
+//         "type": "string"
+//       }
+//     ],
+//     "payable": false,
+//     "stateMutability": "view",
+//     "type": "function"
+//   },
+//   {
+//     "constant": true,
+//     "inputs": [],
+//     "name": "decimals",
+//     "outputs": [
+//       {
+//         "name": "",
+//         "type": "uint8"
+//       }
+//     ],
+//     "payable": false,
+//     "stateMutability": "view",
+//     "type": "function"
+//   },
+//   {
+//     "constant": false,
+//     "inputs": [
+//       {
+//         "name": "_to",
+//         "type": "address"
+//       },
+//       {
+//         "name": "_value",
+//         "type": "uint256"
+//       }
+//     ],
+//     "name": "transfer",
+//     "outputs": [
+//       {
+//         "name": "",
+//         "type": "bool"
+//       }
+//     ],
+//     "payable": false,
+//     "stateMutability": "nonpayable",
+//     "type": "function"
+//   },
+//   {
+//     "constant": true,
+//     "inputs": [
+//       {
+//         "name": "_owner",
+//         "type": "address"
+//       }
+//     ],
+//     "name": "balanceOf",
+//     "outputs": [
+//       {
+//         "name": "balance",
+//         "type": "uint256"
+//       }
+//     ],
+//     "payable": false,
+//     "stateMutability": "view",
+//     "type": "function"
+//   }
+// ]
+
 const ContractABI = [
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "symbol",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "decimals",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_to",
-        "type": "address"
-      },
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "transfer",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_owner",
-        "type": "address"
-      }
-    ],
-    "name": "balanceOf",
-    "outputs": [
-      {
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  }
+  { "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_upgradedAddress", "type": "address" }], "name": "deprecate", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "deprecated", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_evilUser", "type": "address" }], "name": "addBlackList", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "upgradedAddress", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balances", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "maximumFee", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "unpause", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_maker", "type": "address" }], "name": "getBlackListStatus", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowed", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "paused", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "who", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "pause", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "getOwner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "newBasisPoints", "type": "uint256" }, { "name": "newMaxFee", "type": "uint256" }], "name": "setParams", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "amount", "type": "uint256" }], "name": "issue", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "amount", "type": "uint256" }], "name": "redeem", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }, { "name": "_spender", "type": "address" }], "name": "allowance", "outputs": [{ "name": "remaining", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "basisPointsRate", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "isBlackListed", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_clearedUser", "type": "address" }], "name": "removeBlackList", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "MAX_UINT", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_blackListedUser", "type": "address" }], "name": "destroyBlackFunds", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "name": "_initialSupply", "type": "uint256" }, { "name": "_name", "type": "string" }, { "name": "_symbol", "type": "string" }, { "name": "_decimals", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "amount", "type": "uint256" }], "name": "Issue", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "amount", "type": "uint256" }], "name": "Redeem", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "newAddress", "type": "address" }], "name": "Deprecate", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "feeBasisPoints", "type": "uint256" }, { "indexed": false, "name": "maxFee", "type": "uint256" }], "name": "Params", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_blackListedUser", "type": "address" }, { "indexed": false, "name": "_balance", "type": "uint256" }], "name": "DestroyedBlackFunds", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_user", "type": "address" }], "name": "AddedBlackList", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_user", "type": "address" }], "name": "RemovedBlackList", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "spender", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Pause", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Unpause", "type": "event" }
 ]
 
 const VotingPaymentCopy: React.FC<{
@@ -685,7 +689,7 @@ const VotingPaymentCopy: React.FC<{
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
-    const data = mainnet?.find((network?: any) => network?.chainId == chainId)
+    const data = mainnet?.find((network?: any) => network?.chainId == chainId && localStorage.getItem("CoinPay") == network?.name)
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
       if (localStorage.getItem("CoinPay") != data?.name) {
@@ -750,14 +754,20 @@ const VotingPaymentCopy: React.FC<{
   useEffect(() => {
     // let CoinPay = localStorage.getItem("CoinPay")
     if (chainId && isConnected) {
-      const data = mainnet?.find((network?: any) => network?.chainId == chainId)
+      const data = mainnet?.find((network?: any) => network?.chainId == chainId )
       if (!data) return
       if (selectCoin == "none") {        
-        setSelectCoin(data?.name)
-        setCoinInfo(data)
+        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.name)        
+        setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
+          chainId: 1,
+          name: 'USDT ERC20',
+          currency: 'USDT ERC20',
+          explorerUrl: 'https://etherscan.io',
+          rpcUrl: 'https://cloudflare-eth.com'
+        } : data)
       }
       setMetaCoin(data?.name)
-      if (localStorage.getItem("CoinPay") == data?.name) {        
+      if (localStorage.getItem("CoinPay") == data?.name || (localStorage.getItem("CoinPay") == "USDT ERC20" && data.chainId==1)) {        
         setChainNetworkTest(false)
       }
       }
@@ -1209,7 +1219,8 @@ const VotingPaymentCopy: React.FC<{
                   }}
                     onClick={() => {
                     setShowPayButoom(false)
-                    setSelectPayment(0)
+                      setSelectPayment(0)
+                      setSelectCoin("none")
                     }}>Back</span>
                   </div>   
                   {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
@@ -1324,7 +1335,7 @@ const VotingPaymentCopy: React.FC<{
                         if (payButton) {
                           return
                         }
-                        if (selectCoin == "none" && isConnected == false) {
+                        if (isConnected == false) {
                           
                           setShowOptionList(prev => !prev)
                         }
@@ -1335,7 +1346,7 @@ const VotingPaymentCopy: React.FC<{
                     >
                       {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
-                    {selectCoin == "none" && isConnected == false && showOptionList && (
+                    {isConnected == false && showOptionList && (
                       <ul className="pay-select-options"
                         style={{
 
@@ -1358,7 +1369,7 @@ const VotingPaymentCopy: React.FC<{
                                 data-name={option.name}
                                 key={index}
                                 onClick={async () => {
-                                  setSelectCoin(option.name)
+                                  setSelectCoin(option.currency)
                                   setCoinInfo(option)
                                   setShowOptionList(!showOptionList)  
                                   localStorage.setItem("CoinPay", option.name)
@@ -1446,7 +1457,7 @@ const VotingPaymentCopy: React.FC<{
                   // <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>
                   <span className="text-center mt-3"
                   
-                  > Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network.</span>
+                  > Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network.</span>
                 }
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
