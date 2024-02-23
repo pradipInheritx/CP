@@ -654,9 +654,11 @@ const VotingPaymentCopy: React.FC<{
     // let CoinPay = localStorage.getItem("CoinPay")
     if (chainId && isConnected) {
       const data = mainnet?.find((network?: any) => network?.chainId == chainId)
-        if (!data) return
+      if (!data) return
+      if (selectCoin == "none") {        
         setSelectCoin(data?.name)
-      setCoinInfo(data)
+        setCoinInfo(data)
+      }
       if (localStorage.getItem("CoinPay") == data?.name) {        
         setChainNetworkTest(false)
       }
