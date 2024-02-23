@@ -171,9 +171,7 @@ const UserCard = ({
   const pathname = location.pathname;
   const navigate = useNavigate()
   const { setFollowerUserId } = useContext(AppContext)
-  const { userInfo, user } = useContext(UserContext);
-
-  console.log(leader,"allleader")
+  const { userInfo, user } = useContext(UserContext);  
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {
@@ -188,8 +186,7 @@ const UserCard = ({
     } else {
       navigate('/followerProfile/mine')
     }
-  }
-  console.log(leader,"leader?.isUserUpgraded")
+  } 
 
   const [handleSoundClick] = useSound(buttonClick);
   return (

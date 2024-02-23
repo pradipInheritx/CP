@@ -178,7 +178,7 @@ const mainnet = [
   },
   {
     chainId: 56,
-    name: 'BNB Chain',
+    name: 'Binance',
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
     rpcUrl: 'https://bsc-dataseed.binance.org'
