@@ -1061,7 +1061,7 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
   try {
     const getAllUsers = (await admin.firestore().collection('users').get()).docs.map(user => user.data());
     const filterUsernameUsers = getAllUsers.filter((user: any) => user.username == null);
-    console.log("filterUsernameUsers : ",filterUsernameUsers.length)
+    console.log("filterUsernameUsers : ", filterUsernameUsers.length)
     for (let index = 0; index < filterUsernameUsers.length; index++) {
       let element = filterUsernameUsers[index];
       if (element.displayName == null) {
@@ -1070,7 +1070,8 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
         await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
       } else {
         let getDisplayName = element.displayName.trim().split(' ')
-        let getNewUsername: string = getDisplayName.length < 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
+        console.log("getDisplayName : ", getDisplayName)
+        let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
         let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
         await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
       }
