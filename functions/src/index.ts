@@ -16,9 +16,9 @@ import {
   Colors,
   UserProps,
   UserTypeProps,
-} from "./common/interfaces/User.interface";
-import { VoteResultProps } from "./common/interfaces/Vote.interface";
-import { Leader } from "./common/interfaces/Coin.interface";
+} from "./common/types/User.type";
+import { VoteResultProps } from "./common/types/Vote.type";
+import { Leader } from "./common/types/Coin.type";
 
 // function import
 import "./common/models/scheduleFunction";
@@ -89,7 +89,7 @@ import {
   sendNotificationForMintAddress,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
-import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { JwtPayload } from "./common/types/Admin.type";
 import { createPushNotificationOnCallbackURL, } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"

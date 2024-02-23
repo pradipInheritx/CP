@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 import * as jwt from "jsonwebtoken";
 
-import { UserProps, UserTypeProps } from "../interfaces/User.interface";
+import { UserProps, UserTypeProps } from "../types/User.type";
 import env from "../../env/env.json";
 import { sendEmail } from "../services/emailServices";
 import { userVerifyEmailTemplate } from "../emailTemplates/userVerifyEmailTemplate";

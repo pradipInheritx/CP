@@ -2,10 +2,10 @@ import {
   userConverter,
   userTypeConverter,
 } from "./User";
-import { VoteStatistics } from "../interfaces/Vote.interface"
+import { VoteStatistics } from "../types/Vote.type"
 import { voteConverter } from "./Vote";
-import { Direction, VoteResultProps } from "../interfaces/Vote.interface"
-import { UserProps, UserTypeProps, Leader, Totals } from '../interfaces/User.interface'
+import { Direction, VoteResultProps } from "../types/Vote.type"
+import { UserProps, UserTypeProps, Leader, Totals } from '../types/User.type'
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import {

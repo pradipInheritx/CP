@@ -12,7 +12,7 @@ import {
 } from "../consts/config";
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
 import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
-import {Coin,IWazirXSnapshotMetaData,IWazirXSnapshotTickers,CoinsWithKey,CoinsWithFixedDecimalValue} from "../interfaces/Coin.interface"
+import {Coin,IWazirXSnapshotMetaData,IWazirXSnapshotTickers,CoinsWithKey,CoinsWithFixedDecimalValue} from "../types/Coin.type"
 import { errorLogging } from "../helpers/commonFunction.helper";
 
 export const filterCoins: (

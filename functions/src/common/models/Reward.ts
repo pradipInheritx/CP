@@ -1,5 +1,5 @@
 import { firestore } from "firebase-admin";
-import { UserProps } from "../interfaces/User.interface"
+import { UserProps } from "../types/User.type"
 import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";

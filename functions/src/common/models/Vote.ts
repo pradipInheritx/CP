@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { VoteResultProps, TimeFrame } from "../interfaces/Vote.interface";
+import { VoteResultProps, TimeFrame } from "../types/Vote.type";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"

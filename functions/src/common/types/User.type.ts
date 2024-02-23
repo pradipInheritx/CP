@@ -1,6 +1,6 @@
-import {wellDAddressType} from './Payment.interface';
-import {VoteStatistics} from './Vote.interface'
-import {RewardStatistics,referalReceiveType} from './Reward.interface'
+import {wellDAddressType} from './Payment.type';
+import {VoteStatistics} from './Vote.type'
+import {RewardStatistics,referalReceiveType} from './Reward.type'
 export type UserTypeProps = {
     index: number;
     name: string;
