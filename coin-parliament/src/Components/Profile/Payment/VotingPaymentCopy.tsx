@@ -399,8 +399,15 @@ const mainnet = [
     rpcUrl: 'https://cloudflare-eth.com'
   },
   {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'USDT ERC20',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+  {
     chainId: 56,
-    name: 'BNB Chain',
+    name: 'Binance',
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
     rpcUrl: 'https://bsc-dataseed.binance.org'
@@ -421,6 +428,94 @@ const mainnet = [
   }
 
 ]
+
+const ContractABI = [
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+
 const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
@@ -468,6 +563,8 @@ const VotingPaymentCopy: React.FC<{
     const [showText, setShowText] = useState(false);
     const [comingSoon, setComingSoon] = useState(false);
   const [chainNetworkTest, setChainNetworkTest] = useState(false);
+  // const metamaskCoin = mainnet?.find((network?: any) => network?.chainId == chainId)
+    const [metaCoin, setMetaCoin] = useState("none");
     const [transactionInst, setTransactionInst] = useState(false);
   const [showPayButoom, setShowPayButoom] = useState(false);
     const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
@@ -608,7 +705,7 @@ const VotingPaymentCopy: React.FC<{
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
         sendTransaction()
-      }
+      }      
     } else {
       open()
       // switchNetwork(coinInfo.chainId)
@@ -659,6 +756,7 @@ const VotingPaymentCopy: React.FC<{
         setSelectCoin(data?.name)
         setCoinInfo(data)
       }
+      setMetaCoin(data?.name)
       if (localStorage.getItem("CoinPay") == data?.name) {        
         setChainNetworkTest(false)
       }
@@ -720,59 +818,50 @@ const VotingPaymentCopy: React.FC<{
     async function sendTransaction() {    
       setTransactionInst(false)
       let ethereum = (window as any).ethereum;
-
-      // if (!ethereum) {
-      //   ethereum = (window as any).web3?.currentProvider;
-      // }
-
-      // if (!ethereum) {
-      //   console.error("No Ethereum provider found");
-      //   return;
-      // }
-
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
-        // Request access to MetaMask
-        // await ethereum?.request({ method: 'eth_requestAccounts' });
-        // Create a wallet signer
         const wallet = provider.getSigner();
-        // send a tx
-        // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
-        const transaction = {
-          chainId: coinInfo?.chainId,
-          to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
-          value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
-        };
-        console.log(transaction,"transaction Req")
-        const txResponse = await wallet.sendTransaction(transaction);
 
-        // Handle the transaction response
-        console.log('Transaction hash:', txResponse.hash);
-        if (txResponse.hash) {
-
-          payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
-          // setIsLoading(false)
-          // setPaymentStatus({ type: "success", message: "" })
-          // setShowText(false)
-
-          // setPayButton(false);
+        if (coinInfo?.currency == "USDT ERC20") {
+          const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
+          const usdtContractABI = ContractABI;
+          const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);
+          const amountToSend = ethers.utils.parseUnits('0.0001');
+          const trax = {
+            to: usdtContractAddress,
+            value: 0,
+            data: usdtContract.interface.encodeFunctionData('transfer', [process.env.REACT_APP_TESTETH_ACCOUNT_KEY, amountToSend]),
+          };
+          const txResponse = await wallet.sendTransaction(trax);
+  
+          // Handle the transaction response
+          console.log('Transaction hash:', txResponse.hash);
+          if (txResponse.hash) {
+            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
+          }
+        } else {          
+          const transaction = {
+            chainId: coinInfo?.chainId,
+            to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
+            value: ethers.utils.parseUnits('0.0001'), // Sending 0.0001 MATIC
+          };
+          
+          const txResponse = await wallet.sendTransaction(transaction);  
+          // Handle the transaction response
+          console.log('Transaction hash:', txResponse.hash);
+          if (txResponse.hash) {
+            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
+          }
         }
-        // await txResponse.wait();
-        // setPaymentStatus({ type:"success", message: "" })
-        // setShowText(false)      
-
-        // setPayButton(false);
+        
+        
         console.log('Transaction mined!');
 
       } catch (error: any) {
         console.log('errorror', error)
-        const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
-        // console.log(errorMessageWithoutTextAfterBracket);
-        // showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
-        // console.log((error as Error).message, 'Hello');
+        const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];        
         setIsLoading(false)
-        setShowText(false)
-        // setPaymentStatus({ type: "", message: '' });
+        setShowText(false)        
         setPayButton(false);
         setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'user rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
       }
@@ -1130,7 +1219,8 @@ const VotingPaymentCopy: React.FC<{
                       zIndex: 10,
                     }} >                     
                       <div
-                        className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
+                        // className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
+                        className="pay-selected-text text-center"
                         onClick={() => {
                           if (payButton) {
                             return
@@ -1168,7 +1258,7 @@ const VotingPaymentCopy: React.FC<{
                                   key={index}
                                   onClick={async () => {
                                     // if (chainId == option.chainId || window.screen.width > 768) {
-                                      setSelectCoin(option.name)
+                                    setSelectCoin(option.currency)
                                       setCoinInfo(option)
                                       // setChainNetworkTest(false)
                                     // } 
@@ -1351,18 +1441,24 @@ const VotingPaymentCopy: React.FC<{
                     </ButttonDiv>
                   </div >
                 }
-                {chainNetworkTest && <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>}
+                {/* {chainNetworkTest && <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>} */}
+                {chainNetworkTest &&
+                  // <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>
+                  <span className="text-center mt-3"
+                  
+                  > Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network.</span>
+                }
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
 
                   <>                  
                     {
-                      (window.innerWidth > 768 ||  isConnected )&& <div
+                      (window.innerWidth > 768 || isConnected) && !chainNetworkTest  &&<div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                       >
                         <ButttonDiv className="mt-1"
                           style={{
-                            opacity: `${chainNetworkTest ? 0.7 :1}`
+                            // opacity: `${chainNetworkTest ? 0.7 :1}`
                         }}
                         >
                           <button
@@ -1395,9 +1491,9 @@ const VotingPaymentCopy: React.FC<{
                     <div
                       className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                     >
-                    {(window.innerWidth > 768 || isConnected) && <ButttonDivSec className="mt-1"
+                    {(window.innerWidth > 768 || isConnected) && !chainNetworkTest  &&<ButttonDivSec className="mt-1"
                       style={{
-                        opacity: `${chainNetworkTest ? 0.7 : 1}`
+                        // opacity: `${chainNetworkTest ? 0.7 : 1}`
                       }}
                     >
                         <button
