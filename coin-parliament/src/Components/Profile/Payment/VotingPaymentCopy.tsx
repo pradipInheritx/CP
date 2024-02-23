@@ -1165,11 +1165,11 @@ const VotingPaymentCopy: React.FC<{
                                   data-name={option.name}
                                   key={index}
                                   onClick={async () => {
-                                    if (chainId == option.chainId || window.screen.width > 768) {
+                                    // if (chainId == option.chainId || window.screen.width > 768) {
                                       setSelectCoin(option.name)
                                       setCoinInfo(option)
                                       // setChainNetworkTest(false)
-                                    } 
+                                    // } 
                                     setShowOptionList(!showOptionList)
                                     localStorage.setItem("CoinPay", option.name)                                     
                                     // else {                            
@@ -1241,7 +1241,7 @@ const VotingPaymentCopy: React.FC<{
 
                       }
                     >
-                      {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${coinInfo?.currency}` : "Select coin"}
+                      {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
                     {selectCoin == "none" && isConnected == false && showOptionList && (
                       <ul className="pay-select-options"

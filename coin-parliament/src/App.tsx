@@ -1161,6 +1161,13 @@ function App() {
       valueVotingTime: vote?.valueVotingTime,      
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
+      paxDistributionToUser: {
+        userId: userInfo?.uid,
+        currentPaxValue: Number(paxDistribution),
+        isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+        mintForUserAddress: userInfo?.paxAddress?.address || "",
+        eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      },
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId
@@ -1353,9 +1360,11 @@ function App() {
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,]
 
         const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
+        console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
 
+        console.log(voteImpact.current?.impact,"voteImpact.current?.impact")
         console.log(StatusValue, 'StatusValue');
         if (pathNameRef.current?.includes('profile/mine')) {
           return
