@@ -21,7 +21,10 @@ export async function sendEmail(to: any, subject: any, body: any) {
   } catch (error:unknown) {
     if (error instanceof Error ){
       console.error("Error sending email:", error.message);
-      throw new Error("Failed to send email");
+      return {
+        status: false,
+        message: error.message,
+      };
     }
     
   }
