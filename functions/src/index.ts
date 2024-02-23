@@ -1063,13 +1063,15 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
     const filterUsernameUsers = getAllUsers.filter((user: any) => user.username == null);
     console.log("filterUsernameUsers : ", filterUsernameUsers.length)
     for (let index = 0; index < filterUsernameUsers.length; index++) {
-      let element = filterUsernameUsers[index];
-      if (element.displayName == null) {
-        let getNewUsername = element.email.split('@')[0];
+      let element :any = filterUsernameUsers[index];
+      console.log("displayname : ",element.displayname , element.displayname == null);
+      if (element.displayName == null && element.email != null) {
+        let getNewUsername = (element.email).toString().split('@')[0];
         let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
         await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
       } else {
-        let getDisplayName = element.displayName.trim().split(' ')
+        console.log("else part")
+        let getDisplayName = (element.displayName).toString().trim().split(' ');
         console.log("getDisplayName : ", getDisplayName)
         let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
         let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
