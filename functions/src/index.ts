@@ -199,7 +199,7 @@ exports.getAccessToken = () =>
 
 
 
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -240,6 +240,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     googleAuthenticatorData: {},
