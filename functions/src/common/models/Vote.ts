@@ -2,11 +2,12 @@ import * as admin from "firebase-admin";
 import { VoteResultProps, TimeFrame } from "../types/Vote.type";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
-import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
-import { addPaxTransactionWithPendingStatus } from "./PAX";
+// import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
+// import { addPaxTransactionWithPendingStatus } from "./PAX";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 import { errorLogging } from "../helpers/commonFunction.helper";
+import { getUserAndCalculatePax } from "./CmpCalculation";
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
   timeframe: TimeFrame
@@ -257,89 +258,9 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
   }
 }
 
-export async function checkAndUpdateRewardTotal(userId: string) {
-  try {
-    const getUserRef = admin.firestore().collection('users').doc(userId);
-    const getUserDetails: any = (await getUserRef.get()).data();
-    const getUserScore: number = getUserDetails?.voteStatistics?.score;
-    const getUserTotal: number = getUserDetails?.rewardStatistics?.total;
-    // const score = getUserScore + currentVoteCMP;
-    const checkScore = getUserScore - (getUserTotal * 100);
-    console.log("getUserScore : ", getUserScore);
-    console.log("getUserTotal : ", getUserTotal);
-    console.log("checkScore || checkScore > 99.99: ", checkScore, " || ", checkScore > 99.99);
-    if (checkScore > 99.99) {
 
-      await getUserRef
-        .set(
-          {
-            rewardStatistics: {
-              total: admin.firestore.FieldValue.increment(1),
-              claimed: getUserDetails?.rewardStatistics?.claimed || 0,
-            },
-          },
-          { merge: true }
-        ).then(() => {
-          console.log("Total and Claimed are updated Successfully");
-        })
-      return {
-        status: true,
-        message: "Total and Claimed are updated Successfully",
-        result: null
-      };
-    } else {
-      return {
-        status: false,
-        message: "Total and Claimed are not updated Successfully",
-        result: null
-      };
-    }
-  } catch (error) {
-    console.error("checkAndUpdateRewardTotal failed to update the reward total. Error", error);
-    return {
-      status: false,
-      message: "checkAndUpdateRewardTotal failed to update the reward total.",
-      result: error
-    }
-  }
-}
 
-export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: number) => {
-  try {
-    const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
-    if (!getUser) {
-      return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
-    }
-    console.log("getUser currentVoteCMP,score and total : ", currentVoteCMP, " || ", getUser?.voteStatistics?.score, " || ", getUser?.rewardStatistics?.total);
-    const score = getUser?.voteStatistics?.score + currentVoteCMP
-    const checkCMP = score - (getUser?.rewardStatistics?.total * 100);
-    console.log("score, checkCMP : ", score, " || ", checkCMP)
-    console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
 
-    if (99.99 < checkCMP && checkCMP < 200) {
-      let getResultAfterSentPaxToUser: any;
-      let getResultAfterSentPaxToAdmin: any;
-
-      if (paxDetails.isUserUpgraded === true) {
-        // Call to user mintFor Address
-        getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails);
-        await addPaxTransactionWithPendingStatus(paxDetails)
-        console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
-        return getResultAfterSentPaxToUser
-      }
-      if (paxDetails.isUserUpgraded === false) {
-        // Call to Admin mintFor Address
-        getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDetails);
-        await addPaxTransactionWithPendingStatus(paxDetails);
-        console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
-        return getResultAfterSentPaxToAdmin
-      }
-    }
-
-  } catch (error) {
-    return errorLogging("getUserAndCalculatePax", "ERROR", error);
-  }
-}
 
 export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
   try {
@@ -393,8 +314,8 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
         BEAR: 0,
         timestamp: admin.firestore.Timestamp.now()
       } : {
-        bull: 0,
-        bear: 1,
+        BULL: 0,
+        BEAR: 1,
         timestamp: admin.firestore.Timestamp.now()
       }
 
@@ -434,8 +355,6 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     return errorLogging("addVoteResultForCPVI", "Error", error);
   }
 }
-
-
 
 async function createNewCPVIDocumnet(voteData: VoteResultProps, newCPVIObject: any) {
   try {

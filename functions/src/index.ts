@@ -43,7 +43,6 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
   addVoteResultForCPVI,
-  checkAndUpdateRewardTotal,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -114,6 +113,8 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
+import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
+import { checkTransactionStatus } from "./common/models/Payments";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -219,7 +220,7 @@ exports.api = functions.https.onRequest(main);
 
 async function correctReferScoreToAllUsers() {
   try {
-    const getAllUser = (await admin.firestore().collection('users').where('children',"!=",[]).get()).docs.map((user) => user.data());
+    const getAllUser = (await admin.firestore().collection('users').where('children', "!=", []).get()).docs.map((user) => user.data());
     const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
     console.log("filter the user length : ", filterTheUser.length)
     for (let index = 0; index < filterTheUser.length; index++) {
@@ -227,12 +228,12 @@ async function correctReferScoreToAllUsers() {
       console.log("user : ", user, index)
       let commission = 0;
       for (let child = 0; child < user.children; child++) {
-        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => { 
+        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => {
           let userData = snapshot.data();
           commission = commission + parseFloat(userData?.refereeScrore);
-         })
+        })
       }
-      await admin.firestore().collection('users').doc(user.id).set({ commission },{merge:true}).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+      await admin.firestore().collection('users').doc(user.id).set({ commission }, { merge: true }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
     }
 
     return { status: true, message: "All user Refer score", result: true }
@@ -283,7 +284,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      return { skipped: true };
     }
 
     // Create a JWT token with user data
@@ -339,7 +340,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   return getReponse
 })
 // create user
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -383,6 +384,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -399,18 +401,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .doc(user.uid)
       .set(userData);
 
-    //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
-
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
     console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+
+    //Send Welcome Mail To User
+    if (user.isVoteToEarn == false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      )
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
 
     return newUser;
   } catch (e) {
@@ -790,8 +794,11 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    console.info("after", after)
-    console.info("Send Email Successfully")
+    // console.info("after", after)
+    // const beforeTotal: number = before.rewardStatistics?.total || 0;
+    // const afterTotal: number = after.rewardStatistics?.total || 0;
+    // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
+    // console.log("snapshot.after.id : ",snapshot.after.id)
 
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
@@ -984,9 +991,9 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
       .collection("votes")
       .doc(data?.voteId);
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
-    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
+    // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
 
     return {
       voteId: getAfterUpdatedVoteInstance.id,
@@ -1253,6 +1260,94 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
+// function that return some parameters for coin parliament players
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+  try {
+    const userId = data.userId; // Extract userId from data parameter
+    console.log("userId>>>>", userId);
+
+    const databaseQuery = await admin
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .get();
+
+    const userData = databaseQuery.data();
+    if (!userData) {
+      return {
+        status: true,
+        message: "User not found.",
+        data: {} // Empty array when user not found
+      };
+    }
+
+    const name = userData.status.name;
+    console.log("name>>>>>", name)
+    const totalVotes = userData.voteStatistics.total;
+    console.log("totalVotes>>>>>", userData.voteStatistics.total)
+    const totalCMP = userData.voteStatistics.score;
+    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+
+    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
+      .where('userId', '==', userId)
+      .limit(1)
+      .get();
+
+    let accountUpgrade = false; // Default value if not found
+    if (!paxTransactionQuery.empty) {
+      const paxTransactionData = paxTransactionQuery.docs[0].data();
+      console.log("paxTransactionData>>>>>", paxTransactionData)
+      accountUpgrade = paxTransactionData.isUserUpgraded || false;
+      console.log("accountUpgrade>>>>>", accountUpgrade)
+    }
+
+    const paymentQuery = await admin.firestore().collection('payments')
+      .where('userId', '==', userId)
+      .where('transactionType', '==', 'EXTRAVOTES')
+      .get();
+
+    const hasPurchasedVotes = !paymentQuery.empty;
+    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+
+    const userRecord = await admin.auth().getUser(userId);
+
+    const votesQuerySnapshot = await admin
+      .firestore()
+      .collection("votes")
+      .where("userId", "==", userId)
+      .get();
+
+    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
+    console.log("voteTimes>>>>>>>", voteTimes);
+    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+    const numberOfDaysVoted = uniqueDates.length;
+    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+
+    return {
+      status: true,
+      message: "User fetched successfully",
+      data: {
+        name: name,
+        country: userData.country,
+        signupDate: userRecord.metadata.creationTime,
+        totalVotes: totalVotes,
+        totalCMP: totalCMP,
+        accountUpgrade: accountUpgrade,
+        numberOfDaysVoted: numberOfDaysVoted,
+        votePurchase: votePurchaseStatus,
+        userId: userId,
+      }
+    };
+  } catch (error) {
+    console.log("Error while fetching user data:", error);
+    return {
+      status: false,
+      message: "Error while fetching user data",
+      data: {}
+    };
+  }
+});
+
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
 exports.pendingPaymentSettlement = functions.pubsub
@@ -1320,11 +1415,18 @@ export const pendingPaymentSettlement = functions.pubsub
       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
-      for (const doc of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>", doc)
-        const paymentRef = doc.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>", doc.ref)
-        await paymentRef.update({ event: 'Confirmed' });
+      for (const transaction of approvedPayments) {
+        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
+        const paymentRef = transaction.ref;
+        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        // call the api to check transaction is confirmed or not
+        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        if (transactionStatus.status) {
+          console.log("transactionStatus : ", transactionStatus.message)
+          await paymentRef.update({ event: 'Confirmed' });
+        } else {
+          console.error("transactionStatus : ", transactionStatus)
+        }
       }
       console.log('Payments updated successfully.');
     } catch (error) {

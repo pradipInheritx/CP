@@ -50,6 +50,7 @@ export type UserTypeProps = {
     referalReceiveType?: referalReceiveType;
     foundationData?: any;
     isUserUpgraded?: any;
+    isVoteToEarn?: boolean;
   };
 
   export type Totals = {

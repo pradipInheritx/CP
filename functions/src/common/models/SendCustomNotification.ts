@@ -162,7 +162,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
 
-  console.log("UserData:", userData);
+  // console.log("UserData:", userData);
   let score = voteStatistics.score;
   if (voteStatistics && parseInt(voteStatistics.score) > 100) {
     let currentScore = score % 100;
@@ -344,7 +344,7 @@ export async function poolMiningNotification(parentId: string, childrenName: str
 export const sendNotificationForCpm = async (userId: any) => {
   const userRef = await firestore().collection("users").doc(userId).get();
   const user: any = userRef.data();
-  console.log("userId from sendNotificationForCpm : ", user)
+  console.log("userId from sendNotificationForCpm : ", user.uid)
   const token = user.token;
   if (!token) {
     console.log("Token not found");
@@ -365,8 +365,8 @@ export const sendNotificationForCpm = async (userId: any) => {
       },
     },
   };
-  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
-  console.log("Message:", message);
+  console.log("Block Complete notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
+  console.log("Block Complete Message:", message);
   await sendNotification({
     token,
     message,
