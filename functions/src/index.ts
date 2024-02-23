@@ -1065,10 +1065,16 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
     for (let index = 0; index < filterUsernameUsers.length; index++) {
       let element :any = filterUsernameUsers[index];
       console.log("displayname : ",element.displayname , element.displayname == null);
-      if (element.displayName == null && element.email != null) {
-        let getNewUsername = (element.email).toString().split('@')[0];
-        let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-        await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
+      if (element.displayName == undefined || element.displayName == null) {
+        if(element.email){
+          let getNewUsername = (element.email).toString().split('@')[0];
+          let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
+          await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
+        } else{
+          let getNewUsername = generateRandomName()
+          let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
+          await admin.firestore().collection('users').doc(element.uid).set({ username: newUsername }, { merge: true });
+        }
       } else {
         console.log("else part")
         let getDisplayName = (element.displayName).toString().trim().split(' ');
@@ -1083,7 +1089,26 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
       message: "function done successfully."
     }
   } catch (error) {
-    console.error("addUsernameToOldUsers, ERORR : ", error);
+    console.error("addUsernameToOldUsers, ERROR : ", error);
     return error
   }
 });
+
+const usedNames = new Set();
+
+function generateRandomName() {
+    const adjectives = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'gray'];
+    const nouns = ['cat', 'dog', 'rabbit', 'bird', 'elephant', 'lion', 'tiger', 'bear', 'monkey', 'snake'];
+
+    let name;
+    do {
+        const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
+        name = `${adjective}${noun}`;
+    } while (usedNames.has(name));
+
+    usedNames.add(name);
+    return name;
+}
+
+console.log();
