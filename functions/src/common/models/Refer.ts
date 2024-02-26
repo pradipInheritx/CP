@@ -2,6 +2,7 @@ import {firestore} from "firebase-admin";
 import {userConverter} from "./User";
 import {UserProps} from "../interfaces/User.interface"
 import FieldValue = firestore.FieldValue;
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export type VoteRules = {
   maxVotes: number;
@@ -125,6 +126,12 @@ class Refer {
         score: Number(newScore),
         commission: Number(newCommission),
       },
+    }).then(()=>{
+      console.log("parent commission updated successfully : ",parentData?.uid)
+    }).catch((error)=>{
+      errorLogging("payParent","Error",`commission not updated : ${error}`)
+    }).finally(()=>{
+      console.log("parentCommission calling ",parentData?.uid, commission);
     });
   }
 }
