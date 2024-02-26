@@ -1067,12 +1067,13 @@ async function updateQuery(limit: number) {
   try {
     const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => {
       let userdata = user.data();
-      if (userdata['userName'] == undefined) {
-        return {
+      return userdata['userName'] == undefined ?
+        {
           ...user.data(), id: user.id
         }
-      }
+        : null;
     });
+    console.log("getAllUsers length : ", getAllUsers.length)
 
     let startIndex = 0;
     let sliceSize = limit;
@@ -1087,16 +1088,12 @@ async function updateQuery(limit: number) {
             let getNewUsername = (element.email).toString().split('@')[0];
             let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
             await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-            await admin.firestore().collection('users').doc(element.id).set({
-              username: admin.firestore.FieldValue.delete()
-            }, { merge: true })
+
           } else {
             let getNewUsername = generateRandomName()
             let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
             await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-            await admin.firestore().collection('users').doc(element.id).set({
-              username: admin.firestore.FieldValue.delete()
-            }, { merge: true })
+
           }
         } else {
           console.log("else part")
@@ -1105,9 +1102,7 @@ async function updateQuery(limit: number) {
           let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
           let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
           await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-          await admin.firestore().collection('users').doc(element.id).set({
-            username: admin.firestore.FieldValue.delete()
-          }, { merge: true })
+
         }
       }
       startIndex += sliceSize;
@@ -1138,3 +1133,4 @@ function generateRandomName() {
   usedNames.add(name);
   return name;
 }
+
