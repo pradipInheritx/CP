@@ -102,9 +102,9 @@ class Refer {
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
     const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
-    const commission = parseFloat(getCommissionNumber)
+    const commission = Number(getCommissionNumber)
     const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
-    const newCommission = Number(parentVoteStatistics?.commission || 0) + commission
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
     console.log("Score ",score)
     console.log("parentVoteStatistics : ",parentVoteStatistics)
     console.log("parent get commission :",commission)
@@ -122,8 +122,8 @@ class Refer {
         successful: Number(parentVoteStatistics?.successful || 0),
         rank: Number(parentVoteStatistics?.rank || 0),
         total: Number(parentVoteStatistics?.total || 0),
-        score: parseFloat(newScore),
-        commission: newCommission,
+        score: Number(newScore),
+        commission: Number(newCommission),
       },
     });
   }
