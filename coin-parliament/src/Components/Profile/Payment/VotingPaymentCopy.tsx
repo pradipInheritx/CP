@@ -675,7 +675,6 @@ const VotingPaymentCopy: React.FC<{
         paymentDetails: detail,
 
       }
-
       axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
         {
           headers: headers
@@ -717,16 +716,17 @@ const VotingPaymentCopy: React.FC<{
           const amountToSend = ethers.utils.parseUnits('0.0001');
           console.log(amountToSend,"amountToSend")
           console.log(coinInfo?.currency, "coinInfo?.currency")
-          const gasLimit = await usdtContract.estimateGas.transfer(
-            "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d",
-            amountToSend
-          );
-          console.log("Estimated Gas Limit:", gasLimit.toString());
+          // const gasLimit = await usdtContract.estimateGas.transfer(
+          //   "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d",
+          //   amountToSend
+          // );
+          // console.log("Estimated Gas Limit:", gasLimit.toString());
           const trax = {
             to: usdtContractAddress,
             value: ethers.utils.parseUnits('0.0001'),
             data: usdtContract.interface.encodeFunctionData('transfer', [recipientAddress, amountToSend]),
             // gasLimit: estimatedGasLimit,
+            gasLimit: ethers.utils.parseEther('0.0001'),
           };
           const txResponse = await wallet.sendTransaction(trax);
   
