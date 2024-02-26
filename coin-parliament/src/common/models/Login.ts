@@ -295,7 +295,7 @@ export const SignupRegular = async (
       showToast("Successfully sent  verification link on your mail");
     });
     if (auth?.currentUser?.uid) {
-      await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true });
+      await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true ,isVoteToEarn: false});
     }
 
     // @ts-ignore
