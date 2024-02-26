@@ -1607,5 +1607,76 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 
 // ******************* END CRON JOBS ****************
 
+// Define endpoint for sending push notifications
+app.post('/send-notification', async (req, res) => {
+  const { token, title, body } = req.body;
+
+  try {
+    const message = {
+      token,
+      notification: {
+        title,
+        body
+      }
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log('Successfully sent message:', response);
+    return res.status(200).json({
+      success: true,
+      message: 'Notification sent successfully',
+      result: {}
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to send notification',
+      return: error
+    });
+  }
+});
+
+exports.updateUser = functions.https.onCall(async (data) => {
+  try {
+    const userId = data.params.userId;
+    const userProfileData = data.body; // Assuming the request body contains user profile data
+
+    // Update user profile in Firebase
+    await admin.firestore().collection('users').doc(userId).update(userProfileData);
+
+    return {
+      status: true,
+      message: "User Profile Updated Successfully",
+      result: null
+    }
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    return {
+      status: false,
+      message: "User Profile Not Updated",
+      result: null
+    }
+  }
+});
+
+
+exports.createUser = functions.https.onCall(async (data) => {
+  const { email, password } = data;
+  try {
+    const userRecord = await admin.auth().createUser({ email, password });
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: userRecord.uid
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null
+    }
+  };
+});
 
 
