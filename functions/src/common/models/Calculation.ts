@@ -192,7 +192,7 @@ class Calculation {
 
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
-      const endValue = voteResult?.valueExpirationTime;
+      const endValue :any= voteResult?.valueExpirationTime;
       const upRange =
         Number(startValue) +
         (Number(startValue) * CPMReturnRangePercentage) / 100;
