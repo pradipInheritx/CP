@@ -86,6 +86,7 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
+  poolMiningNotification,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
@@ -1153,6 +1154,58 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
   const userIds = data.userIds;
   return await getLeaderUsersByIds(userIds);
 });
+
+exports.setParentCommission = functions.https.onCall(async (data: any) => {
+  const { childId, voteScore } = data;
+  const db = admin.firestore().collection('users')
+  try {
+    const getSettings: any = (await admin.firestore().collection('settings').doc('settings').get()).data();
+    const { pctReferralActivity } = getSettings.CPMSettings;
+
+    const getChild = (await db.doc(childId).get()).data();
+    if (!getChild) {
+      return {
+        status: false,
+        message: "child do not have parent",
+      }
+    }
+    const getParent = (await db.doc(getChild.parent).get()).data();
+    const parentVoteStatistics = getParent?.voteStatistics;
+    const getCommissionNumber = (Number(voteScore * pctReferralActivity) / 100).toFixed(4);
+    const commission = Number(getCommissionNumber)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
+    console.log("Score ", voteScore)
+    console.log("parentVoteStatistics : ", parentVoteStatistics)
+    console.log("parent get commission :", commission)
+    console.log("new Score ", newScore)
+    console.log("newCommission :", newCommission)
+    const childNewReferScore = getChild.refereeScrore + commission
+    // child refer score
+    await db.doc(childId).set({ refereeScrore: childNewReferScore }, { merge: true });
+    // parent commission
+    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: newCommission } }, { merge: true });
+    console.log(
+      "pool mining Notification is calling: -- ",
+      getChild.parent,
+      getChild.displayName || "",
+      getChild.refereeScrore
+    );
+    console.log("commission : ", commission);
+    console.log("score -- ", voteScore);
+    await poolMiningNotification(
+      getChild.parent,
+      getChild.displayName || "",
+      commission
+    );
+    return {
+      status: true,
+      message: "parent commission and child refer score added successfully",
+    }
+  } catch (error) {
+    return errorLogging("setParentCommission", "Error: ", error);
+  }
+})
 
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
