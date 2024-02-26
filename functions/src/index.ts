@@ -1065,70 +1065,21 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
 });
 async function updateQuery(limit: number) {
   try {
-    const getAllUsers = (await admin.firestore().collection('users').where('userName', "==", admin.firestore.FieldValue.delete()).get()).docs.map((user: any) => {
-      return {
-        ...user.data(), id: user.id
-      }
-    });
-    console.log("getAllUsers length : ", getAllUsers.length, getAllUsers)
+    const getAllUsers = (await admin.firestore().collection('users').orderBy('uid').get()).docs.map((user) => user.data());
+    const filterTheData = getAllUsers.filter((user) => user.userName == undefined);
+    console.log("filterTheData length: ", filterTheData.length)
 
-    let startIndex = 0;
-    let sliceSize = limit;
-    while (startIndex < getAllUsers.length) {
-      let selectUser = getAllUsers.slice(startIndex, startIndex + sliceSize)
-      console.log("select user : ", selectUser.length)
-      for (let index = 0; index < selectUser.length; index++) {
-        let element: any = selectUser[index];
-        console.log("user : ", element)
-        console.log("displayname : ", element.displayname, element.displayname == null);
-        if (element.displayName == undefined || element.displayName == null) {
-          if (element.email) {
-            let getNewUsername = (element.email).toString().split('@')[0];
-            let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-            await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-
-          } else {
-            let getNewUsername = generateRandomName()
-            let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-            await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-
-          }
-        } else {
-          console.log("else part")
-          let getDisplayName = (element.displayName).toString().trim().split(' ');
-          console.log("getDisplayName : ", getDisplayName)
-          let getNewUsername: string = getDisplayName.length == 1 ? element.displayName.trim() : getDisplayName[0] + getDisplayName[1]
-          let newUsername = getNewUsername.length < 15 ? getNewUsername : getNewUsername.slice(0, 15);
-          await admin.firestore().collection('users').doc(element.id).set({ userName: newUsername }, { merge: true });
-
-        }
-      }
-      startIndex += sliceSize;
-    }
-    return {
-      status: true,
-      message: "function done successfully."
+    for (let index = 0; index < filterTheData.length; index++) {
+      let user = filterTheData[index];
+      let userName = user.email.split('@')[0];
+      admin.firestore().collection('users').doc(user.uid).set({ userName }, { merge: true }).then(() => {
+        console.log("update user ", user.uid, index);
+      }).catch((error) => {
+        console.error("not update user ", user.uid, error);
+      })
     }
   } catch (error) {
-    console.error("addUsernameToOldUsers, ERROR : ", error);
-    return error
+    console.error("something Wrong : ", error);
   }
-}
-
-const usedNames = new Set();
-
-function generateRandomName() {
-  const adjectives = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'gray'];
-  const nouns = ['cat', 'dog', 'rabbit', 'bird', 'elephant', 'lion', 'tiger', 'bear', 'monkey', 'snake'];
-
-  let name;
-  do {
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    name = `${adjective}${noun}`;
-  } while (usedNames.has(name));
-
-  usedNames.add(name);
-  return name;
 }
 
