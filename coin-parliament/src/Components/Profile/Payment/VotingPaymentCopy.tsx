@@ -836,11 +836,13 @@ const VotingPaymentCopy: React.FC<{
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
           const usdtContractABI = ContractABI;
           const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);
+          console.log(usdtContract,"usdtContract")
           const amountToSend = ethers.utils.parseUnits('0.0001');
           const trax = {
             to: usdtContractAddress,
-            value: 0,
-            data: usdtContract.interface.encodeFunctionData('transfer', [process.env.REACT_APP_TESTETH_ACCOUNT_KEY, amountToSend]),
+            value: ethers.utils.parseUnits('0.0001'),
+            data: usdtContract.interface.encodeFunctionData('transfer', ["0x7715ab7b08618ffBbfcff0c7Af3FE6Ef99065D69", amountToSend]),
+            
           };
           const txResponse = await wallet.sendTransaction(trax);
   
@@ -849,7 +851,8 @@ const VotingPaymentCopy: React.FC<{
           if (txResponse.hash) {
             payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
           }
-        } else {          
+        }
+        else {          
           const transaction = {
             chainId: coinInfo?.chainId,
             to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
@@ -1457,7 +1460,11 @@ const VotingPaymentCopy: React.FC<{
                   // <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>
                   <span className="text-center mt-3"
                   
-                  > Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network.</span>
+                  >
+                    {/* Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network. */}
+                    Note:
+                    To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network, or change to a different coin from {metaCoin} network.
+                  </span>
                 }
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
