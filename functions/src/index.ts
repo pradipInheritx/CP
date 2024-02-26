@@ -1065,20 +1065,18 @@ exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
 });
 async function updateQuery(limit: number) {
   try {
-    const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => {
-      let userdata = user.data();
-      return userdata['userName'] == undefined ?
-        {
-          ...user.data(), id: user.id
-        }
-        : null;
+    const getAllUsers = (await admin.firestore().collection('users').where('userName', "==", admin.firestore.FieldValue.delete()).get()).docs.map((user: any) => {
+      return {
+        ...user.data(), id: user.id
+      }
     });
-    console.log("getAllUsers length : ", getAllUsers.length)
+    console.log("getAllUsers length : ", getAllUsers.length, getAllUsers)
 
     let startIndex = 0;
     let sliceSize = limit;
     while (startIndex < getAllUsers.length) {
       let selectUser = getAllUsers.slice(startIndex, startIndex + sliceSize)
+      console.log("select user : ", selectUser.length)
       for (let index = 0; index < selectUser.length; index++) {
         let element: any = selectUser[index];
         console.log("user : ", element)
