@@ -9,6 +9,7 @@ import styled from "styled-components";
 import UserContext from "../../../Contexts/User";
 import Coins from "../../Coins/Coins";
 import { calcFavorites } from "../../../common/utils/coins";
+import { mainnet, ContractABI } from '../../Profile/utils';
 import AppContext from "../../../Contexts/AppContext";
 import { HomeContainer } from "../../App/App";
 import NotificationContext, { ToastType } from "../../../Contexts/Notification";
@@ -390,135 +391,6 @@ line-height: 101.5%;
 
 `;
 
-const mainnet = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://cloudflare-eth.com'
-  },
-  {
-    chainId: 1,
-    name: 'USDT ERC20',
-    currency: 'USDT ERC20',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://cloudflare-eth.com'
-  },
-  {
-    chainId: 56,
-    name: 'Binance',
-    currency: 'BNB',
-    explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
-  },
-  {
-    chainId: 137,
-    name: 'Polygon Mainnet',
-    currency: 'MATIC',
-    explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
-  },
-  {
-    chainId: 11155111,
-    name: 'Sepolia Test Netwok',
-    currency: 'SepoliaETH',
-    explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://1rpc.io/sepolia'
-  }
-
-]
-
-// const ContractABI = [
-//   {
-//     "constant": true,
-//     "inputs": [],
-//     "name": "name",
-//     "outputs": [
-//       {
-//         "name": "",
-//         "type": "string"
-//       }
-//     ],
-//     "payable": false,
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "constant": true,
-//     "inputs": [],
-//     "name": "symbol",
-//     "outputs": [
-//       {
-//         "name": "",
-//         "type": "string"
-//       }
-//     ],
-//     "payable": false,
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "constant": true,
-//     "inputs": [],
-//     "name": "decimals",
-//     "outputs": [
-//       {
-//         "name": "",
-//         "type": "uint8"
-//       }
-//     ],
-//     "payable": false,
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "constant": false,
-//     "inputs": [
-//       {
-//         "name": "_to",
-//         "type": "address"
-//       },
-//       {
-//         "name": "_value",
-//         "type": "uint256"
-//       }
-//     ],
-//     "name": "transfer",
-//     "outputs": [
-//       {
-//         "name": "",
-//         "type": "bool"
-//       }
-//     ],
-//     "payable": false,
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "constant": true,
-//     "inputs": [
-//       {
-//         "name": "_owner",
-//         "type": "address"
-//       }
-//     ],
-//     "name": "balanceOf",
-//     "outputs": [
-//       {
-//         "name": "balance",
-//         "type": "uint256"
-//       }
-//     ],
-//     "payable": false,
-//     "stateMutability": "view",
-//     "type": "function"
-//   }
-// ]
-
-const ContractABI = [
-  { "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_upgradedAddress", "type": "address" }], "name": "deprecate", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "deprecated", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_evilUser", "type": "address" }], "name": "addBlackList", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "upgradedAddress", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balances", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "maximumFee", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "unpause", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_maker", "type": "address" }], "name": "getBlackListStatus", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowed", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "paused", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "who", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "pause", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "getOwner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "newBasisPoints", "type": "uint256" }, { "name": "newMaxFee", "type": "uint256" }], "name": "setParams", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "amount", "type": "uint256" }], "name": "issue", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "amount", "type": "uint256" }], "name": "redeem", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }, { "name": "_spender", "type": "address" }], "name": "allowance", "outputs": [{ "name": "remaining", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "basisPointsRate", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "isBlackListed", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_clearedUser", "type": "address" }], "name": "removeBlackList", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "MAX_UINT", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_blackListedUser", "type": "address" }], "name": "destroyBlackFunds", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "name": "_initialSupply", "type": "uint256" }, { "name": "_name", "type": "string" }, { "name": "_symbol", "type": "string" }, { "name": "_decimals", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "amount", "type": "uint256" }], "name": "Issue", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "amount", "type": "uint256" }], "name": "Redeem", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "newAddress", "type": "address" }], "name": "Deprecate", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "feeBasisPoints", "type": "uint256" }, { "indexed": false, "name": "maxFee", "type": "uint256" }], "name": "Params", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_blackListedUser", "type": "address" }, { "indexed": false, "name": "_balance", "type": "uint256" }], "name": "DestroyedBlackFunds", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_user", "type": "address" }], "name": "AddedBlackList", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "_user", "type": "address" }], "name": "RemovedBlackList", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "spender", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Pause", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Unpause", "type": "event" }
-]
 
 const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
@@ -612,25 +484,25 @@ const VotingPaymentCopy: React.FC<{
 
   console.log(selectCoin,"selectCoincheck")
   
-    const getCoinList = async () => {
-      const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
+    // const getCoinList = async () => {
+    //   const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
-      try {
-        const snapshot = await getDoc(coinsDocRef);
-        const allList = snapshot.data()?.mainnet;
-        console.log(allList,"allList")
-        // const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
-        // setCoinsList(filterCoin || allList);
-        setCoinsList(allList);
+    //   try {
+    //     const snapshot = await getDoc(coinsDocRef);
+    //     const allList = snapshot.data()?.mainnet;
+    //     console.log(allList,"allList")
+    //     // const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
+    //     // setCoinsList(filterCoin || allList);
+    //     setCoinsList(allList);
 
-      } catch (error) {
-        console.log(error, "error");
-      }
-    };
+    //   } catch (error) {
+    //     console.log(error, "error");
+    //   }
+    // };
 
-    useEffect(() => {      
-      // getCoinList()
-    }, [])
+    // useEffect(() => {      
+    //   // getCoinList()
+    // }, [])
 
 
   const handleClick = async () => {
@@ -757,7 +629,7 @@ const VotingPaymentCopy: React.FC<{
       const data = mainnet?.find((network?: any) => network?.chainId == chainId )
       if (!data) return
       if (selectCoin == "none") {        
-        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.name)        
+        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)        
         setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
           chainId: 1,
           name: 'USDT ERC20',
@@ -775,7 +647,8 @@ const VotingPaymentCopy: React.FC<{
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
-    const payNow = (detail?: any) => {
+  const payNow = (detail?: any) => {
+      
       const headers = {
         // 'Content-Type': 'application/json',
         "accept": "application/json",
@@ -827,22 +700,33 @@ const VotingPaymentCopy: React.FC<{
     }
     async function sendTransaction() {    
       setTransactionInst(false)
+      setTimeout(() => {
+        setIsLoading(false)
+        console.log("take more that 5 sec")
+      }, 5000);
       let ethereum = (window as any).ethereum;
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
-
         if (coinInfo?.currency == "USDT ERC20") {
+          
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
           const usdtContractABI = ContractABI;
-          const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);
-          console.log(usdtContract,"usdtContract")
+          const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);          
+          const recipientAddress = "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d";
           const amountToSend = ethers.utils.parseUnits('0.0001');
+          console.log(amountToSend,"amountToSend")
+          console.log(coinInfo?.currency, "coinInfo?.currency")
+          const gasLimit = await usdtContract.estimateGas.transfer(
+            "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d",
+            amountToSend
+          );
+          console.log("Estimated Gas Limit:", gasLimit.toString());
           const trax = {
             to: usdtContractAddress,
             value: ethers.utils.parseUnits('0.0001'),
-            data: usdtContract.interface.encodeFunctionData('transfer', ["0x7715ab7b08618ffBbfcff0c7Af3FE6Ef99065D69", amountToSend]),
-            
+            data: usdtContract.interface.encodeFunctionData('transfer', [recipientAddress, amountToSend]),
+            // gasLimit: estimatedGasLimit,
           };
           const txResponse = await wallet.sendTransaction(trax);
   
@@ -865,9 +749,7 @@ const VotingPaymentCopy: React.FC<{
           if (txResponse.hash) {
             payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
           }
-        }
-        
-        
+        }                   
         console.log('Transaction mined!');
 
       } catch (error: any) {
@@ -878,6 +760,9 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false);
         setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'user rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
       }
+      
+      
+
   } 
 
   // const switchToChain = async () => {
@@ -1029,7 +914,7 @@ const VotingPaymentCopy: React.FC<{
         </div>}
         
         {/* <button onClick={addEthereumNetwork}>Switch to Ethereum Mainnet</button> */}
-        {/* <button onClick={()=>open({view:"Networks"})}>Open network</button> */}
+        {/* <button onClick={() => {getGessFee()}}>Open network</button> */}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
@@ -1253,13 +1138,13 @@ const VotingPaymentCopy: React.FC<{
                           style={{
 
                             maxHeight: "200px",
-                            top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length * 44}px`}` : ""}`,
+                            top: `${selectCoin == "none" ? `${mainnet.length > 5 ? "-200px" : `-${mainnet.length * 44}px`}` : ""}`,
                             borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                             borderTop: "none",
                             border: " 1px solid #cab7ff",
                           }}
                         >
-                          {coinsList?.map((option: any, index: number) => {
+                          {mainnet?.map((option: any, index: number) => {
 
                             return (
                               <>
@@ -1354,13 +1239,13 @@ const VotingPaymentCopy: React.FC<{
                         style={{
 
                           maxHeight: "200px",                        
-                          top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length*44}px`}` : ""}`,
+                          top: `${selectCoin == "none" ? `${mainnet.length > 5 ? "-200px" : `-${mainnet.length*44}px`}` : ""}`,
                           borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                           borderTop: "none",
                           border: " 1px solid #cab7ff",
                         }}
                       >
-                        {coinsList?.map((option: any, index: number) => {
+                        {mainnet?.map((option: any, index: number) => {
                                         
                             return (
                               <>
@@ -1455,23 +1340,43 @@ const VotingPaymentCopy: React.FC<{
                     </ButttonDiv>
                   </div >
                 }
-                {/* {chainNetworkTest && <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>} */}
                 {chainNetworkTest &&
                   // <span>Please select same coin as your {coinInfo?.name} network or  switch network to {localStorage.getItem("CoinPay")} network manually from your wallet</span>
                   <span className="text-center mt-3"
-                  
+
                   >
                     {/* Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network. */}
                     Note:
                     To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network, or change to a different coin from {metaCoin} network.
                   </span>
                 }
+
+                {
+                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId &&  <div
+                    className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                  >
+                    <ButttonDiv className="mt-1">
+                      <button
+                        disabled={payButton}
+                        style={{
+                          // opacity: `${payButton ? "0.6" : "1"}`
+                        }}
+                        onClick={() => {
+                          handleClickMob()                                                                               
+                        }}
+                      >
+
+                        {payButton ? "Changeing..." : 'Change network'}
+                      </button>
+                    </ButttonDiv>
+                  </div >
+                }                                
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
 
                   <>                  
                     {
-                      (window.innerWidth > 768 || isConnected) && !chainNetworkTest  &&<div
+                      (window.innerWidth > 768 || isConnected) && !chainNetworkTest && ((window.innerWidth < 768 && coinInfo?.chainId == chainId) || window.innerWidth > 768)&& <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                       >
                         <ButttonDiv className="mt-1"
@@ -1506,10 +1411,11 @@ const VotingPaymentCopy: React.FC<{
                 {payType !== "EXTRAVOTES" && selectCoin != "none" &&
                   <>
 
+                  {(window.innerWidth > 768 || isConnected) && !chainNetworkTest && (window.innerWidth < 768 && coinInfo?.chainId == chainId) && 
                     <div
                       className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                     >
-                    {(window.innerWidth > 768 || isConnected) && !chainNetworkTest  &&<ButttonDivSec className="mt-1"
+                    <ButttonDivSec className="mt-1"
                       style={{
                         // opacity: `${chainNetworkTest ? 0.7 : 1}`
                       }}
@@ -1544,8 +1450,8 @@ const VotingPaymentCopy: React.FC<{
                             <p>$99</p>
                           </div>
                         </button>
-                      </ButttonDivSec>}                    
-                    </div>
+                      </ButttonDivSec>           
+                    </div>}
                   </>
                 }
               </Boxdiv>}
