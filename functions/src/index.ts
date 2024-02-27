@@ -1659,6 +1659,60 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 //   });
 
 // ******************* END CRON JOBS ****************
+exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const getCommissionUsers = (await admin.firestore().collection('users').where('voteStatistics.commission', '>', 0).get()).docs.map((user: any) => {
+      let userData = user.data();
+      return {
+        parentId: user.id,
+        parentVoteStatistics: userData.voteStatistics,
+        childIds: userData.children
+      }
+    });
+    console.log("getCommissionUsers ", getCommissionUsers.length)
 
+    return {
+      status: true,
+      message: "success to get users",
+      result: getCommissionUsers
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error
+    }
+  }
+});
 
+exports.correctCommission = functions.https.onCall(async (data: any) => {
+  const { user } = data;
+
+  try {
+    let commission = 0
+    for (let index = 0; index < user.children.length; index++) {
+      const element = user.children[index];
+      commission += await admin.firestore().collection('users').doc(element).get().then((child) => {
+        let childData = child.data();
+        return childData?.refereeScrore
+      })
+    }
+    console.log("commission : ", commission);
+    await admin.firestore().collection('users').doc(user.parentId).set({
+      voteStatistics : {...user.parentVoteStatistics , commission}
+    },{merge: true}).then(()=>{
+      console.log("success to update users", user.parentId)
+    });
+    return {
+      status: true,
+      message: "success to update users",
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error
+    }
+  }
+})
 
