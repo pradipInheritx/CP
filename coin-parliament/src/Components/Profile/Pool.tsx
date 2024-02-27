@@ -56,10 +56,9 @@ const Pool = () => {
   const referralUrl = `${document.location.protocol}//${document.location.host}/sign-up?refer=${userInfo?.userName}`;
   
   useEffect(() => {
-    setIsLoading(true);
     (async()=>await getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading:setIsLoading }))()
   }, [userInfo?.children]);
-
+  
   return (
     <>
       <div className={`${window.screen.width > 767 ? "pt-4" : ""}`}
@@ -85,7 +84,7 @@ const Pool = () => {
         </div>
         <div className="mb-3">
           <Info
-            friends={userInfo?.children?.length || 0}
+            friends={children?.length || 0}
             cpm={cmpValue}
           />
         </div>

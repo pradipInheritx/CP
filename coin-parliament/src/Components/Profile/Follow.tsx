@@ -29,13 +29,16 @@ export const getUsers = async({
   setUsers: (newUsers: Leader[]) => void;
 }) => {
   try {
-    users?.length &&
+     if (!users?.length)return;
+    setIsLoading(true)
      await getLeaderUsersByIds({ userIds: users }).then((u) => {
-        setUsers(u.data);
+      const data=u.data?.filter(value=>value?.displayName)
+        setUsers(data);
         // if(setIsLoading){
           // }
-        });
         setIsLoading(false)
+     }).catch(()=>{setIsLoading(false)})
+
   } catch (e) {
     setUsers([] as Leader[]);
     // if(setIsLoading){

@@ -267,7 +267,7 @@ const PersonalInfo = () => {
             />
             <TextField
               {...{
-                label: `${"Dispaly Name"}`,
+                label: `${"Display Name"}`,
                 name: "displayName",
                 placeholder: "Display Name",
                 min: 6,
