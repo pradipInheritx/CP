@@ -216,7 +216,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_VOTINGPARLIAMEMNT}/api/v1/user/verify?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
