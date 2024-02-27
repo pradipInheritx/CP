@@ -701,6 +701,8 @@ const VotingPaymentCopy: React.FC<{
       setTransactionInst(false)
       setTimeout(() => {
         setIsLoading(false)
+        setShowText(false)
+        setPayButton(false)
         console.log("take more that 5 sec")
       }, 5000);
       let ethereum = (window as any).ethereum;
@@ -1352,7 +1354,7 @@ const VotingPaymentCopy: React.FC<{
                 }
 
                 {
-                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId &&  <div
+                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId && !chainNetworkTest &&  <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     <ButttonDiv className="mt-1">
