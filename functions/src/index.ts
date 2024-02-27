@@ -1060,7 +1060,7 @@ exports.sendEmail = functions.https.onCall(async () => {
 
 
 exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
-  await getAllUsersToUpdate()
+  return await getAllUsersToUpdate()
 });
 async function getAllUsersToUpdate() {
   try {
