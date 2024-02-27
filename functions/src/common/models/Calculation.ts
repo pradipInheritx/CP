@@ -192,7 +192,7 @@ class Calculation {
 
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
-      const endValue = voteResult?.valueExpirationTime;
+      const endValue: any = voteResult?.valueExpirationTime;
       const upRange =
         Number(startValue) +
         (Number(startValue) * CPMReturnRangePercentage) / 100;
@@ -430,12 +430,12 @@ export const getStatus: (
   currentUserType: UserTypeProps,
   prevUserType?: UserTypeProps
 ) => {
-  return [
-    percentage >= (prevUserType?.share || 0) &&
+    return [
+      percentage >= (prevUserType?.share || 0) &&
       percentage < currentUserType.share + (prevUserType?.share || 0),
-    currentUserType,
-  ];
-};
+      currentUserType,
+    ];
+  };
 
 export default Calculation;
 
@@ -471,21 +471,21 @@ export const getLeaderUsers = async (userId: string) => {
   return {
     leaders: leaders
       ? leaders.docs
-          .map((leader) => {
-            const { status } = leader.data();
-            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
-          })
-          .filter((l) => l)
+        .map((leader) => {
+          const { status } = leader.data();
+          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+          return leaderObj ? { ...leaderObj, status } : undefined;
+        })
+        .filter((l) => l)
       : undefined,
     subscribers: subscribers
       ? subscribers.docs
-          .map((leader) => {
-            const { status } = leader.data();
-            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
-          })
-          .filter((l) => l)
+        .map((leader) => {
+          const { status } = leader.data();
+          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+          return leaderObj ? { ...leaderObj, status } : undefined;
+        })
+        .filter((l) => l)
       : undefined,
   } as {
     leaders?: Leader[];
