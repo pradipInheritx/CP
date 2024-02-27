@@ -129,6 +129,7 @@ export const LoginAuthProvider = async (
       await saveUserData((auth?.currentUser?.uid || ''), db, {
         // ...userDefaultData,
         firstTimeLogin: true,
+        isVoteToEarn: true,
         parent: referUser?.uid,
         // email: auth?.currentUser?.email,
         // displayName: (auth.currentUser?.displayName || ''),
@@ -353,6 +354,7 @@ export const SignupRegular = async (
     await saveUserData((AuthUser?.uid || ''), db, {
 
       firstTimeLogin: true,
+      isVoteToEarn: true,
       parent: referUser?.uid,
       // displayName: await generateUsername()
     });
