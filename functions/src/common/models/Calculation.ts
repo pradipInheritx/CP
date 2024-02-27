@@ -7,10 +7,10 @@ import { voteConverter } from "./Vote";
 import { Direction, VoteResultProps } from "../interfaces/Vote.interface"
 import { UserProps, UserTypeProps, Leader, Totals } from '../interfaces/User.interface'
 import { firestore } from "firebase-admin";
-import Refer, { VoteRules } from "./Refer";
+import { VoteRules } from "./Refer";
 import {
   voteExpireAndGetCpmNotification,
-  poolMiningNotification,
+  // poolMiningNotification,
 } from "./SendCustomNotification";
 import { errorLogging } from "../helpers/commonFunction.helper";
 
@@ -363,37 +363,40 @@ class Calculation {
       );
 
       // For Add Only Commission In Current User
-      const { CPMSettings } = await Refer.getSettings();
-      const { pctReferralActivity } = CPMSettings;
-      const commission = Number(score * pctReferralActivity) / 100;
-      const refereeScrore: Number = parseFloat(
-        ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(4)
-      );
-      console.log("child data : ", voteStatistics, refereeScrore)
+      // const { CPMSettings } = await Refer.getSettings();
+      // const { pctReferralActivity } = CPMSettings;
+      // const commission = Number(score * pctReferralActivity) / 100;
+      // const refereeScrore: Number = parseFloat(
+      //   ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(4)
+      // );
+      console.log("child data : ", voteStatistics)
 
       await ref.set(
-        { voteStatistics, refereeScrore: refereeScrore },
+        {
+          voteStatistics,
+          // refereeScrore: refereeScrore
+        },
         { merge: true }
       );
       console.log("user.parent -----", user.parent);
-      if (user.parent) {
-        const refer = new Refer(user.parent, "");
-        await refer.payParent(score);
-        // send Notification
-        console.log(
-          "pool mining Notification is calling: -- ",
-          user.parent,
-          user.displayName || "",
-          user.refereeScrore
-        );
-        console.log("commission : ", commission);
-        console.log("score -- ", score);
-        await poolMiningNotification(
-          user.parent,
-          user.displayName || "",
-          commission
-        );
-      }
+      // if (user.parent) {
+      //   const refer = new Refer(user.parent, "");
+      //   await refer.payParent(score);
+      //   // send Notification
+      //   console.log(
+      //     "pool mining Notification is calling: -- ",
+      //     user.parent,
+      //     user.displayName || "",
+      //     user.refereeScrore
+      //   );
+      //   console.log("commission : ", commission);
+      //   console.log("score -- ", score);
+      //   await poolMiningNotification(
+      //     user.parent,
+      //     user.displayName || "",
+      //     commission
+      //   );
+      // }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
     }
