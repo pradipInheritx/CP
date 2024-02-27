@@ -215,7 +215,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_STOCKPARLIAMENT}/api/v1/user/verify?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
@@ -235,7 +235,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
 });
 
 
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user", user);
   const status: UserTypeProps = {
     name: "Member",
@@ -277,6 +277,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn:user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     googleAuthenticatorData: {},
@@ -293,18 +294,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .set(userData);
     console.info("updatedUser", updatedUser)
 
-    //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Stock Parliament!",
-      userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-    );
+    if (user.isVoteToEarn == false) {
+      //Send Welcome Mail To User
+      await sendEmail(
+        userData.email,
+        "Welcome To Stock Parliament!",
+        userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
 
-    const getUserEmail: any = (
-      await admin.firestore().collection("users").doc(user.uid).get()
-    ).data();
-    console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+      const getUserEmail: any = (
+        await admin.firestore().collection("users").doc(user.uid).get()
+      ).data();
+      console.log("new user email  : ", getUserEmail.email);
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
 
     return updatedUser;
 
