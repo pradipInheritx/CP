@@ -1071,7 +1071,7 @@ async function getAllUsersToUpdate() {
   try {
     const userNeedToUpdate = []
     const getAllUsers = (await admin.firestore().collection('users').orderBy('uid').get()).docs.map((user) => user.data());
-    const filterTheData = getAllUsers.filter((user) => user.username == "" || user.username != "");
+    const filterTheData = getAllUsers.filter((user) => user.username != "");
     console.log("filterTheData length: ", filterTheData.length)
 
     for (let index = 0; index < filterTheData.length; index++) {
