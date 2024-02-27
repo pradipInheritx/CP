@@ -1060,26 +1060,41 @@ exports.sendEmail = functions.https.onCall(async () => {
 
 
 exports.addUsernameToOldUsers = functions.https.onCall(async (data: any) => {
-  const { sliceLimit } = data;
-  await updateQuery(sliceLimit)
+  await getAllUsersToUpdate()
 });
-async function updateQuery(limit: number) {
+async function getAllUsersToUpdate() {
   try {
+    const userNeedToUpdate = []
     const getAllUsers = (await admin.firestore().collection('users').orderBy('uid').get()).docs.map((user) => user.data());
     const filterTheData = getAllUsers.filter((user) => user.userName == undefined);
     console.log("filterTheData length: ", filterTheData.length)
 
     for (let index = 0; index < filterTheData.length; index++) {
       let user = filterTheData[index];
-      let userName = user.email.split('@')[0];
-      admin.firestore().collection('users').doc(user.uid).set({ userName }, { merge: true }).then(() => {
-        console.log("update user ", user.uid, index);
-      }).catch((error) => {
-        console.error("not update user ", user.uid, error);
+      console.log("user email: ", user.email);
+      let getEmail = user.email ? user.email : 'N/A';
+      userNeedToUpdate.push({
+        userId: user.uid,
+        email: getEmail,
       })
+
+
+      // let date = Date.now();
+      // let userName = user.email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
+      // admin.firestore().collection('users').doc(user.uid).set({ userName }, { merge: true }).then(() => {
+      //   console.log("update user ", user.uid, index);
+      // }).catch((error) => {
+      //   console.error("not update user ", user.uid, error);
+      // })
+    }
+    return {
+      status: true,
+      message: "get all users to update",
+      result: userNeedToUpdate
     }
   } catch (error) {
     console.error("something Wrong : ", error);
+    return false
   }
 }
 
