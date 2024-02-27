@@ -626,10 +626,10 @@ const VotingPaymentCopy: React.FC<{
   useEffect(() => {
     // let CoinPay = localStorage.getItem("CoinPay")
     if (chainId && isConnected) {
-      const data = mainnet?.find((network?: any) => network?.chainId == chainId )
+      const data = mainnet?.find((network?: any) => network?.chainId == chainId)
       if (!data) return
       if (selectCoin == "none") {        
-        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)        
+        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)         
         setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
           chainId: 1,
           name: 'USDT ERC20',
@@ -645,6 +645,24 @@ const VotingPaymentCopy: React.FC<{
       }
 
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
+
+  useEffect(() => {
+    if (chainId && isConnected) {
+      const data = mainnet?.find((network?: any) => network?.chainId == chainId) 
+      if (!data) return
+      if (coinInfo.chainId != chainId) {
+        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
+        setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
+          chainId: 1,
+          name: 'USDT ERC20',
+          currency: 'USDT ERC20',
+          explorerUrl: 'https://etherscan.io',
+          rpcUrl: 'https://cloudflare-eth.com'
+        } : data)
+      }
+    }
+  }, [chainId])
+  
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
   const payNow = (detail?: any) => {
