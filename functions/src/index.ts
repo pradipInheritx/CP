@@ -1662,13 +1662,21 @@ exports.updateUser = functions.https.onCall(async (data) => {
 
 
 exports.appendUserName = functions.https.onCall(async (data) => {
-  const { email, password } = data;
+  const { users } = data;
+  let updatedUsers = [];
   try {
-    const userRecord = await admin.auth().createUser({ email, password });
+
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName = users[user].email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
+        updatedUsers.push({ ...users[user], userName })
+      }
+    }
     return {
       status: true,
       message: "User Created Successfully",
-      data: userRecord.uid
+      data: updatedUsers
     };
   } catch (error) {
     return {
