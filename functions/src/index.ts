@@ -408,14 +408,14 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     console.log("new user email  : ", getUserEmail.email);
 
     //Send Welcome Mail To User
-    // if (user.isVoteToEarn == false) {
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    )
-    await sendEmailVerificationLink(getUserEmail.email);
-    //  }
+    if (user.isVoteToEarn == false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      )
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
 
     return newUser;
   } catch (e) {
@@ -1699,8 +1699,8 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
     }
     console.log("commission : ", commission);
     await admin.firestore().collection('users').doc(user.parentId).set({
-      voteStatistics : {...user.parentVoteStatistics , commission}
-    },{merge: true}).then(()=>{
+      voteStatistics: { ...user.parentVoteStatistics, commission }
+    }, { merge: true }).then(() => {
       console.log("success to update users", user.parentId)
     });
     return {
