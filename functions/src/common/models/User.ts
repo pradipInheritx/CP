@@ -51,7 +51,8 @@ export type UserProps = {
   googleAuthenticatorData?: any,
   voteValue?: number,
   wellDAddress?: wellDAddressType,
-  referalReceiveType?: referalReceiveType
+  referalReceiveType?: referalReceiveType;
+  isVoteToEarn?: boolean;
 };
 
 export type wellDAddressType = []
@@ -220,7 +221,7 @@ export const sendEmailVerificationLink = async (email:string)=>{
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_STOCKPARLIAMENT}/api/v1/user/verified?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
