@@ -1411,7 +1411,7 @@ const VotingPaymentCopy: React.FC<{
                 {payType !== "EXTRAVOTES" && selectCoin != "none" &&
                   <>
 
-                  {(window.innerWidth > 768 || isConnected) && !chainNetworkTest && (window.innerWidth < 768 && coinInfo?.chainId == chainId) && 
+                  {(window.innerWidth > 768 || isConnected) && !chainNetworkTest && (window.innerWidth < 768 && coinInfo?.chainId == chainId || window.innerWidth > 768) && 
                     <div
                       className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                     >

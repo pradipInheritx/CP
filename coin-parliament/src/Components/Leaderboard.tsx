@@ -47,11 +47,13 @@ const Leaderboard = ({
   const pathname = location.pathname;
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
-// console.log(leaders ,"leaderscheck")
+  // @ts-ignore
+  // console.log(leaders[0]?.influencersScore, "leaderscheck")
   return (
     <div>
       <LeadersContainer>
-        {leaders?.sort((a, b) => ((b?.successful || 1) / (b?.total || 1) * (b?.successful || 1)) - ((a?.successful || 1) / (a?.total || 1) * (a?.successful || 1)))
+{/* @ts-ignore */}
+        {leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
           ?.map((leader) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (

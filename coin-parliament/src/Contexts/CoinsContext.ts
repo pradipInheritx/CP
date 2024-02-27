@@ -36,6 +36,8 @@ export type Leader = {
   isUserUpgraded?: boolean;
   successful?: number;
   total?: number;
+  influencersScore?: number;
+
 };
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
