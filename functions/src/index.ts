@@ -1621,15 +1621,15 @@ exports.sendNotificationToUser = functions.https.onCall(async (data) => {
     const response = await admin.messaging().send(message);
     console.log('Successfully sent message:', response);
     return ({
-      success: true,
+      status: true,
       message: 'Notification sent successfully',
       result: response
     });
   } catch (error) {
     console.error('Error sending message:', error);
     return ({
-      success: false,
-      error: 'Failed to send notification',
+      status: false,
+      message: 'Failed to send notification',
       return: error
     });
   }
