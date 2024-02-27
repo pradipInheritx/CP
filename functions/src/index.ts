@@ -1172,7 +1172,7 @@ exports.setParentCommission = functions.https.onCall(async (data: any) => {
     const getParent = (await db.doc(getChild.parent).get()).data();
     const parentVoteStatistics = getParent?.voteStatistics;
     const getCommissionNumber = (Number(voteScore * pctReferralActivity) / 100).toFixed(4);
-    const commission = Number(getCommissionNumber)
+    const commission: number = Number(getCommissionNumber)
     const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
     const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
     console.log("Score ", voteScore)
@@ -1180,11 +1180,11 @@ exports.setParentCommission = functions.https.onCall(async (data: any) => {
     console.log("parent get commission :", commission)
     console.log("new Score ", newScore)
     console.log("newCommission :", newCommission)
-    const childNewReferScore = getChild.refereeScrore + commission
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4)
     // child refer score
-    await db.doc(childId).set({ refereeScrore: childNewReferScore }, { merge: true });
+    await db.doc(childId).set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
     // parent commission
-    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: newCommission } }, { merge: true });
+    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: Number(newCommission), score: Number(newScore) } }, { merge: true });
     console.log(
       "pool mining Notification is calling: -- ",
       getChild.parent,
