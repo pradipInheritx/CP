@@ -1113,7 +1113,7 @@ async function updateOldUsersUsername(userList: any) {
     for (let index = 0; index < userList.length; index++) {
       let user = userList[index];
       admin.firestore().collection('users').doc(user.userId).set({
-        username: admin.firestore.FieldValue.delete
+        username: admin.firestore.FieldValue.delete()
       }, { merge: true }).then(() => {
         console.log("updated : ", user.userId, index)
       })
