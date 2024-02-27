@@ -1608,9 +1608,8 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 // ******************* END CRON JOBS ****************
 
 // Define endpoint for sending push notifications
-app.post('/send-notification', async (req, res) => {
-  const { token, title, body } = req.body;
-
+exports.sendNotificationToUser = functions.https.onCall(async (data) => {
+  const { token, title, body } = data;
   try {
     const message = {
       token,
@@ -1619,17 +1618,16 @@ app.post('/send-notification', async (req, res) => {
         body
       }
     };
-
     const response = await admin.messaging().send(message);
     console.log('Successfully sent message:', response);
-    return res.status(200).json({
+    return ({
       success: true,
       message: 'Notification sent successfully',
-      result: {}
+      result: response
     });
   } catch (error) {
     console.error('Error sending message:', error);
-    return res.status(500).json({
+    return ({
       success: false,
       error: 'Failed to send notification',
       return: error
