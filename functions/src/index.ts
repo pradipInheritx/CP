@@ -1661,7 +1661,7 @@ exports.updateUser = functions.https.onCall(async (data) => {
 });
 
 
-exports.createUser = functions.https.onCall(async (data) => {
+exports.appendUserName = functions.https.onCall(async (data) => {
   const { email, password } = data;
   try {
     const userRecord = await admin.auth().createUser({ email, password });
