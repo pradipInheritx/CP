@@ -200,7 +200,7 @@ exports.getAccessToken = () =>
 
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user");
+  console.log("create user",user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -249,6 +249,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
   try {
+    console.log("new user >>>", userData, user.uid);
     const newUser = await admin
       .firestore()
       .collection("users")
