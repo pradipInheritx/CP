@@ -114,13 +114,13 @@ const SignupForm = ({
         />
       </Form.Group>
 
-      <div style={{marginTop:"15px"}}>
       {/* @ts-ignore */}
+      {/* <div style={{marginTop:"15px"}}>
       <ReCAPTCHA
         sitekey={process.env.REACT_APP_RECAPTCHA_KEY || ""}
         onChange={handleReCaptcha}
       />
-      </div>
+      </div> */}
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" 
@@ -130,8 +130,9 @@ const SignupForm = ({
         </Buttons.Primary>
       </div>
 
+        {/* <Checkbox disabled={!recaptcha}  name="agree" checked={agree} onClick={() => setAgree(!agree)} > */}
       <Form.Group className="mb-2  text-center" controlId="agree">
-        <Checkbox disabled={!recaptcha}  name="agree" checked={agree} onClick={() => setAgree(!agree)} >
+      <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} required={true}>
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
             {translate('terms & conditions')}
           </Link>  and
