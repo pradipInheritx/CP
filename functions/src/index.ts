@@ -287,7 +287,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   return { data }
 })
 // create user
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -331,6 +331,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -347,18 +348,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .doc(user.uid)
       .set(userData);
 
-    //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
+      const getUserEmail: any = (
+        await admin.firestore().collection("users").doc(user.uid).get()
+      ).data();
+      console.log("new user email  : ", getUserEmail.email);
 
-    const getUserEmail: any = (
-      await admin.firestore().collection("users").doc(user.uid).get()
-    ).data();
-    console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+      //Send Welcome Mail To User
+    if (user.isVoteToEarn == false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      )
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
 
     return newUser;
   } catch (e) {
@@ -1245,6 +1248,93 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
     }
   }
 );
+
+// function that return some parameters for coin parliament players
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+  try {
+    const userId = data.userId; // Extract userId from data parameter
+    console.log("userId>>>>", userId);
+
+    const databaseQuery = await admin
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .get();
+
+    const userData = databaseQuery.data();
+    if (!userData) {
+      return {
+        status: true,
+        message: "User not found.",
+        data: {} // Empty array when user not found
+      };
+    }
+
+    const name = userData.status.name;
+    console.log("name>>>>>", name)
+    const totalVotes = userData.voteStatistics.voteValue;
+    console.log("totalVotes>>>>>", userData.voteStatistics.voteValue)
+    const totalCMP = userData.voteStatistics.score;
+    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+
+    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
+      .where('userId', '==', userId)
+      .limit(1)
+      .get();
+
+    let accountUpgrade = false; // Default value if not found
+    if (!paxTransactionQuery.empty) {
+      const paxTransactionData = paxTransactionQuery.docs[0].data();
+      accountUpgrade = paxTransactionData.isUserUpgraded || false;
+    }
+
+    const paymentQuery = await admin.firestore().collection('payments')
+      .where('userId', '==', userId)
+      .where('transactionType', '==', 'EXTRAVOTES')
+      .get();
+
+    const hasPurchasedVotes = !paymentQuery.empty;
+    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+
+    const userRecord = await admin.auth().getUser(userId);
+
+    const votesQuerySnapshot = await admin
+      .firestore()
+      .collection("votes")
+      .where("userId", "==", userId)
+      .get();
+
+    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
+    console.log("voteTimes>>>>>>>", voteTimes);
+    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+    const numberOfDaysVoted = uniqueDates.length;
+    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+
+    return {
+      status: true,
+      message: "User fetched successfully",
+      data:{
+        name: name,
+        country: userData.country,
+        signupDate: userRecord.metadata.creationTime,
+        totalVotes: totalVotes,
+        totalCMP: totalCMP,
+        accountUpgrade: accountUpgrade,
+        numberOfDaysVoted: numberOfDaysVoted,
+        votePurchase: votePurchaseStatus,
+        userId: userId,
+      }
+    };
+  } catch (error) {
+    console.log("Error while fetching user data:", error);
+    return {
+      status: false,
+      message: "Error while fetching user data",
+      data: {} 
+    };
+  }
+});
+
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
