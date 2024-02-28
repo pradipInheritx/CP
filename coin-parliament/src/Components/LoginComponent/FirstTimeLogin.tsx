@@ -140,8 +140,8 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
             >
               <Input
                 style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
-                placeholder={capitalize(translate("Dispaly Name"))}
-                name="dispalyName"
+                placeholder={capitalize(translate("Display Name"))}
+                name="displayName"
                 required
                 value={displayValue}
                 // @ts-ignore
