@@ -514,12 +514,12 @@ const VotingPaymentCopy: React.FC<{
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
         setIsLoading(true)
-        switchNetwork(coinInfo.chainId).then((res?:any) => {  
-          console.log(res, coinInfo.chainId , chainId, "getreserror")
-          if (res==null) {            
+        switchNetwork(coinInfo.chainId).then((res?:any) => {            
+          console.log(coinInfo.chainId,chainId, "checkres")
+          if (res == null || res=="AprovDone") {              
             sendTransaction()
-          } else {
-            setPaymentStatus({ type: "error", message: "User rejected transaction" })
+          } else {            
+            setPaymentStatus({ type: "error", message: "User rejected the request" })
             setIsLoading(false)
             setShowText(false)
             setPayButton(false)
@@ -552,10 +552,11 @@ const VotingPaymentCopy: React.FC<{
 
           switchNetwork(coinInfo.chainId).then((res) => {  
             // console.log(res, chainId , coinInfo.chainId, "check chainID")
-            if (res==null) {              
+            console.log(res, "checkres")
+            if (res == null || res == "AprovDone") {              
               sendTransaction()
-            } else {
-              setPaymentStatus({ type: "error", message: "User rejected transaction" })
+            } else {              
+              setPaymentStatus({ type: "error", message: "User rejected the request" })
               setIsLoading(false)
               setShowText(false)
               setPayButton(false);
@@ -574,6 +575,7 @@ const VotingPaymentCopy: React.FC<{
     //   setTransactionInst(false)
     // }
   }, [events])
+  
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
@@ -879,7 +881,7 @@ const VotingPaymentCopy: React.FC<{
         // return 2
         codeError = "switchcancel"
       } 
-      return error
+      return codeError
     }
   };
   
