@@ -1398,14 +1398,14 @@ export const mainnet = [
     name: 'Binance',
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
+    rpcUrl: 'https://bsc-dataseed.binance.org/'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
     explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
+    rpcUrl: 'https://polygon-rpc.com/'
   },
   {
     chainId: 11155111,
