@@ -1305,11 +1305,12 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       .where("userId", "==", userId)
       .get();
 
-    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>", voteTimes);
-    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-    const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+      console.log("voteTimes>>>>>>>", voteTimes);
+      const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+      const numberOfDaysVoted = uniqueDates.length;
+      console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+  
 
     return {
       status: true,
