@@ -1273,8 +1273,6 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
 
     const name = userData.status.name;
     console.log("name>>>>>", name)
-    const totalVotes = userData.voteStatistics.voteValue;
-    console.log("totalVotes>>>>>", userData.voteStatistics.voteValue)
     const totalCMP = userData.voteStatistics.score;
     console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
@@ -1319,7 +1317,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         name: name,
         country: userData.country,
         signupDate: userRecord.metadata.creationTime,
-        totalVotes: totalVotes,
+        totalVotes: userData.voteValue,
         totalCMP: totalCMP,
         accountUpgrade: accountUpgrade,
         numberOfDaysVoted: numberOfDaysVoted,
