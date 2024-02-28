@@ -1685,4 +1685,26 @@ exports.appendUserName = functions.https.onCall(async (data) => {
   };
 });
 
+exports.createUser = functions.https.onCall(async (data) => {
+  try {
+    const { email, password } = data;
+
+    // Create user using Firebase Authentication
+    const userRecord = await admin.auth().createUser({
+      email,
+      password,
+    });
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: { uid: userRecord.uid }
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null
+    }
+  };
+});
 
