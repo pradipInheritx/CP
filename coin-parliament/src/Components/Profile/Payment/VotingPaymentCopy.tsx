@@ -514,8 +514,16 @@ const VotingPaymentCopy: React.FC<{
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
         setIsLoading(true)
-        switchNetwork(coinInfo.chainId).then((res) => {          
-        sendTransaction()
+        switchNetwork(coinInfo.chainId).then((res?:any) => {            
+          console.log(coinInfo.chainId,chainId, "checkres")
+          if (res == null || res=="AprovDone") {              
+            sendTransaction()
+          } else {            
+            setPaymentStatus({ type: "error", message: "User rejected the request" })
+            setIsLoading(false)
+            setShowText(false)
+            setPayButton(false)
+          }
       })
       }
       else {
@@ -539,11 +547,20 @@ const VotingPaymentCopy: React.FC<{
         if (coinInfo.chainId != chainId) {
           setIsLoading(true)
           setShowText(true)
-          setPaymentStatus({ type: "", message: '' });
           setPayButton(true);
+          setPaymentStatus({ type: "", message: '' });
 
-          switchNetwork(coinInfo.chainId).then((res) => {
-            sendTransaction()
+          switchNetwork(coinInfo.chainId).then((res) => {  
+            // console.log(res, chainId , coinInfo.chainId, "check chainID")
+            console.log(res, "checkres")
+            if (res == null || res == "AprovDone") {              
+              sendTransaction()
+            } else {              
+              setPaymentStatus({ type: "error", message: "User rejected the request" })
+              setIsLoading(false)
+              setShowText(false)
+              setPayButton(false);
+            }
           })
         }
         else {
@@ -558,6 +575,7 @@ const VotingPaymentCopy: React.FC<{
     //   setTransactionInst(false)
     // }
   }, [events])
+  
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
@@ -646,22 +664,22 @@ const VotingPaymentCopy: React.FC<{
 
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
 
-  useEffect(() => {
-    if (chainId && isConnected) {
-      const data = mainnet?.find((network?: any) => network?.chainId == chainId) 
-      if (!data) return
-      if (coinInfo.chainId != chainId) {
-        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
-        setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
-          chainId: 1,
-          name: 'USDT ERC20',
-          currency: 'USDT ERC20',
-          explorerUrl: 'https://etherscan.io',
-          rpcUrl: 'https://cloudflare-eth.com'
-        } : data)
-      }
-    }
-  }, [chainId])
+  // useEffect(() => {
+  //   if (chainId && isConnected) {
+  //     const data = mainnet?.find((network?: any) => network?.chainId == chainId) 
+  //     if (!data) return
+  //     if (coinInfo.chainId != chainId) {
+  //       setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
+  //       setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
+  //         chainId: 1,
+  //         name: 'USDT ERC20',
+  //         currency: 'USDT ERC20',
+  //         explorerUrl: 'https://etherscan.io',
+  //         rpcUrl: 'https://cloudflare-eth.com'
+  //       } : data)
+  //     }
+  //   }
+  // }, [chainId])
   
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
@@ -775,10 +793,17 @@ const VotingPaymentCopy: React.FC<{
       } catch (error: any) {
         console.log('errorror', error)
         const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];        
+        const errorCodeGet = error.code;        
         setIsLoading(false)
         setShowText(false)        
         setPayButton(false);
-        setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'user rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
+
+        if (errorCodeGet == -32603) {          
+          setPaymentStatus({ type: "error", message: error.data.error})
+        }
+        else {          
+          setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
+        }
       }
       
       
@@ -805,15 +830,58 @@ const VotingPaymentCopy: React.FC<{
   const switchNetwork = async (chainId:number) => {
     let ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
+    
+    console.log(chainId,"chainIdchainList")
     try {
       if (!provider) throw new Error('Provider is not initialized.');
       // Switch network
       const chainData = await provider.send('wallet_switchEthereumChain', [{ chainId: `0x${chainId.toString(16)}` }]);
       return chainData
       // console.log('Switched to network:', chainId);
-    } catch (error) {
-      console.error('Error switching network:', error);
-      return null
+    }
+    catch (error) {
+      let codeError = ""
+      console.error('Error switching network:', error);       
+      // @ts-ignore
+      const errorCode = error?.code;
+      // @ts-ignore
+      const errorMessage = error?.message;
+      if (errorCode == 4902) {        
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+            chainId: `0x${chainId.toString(16)}`,
+            chainName: coinInfo?.name, 
+            nativeCurrency: {
+              name: coinInfo?.currency,
+              symbol: coinInfo?.currency,
+              decimals: 18,
+            },
+            rpcUrls: [`${coinInfo?.rpcUrl}`], 
+            blockExplorerUrls: [`${coinInfo?.explorerUrl}`],
+            }
+          ],
+        }).then((result?:any) => {
+          // handleClick()
+          codeError = "AprovDone"
+        }).catch((err?:any) => {
+          setShowText(false)
+        setPaymentStatus({ type: "error", message: errorMessage})
+          setPayButton(false);
+          setIsLoading(false)             
+          // return 1
+          codeError = "afterAprov"
+        });
+      } else {
+        setShowText(false)
+        setPaymentStatus({ type: "", message: '' });
+        setPayButton(false);
+        setIsLoading(false)  
+        // return 2
+        codeError = "switchcancel"
+      } 
+      return codeError
     }
   };
   
@@ -1128,7 +1196,7 @@ const VotingPaymentCopy: React.FC<{
                     onClick={() => {
                     setShowPayButoom(false)
                       setSelectPayment(0)
-                      setSelectCoin("none")
+                      // setSelectCoin("none")
                     }}>Back</span>
                   </div>   
                   {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
