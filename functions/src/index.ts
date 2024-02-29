@@ -1336,9 +1336,9 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       };
     }
 
-    const userName=userData.userName
+    const userName=userData.userName || ""
     console.log("name>>>>>", userName)
-    const totalCMP = userData.voteStatistics.score;
+    const totalCMP = userData.voteStatistics?.score || 0;
     console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
       const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
@@ -1366,17 +1366,20 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         .where("userId", "==", userId)
         .get();
 
-      const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
-      console.log("voteTimes>>>>>>>", voteTimes);
-      const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-      const numberOfDaysVoted = uniqueDates.length;
-      console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+        let numberOfDaysVoted = 0;
+      if (!votesQuerySnapshot.empty) {
+        const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+        console.log("voteTimes>>>>>>>", voteTimes);
+        const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+        numberOfDaysVoted = uniqueDates.length;
+        console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      }
 
       usersDetails.push({
         name: userName,
-        country: userData.country,
+        country: userData.country || "",
         signupDate: userRecord.metadata.creationTime,
-        totalVotes: userData.voteValue,
+        totalVotes: userData.voteValue || 0,
         totalCMP: totalCMP,
         accountUpgrade: accountUpgrade,
         numberOfDaysVoted: numberOfDaysVoted,
