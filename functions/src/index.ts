@@ -1754,6 +1754,11 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     });
 
     console.log("User IDs:", userIds);
+    return {
+      status: true,
+      message: "success to update users",
+      result: usersCollection
+    }
   }
   catch (error) {
     return data
