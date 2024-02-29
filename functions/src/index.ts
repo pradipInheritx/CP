@@ -1757,7 +1757,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: true,
       message: "success to update users",
-      result: usersCollection
+      result: userIds
     }
   }
   catch (error) {
