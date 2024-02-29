@@ -401,19 +401,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData, {merge : true});
 
-    const getUserEmail: any = (
+    const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
-    console.log("new user email  : ", getUserEmail.email);
+    console.log("new user email  : ", getUser.email);
 
     //Send Welcome Mail To User
-    if (getUserEmail.isVoteToEarn == false) {
+    console.log("getUserEmail.isVoteToEarn : ", getUser.isVoteToEarn);
+    if (getUser.isVoteToEarn == false) {
       await sendEmail(
         userData.email,
         "Welcome To Coin Parliament!",
         userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
       )
-      await sendEmailVerificationLink(getUserEmail.email);
+      await sendEmailVerificationLink(getUser.email);
     }
 
     return newUser;
