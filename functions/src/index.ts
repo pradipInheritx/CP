@@ -200,7 +200,7 @@ exports.getAccessToken = () =>
 
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user",user);
+  console.log("create user", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -240,7 +240,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    isVoteToEarn: user.isVoteToEarn || true,
+    // isVoteToEarn: user.isVoteToEarn || true,
     firstTimeLogin: true,
     refereeScrore: 0,
     googleAuthenticatorData: {},
@@ -254,22 +254,23 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, { merge: true });
 
-      const getUserEmail: any = (
-        await admin.firestore().collection("users").doc(user.uid).get()
-      ).data();
-      console.log("new user email  : ", getUserEmail.email);
+    const getUser: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUser.email);
 
-        //Send Welcome Mail To User
-      if (userData.isVoteToEarn === true) {
-        await sendEmail(
-          userData.email,
-          "Welcome To Vote To Earn Parliament!",
-          userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-        );
-        await sendEmailVerificationLink(getUserEmail.email);
-      }
+    //Send Welcome Mail To User
+    console.log("get isVoteToearn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === true) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Vote To Earn Parliament!",
+        userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
+      await sendEmailVerificationLink(getUser.email);
+    }
 
     return newUser;
   } catch (e) {
