@@ -1327,7 +1327,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       const userId = userDoc.id;
       console.log("userId>>>>>",userId);
       const userData = userDoc.data();
-      console.log("users>>>>>>>",userData.userId,userData.userName,);
+      console.log("users>>>>>>>",userData.userName,);
 
     if (!userData) {
       return {
@@ -1341,11 +1341,16 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     console.log("name>>>>>", userName)
 
     // Check if voteStatistics exists and has the score property before accessing it
-        let totalCMP = 0;
-    if (userData.voteStatistics && userData.voteStatistics.score !== undefined) {
-      totalCMP = userData.voteStatistics.score;
-    }
-    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+    
+
+    let totalCMP = 0; // Default value for totalCMP
+
+      if (userData.voteStatistics) {
+        console.log("voteStatistics", userData.voteStatistics)
+        // If voteStatistics exists, access the score property
+        totalCMP = userData.voteStatistics.score || 0; // Set totalCMP to score, or 0 if score is undefined
+        console.log("totalCMP>>>>>", userData.voteStatistics.score)
+      }
 
       const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
         .where('userId', '==', userId)
