@@ -385,7 +385,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -400,7 +399,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, {merge : true});
 
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
@@ -408,7 +407,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     console.log("new user email  : ", getUserEmail.email);
 
     //Send Welcome Mail To User
-    if (user.isVoteToEarn == false) {
+    if (getUserEmail.isVoteToEarn == false) {
       await sendEmail(
         userData.email,
         "Welcome To Coin Parliament!",
