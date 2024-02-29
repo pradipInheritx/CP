@@ -454,21 +454,22 @@ const VotingPaymentCopy: React.FC<{
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
-    useEffect(() => {
-      // window.scrollTo({ top: 500, behavior: 'smooth' });
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, [payType, selectPayment,])
-    useEffect(() => {
-      // window.scrollTo({ top: 500, behavior: 'smooth' });
-      if (coinInfo) {
-        if (window.screen.width > 767) {
-          window.scrollTo({ top: 650, behavior: 'smooth' });
-        }
-        else {
-          window.scrollTo({ top: 630, behavior: 'smooth' });
-        }
+    // useEffect(() => {
+    //   // window.scrollTo({ top: 500, behavior: 'smooth' });
+    //   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    // }, [payType, selectPayment,])
+  
+  useEffect(() => {
+    // window.scrollTo({ top: 500, behavior: 'smooth' });
+    if (coinInfo) {
+      if (window.screen.width > 767) {
+        window.scrollTo({ top: 650, behavior: 'smooth' });
       }
-    }, [coinInfo, chainId])
+      else {
+        window.scrollTo({ top: 630, behavior: 'smooth' });
+      }
+    }
+  }, [coinInfo, chainId, selectPayment])
 
 
     useEffect(() => {
@@ -598,21 +599,8 @@ const VotingPaymentCopy: React.FC<{
       // setTransactionInst(true)
     }
   };
-
-  // useEffect(() => {
-  //   return () => {
-  //     setTransactionInst(false)
-  //   }
-  // }, [])
-  
-  
   
     const startAgainAction = () => {
-      // setShowOptionList(false)
-      // setSelectCoin("none");
-      // setSelectPayment(2)
-      // setPaymentStatus({ type: "", message: '' });
-      // console.log("yes i am calling")
       navigate(-1)
       setSelectCoin("none");
     }
@@ -653,23 +641,6 @@ const VotingPaymentCopy: React.FC<{
       }
 
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
-
-  // useEffect(() => {
-  //   if (chainId && isConnected) {
-  //     const data = mainnet?.find((network?: any) => network?.chainId == chainId) 
-  //     if (!data) return
-  //     if (coinInfo.chainId != chainId) {
-  //       setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
-  //       setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
-  //         chainId: 1,
-  //         name: 'USDT ERC20',
-  //         currency: 'USDT ERC20',
-  //         explorerUrl: 'https://etherscan.io',
-  //         rpcUrl: 'https://cloudflare-eth.com'
-  //       } : data)
-  //     }
-  //   }
-  // }, [chainId])
   
 
     console.log(address, chainId, isConnected, "address,chainId,isConnected")
@@ -801,23 +772,6 @@ const VotingPaymentCopy: React.FC<{
 
   } 
 
-  // const switchToChain = async () => {
-  //   try {
-  //     const chainId = 137; // Chain ID in decimal
-  //     const hexChainId = '0x' + chainId.toString(16); // Convert to hexadecimal string
-  //     await (window.ethereum as any).request({
-  //       method: 'wallet_switchEthereumChain',
-  //       params: [{ chainId: hexChainId }] // Pass the hexadecimal string chainId
-  //     });
-  //     // Chain switch was successful
-  //     console.log("Switched to Ethereum Mainnet");
-  //   } catch (err) {
-  //     // setError(err.message || err);
-  //   }
-  // };
-
-
-
   const switchNetwork = async (chainId:number) => {
     let ethereum = (window as any).ethereum;
     const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
@@ -917,31 +871,6 @@ const VotingPaymentCopy: React.FC<{
         })
     }
 
-  // const addEthereumNetwork = async () => {
-  //   let addEthereum= (window as any).ethereum;
-  //   await addEthereum.request({
-  //     method: "wallet_addEthereumChain",      
-  //     params: [
-  //       {
-  //         chainId: "0x1", // Chain ID for Ethereum mainnet
-  //         chainName: "Sepolia Test Netwok",
-  //         rpcUrls: [
-  //           "https://1rpc.io/sepolia", // Replace with your Infura endpoint
-  //           // Add additional RPC endpoints if available
-  //         ],
-  //         nativeCurrency: {
-  //           name: "Ether",
-  //           symbol: "ETH",
-  //           decimals: 18,
-  //         },
-  //         blockExplorerUrls: [
-  //           "https://sepolia.etherscan.io/", // Ethereum block explorer URL
-  //           // Add additional block explorers if available
-  //         ],
-  //       },
-  //     ],
-  //   });
-  // };  
   
     return (
       <>
@@ -1005,9 +934,19 @@ const VotingPaymentCopy: React.FC<{
               justifyContent: `${window.screen.width < 767 ? "center" : payType == "EXTRAVOTES" ? "center" : "end"}`
             }}
           >
-            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" className="" />
+            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" className=""
+              onLoad={() => {
+                // console.log("image load Done")
+                window.scrollTo({ top: 750, behavior: 'smooth' });
+            }}
+            />
 
-              : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />}
+              : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
+                onLoad={() => {
+                  // console.log("image load Done")
+                  window.scrollTo({ top: 750, behavior: 'smooth' });
+                }}
+              />}
           </div>
           {payType == "EXTRAVOTES" ?
             <>
@@ -1109,7 +1048,7 @@ const VotingPaymentCopy: React.FC<{
                   onClick={() => {
                     setSelectPayment(1)
                     setShowPayButoom(true)
-                    // setComingSoon(true)                    
+                    // setComingSoon(true)                        
                   }}
                 >
                   <i className="bi bi-coin"></i>

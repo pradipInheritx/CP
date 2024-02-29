@@ -1386,13 +1386,13 @@ export const mainnet = [
     explorerUrl: 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
   },
-  {
-    chainId: 1,
-    name: 'USDT ERC20',
-    currency: 'USDT ERC20',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://cloudflare-eth.com'
-  },
+  // {
+  //   chainId: 1,
+  //   name: 'USDT ERC20',
+  //   currency: 'USDT ERC20',
+  //   explorerUrl: 'https://etherscan.io',
+  //   rpcUrl: 'https://cloudflare-eth.com'
+  // },
   {
     chainId: 56,
     name: 'Binance',
