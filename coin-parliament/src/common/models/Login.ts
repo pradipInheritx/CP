@@ -347,10 +347,7 @@ export const SignupRegular = async (
       showToast("Successfully sent  verification link on your mail");
     });
     const AuthUser=auth?.currentUser;
-    Logout();
-    const referUser = await getReferUser(V2EParliament.firestore(), parentEmailId);    
-
-    
+    const referUser = await getReferUser(V2EParliament.firestore(), parentEmailId);  
     await saveUserData((AuthUser?.uid || ''), db, {
 
       firstTimeLogin: true,
@@ -358,6 +355,12 @@ export const SignupRegular = async (
       parent: referUser?.uid,
       // displayName: await generateUsername()
     });
+    Logout();
+     
+    // @ts-ignore
+    // const userRef = doc(db, "users", auth?.currentUser?.uid);
+    // await setDoc(userRef, { firstTimeLogin :true,isVoteToEarn: false}, { merge: true })
+  
     
     await assign({ parent: referUser?.uid, child: AuthUser?.uid })
     // showToast("User register successfully.", ToastType.SUCCESS);

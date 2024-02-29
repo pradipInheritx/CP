@@ -31,6 +31,7 @@ export const SignupRegularForCoinParliament = async (
                 // displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
+                isVoteToEarn: true,
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
