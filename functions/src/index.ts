@@ -399,7 +399,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData, {merge : true});
+      .set(userData, { merge: true });
 
     const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
