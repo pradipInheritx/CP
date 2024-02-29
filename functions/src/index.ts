@@ -402,22 +402,22 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData);
 
-    const getUserEmail: any = (
-      await admin.firestore().collection("users").doc(user.uid).get()
-    ).data();
-    console.log("new user email  : ", getUserEmail.email);
+      const getUserEmail: any = (
+        await admin.firestore().collection("users").doc(user.uid).get()
+      ).data();
+      console.log("new user email  : ", getUserEmail.email);
 
-    //Send Welcome Mail To User
-    if (user.isVoteToEarn == false) {
-      await sendEmail(
-        userData.email,
-        "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-      )
-      await sendEmailVerificationLink(getUserEmail.email);
-    }
-
+      //Send Welcome Mail To User
+      if (userData.isVoteToEarn === false) {
+        await sendEmail(
+          userData.email,
+          "Welcome To Coin Parliament!",
+          userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+        );
+        await sendEmailVerificationLink(getUserEmail.email);
+      }
     return newUser;
+
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -1316,16 +1316,18 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 // function that return some parameters for coin parliament players
 exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
   try {
-    const userId = data.userId; // Extract userId from data parameter
-    console.log("userId>>>>", userId);
+    
 
-    const databaseQuery = await admin
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .get();
+    const usersCollection = await admin.firestore().collection("users").get();
 
-    const userData = databaseQuery.data();
+    const usersDetails = [];
+    
+    for (const userDoc of usersCollection.docs) {
+      const userId = userDoc.id;
+      console.log("userId>>>>>",userId);
+      const userData = userDoc.data();
+      console.log("users>>>>>>>",userData.userId,userData.userName,);
+
     if (!userData) {
       return {
         status: true,
@@ -1334,72 +1336,71 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       };
     }
 
-    const name = userData.status.name;
-    console.log("name>>>>>", name)
-    const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>", userData.voteStatistics.total)
+    const userName=userData.userName
+    console.log("name>>>>>", userName)
     const totalCMP = userData.voteStatistics.score;
     console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
-    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
-      .where('userId', '==', userId)
-      .limit(1)
-      .get();
+      const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
+        .where('userId', '==', userId)
+        .limit(1)
+        .get();
 
-    let accountUpgrade = false; // Default value if not found
-    if (!paxTransactionQuery.empty) {
-      const paxTransactionData = paxTransactionQuery.docs[0].data();
-      console.log("paxTransactionData>>>>>", paxTransactionData)
-      accountUpgrade = paxTransactionData.isUserUpgraded || false;
-      console.log("accountUpgrade>>>>>", accountUpgrade)
-    }
+        let accountUpgrade = false; // Default value if not found
+      if (!paxTransactionQuery.empty) {
+        const paxTransactionData = paxTransactionQuery.docs[0].data();
+        accountUpgrade = paxTransactionData.isUserUpgraded || false;
+      }
 
-    const paymentQuery = await admin.firestore().collection('payments')
-      .where('userId', '==', userId)
-      .where('transactionType', '==', 'EXTRAVOTES')
-      .get();
+      const paymentQuery = await admin.firestore().collection('payments')
+        .where('userId', '==', userId)
+        .where('transactionType', '==', 'EXTRAVOTES')
+        .get();
 
-    const hasPurchasedVotes = !paymentQuery.empty;
-    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+      const hasPurchasedVotes = !paymentQuery.empty;
+      const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
 
-    const userRecord = await admin.auth().getUser(userId);
+      const userRecord = await admin.auth().getUser(userId);
 
-    const votesQuerySnapshot = await admin
-      .firestore()
-      .collection("votes")
-      .where("userId", "==", userId)
-      .get();
+      const votesQuerySnapshot = await admin.firestore().collection("votes")
+        .where("userId", "==", userId)
+        .get();
 
-    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>", voteTimes);
-    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-    const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+      console.log("voteTimes>>>>>>>", voteTimes);
+      const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+      const numberOfDaysVoted = uniqueDates.length;
+      console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
 
-    return {
-      status: true,
-      message: "User fetched successfully",
-      data: {
-        name: name,
+      usersDetails.push({
+        name: userName,
         country: userData.country,
         signupDate: userRecord.metadata.creationTime,
-        totalVotes: totalVotes,
+        totalVotes: userData.voteValue,
         totalCMP: totalCMP,
         accountUpgrade: accountUpgrade,
         numberOfDaysVoted: numberOfDaysVoted,
         votePurchase: votePurchaseStatus,
         userId: userId,
-      }
+      });
+    }
+
+    return {
+      status: true,
+      message: "Users fetched successfully",
+      data: usersDetails
     };
+
   } catch (error) {
     console.log("Error while fetching user data:", error);
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {}
+      data: {} 
     };
   }
 });
+
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
