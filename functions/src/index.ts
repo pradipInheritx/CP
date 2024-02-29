@@ -1756,7 +1756,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     console.log("User IDs:", userIds);
   }
   catch (error) {
-
+    return data
   }
 })
 
