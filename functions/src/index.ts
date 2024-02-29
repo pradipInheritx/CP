@@ -5,7 +5,7 @@ import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
-import * as jwt from "jsonwebtoken"; 
+import * as jwt from "jsonwebtoken";
 import { JwtPayload } from "./common/models/User";
 
 
@@ -205,7 +205,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      return { skipped: true };
     }
 
     // Create a JWT token with user data
@@ -291,7 +291,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData,{merge: true});
+      .set(userData, { merge: true });
     console.info("updatedUser", updatedUser)
 
     const getUser: any = (
@@ -312,10 +312,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     return updatedUser;
 
   } catch (error: any) {
-    console.log("Error while create user in stock", error);
+    return false;
   }
 });
-import {addNewKeysInCollection} from "./common/models/User";
+import { addNewKeysInCollection } from "./common/models/User";
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
