@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {logo} from "../../assets/svg/logo";
+import logo  from "../../assets/svg/spblue.svg";
+// import {logo} from "../../assets/svg/logo";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import useScrollPosition from "../../hooks/useScrollPosition";
 import {positionBreakpoint} from "../Background";
@@ -22,7 +23,8 @@ export type ImgProps = {
 };
 
 const Image = styled.img`
-  box-shadow: 0 3px 6px #00000029;
+  // box-shadow: 0 3px 6px #00000029;
+  
   opacity: 1;
   width: ${(props: ImgProps) => `${isWideLogo(props)|| window.screen.width>979 ? 233 : (width[props.size || Size.XSMALL])}px`};
   border-radius: ${(props: ImgProps) => `${isWideLogo(props)|| window.screen.width>979  ? "" : "100%"}`};

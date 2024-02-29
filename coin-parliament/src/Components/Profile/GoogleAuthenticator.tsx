@@ -6,14 +6,13 @@ import User, { UserProps } from "../../common/models/User";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Label } from "../Forms/Textfield";
-import  { Buttons } from "../Atoms/Button/Button";
+import { Buttons } from "../Atoms/Button/Button";
 import styled from "styled-components";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
 import { getAuth, updateProfile } from "firebase/auth";
 import infobtn from '../../assets/images/info-btn.png'
 import AppStore from '../../assets/images/AppStore.png'
 import GooglePlay from '../../assets/images/GooglePlay.png'
-// import BigLogo from "../../assets/svg/logoiconx2.svg";
 import {
   multiFactor,
   PhoneAuthProvider,
@@ -23,7 +22,8 @@ import {
 import { texts } from "../LoginComponent/texts";
 import axios from "axios";
 import QRCode from "qrcode";
-import BigLogo from "../../assets/svg/logoiconx2.svg";
+import BigLogo from "../../assets/svg/spblue.png";
+import { generateGoogle2faUrl, otpurl } from "../../common/consts/contents";
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -72,34 +72,35 @@ const GoogleAuthenticator = () => {
   const [secretKey, setSecretKey] = useState<string>("");
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
-  const url = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`;
-  const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
-
-  const createPost = async (id: string) => {
+  useEffect(() => {
     // @ts-ignore
-    if(userInfo?.googleAuthenticatorData?.otp_auth_url){
+    if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
       // @ts-ignore
       setSecretKey(userInfo?.googleAuthenticatorData?.otp_base32);
       // @ts-ignore
-      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url).then(
+      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url, { color: { dark: "#7565f7", light: "#ffffff" } }).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
         }
       );
       return
     }
+  }, [JSON.stringify(userInfo)]);
+
+  const createPost = async (id: string) => {
     const data = {
       userId: id,
       userType: "USER",
     };
     try {
-      const response = await axios.post(url, data);
+      const response = await axios.post(generateGoogle2faUrl, { data: data });
       console.log(response.data);
       setSecretKey(response.data.result.base32);
-      QRCode.toDataURL(response.data.result.otpauth_url).then(
+      QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
+      ).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
-          console.log('qrcode',dataUrl)
+          console.log('qrcode', dataUrl)
         }
       );
     } catch (error) {
@@ -110,17 +111,27 @@ const GoogleAuthenticator = () => {
   const verifyOtp = async (token: string) => {
     try {
       const response = await axios.post(otpurl, {
-        userId: userInfo?.uid,
-        token: token,
-        userType: "USER",
+        data: {
+          userId: userInfo?.uid,
+          token: token,
+          userType: "USER",
+        }
+      }).then((data) => {
+        console.log(data.data.result,"dataresult");
+        if (data.data.result.status)
+        {
+          const newUserInfo = {
+            ...(userInfo as UserProps),
+            mfa: true as boolean,
+          };
+          onSubmit(newUserInfo);
+          showToast("2FA enabled successfully.", ToastType.SUCCESS);
+        }
+        else {
+          showToast(data.data.result.message, ToastType.ERROR);    
+        }
       });
-      console.log(response.data);
-      const newUserInfo = {
-        ...(userInfo as UserProps),
-        mfa: true as boolean,
-      };
-      onSubmit(newUserInfo);
-      showToast("2FA enabled successfully.", ToastType.SUCCESS);
+      
     } catch (error: any) {
       showToast(error.response.data.message, ToastType.ERROR);
       console.error(error.response);
@@ -129,7 +140,7 @@ const GoogleAuthenticator = () => {
 
   // console.log('user',userInfo,u)
   useEffect(() => {
-    if(!userInfo?.mfa)createPost(userInfo?.uid as string);
+    if (!userInfo?.mfa) createPost(userInfo?.uid as string);
     return () => setCopied(false);
   }, [userInfo?.mfa]);
 
@@ -218,72 +229,72 @@ const GoogleAuthenticator = () => {
               <Form.Group controlId="MFA">
                 <Form.Check>
                   {userInfo?.mfa ? (
-                   
-                    <><PasswordInfo className='mb-2' style={{ 
-                      width: `${window.screen.width > 767 ?"100%":"100%"}`
+
+                    <><PasswordInfo className='mb-2' style={{
+                      width: `${window.screen.width > 767 ? "100%" : "100%"}`
                     }}>
                       <div className='p-3'>
-                        <img src={infobtn} alt="" width={"15px"} /> 
-                        &nbsp; 
-                        <span className='' style={{fontWeight:"500"}}>Disable Google Authentication</span>
+                        <img src={infobtn} alt="" width={"15px"} />
+                        &nbsp;
+                        <span className='' style={{ fontWeight: "500" }}>Disable Google Authentication</span>
                         <hr />
-                    <div>
-                      <p>
-                          Two-factor authentication is already enabled for your
-                          account. You will need to enter the 6-digit code
-                          generated by your authenticator app every time you log
-                          in to your account.
-                        </p>
-                        <p className="mb-3">
-                          To disable 2FA method you can click on disable button. We
-                          strongly recommend keeping 2FA enabled to enhance the
-                          security of your account.
-                        </p>
+                        <div>
+                          <p>
+                            Two-factor authentication is already enabled for your
+                            account. You will need to enter the 6-digit code
+                            generated by your authenticator app every time you log
+                            in to your account.
+                          </p>
+                          <p className="mb-3">
+                            To disable 2FA method you can click on disable button. We
+                            strongly recommend keeping 2FA enabled to enhance the
+                            security of your account.
+                          </p>
                         </div>
                       </div>
                     </PasswordInfo>
-                     <Buttons.Primary
-                     onClick={(e) => {
-                       const newUserInfo = {
-                         ...(userInfo as UserProps),
-                         mfa: false as boolean,
-                       };
+                      <Buttons.Primary
+                        onClick={(e) => {
+                          const newUserInfo = {
+                            ...(userInfo as UserProps),
+                            mfa: false as boolean,
+                          };
 
-                       onSubmit(newUserInfo);
-                     }}
-                   >
-                     Disable
-                   </Buttons.Primary></>
+                          onSubmit(newUserInfo);
+                        }}
+                      >
+                        Disable
+                      </Buttons.Primary></>
                   ) : (
                     <>
-                        {" "}
-                        
+                      {" "}
 
-                        <PasswordInfo style={{ 
-                              width: `${window.screen.width > 767 ?"100%":"100%"}`
-                            }}>
-                              <div className='p-3'>
-                                <img src={infobtn} alt="" width={"15px"} /> 
-                                &nbsp; 
-                                <span className='' style={{fontWeight:"500"}}>Enable Google Authentication</span>
-                                <hr />
-                            <div>
-                              <p>Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.</p>
-                              <ul
-                                style={{
+
+                      <PasswordInfo style={{
+                        width: `${window.screen.width > 767 ? "100%" : "100%"}`
+                      }}>
+                        <div className='p-3'>
+                          <img src={infobtn} alt="" width={"15px"} />
+                          &nbsp;
+                          <span className='' style={{ fontWeight: "500" }}>Enable Google Authentication</span>
+                          <hr />
+                          <div>
+                            <p>Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.</p>
+                            <ul
+                              style={{
                                 // listStyleType: "none"
                               }}
-                              >
-                                  <li>Install an Authenticator App on your mobile device.</li>
-                                  <li>Scan the QR code or type in the code manually on your mobile device</li>
-                                  <li>Write down or save the secret code in case you loss your device.</li>
-                                  <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>
-                                  {/* <li>Do not post or share your password or send your password to others by email.</li> */}
-                                </ul>
-                                </div>
-                              </div>
-                            </PasswordInfo>
-                        
+                            >
+                              <li>Install an Authenticator App on your mobile device.</li>
+                              <li>Scan the QR code or type in the code manually on your mobile device</li>
+                              <li>Write down or save the secret code in case you loss your device.</li>
+                              <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>
+                               
+                            </ul>
+                          </div>
+                        </div>
+                      </PasswordInfo>
+
 
                       {/* <Row>
                         <Col className="mt-2">
@@ -300,33 +311,33 @@ const GoogleAuthenticator = () => {
                           </Label>
                         </Col>
                       </Row> */}
-                        <Row className="mt-4"
-                          style={{
-                          overflow:"hidden"
+                      <Row className="mt-4"
+                        style={{
+                          overflow: "hidden"
                         }}
-                        >
+                      >
                         <Col>
                           <Container className="p-0">
                             <Row
                               className="m-0"
-                                style={{
-                                  justifyContent: "center",
-                                  position: "relative",
-                                }}
+                              style={{
+                                justifyContent: "center",
+                                position: "relative",
+                              }}
                             >
-                               
-                               {/* <img
-                                src={BigLogo}
+
+                              <img
+                                  src={BigLogo}
                                 alt="QR code for Google Authenticator"
-                                style={{ maxWidth: "100px", position:'absolute', top:'35%' }}
-                              /> */}
+                                style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
+                              />
                               <img
                                 src={qrCodeDataUrl}
                                 alt="QR code for Google Authenticator"
                                 style={{ maxWidth: "300px" }}
-                                />
-                                
-                                {/* <div className='mt-2'
+                              />
+
+                              {/* <div className='mt-2'
                                   style={{
                                     position: "absolute",
                                     top: "85px",
@@ -341,16 +352,16 @@ const GoogleAuthenticator = () => {
                                   </Navbar.Brand>
                                 </div> */}
                             </Row>
-                              <Row className="my-2 d-flex">
-                                <Row>
-                                  <Col>
-                                    <Label>Secret Code</Label>
-                                  </Col>
-                                </Row>
+                            <Row className="my-2 d-flex">
+                              <Row>
+                                <Col>
+                                  <Label>Secret Code</Label>
+                                </Col>
+                              </Row>
                               <div className="d-flex">
                                 <FormControl value={secretKey} />{" "}
-                                  <Buttons.Error
-                                    style={{marginLeft:"7px"}}
+                                <Buttons.Error
+                                  style={{ marginLeft: "7px" }}
                                   onClick={(e) => {
                                     navigator.clipboard.writeText(secretKey);
                                     setCopied(true);
@@ -362,22 +373,22 @@ const GoogleAuthenticator = () => {
       <button onClick={(e) => navigator.clipboard.writeText(secretKey)}>Copy</button> */}
                               </div>
                             </Row>
-                              <Row className="mb-5 mt-4">
-                                <Row>
-                                  <Col>
-                                    <Label>Google Authentication Code</Label>
-                                  </Col>
-                                </Row>
+                            <Row className="mb-5 mt-4">
+                              <Row>
+                                <Col>
+                                  <Label>Google Authentication Code</Label>
+                                </Col>
+                              </Row>
                               <div className="d-flex">
                                 <FormControl
-                                    value={textData}
-                                    size="sm"
-                                    onChange={(e) => setTextData(e.target.value)}
-                                    placeholder="Enter the six-digit code form the application"
+                                  value={textData}
+                                  size="sm"
+                                  onChange={(e) => setTextData(e.target.value)}
+                                  placeholder="Enter the six-digit code form the application"
                                 />{" "}
-                                  <Buttons.Primary 
-                                    // className="ml-3"
-                                    style={{background:"#198754",marginLeft:"8px"}}
+                                <Buttons.Primary
+                                  // className="ml-3"
+                                  style={{ background: "#198754", marginLeft: "8px" }}
                                   onClick={(e) => verifyOtp(textData)}
                                 >
                                   Enable
@@ -389,21 +400,21 @@ const GoogleAuthenticator = () => {
       <button onClick={(e) => verifyOtp(textData)}>Verify</button> */}
                             </Row>
                           </Container>
-                          </Col>
-                        </Row>
-                         <div className="text-center">
-                          <p>Download and install google authenticator app</p>
-                          <div className="d-flex justify-content-center">
-                            <div className="m-3" onClick={()=>window?.open('https://apps.apple.com/us/app/google-authenticator/id388497605')}>
-                              <img src={AppStore} alt="" width="130px"/>
-                            </div>
+                        </Col>
+                      </Row>
+                      <div className="text-center">
+                        <p>Download and install google authenticator app</p>
+                        <div className="d-flex justify-content-center">
+                          <div className="m-3" onClick={() => window?.open('https://apps.apple.com/us/app/google-authenticator/id388497605')}>
+                            <img src={AppStore} alt="" width="130px" />
+                          </div>
 
-                            <div className="m-3" onClick={()=>window?.open('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US&pli=1')}>
-                              <img src={GooglePlay} alt="" width="120px" />
-                            </div>
+                          <div className="m-3" onClick={() => window?.open('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US&pli=1')}>
+                            <img src={GooglePlay} alt="" width="120px" />
                           </div>
                         </div>
-                        
+                      </div>
+
                     </>
                   )}
                 </Form.Check>

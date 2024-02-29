@@ -228,7 +228,9 @@ const Card = ({
             setLogin(true)
           }
         }
-      }>
+      }
+      className="pt-1"
+      >
         <Heart
        
           checked={favorite}

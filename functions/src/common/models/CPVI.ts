@@ -449,8 +449,7 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
         firestore.Timestamp.fromDate(
           moment().subtract(fromTimeData, "hours").toDate()
         )
-      )
-      .get();
+      ).get();
     const orderBook = orderBookData.docs
       .map((d) => d.data())
       .map((doc) => {

@@ -1,6 +1,12 @@
 import {firestore} from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
 // import {DictionaryKeys} from "./Dictionary";
+import admin from "firebase-admin";
+import * as jwt from "jsonwebtoken";
+import env from "../../env/env.json";
+import { sendEmail } from "../services/emailServices";
+import { userVerifyEmailTemplate } from "../emailTemplates/userVerifyEmailTemplate";
+
 
 export type UserTypeProps = {
   index: number;
@@ -40,6 +46,7 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  isVoteToEarn?: boolean;
 };
 
 export type RewardStatistics = {
@@ -58,6 +65,11 @@ export type VoteStatistics = {
   commission: number;
   pax: number;
 };
+
+export interface JwtPayload {
+  id: string;
+} 
+
 
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
@@ -108,8 +120,6 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-
-
 function generateRandomName(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   let randomName = '';
@@ -140,10 +150,10 @@ export const addNewKeysInCollection = async (
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
       keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
-      keyValue.replace(/\s/g, '').trim();
-      newObject[keyName] = keyValue;
+      let removeSpace = keyValue.replace(/\s/g, '').trim();
+      newObject[keyName] = removeSpace;
 
-      console.log("keyValue : ", keyValue, "\nuser : ", user);
+      console.log("removeSpace : ", removeSpace, "\nuser : ", user);
       console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
       if (getAllDataFromCollection[user].uid) {
         await firestore()
@@ -172,3 +182,43 @@ export const addNewKeysInCollection = async (
     };
   }
 };
+
+export const sendEmailVerificationLink = async (email:string)=>{
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Check if the user registered with Google
+    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true }; 
+    }
+
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_SPORTPARLIAMENT}/api/v1/user/verified?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+}

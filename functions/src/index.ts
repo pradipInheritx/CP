@@ -5,7 +5,8 @@ import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
-import {addNewKeysInCollection} from "./common/models/User"
+import * as jwt from "jsonwebtoken";
+
 
 import cors from "cors";
 import {
@@ -14,8 +15,9 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
+  sendEmailVerificationLink
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/sa.json";
+import serviceAccount from "./serviceAccounts/sportparliament.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -39,9 +41,9 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -76,7 +78,18 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
+import userRouter from "./routes/genericSignUp.routes";
 // import {ws} from "./common/models/Ajax";
+import { JwtPayload } from "./common/models/User";
+
+
+// import sendGrid Email function and templates 
+import { sendEmail } from "./common/services/emailServices"
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
@@ -104,6 +117,7 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+app.use("/user", userRouter); // Added Sign Up For Sport Parliament Using Global API
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -117,7 +131,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+    "https://sportparliament-1f167-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
@@ -139,7 +153,90 @@ exports.getAccessToken = () =>
     });
   });
 
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
+  // user verification link
+app.get("/user/verified", async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    const auth = admin.auth();
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Token is required",
+        result: null,
+      });
+    }
+
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
+
+    // Use the UID from the decoded token to verify the user in Firebase Authentication
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          const successTemplate = newUserVerifySuccessTemplate();
+          res.send(successTemplate);
+        }
+      })
+  }
+  catch (error: any) {
+    console.error("Error verifying user:", error);
+    const failureTemplate = newUserVerifyFailureTemplate();
+    return res.status(400).send(failureTemplate);
+  }
+});
+
+// user's email verification link
+exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+  const { email } = data;
+
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Check if the user registered with Google
+    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true }; 
+    }
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_SPORTPARLIAMENT}/api/v1/user/verify?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+});
+
+
+exports.onCreateUser = functions.auth.user().onCreate(async (user:any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -180,20 +277,39 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    isVoteToEarn: user.isVoteToEarn || false,
   };
 
   try {
-    return await admin
+    console.log("new user >>>", userData, user.uid);
+    const newUser: any = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+      if (user.isVoteToEarn == false) {
+        //Send Welcome Mail To User
+        await sendEmail(
+          userData.email,
+          "Welcome To Sport Parliament!",
+          userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+        );
+
+        const getUserEmail: any = (
+          await admin.firestore().collection("users").doc(user.uid).get()
+        ).data();
+        console.log("new user email  : ", getUserEmail.email);
+        await sendEmailVerificationLink(getUserEmail.email);
+      }
+
+    return newUser;
+
   } catch (e) {
     return false;
   }
 });
-
-
+import { addNewKeysInCollection } from "./common/models/User";
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
@@ -209,6 +325,199 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
       message: "some credentials is missing",
     };
 });
+
+exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
+  const { userId, email } = data as { userId: string, email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
+  const getUser = getUserQuery.docs.map((user: any) => user.data());
+  if (!getUser.length) return { messsage: "User is not found", token: null }
+  const tokenForLogin = await admin
+    .auth()
+    .createCustomToken(getUser[0].uid)
+    .then((token) => {
+      // Send the custom token to the client
+      console.log('Custom Token:', token);
+      return token
+    })
+    .catch((error) => {
+      console.error('Error creating custom token:', error);
+      return {
+        messsage: "Something Wrong in isLoggedInFromVoteToEarn",
+        error
+      }
+    });
+  // console.log("TOKEN ___ : ", customToken)
+  return {
+    messsage: "Token generated successfully",
+    token: tokenForLogin
+  }
+});
+
+// Start Google Authentication OTP Verification
+exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, userType } = data;
+    if (!userId || !userType) {
+      return {
+        status: false,
+        message: "userId and userType are required.",
+        result: null,
+      };
+    }
+    console.log(" userId, userType =>", userId, userType);
+
+    let adminUserData: any;
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+    console.log(" adminUserData =>", adminUserData);
+
+    const getUserData: any = adminUserData.data();
+    console.info("getUserData", getUserData);
+    const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
+      issuer: "inheritx.com",
+      name: "Sport Parliament", //getUserData.firstName,
+      length: 15,
+    });
+
+    console.log(" getUserData =>", getUserData);
+
+    getUserData.googleAuthenticatorData = {
+      otp_ascii: ascii,
+      otp_auth_url: otpauth_url,
+      otp_base32: base32,
+      otp_hex: hex,
+    };
+
+    console.log("googleAuthenticatorData =>", getUserData);
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+
+    return {
+      status: true,
+      message: "OTP generated successfully",
+      result: {
+        base32: base32,
+        otpauth_url: otpauth_url,
+      },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in generateGoogleAuthOTP API ",
+      result: error,
+    };
+  }
+});
+
+exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, token, userType } = data;
+    if (!userId) {
+      return {
+        status: false,
+        message: "UserId must be required.",
+        result: null,
+      };
+    }
+
+    let adminUserData: any;
+
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+
+    const getUserData: any = adminUserData.data();
+
+    const verified = speakeasy.totp.verify({
+      secret: getUserData.googleAuthenticatorData.otp_base32,
+      encoding: "base32",
+      token,
+    });
+    console.log("verified", verified);
+
+    if (!verified) {
+      return {
+        status: false,
+        message: "OTP not verified.",
+        result: null,
+      };
+    }
+    getUserData.googleAuthenticateOTPVerified = {
+      otp_enabled: true,
+      otp_verified: true,
+    };
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+    return {
+      status: true,
+      message: "OTP verified successfully",
+      result: {
+        otp_verified: true,
+        ...getUserData.googleAuthenticateOTPVerified,
+      },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in verifyGoogleAuthOTP API ",
+      result: error,
+    };
+  }
+});
+// End Google Authentication OTP Verification
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -389,7 +698,238 @@ exports.isAdmin = functions.https.onCall(async (data) => {
   return await isAdmin(user);
 });
 
+exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, userType } = data;
+    if (!userId || !userType) {
+      return {
+        status: false,
+        message: "userId and userType are required.",
+        result: null,
+      }
+    }
+    console.log(" userId, userType =>", userId, userType);
+
+    let adminUserData: any;
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      }
+    }
+    console.log(" adminUserData =>", adminUserData);
+
+    const getUserData: any = adminUserData.data();
+    console.info("getUserData", getUserData);
+    const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
+      issuer: "inheritx.com",
+      name: getUserData.firstName,
+      length: 15,
+    });
+
+    console.log(" getUserData =>", getUserData);
+
+    getUserData.googleAuthenticatorData = {
+      otp_ascii: ascii,
+      otp_auth_url: otpauth_url,
+      otp_base32: base32,
+      otp_hex: hex,
+    };
+
+    console.log("googleAuthenticatorData =>", getUserData);
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      }
+    }
+
+    return {
+      status: true,
+      message: "OTP generated successfully",
+      result: {
+        base32: base32,
+        otpauth_url: otpauth_url,
+      },
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in generateGoogleAuthOTP API ",
+      result: error,
+    }
+  }
+});
+
+exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, token, userType } = data;
+    if (!userId) {
+      return {
+        status: false,
+        message: "UserId must be required.",
+        result: null,
+      }
+    }
+
+    let adminUserData: any;
+
+    if (userType === "ADMIN") {
+      adminUserData =
+        await admin
+          .firestore()
+          .collection("admin")
+          .doc(userId)
+          .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      }
+    }
+
+    const getUserData: any = adminUserData.data();
+
+    const verified = speakeasy.totp.verify({
+      secret: getUserData.googleAuthenticatorData.otp_base32!,
+      encoding: "base32",
+      token,
+    });
+    console.log("verified", verified)
+
+    if (!verified) {
+      return {
+        status: false,
+        message: "OTP not verified.",
+        result: null,
+      }
+    }
+    getUserData.googleAuthenticateOTPVerified = {
+      otp_enabled: true,
+      otp_verified: true,
+    };
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      }
+    }
+    return {
+      status: true,
+      message: "OTP verified successfully",
+      result: {
+        otp_verified: true,
+        ...getUserData.googleAuthenticateOTPVerified,
+      },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in verifyGoogleAuthOTP API ",
+      result: error,
+    };
+  }
+});
+
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
+
+exports.verifyUserEmail = functions.https.onCall(async (data) => {
+  try {
+    const { uid, email } = data;
+    if (!uid || !email) {
+      return {
+        status: false,
+        message: "UserId and email must be required.",
+        result: null,
+      }
+    }
+
+    const userDataUpdate = await admin.auth().updateUser(uid, {
+      emailVerified: true,
+    }).then((userRecord) => {
+      return userRecord.toJSON()
+    }).catch((error) => {
+      return {
+        status: false,
+        message: "Error while verify the email API ",
+        result: error,
+      };
+    });
+
+    return {
+      status: true,
+      message: "User email verified successfully",
+      result: userDataUpdate,
+    };
+
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error while verify the email API ",
+      result: error,
+    };
+  }
+});
+
+exports.getUserNames = functions.https.onCall(async (data) => {
+  const { userIds = [] } = data as { userIds: string[] };
+  try {
+    if (userIds && userIds.length > 0) {
+      const usersRef = await admin
+        .firestore()
+        .collection("users")
+        .where(admin.firestore.FieldPath.documentId(), "in", userIds)
+        .get();
+
+      return usersRef.docs.map((doc) => {
+        const { displayName, email } = doc.data();
+        return {
+          id: doc.id,
+          username: displayName || email,
+        };
+      });
+    } else {
+      console.log("empty");
+      return [];
+    }
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+});
+
 
 exports.getUserNames = functions.https.onCall(async (data) => {
   const { userIds = [] } = data as { userIds: string[] };
@@ -723,18 +1263,18 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
   });
 });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 2 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 5 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub
   .schedule("*/3 * * * *")

@@ -20,12 +20,13 @@ import { FormEvent } from "react";
 import { Callback } from "./utils";
 import { ToastType } from "../../Contexts/Notification";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
-import { saveUsername } from "../../Contexts/User";
+import {  saveUsername } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
+import { showToast } from "../../App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -34,21 +35,23 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser: () => void) => {
+export const Logout = (setUser?: () => void) => {
   const auth = getAuth();
   signOut(auth)
     .then(() => {
-      setUser();
+      if (setUser){        
+        setUser();
+      }
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -166,12 +169,15 @@ export const LoginRegular = async (
   const email = getValue(e, "email");
   const password = getValue(e, "password");
 
+
+  console.log(auth, "checkauth")
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+    
     const isFirstLogin = getAdditionalUserInfo(userCredential)
 console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
@@ -232,19 +238,21 @@ export const SignupRegular = async (
       payload.email,
       payload.password
     );
-    
-// @ts-ignore
-    await sendEmailVerification(auth?.currentUser);
-    const firstTimeLogin:Boolean=true
+
+    // @ts-ignore
+        await sendEmailVerification(auth?.currentUser).then((data) => {
+          showToast("Successfully sent  verification link on your mail");
+        });
+    const firstTimeLogin: Boolean = true
     // @ts-ignore
 
     const userRef = doc(db, "users", auth?.currentUser?.uid);
     await setDoc(userRef, { firstTimeLogin }, { merge: true })
     console.log('firsttimelogin success')
     // @ts-ignore
-    saveUsername(auth?.currentUser?.uid,'','')
+    saveUsername(auth?.currentUser?.uid, '', '')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
-    
+
     callback.successFunc(userCredential.user);
   } catch (e) {
     callback.errorFunc(e as Error);

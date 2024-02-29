@@ -47,7 +47,7 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import axios from 'axios';
-import QRCode from "qrcode";
+// import QRCode from "qrcode";
 
 const title = {
   [LoginModes.LOGIN]: texts.login,
@@ -79,10 +79,9 @@ const Login2fa = ({
   const [secretKey,setSecretKey]=useState<string>('')
   const auth = getAuth();
   const [copied,setCopied]=useState(false)
-  
-  
-  const url =`https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`
-  const otpurl=`https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`
+    
+  const url =`https://us-central1-sportparliament-1f167.cloudfunctions.net/generateGoogleAuthOTP`
+  const otpurl =`https://us-central1-sportparliament-1f167.cloudfunctions.net/verifyGoogleAuthOTP`
   
   // const createPost = async (id:string) => {
   //   const data ={
@@ -105,18 +104,28 @@ const Login2fa = ({
   const verifyOtp = async (token:string) => {
     try {
       const response = await axios.post(otpurl, {
-        "userId": userInfo?.uid,
-        "token": token,
-        "userType": "USER"
-    });
+        data: {
+          "userId": userInfo?.uid,
+          "token": token,
+          "userType": "USER"
+        }
+      }).then((data) => {
+        console.log(data.data.result, "dataresult");
+        if (data.data.result.status) {
+          window.localStorage.setItem('mfa_passed', 'false')
+          setLogin(false)
+          setMfaLogin(false)
+        }
+        else {
+          showToast(data.data.result.message, ToastType.ERROR);
+        }
+      });
+        
       // console.log(response.data);
       // const newUserInfo = {
       //   ...(userInfo as UserProps),
       //   mfa: true as boolean,
-      // };
-      window.localStorage.setItem('mfa_passed','false')
-    setLogin(false)
-    setMfaLogin(false)
+      // };    
     } catch (error:any) {
       showToast(
         error.response.data.message,ToastType.ERROR

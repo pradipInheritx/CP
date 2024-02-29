@@ -18,7 +18,10 @@ import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/logoiconx2.svg";
+// import BigLogo from "../assets/svg/logoiconx2.svg";
+import BigLogo from "../assets/svg/spblue.svg";
+
+
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -240,10 +243,12 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            setLogin(true);
           })
           .catch((error) => {
             const errorMessage = error.message;
             console.log(errorMessage);
+            setLogin(true);
           });
         break;
       case EventKeys.EDIT:
@@ -395,7 +400,7 @@ const Header = ({
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Become a member",
+              label: "JOIN THE PARLIAMENT",
             },
           ].map((i) => (i ? i : undefined))}
         >
@@ -628,6 +633,13 @@ const Header = ({
                 )}
                 {/* <Navbar.Brand as={Link} to='/'>
                   <img src={BigLogo} alt='' />
+                </Navbar.Brand>
+                {/* <Navbar.Brand
+                  style={{
+                    height: "90px",
+                    width:"50px"
+                }}
+                >
                 </Navbar.Brand> */}
               </div>
             </div>

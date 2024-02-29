@@ -1,9 +1,10 @@
 /** @format */
 
 import React, { useContext } from "react";
-import {  Image } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
+import PairsCopy from "../Components/Pairs/PairsCopy";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 import UserContext from "../Contexts/User";
@@ -17,7 +18,9 @@ import Quotes from "../Components/Quotes";
 import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
+import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
+
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -35,73 +38,43 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,  
-    setSignup } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
-  
+
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
-          
-          <HomeContainer width={width} className='mb-4 p-0'>
+          <HomeContainer width={width} className='mb-4 p-0 '>
             {!(login || firstTimeLogin) && (
               <>
               
                 {/* <Image
                   src={src}
                   style={{
-                    width: width && width > 969 ? "auto" : "100%",
+                    width: width && width > 969 ? "100%" : "100%",
                     height:
                       width && width > 969
                         ? "auto"
-                        : 'auto',
-                    marginTop: width && width > 969 ? -50 : 130,
+                        : "auto",
+                    marginTop: width && width > 969 ? "0" : "80px",
                     // marginTop:'120px',
                     position: "absolute",
                   }}
-                /> */}
-                {window.screen.width>768 && <h2
-                    style={{ zIndex: 0, position: "absolute",top:'130px' }}
-                    className=' d-block'
-                  >
-                    <strong
-                      className='text-uppercase'
-                      style={{ fontSize: "45px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                    
-                  </h2>}
+                />
+
                 <div
                   className='w-100 '
                   style={{
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-                  
-                  
 
-                 {window.screen.width <768 && <h2
-                    style={{ zIndex: 0, position: "relative" }}
-                    className='d-xl-none d-block'
-                  >
-                    <strong
-                      className='text-uppercase'
-                      style={{ fontSize: "24px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-                </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-                  </h2>}
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
@@ -120,50 +93,105 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
+             {/* <h2
+                    style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
+                    className=' d-block text-center mb-2'
+                  >
+                    <strong
+                      className='text-uppercase text-center'
+                      style={{ fontSize: "24px", fontWeight: "700" }}
+                    >
+                      {translate("Vote to Earn")}
+                    </strong>
+                  </h2> */}
+                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
+                </TextContainer> */}
+                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                marginTop: "130px",
               }}
+
+              className="mb-4"
             >
-              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
+            <>
+              {/* <h2
+             style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
+             className=' d-block text-center mb-2'
+           >
+             <strong
+               className='text-uppercase text-center'
+               style={{ fontSize: "44px", fontWeight: "700" }}
+             >
+               {translate("Vote to Earn")}
+             </strong>
+           </h2> */}
+             {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+           <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
+         </TextContainer> */}
+             {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
-                // zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                // marginTop: "200px",
-                fontSize: "30px",
-              }}
+                  // zIndex: 1,
+                  fontWeight: "400",
+                  position: "relative",
+                  // marginTop: "200px",
+                  fontSize: "30px",
+                  marginTop: window?.screen?.width < 768 ? '100px' : "222px",
+                }}
+
+              className="mb-4"
             >
-              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
+            </>
           )}
-         
+          {/* <Pairs
+            onFavClick={async (...args) => {
+              if (user) {
+                await calcFavorites(...args);
+              } else {
+                showModal(<NotLoggedInPopup />);
+              }
+            }}
+          /> */}
           {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
               } else {
-                setLoginRedirectMessage("add coin to favorites.");
+                setLoginRedirectMessage("add coin to favorites");
                 setLogin(true);
                 // showModal(<NotLoggedInPopup/>);
               }
             }}
           /> */}
-        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>COMING SOON</H2>}
+          <PairsCopy
+              onFavClick={async (...args) => {
+                  if (user) {
+                    await calcFavorites(...args);
+                  } else {
+                    showModal(<NotLoggedInPopup />);
+                  }
+                }}
+          />
+            
 
 
 
-          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>COMING SOON</H2>}
         </div>
-        {/* <div className='mb-4 mx-0'>
-          <H2
+        <div className='mb-4 mx-0'>
+          {/* <H2
             style={{
               zIndex: 1,
               fontWeight: "400",
@@ -172,8 +200,8 @@ const Home = () => {
             }}
           >
             {translate("")}
-          </H2>
-          <Pairs
+          </H2> */}
+          {/* <Pairs
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -181,17 +209,45 @@ const Home = () => {
                 showModal(<NotLoggedInPopup />);
               }
             }}
-          />
+          /> */}
+          {/* <Coins
+            onFavClick={async (...args) => {
+              if (user) {
+                await calcFavorites(...args);
+              } else {
+                setLoginRedirectMessage("add coin to favorites");
+                setLogin(true);
+                showModal(<NotLoggedInPopup/>);
+              }
+            }}
+          /> */}
         </div>
-        <div className='mb-5 mx-0'>
+        {/* <div className='mb-5 mx-0'>
           <div className='mb-4'>
             <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
-              {translate("Influencers")}
+              {texts.Influencers}
             </H2>
+            {!user?.uid ? <div className='d-sx-none'> {window.screen.width > 979 && <><Buttons.Primary style={{ margin: 'auto', marginTop: '4rem', fontSize: '2rem', padding: '2rem' }} onClick={e => {
+              setLogin(true)
+              setSignup(true)
+            }}>{texts.signUp}</Buttons.Primary>
+              <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1.5rem' }}>
+              {("Join now and start earning rewards before anyone else").toUpperCase()}
+              </H2>
+
+            </>}</div> : <></>}
+
+
+
+            {!user?.uid ? <div className='d-xl-none'> {window.screen.width < 979 && <><Buttons.Primary style={{ margin: 'auto', marginTop: '2rem', fontSize: '1rem', padding: '1rem' }} onClick={e => {
+              setLogin(true)
+              setSignup(true)
+            }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1rem' }}>{("Join now and start earning rewards before anyone else").toUpperCase()}</H2></>}</div> : <></>}
+
           </div>
           <InfluencersCarousel />
-        </div>
-        <div className='mb-5 mx-0'>
+        </div> */}
+        {/* <div className='mb-5 mx-0'>
           <div className='mb-4'>
             <H2 style={{ zIndex: 1, fontWeight: "400", position: "relative" }}>
               {translate("")}

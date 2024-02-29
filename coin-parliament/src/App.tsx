@@ -13,6 +13,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -39,7 +40,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { db, functions, messaging } from "./firebase";
+import { auth, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -62,6 +63,7 @@ import UserTypeManager from "./managers/UserTypeManager";
 import CoinMain from "./Pages/CoinMain";
 import firebase from "firebase/compat";
 import PairsMain from "./Pages/PairsMain";
+import CardShow from "./Components/Pairs/CardShow";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
@@ -292,9 +294,37 @@ const handleClick=()=>{
     }
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
-  const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  // const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [allCoins, setAllCoins] = useState<string[]>(
+    [
+    "BTC",
+    "ETH",
+    "BNB",
+    "ADA",
+    "SOL",
+    "XRP",
+    "LUNA",
+    "DOGE",
+    "DOT",
+    "SHIB",
+    "MATIC",
+    "CRO",
+    "LTC",
+    "LINK",
+    "UNI",
+    "TRX",
+    "XLM",
+    "MANA",
+    "HBAR",
+    "VET",
+    "SAND",
+    "EOS",
+    "CAKE"
+  ]
+  );
   const [changePrice, setChangePrice] = useState<any>(0);
-  const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
+  // const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
+  const [allPairs, setAllPairs] = useState<Array<string[]>>([["BTC","ETH"],["BTC","ETH"],["BTC","ETH"],]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
@@ -305,8 +335,55 @@ const handleClick=()=>{
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
+  // const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
+  //   getCoins() as { [symbol: string]: Coin }
+  // );
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
+    {
+    DEMO: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+    },
+    DEMO2: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+      },
+    
+    DEMO3: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO4: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO5: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO6: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+}
+  }
   );
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -331,6 +408,7 @@ const handleClick=()=>{
   );
   const [totals, setTotals] = useState<{ [key: string]: Totals }>(
     {} as { [key: string]: Totals }
+    // "3"
   );
   const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);
   const [voteRules, setVoteRules] = useState<VoteRules>({} as VoteRules);
@@ -645,62 +723,62 @@ console.log('fmctoken',fcmToken)
   //   });
   // }, [user?.uid]);
   
-  // useEffect(() => {
-  //   const auth = getAuth();
+  useEffect(() => {
+    const auth = getAuth();
 
-  //   if (!firstTimeLogin) {
-  //     onAuthStateChanged(auth, async (user: User | null) => {
-  //       setAuthStateChanged(true);
-  //       if (
-  //         user?.emailVerified ||
-  //         user?.providerData[0]?.providerId === "facebook.com"
-  //       ) {
-  //         // setLogin(false);
-  //         // setSignup(false);
-  //         setLoginRedirectMessage("");
-  //         await updateUser(user);
-  //         setUserUid(user?.uid);
-  //         onSnapshot(doc(db, "users", user.uid), async (doc) => {
-  //           await setUserInfo(doc.data() as UserProps);
-  //           setDisplayName((doc.data() as UserProps).displayName + "");
-  //         });
-  //         // const votesLast24HoursRef = firebase
-  //         //   .firestore()
-  //         //   .collection("votes")
-  //         //   .where("userId", "==", user.uid)
-  //         //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
-  //         //   .where("voteTime", "<=", Date.now());
-  //         //   console.log('extravote11',votesLast24HoursRef)
-  //         //   await votesLast24HoursRef.onSnapshot((snapshot) => {
-  //         //     console.log('extravote1')
-  //         //     setVotesLast24Hours(
-  //         //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
-  //         //     );
-  //         //   });
+    if (!firstTimeLogin) {
+      onAuthStateChanged(auth, async (user: User | null) => {
+        setAuthStateChanged(true);
+        if (
+          user?.emailVerified ||
+          user?.providerData[0]?.providerId === "facebook.com"
+        ) {
+          // setLogin(false);
+          // setSignup(false);
+          setLoginRedirectMessage("");
+          await updateUser(user);
+          setUserUid(user?.uid);
+          onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            await setUserInfo(doc.data() as UserProps);
+            setDisplayName((doc.data() as UserProps).displayName + "");
+          });
+          // const votesLast24HoursRef = firebase
+          //   .firestore()
+          //   .collection("votes")
+          //   .where("userId", "==", user.uid)
+          //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
+          //   .where("voteTime", "<=", Date.now());
+          //   console.log('extravote11',votesLast24HoursRef)
+          //   await votesLast24HoursRef.onSnapshot((snapshot) => {
+          //     console.log('extravote1')
+          //     setVotesLast24Hours(
+          //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
+          //     );
+          //   });
          
 
-  //         try {
-  //           if (fcmToken) {
-  //             try {
-  //               await setDoc(
-  //                 doc(db, "users", user.uid),
-  //                 { token: fcmToken },
-  //                 { merge: true }
-  //               );
-  //               console.log("push enabled");
-  //             } catch (e) {
-  //               console.log(e);
-  //             }
-  //           }
-  //         } catch (e) {
-  //           console.log("An error occurred while retrieving token. ", e);
-  //         }
-  //       } else {
-  //         await updateUser();
-  //       }
-  //     });
-  //   }
-  // }, [user, fcmToken, coins]);
+          try {
+            if (fcmToken) {
+              try {
+                await setDoc(
+                  doc(db, "users", user.uid),
+                  { token: fcmToken },
+                  { merge: true }
+                );
+                console.log("push enabled");
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          } catch (e) {
+            console.log("An error occurred while retrieving token. ", e);
+          }
+        } else {
+          await updateUser();
+        }
+      });
+    }
+  }, [user, fcmToken, coins]);
   
 // useEffect(() => {
   
@@ -788,7 +866,30 @@ console.log('fmctoken',fcmToken)
 //   removeData()
 // }, [])
 
-
+  // login user using token
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let token = searchParams.get('token');
+    if (token) {
+      firebase.auth().signInWithCustomToken(token)
+        .then((userCredential) => {
+          // User is signed in
+          const user = userCredential.user;
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
+          navigate('/');
+        })
+        .catch((error) => {
+          // Handle sign-in errors
+          console.error('Custom token sign-in error: authenticated', error);
+        });
+    }
+  }, [searchParams]);
+  
+  
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -1119,28 +1220,33 @@ console.log('fmctoken',fcmToken)
                                     <div className='pwaPopup'  style={{display:pwaPopUp}}>
                                         <span>{texts.InstallCoinParliament}</span>
                                     <button
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={onClick}
-      style={{zIndex:99999}}
-    >
-      Install
-    </button>
-    <span
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={e=>setPwaPopUp('none')}
-                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
-    >
-      x
-    </span>
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={onClick}
+                                        style={{zIndex:99999}}
+                                      >
+                                        Install
+                                      </button>
+                                      <span
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={e=>setPwaPopUp('none')}
+                                        style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}>
+                                        x
+                                      </span>
                                       </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
+                                        <Route
+                                          path='CardShow/:id'
+                                          element={<CardShow />}
+                                        />
+                                       
+
                                         {/* <Route
                                           path='coins'
                                           element={<CoinMain />}
@@ -1220,7 +1326,7 @@ console.log('fmctoken',fcmToken)
                                         </Route> 
                                         */}
                                         
-                                          {/* <Route
+                                          <Route
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
                                         >
@@ -1243,7 +1349,7 @@ console.log('fmctoken',fcmToken)
                                             }
                                             element={<Wallet />}
                                           /> 
-                                        </Route> */}
+                                        </Route>
                                         {/* Fowller component  start*/}
                                         {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
@@ -1285,7 +1391,7 @@ console.log('fmctoken',fcmToken)
                                         /> */}
 
                                         {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                        {/* <Route path='faq' element={<FAQ />} />
+                                        <Route path='faq' element={<FAQ />} />
                                         <Route
                                           path='about'
                                           element={<About />}
@@ -1301,8 +1407,8 @@ console.log('fmctoken',fcmToken)
                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
-                                        /> */}
-                                         {/* <Route
+                                        />
+                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> 
@@ -1325,7 +1431,7 @@ console.log('fmctoken',fcmToken)
                                               element={<Content />}
                                             />
                                           ))}
-                                        <Route path='*' element={<Content />} /> */}
+                                        <Route path='*' element={<Content />} />
                                       </Routes>
                                     </Container>
                                     <Footer />
@@ -1375,3 +1481,32 @@ console.log('fmctoken',fcmToken)
 }
 
 export default App;
+
+
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  toast.clearWaitingQueue();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};
