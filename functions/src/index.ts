@@ -342,7 +342,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user : ",user);
+  console.log("create user : ", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -400,23 +400,23 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData,{merge: true});
+      .set(userData, { merge: true });
 
-      const getUser: any = (
-        await admin.firestore().collection("users").doc(user.uid).get()
-      ).data();
-      console.log("new user email  : ", getUser.email);
+    const getUser: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUser.email);
 
-      //Send Welcome Mail To User
-      console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
-      if (getUser.isVoteToEarn === false) {
-        await sendEmail(
-          userData.email,
-          "Welcome To Coin Parliament!",
-          userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-        );
-        await sendEmailVerificationLink(getUser.email);
-      }
+    //Send Welcome Mail To User
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      );
+      await sendEmailVerificationLink(getUser.email);
+    }
     return newUser;
 
   } catch (e) {
@@ -1317,30 +1317,30 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 // function that return some parameters for coin parliament players
 exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
   try {
-    
+
 
     const usersCollection = await admin.firestore().collection("users").get();
 
     const usersDetails = [];
-    
+
     for (const userDoc of usersCollection.docs) {
       const userId = userDoc.id;
-      console.log("userId>>>>>",userId);
+      console.log("userId>>>>>", userId);
       const userData = userDoc.data();
-      console.log("users>>>>>>>",userData.userName,);
+      console.log("users>>>>>>>", userData.userName,);
 
       if (!userData) {
         console.log("User data not found for userId:", userId);
         continue; // Skip to the next user if user data is not available
       }
 
-    const userName=userData.userName || ""
-    console.log("name>>>>>", userName)
+      const userName = userData.userName || ""
+      console.log("name>>>>>", userName)
 
-    // Check if voteStatistics exists and has the score property before accessing it
-    
+      // Check if voteStatistics exists and has the score property before accessing it
 
-    let totalCMP = 0; // Default value for totalCMP
+
+      let totalCMP = 0; // Default value for totalCMP
 
       if (userData.voteStatistics) {
         console.log("voteStatistics", userData.voteStatistics)
@@ -1354,7 +1354,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         .limit(1)
         .get();
 
-        let accountUpgrade = false; // Default value if not found
+      let accountUpgrade = false; // Default value if not found
       if (!paxTransactionQuery.empty) {
         const paxTransactionData = paxTransactionQuery.docs[0].data();
         accountUpgrade = paxTransactionData.isUserUpgraded || false;
@@ -1372,12 +1372,12 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       let userRecord;
       try {
         userRecord = await admin.auth().getUser(userId);
-      } catch (error:any) {
+      } catch (error: any) {
         if (error.code === 'auth/user-not-found') {
           console.log('User record not found for user ID:', userId);
           continue; // Skip to the next user if user record is not found
         } else {
-          throw error; 
+          throw error;
         }
       }
 
@@ -1385,7 +1385,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         .where("userId", "==", userId)
         .get();
 
-        let numberOfDaysVoted = 0;
+      let numberOfDaysVoted = 0;
       if (!votesQuerySnapshot.empty) {
         const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
         console.log("voteTimes>>>>>>>", voteTimes);
@@ -1394,7 +1394,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
       }
 
-      if(userRecord){
+      if (userRecord) {
         usersDetails.push({
           name: userName,
           country: userData.country || "",
@@ -1408,7 +1408,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         });
 
       }
-      
+
     }
 
     return {
@@ -1422,7 +1422,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {} 
+      data: {}
     };
   }
 });
@@ -1743,3 +1743,124 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   }
 })
 
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+  try {
+    const usersCollection = await admin.firestore().collection("users").get();
+    console.info("usersCollection", usersCollection);
+
+    const userIds: any = [];
+    usersCollection.forEach(doc => {
+      userIds.push(doc.id);
+    });
+
+    console.log("User IDs:", userIds);
+  }
+  catch (error) {
+
+  }
+})
+
+//   const usersDetails = [];
+
+//   for (const userDoc of usersCollection.docs) {
+//     const userId = userDoc.id;
+//     console.log("userId>>>>>", userId);
+//     const userData = userDoc.data();
+//     console.log("users>>>>>>>", userData.userName,);
+
+//     if (!userData) {
+//       console.log("User data not found for userId:", userId);
+//       continue; // Skip to the next user if user data is not available
+//     }
+
+//     const userName = userData.userName || ""
+//     console.log("name>>>>>", userName)
+
+//     // Check if voteStatistics exists and has the score property before accessing it
+
+
+//     let totalCMP = 0; // Default value for totalCMP
+
+//     if (userData.voteStatistics) {
+//       console.log("voteStatistics", userData.voteStatistics)
+//       // If voteStatistics exists, access the score property
+//       totalCMP = userData.voteStatistics.score || 0; // Set totalCMP to score, or 0 if score is undefined
+//       console.log("totalCMP>>>>>", userData.voteStatistics.score)
+//     }
+
+//     const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
+//       .where('userId', '==', userId)
+//       .limit(1)
+//       .get();
+
+//     let accountUpgrade = false; // Default value if not found
+//     if (!paxTransactionQuery.empty) {
+//       const paxTransactionData = paxTransactionQuery.docs[0].data();
+//       accountUpgrade = paxTransactionData.isUserUpgraded || false;
+//     }
+
+//     const paymentQuery = await admin.firestore().collection('payments')
+//       .where('userId', '==', userId)
+//       .where('transactionType', '==', 'EXTRAVOTES')
+//       .get();
+
+//     const hasPurchasedVotes = !paymentQuery.empty;
+//     const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+
+//     // Check if the user record exists in Firebase Authentication
+//     let userRecord;
+//     try {
+//       userRecord = await admin.auth().getUser(userId);
+//     } catch (error: any) {
+//       if (error.code === 'auth/user-not-found') {
+//         console.log('User record not found for user ID:', userId);
+//         continue; // Skip to the next user if user record is not found
+//       } else {
+//         throw error;
+//       }
+//     }
+
+//     const votesQuerySnapshot = await admin.firestore().collection("votes")
+//       .where("userId", "==", userId)
+//       .get();
+
+//     let numberOfDaysVoted = 0;
+//     if (!votesQuerySnapshot.empty) {
+//       const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+//       console.log("voteTimes>>>>>>>", voteTimes);
+//       const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+//       numberOfDaysVoted = uniqueDates.length;
+//       console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+//     }
+
+//     if (userRecord) {
+//       usersDetails.push({
+//         name: userName,
+//         country: userData.country || "",
+//         signupDate: userRecord.metadata.creationTime,
+//         totalVotes: userData.voteValue || 0,
+//         totalCMP: totalCMP,
+//         accountUpgrade: accountUpgrade,
+//         numberOfDaysVoted: numberOfDaysVoted,
+//         votePurchase: votePurchaseStatus,
+//         userId: userId,
+//       });
+
+//     }
+
+//   }
+
+//   return {
+//     status: true,
+//     message: "Users fetched successfully",
+//     data: usersDetails
+//   };
+
+// } catch (error) {
+//   console.log("Error while fetching user data:", error);
+//   return {
+//     status: false,
+//     message: "Error while fetching user data",
+//     data: {}
+//   };
+// }
