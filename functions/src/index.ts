@@ -1339,7 +1339,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
 
     const userName=userData.userName || ""
     console.log("name>>>>>", userName)
-    const totalCMP = userData.voteStatistics?.score || 0;
+    const totalCMP = userData.voteStatistics ? userData.voteStatistics.score || 0 : 0;
     console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
       const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
