@@ -1329,13 +1329,10 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       const userData = userDoc.data();
       console.log("users>>>>>>>",userData.userName,);
 
-    if (!userData) {
-      return {
-        status: true,
-        message: "User not found.",
-        data: {} // Empty array when user not found
-      };
-    }
+      if (!userData) {
+        console.log("User data not found for userId:", userId);
+        continue; // Skip to the next user if user data is not available
+      }
 
     const userName=userData.userName || ""
     console.log("name>>>>>", userName)
@@ -1371,7 +1368,18 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       const hasPurchasedVotes = !paymentQuery.empty;
       const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
 
-      const userRecord = await admin.auth().getUser(userId);
+      // Check if the user record exists in Firebase Authentication
+      let userRecord;
+      try {
+        userRecord = await admin.auth().getUser(userId);
+      } catch (error:any) {
+        if (error.code === 'auth/user-not-found') {
+          console.log('User record not found for user ID:', userId);
+          continue; // Skip to the next user if user record is not found
+        } else {
+          throw error; 
+        }
+      }
 
       const votesQuerySnapshot = await admin.firestore().collection("votes")
         .where("userId", "==", userId)
@@ -1386,17 +1394,21 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
       }
 
-      usersDetails.push({
-        name: userName,
-        country: userData.country || "",
-        signupDate: userRecord.metadata.creationTime,
-        totalVotes: userData.voteValue || 0,
-        totalCMP: totalCMP,
-        accountUpgrade: accountUpgrade,
-        numberOfDaysVoted: numberOfDaysVoted,
-        votePurchase: votePurchaseStatus,
-        userId: userId,
-      });
+      if(userRecord){
+        usersDetails.push({
+          name: userName,
+          country: userData.country || "",
+          signupDate: userRecord.metadata.creationTime,
+          totalVotes: userData.voteValue || 0,
+          totalCMP: totalCMP,
+          accountUpgrade: accountUpgrade,
+          numberOfDaysVoted: numberOfDaysVoted,
+          votePurchase: votePurchaseStatus,
+          userId: userId,
+        });
+
+      }
+      
     }
 
     return {
