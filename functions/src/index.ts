@@ -342,7 +342,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user");
+  console.log("create user : ",user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
