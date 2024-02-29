@@ -1339,7 +1339,12 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
 
     const userName=userData.userName || ""
     console.log("name>>>>>", userName)
-    const totalCMP = userData.voteStatistics ? userData.voteStatistics.score || 0 : 0;
+
+    // Check if voteStatistics exists and has the score property before accessing it
+        let totalCMP = 0;
+    if (userData.voteStatistics && userData.voteStatistics.score !== undefined) {
+      totalCMP = userData.voteStatistics.score;
+    }
     console.log("totalCMP>>>>>", userData.voteStatistics.score)
 
       const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
