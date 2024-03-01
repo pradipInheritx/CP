@@ -1317,10 +1317,8 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 
 
 // function that return some parameters for coin parliament players
-exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
   try {
-
-
     const usersCollection = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
       return {
         id: user.id,
