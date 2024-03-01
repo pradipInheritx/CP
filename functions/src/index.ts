@@ -1323,7 +1323,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
       let userData = user.data()
       return {
         userId: user.id,
-        name: userData?.username || "",
+        name: userData?.userName || "",
         country: userData?.country || "",
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
         totalCMP: userData?.voteStatistics?.total || 0,
