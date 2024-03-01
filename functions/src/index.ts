@@ -1343,16 +1343,16 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     })
 
 
-    // add number of vote days
-    for (let index = 0; index < getAllUserData.length; index++) {
-      console.log("-----START TO ADD VOTE DAYS-----");
-      const user: any = getAllUserData[index];
-      let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
-      const uniqueDates = getVotes.length !== 0 ? [...new Set(getVotes.map(date => date.toDateString()))] : [];
-      user['numberOfDaysVoted'] = uniqueDates.length;
-      console.log("vote days added : ", user.userId, index);
-      console.log("-----END TO ADD VOTE DAYS-----");
-    }
+    // // add number of vote days
+    // for (let index = 0; index < getAllUserData.length; index++) {
+    //   console.log("-----START TO ADD VOTE DAYS-----");
+    //   const user: any = getAllUserData[index];
+    //   let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
+    //   const uniqueDates = getVotes.length !== 0 ? [...new Set(getVotes.map(date => date.toDateString()))] : [];
+    //   user['numberOfDaysVoted'] = uniqueDates.length;
+    //   console.log("vote days added : ", user.userId, index);
+    //   console.log("-----END TO ADD VOTE DAYS-----");
+    // }
 
     // add votePurchase
     getAllUserData.forEach(async (user: any, index: number) => {
