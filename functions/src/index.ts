@@ -1362,18 +1362,18 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     //   console.log("-----END TO ADD VOTE DAYS-----");
 
     // add votePurchase
-    console.log("-----START TO VOTE PURCHASE -----");
-    getAllUserData.forEach(async (user: any, index: number) => {
-      let checkPurchase = (await admin.firestore()
-        .collection('payments')
-        .where('userId', '==', user.userId)
-        .where('transactionType', '==', 'EXTRAVOTES')
-        .limit(1)
-        .get())
-      user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
-      console.log("votePurchase added : ", user.userId, index);
-    })
-    console.log("-----END TO VOTE PURCHASE-----");
+    // console.log("-----START TO VOTE PURCHASE -----");
+    // getAllUserData.forEach(async (user: any, index: number) => {
+    //   let checkPurchase = (await admin.firestore()
+    //     .collection('payments')
+    //     .where('userId', '==', user.userId)
+    //     .where('transactionType', '==', 'EXTRAVOTES')
+    //     .limit(1)
+    //     .get())
+    //   user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
+    //   console.log("votePurchase added : ", user.userId, index);
+    // })
+    // console.log("-----END TO VOTE PURCHASE-----");
 
     // console.log("check one user data : ", getAllUserData[0])
 
