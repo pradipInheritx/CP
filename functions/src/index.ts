@@ -1333,30 +1333,30 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
     // add sign up date
+    console.log("-----START TO ADD SIGNUP DATE-----");
     getAllUserData.forEach(async (user: any, index: number) => {
-      console.log("-----START TO ADD SIGNUP DATE-----");
       await admin.auth().getUser(user.userId).then((data: any) => {
         user['signupDate'] = data.metadata?.createTime;
         console.log("user signupDate added: ", user.userId, index);
       });
-      console.log("-----END TO ADD SIGNUP DATE-----");
     })
+    console.log("-----END TO ADD SIGNUP DATE-----");
 
 
     // // add number of vote days
-    // for (let index = 0; index < getAllUserData.length; index++) {
     //   console.log("-----START TO ADD VOTE DAYS-----");
+    // for (let index = 0; index < getAllUserData.length; index++) {
     //   const user: any = getAllUserData[index];
     //   let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
     //   const uniqueDates = getVotes.length !== 0 ? [...new Set(getVotes.map(date => date.toDateString()))] : [];
     //   user['numberOfDaysVoted'] = uniqueDates.length;
     //   console.log("vote days added : ", user.userId, index);
-    //   console.log("-----END TO ADD VOTE DAYS-----");
     // }
+    //   console.log("-----END TO ADD VOTE DAYS-----");
 
     // add votePurchase
+    console.log("-----START TO VOTE PURCHASE -----");
     getAllUserData.forEach(async (user: any, index: number) => {
-      console.log("-----START TO VOTE PURCHASE -----");
       let checkPurchase = (await admin.firestore()
         .collection('payments')
         .where('userId', '==', user.userId)
@@ -1365,8 +1365,8 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
         .get())
       user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
       console.log("votePurchase added : ", user.userId, index);
-      console.log("-----END TO VOTE PURCHASE-----");
     })
+    console.log("-----END TO VOTE PURCHASE-----");
 
     console.log("check one user data : ", getAllUserData[0])
 
