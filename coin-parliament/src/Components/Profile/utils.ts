@@ -1407,13 +1407,13 @@ export const mainnet = [
     explorerUrl: 'https://polygonscan.com/',
     rpcUrl: 'https://polygon-rpc.com/'
   },
-  {
-    chainId: 11155111,
-    name: 'Sepolia Test Netwok',
-    currency: 'SepoliaETH',
-    explorerUrl: ' https://sepolia.etherscan.io/',
-    rpcUrl: 'https://1rpc.io/sepolia'
-  }
+  // {
+  //   chainId: 11155111,
+  //   name: 'Sepolia Test Netwok',
+  //   currency: 'SepoliaETH',
+  //   explorerUrl: ' https://sepolia.etherscan.io/',
+  //   rpcUrl: 'https://1rpc.io/sepolia'
+  // }
 
 ]
 export const ContractABI = [

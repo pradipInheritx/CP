@@ -661,7 +661,7 @@ const VotingPaymentCopy: React.FC<{
         userId: `${user?.uid}`,
         userEmail: `${user?.email}`,
         walletType: `wallet connect`,
-        amount: coinInfo?.chainId == 1115511 ? "0.0001" : Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+        amount:Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
         // amount: 0.0001,
         // @ts-ignore
         network: `${coinInfo.chainId || ""}`,
@@ -710,7 +710,7 @@ const VotingPaymentCopy: React.FC<{
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
-        const amountInCrypto = coinInfo?.chainId == 1115511 ?"0.0001":Number(payamount && Number(payamount) / coins[`${coinInfo?.symbol}`].price).toFixed(18)
+        const amountInCrypto = Number(payamount && Number(payamount) / coins[`${coinInfo?.symbol}`].price).toFixed(18)
         if (coinInfo?.currency == "USDT ERC20") {
           
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
