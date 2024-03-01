@@ -1319,17 +1319,61 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 // function that return some parameters for coin parliament players
 exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
   try {
-    const usersCollection = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+      let userData = user.data()
       return {
-        id: user.id,
-        ...user.data()
+        userId: user.id,
+        name: userData.username,
+        country: userData.country || "",
+        remainVote: userData.rewardStatistics?.extraVote + Number(userData?.voteValue),
+        totalCMP: userData.voteStatistics.total,
+        accountUpgrade: userData?.isUserUpgraded || false
       }
     });
+    console.log("TOTAL USER LENGTH : ", getAllUserData.length);
+
+    // add sign up date
+    getAllUserData.forEach(async (user: any, index: number) => {
+      console.log("-----START TO ADD SIGNUP DATE-----");
+      await admin.auth().getUser(user.userId).then((data: any) => {
+        user['signupDate'] = data.metadata.createTime;
+        console.log("user signupDate added: ", user.userId, index);
+      });
+      console.log("-----END TO ADD SIGNUP DATE-----");
+    })
+
+
+    // add number of vote days
+    for (let index = 0; index < getAllUserData.length; index++) {
+      console.log("-----START TO ADD VOTE DAYS-----");
+      const user: any = getAllUserData[index];
+      let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
+      const uniqueDates = [...new Set(getVotes.map(date => date.toDateString()))];
+      user['numberOfDaysVoted'] = uniqueDates.length;
+      console.log("vote days added : ", user.userId, index);
+      console.log("-----END TO ADD VOTE DAYS-----");
+    }
+
+    // add votePurchase
+    getAllUserData.forEach(async (user: any, index: number) => {
+      console.log("-----START TO VOTE PURCHASE -----");
+      let checkPurchase = (await admin.firestore()
+        .collection('payments')
+        .where('userId', '==', user.userId)
+        .where('transactionType', '==', 'EXTRAVOTES')
+        .limit(1)
+        .get())
+      user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
+      console.log("votePurchase added : ", user.userId, index);
+      console.log("-----END TO VOTE PURCHASE-----");
+    })
+
+    console.log("check one user data : ", getAllUserData[0])
 
     return {
       status: true,
       message: "Users fetched successfully",
-      data: usersCollection
+      data: getAllUserData
     };
 
   } catch (error) {
