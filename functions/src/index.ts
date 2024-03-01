@@ -1334,12 +1334,19 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
 
     // add sign up date
     console.log("-----START TO ADD SIGNUP DATE-----");
-    getAllUserData.forEach(async (user: any, index: number) => {
-      await admin.auth().getUser(user.userId).then((data: any) => {
-        user['signupDate'] = data.metadata?.createTime;
-        console.log("user signupDate added: ", user.userId, index);
+
+    const getAuthUserSignUpTime: any = []
+    await admin.auth().listUsers().then((data) => {
+      data.users.forEach((userRecord: any) => {
+        console.log("User signupDate added:", userRecord.uid);
+
+        getAuthUserSignUpTime.push({
+          userId: userRecord.uid,
+          signUpTime: userRecord.metadata.creationTime
+        })
       });
-    })
+    });
+    console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime)
     console.log("-----END TO ADD SIGNUP DATE-----");
 
 
@@ -1355,20 +1362,20 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     //   console.log("-----END TO ADD VOTE DAYS-----");
 
     // add votePurchase
-    console.log("-----START TO VOTE PURCHASE -----");
-    getAllUserData.forEach(async (user: any, index: number) => {
-      let checkPurchase = (await admin.firestore()
-        .collection('payments')
-        .where('userId', '==', user.userId)
-        .where('transactionType', '==', 'EXTRAVOTES')
-        .limit(1)
-        .get())
-      user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
-      console.log("votePurchase added : ", user.userId, index);
-    })
-    console.log("-----END TO VOTE PURCHASE-----");
+    // console.log("-----START TO VOTE PURCHASE -----");
+    // getAllUserData.forEach(async (user: any, index: number) => {
+    //   let checkPurchase = (await admin.firestore()
+    //     .collection('payments')
+    //     .where('userId', '==', user.userId)
+    //     .where('transactionType', '==', 'EXTRAVOTES')
+    //     .limit(1)
+    //     .get())
+    //   user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
+    //   console.log("votePurchase added : ", user.userId, index);
+    // })
+    // console.log("-----END TO VOTE PURCHASE-----");
 
-    console.log("check one user data : ", getAllUserData[0])
+    // console.log("check one user data : ", getAllUserData[0])
 
     return {
       status: true,
