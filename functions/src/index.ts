@@ -1323,7 +1323,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
       let userData = user.data()
       return {
         userId: user.id,
-        name: userData?.username || "",
+        name: userData?.userName || "",
         country: userData?.country || "",
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
         totalCMP: userData?.voteStatistics?.total || 0,
@@ -1392,6 +1392,44 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     };
   }
 });
+exports.getAllVotes = functions.https.onCall(async (data: any) => {
+  try {
+    const getAllVotesQuery = await admin.firestore().collection('votes').get();
+    const getAllVotes: any = getAllVotesQuery.docs.map((vote: any) => {
+      let voteData = vote.data()
+      return {
+        userId: voteData.userId,
+        voteTime: voteData.voteTime,
+        voteId: vote.id
+      }
+    })
+    return {
+      total: getAllVotes.length,
+      votes: getAllVotes
+    }
+  } catch (error) {
+    return false
+  }
+})
+exports.getAllPayments = functions.https.onCall(async (data: any) => {
+  try {
+    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+    const getAllPayments: any = getAllPaymentsQuery.docs.map((payment: any) => {
+      let paymentData = payment.data();
+      return {
+        userId: paymentData.userId,
+        paymentId: paymentData.id,
+        transactionType: paymentData.transactionType
+      }
+    })
+    return {
+      total: getAllPayments.length,
+      payments: getAllPayments
+    }
+  } catch (error) {
+    return false
+  }
+})
 
 
 // ******************* START CRON JOBS ****************
