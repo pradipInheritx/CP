@@ -1401,9 +1401,13 @@ exports.getAllVotes = functions.https.onCall(async (data: any) => {
     // Define batch size for pagination
     const batchSize = 50;
 
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
+
     // Fetch the first batch of documents
     let querySnapshot = await admin.firestore()
       .collection('votes')
+      .where('voteTime', '>=', twentyFourHoursAgo)
       .limit(batchSize)
       .get();
 
