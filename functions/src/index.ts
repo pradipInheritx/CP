@@ -1392,23 +1392,51 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     };
   }
 });
+
+/**
+ * If Data is huge then we will make into the batch
+ */
 exports.getAllVotes = functions.https.onCall(async (data: any) => {
   try {
-    const getAllVotesQuery = await admin.firestore().collection('votes').get();
-    const getAllVotes: any = getAllVotesQuery.docs.map((vote: any) => {
-      let voteData = vote.data()
-      return {
-        userId: voteData.userId,
-        voteTime: voteData.voteTime,
-        voteId: vote.id
-      }
-    })
-    return {
-      total: getAllVotes.length,
-      votes: getAllVotes
+    // Define batch size for pagination
+    const batchSize = 50;
+
+    // Fetch the first batch of documents
+    let querySnapshot = await admin.firestore()
+      .collection('votes')
+      .limit(batchSize)
+      .get();
+
+    const allVotes: any[] = [];
+
+    // Iterate over batches until there are no more documents
+    while (!querySnapshot.empty) {
+      // Process each document in the batch
+      querySnapshot.forEach((doc) => {
+        const voteData = doc.data();
+        allVotes.push({
+          userId: voteData.userId,
+          voteTime: voteData.voteTime,
+          voteId: doc.id
+        });
+      });
+
+      // Fetch the next batch
+      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      querySnapshot = await admin.firestore()
+        .collection('votes')
+        .startAfter(lastVisible)
+        .limit(batchSize)
+        .get();
     }
+
+    return {
+      total: allVotes.length,
+      votes: allVotes
+    };
   } catch (error) {
-    return false
+    console.error("Error fetching votes:", error);
+    return false;
   }
 })
 exports.getAllPayments = functions.https.onCall(async (data: any) => {
