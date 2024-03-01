@@ -1323,10 +1323,10 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
       let userData = user.data()
       return {
         userId: user.id,
-        name: userData.username,
-        country: userData.country || "",
-        remainVote: userData.rewardStatistics?.extraVote + Number(userData?.voteValue),
-        totalCMP: userData.voteStatistics.total,
+        name: userData?.username || "",
+        country: userData?.country || "",
+        remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
+        totalCMP: userData?.voteStatistics?.total || 0,
         accountUpgrade: userData?.isUserUpgraded || false
       }
     });
@@ -1336,7 +1336,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
     getAllUserData.forEach(async (user: any, index: number) => {
       console.log("-----START TO ADD SIGNUP DATE-----");
       await admin.auth().getUser(user.userId).then((data: any) => {
-        user['signupDate'] = data.metadata.createTime;
+        user['signupDate'] = data.metadata?.createTime;
         console.log("user signupDate added: ", user.userId, index);
       });
       console.log("-----END TO ADD SIGNUP DATE-----");
@@ -1348,7 +1348,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
       console.log("-----START TO ADD VOTE DAYS-----");
       const user: any = getAllUserData[index];
       let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
-      const uniqueDates = [...new Set(getVotes.map(date => date.toDateString()))];
+      const uniqueDates = getVotes.length !== 0 ? [...new Set(getVotes.map(date => date.toDateString()))] : [];
       user['numberOfDaysVoted'] = uniqueDates.length;
       console.log("vote days added : ", user.userId, index);
       console.log("-----END TO ADD VOTE DAYS-----");
