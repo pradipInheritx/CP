@@ -53,7 +53,7 @@ const Leaderboard = ({
     <div>
       <LeadersContainer>
 {/* @ts-ignore */}
-        {leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
+        {leaders?.sort((a, b) => (((b?.successful || 1) / (b?.total || 1) * (b?.successful || 1))?.toFixed(2)) - (((a?.successful || 1) / (a?.total || 1) * (a?.successful || 1))?.toFixed(2)))
           ?.map((leader) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
