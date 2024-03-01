@@ -577,15 +577,8 @@ const VotingPaymentCopy: React.FC<{
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
       if (localStorage.getItem("CoinPay") != data?.name) {
-        open({ view: "Networks" })
-        // setShowText(true)
-        // setPaymentStatus({ type: "", message: '' });
-        // setPayButton(true);
-        // setIsLoading(true)        
-        setChainNetworkTest(true)
-        // switchNetwork(coinInfo.chainId).then((res) => {
-        //   sendTransaction()
-        // })
+        open({ view: "Networks" })             
+        setChainNetworkTest(true)        
       }
       else {        
         setIsLoading(true)
@@ -625,8 +618,9 @@ const VotingPaymentCopy: React.FC<{
     // let CoinPay = localStorage.getItem("CoinPay")
     if (chainId && isConnected) {
       const data = mainnet?.find((network?: any) => network?.chainId == chainId)
+      console.log(data,"datafrommetamask")
       if (!data) return
-      if (selectCoin == "none") {        
+      if (data && selectCoin == "none") {        
         setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)         
         setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
           chainId: 1,
@@ -636,12 +630,13 @@ const VotingPaymentCopy: React.FC<{
           rpcUrl: 'https://cloudflare-eth.com'
         } : data)
       }
-      setMetaCoin(data?.name)
+      if (data) {        
+        setMetaCoin(data?.name)
+      }
       if (localStorage.getItem("CoinPay") == data?.name || (localStorage.getItem("CoinPay") == "USDT ERC20" && data.chainId==1)) {        
         setChainNetworkTest(false)
       }
       }
-
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
   
 
@@ -661,7 +656,7 @@ const VotingPaymentCopy: React.FC<{
         userId: `${user?.uid}`,
         userEmail: `${user?.email}`,
         walletType: `wallet connect`,
-        amount:Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+        amount:Number(payamount && Number(payamount)/coins[`${coinInfo?.currency}`]?.price).toFixed(18),
         // amount: 0.0001,
         // @ts-ignore
         network: `${coinInfo.chainId || ""}`,
@@ -705,12 +700,16 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false)
         console.log("take more that 5 sec")
       }, 5000);
-      let ethereum = (window as any).ethereum;
-      console.log(coinInfo,"coinInfoUSDT ERC20")
+      let ethereum = (window as any).ethereum;      
+      
+      console.log(coins[`${coinInfo?.currency}`],"coins[`${coinInfo?.currency}`]?.price")
+      const amountInCrypto = Number(payamount && Number(payamount) / coins[`${coinInfo?.currency}`]?.price).toFixed(18)
+      console.log(amountInCrypto, "amountInCrypto")
+      // console.log(coinInfo,"coinInfoUSDT ERC20")
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
-        const amountInCrypto = Number(payamount && Number(payamount) / coins[`${coinInfo?.symbol}`].price).toFixed(18)
+        
         if (coinInfo?.currency == "USDT ERC20") {
           
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
@@ -1219,10 +1218,11 @@ const VotingPaymentCopy: React.FC<{
                     <div
                       className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
                       onClick={() => {
+                        console.log((selectCoin == "none" || isConnected == false),"showselectCoin")
                         if (payButton) {
                           return
                         }
-                        if (isConnected == false) {
+                        if (selectCoin == "none" || isConnected == false ) {
                           
                           setShowOptionList(prev => !prev)
                         }
@@ -1233,7 +1233,7 @@ const VotingPaymentCopy: React.FC<{
                     >
                       {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
-                    {isConnected == false && showOptionList && (
+                    {(selectCoin == "none" || isConnected == false)&& showOptionList && (
                       <ul className="pay-select-options"
                         style={{
 
@@ -1346,12 +1346,12 @@ const VotingPaymentCopy: React.FC<{
                   >
                     {/* Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network. */}
                     Note:
-                    To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network, or change to a different coin from {metaCoin} network.
+                    To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network {metaCoin != "none" ?`, or change to a different coin from ${metaCoin} network.`:"."}
                   </span>
                 }
 
                 {
-                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId && !chainNetworkTest &&  <div
+                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId && !chainNetworkTest && selectCoin !="none" &&  <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     <ButttonDiv className="mt-1">
