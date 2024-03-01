@@ -451,6 +451,8 @@ const VotingPaymentCopy: React.FC<{
     const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
     let navigate = useNavigate();
   const events = useWeb3ModalEvents()
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
 
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
@@ -466,7 +468,7 @@ const VotingPaymentCopy: React.FC<{
           window.scrollTo({ top: 630, behavior: 'smooth' });
         }
       }
-    }, [coinInfo])
+    }, [coinInfo, chainId])
 
 
     useEffect(() => {
@@ -514,15 +516,9 @@ const VotingPaymentCopy: React.FC<{
         setPaymentStatus({ type: "", message: '' });
         setPayButton(true);
         setIsLoading(true)
-        switchNetwork(coinInfo.chainId).then((res?:any) => {            
-          console.log(coinInfo.chainId,chainId, "checkres")
-          if (res == null || res=="AprovDone") {              
+        switchNetwork(coinInfo.chainId).then((res?:any) => {                      
+          if (res == null) {              
             sendTransaction()
-          } else {            
-            setPaymentStatus({ type: "error", message: "User rejected the request" })
-            setIsLoading(false)
-            setShowText(false)
-            setPayButton(false)
           }
       })
       }
@@ -552,14 +548,9 @@ const VotingPaymentCopy: React.FC<{
 
           switchNetwork(coinInfo.chainId).then((res) => {  
             // console.log(res, chainId , coinInfo.chainId, "check chainID")
-            console.log(res, "checkres")
-            if (res == null || res == "AprovDone") {              
+            
+            if (res == null) {              
               sendTransaction()
-            } else {              
-              setPaymentStatus({ type: "error", message: "User rejected the request" })
-              setIsLoading(false)
-              setShowText(false)
-              setPayButton(false);
             }
           })
         }
@@ -583,11 +574,11 @@ const VotingPaymentCopy: React.FC<{
     window.scrollTo({ top: 50, behavior: 'smooth' });
     if (isConnected) {
       if (localStorage.getItem("CoinPay") != data?.name) {
-        open({view:"Networks"})
+        open({ view: "Networks" })
         // setShowText(true)
         // setPaymentStatus({ type: "", message: '' });
         // setPayButton(true);
-        // setIsLoading(true)
+        // setIsLoading(true)        
         setChainNetworkTest(true)
         // switchNetwork(coinInfo.chainId).then((res) => {
         //   sendTransaction()
@@ -638,8 +629,7 @@ const VotingPaymentCopy: React.FC<{
   
   console.log(events,"allevents")
   
-    const { address, chainId, isConnected } = useWeb3ModalAccount()
-    const { walletProvider } = useWeb3ModalProvider()
+
 
   useEffect(() => {
     // let CoinPay = localStorage.getItem("CoinPay")
@@ -742,6 +732,7 @@ const VotingPaymentCopy: React.FC<{
         console.log("take more that 5 sec")
       }, 5000);
       let ethereum = (window as any).ethereum;
+      console.log(coinInfo,"coinInfoUSDT ERC20")
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
@@ -847,40 +838,17 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       const errorMessage = error?.message;
       if (errorCode == 4902) {        
-        await ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-            chainId: `0x${chainId.toString(16)}`,
-            chainName: coinInfo?.name, 
-            nativeCurrency: {
-              name: coinInfo?.currency,
-              symbol: coinInfo?.currency,
-              decimals: 18,
-            },
-            rpcUrls: [`${coinInfo?.rpcUrl}`], 
-            blockExplorerUrls: [`${coinInfo?.explorerUrl}`],
-            }
-          ],
-        }).then((result?:any) => {
-          // handleClick()
-          codeError = "AprovDone"
-        }).catch((err?:any) => {
-          setShowText(false)
-        setPaymentStatus({ type: "error", message: errorMessage})
-          setPayButton(false);
-          setIsLoading(false)             
-          // return 1
-          codeError = "afterAprov"
-        });
-      } else {
+        setPaymentStatus({ type: "error", message: `Please add ${coinInfo.name} in your metamask to do payment with this network` })
+        setIsLoading(false)
         setShowText(false)
-        setPaymentStatus({ type: "", message: '' });
         setPayButton(false);
-        setIsLoading(false)  
-        // return 2
-        codeError = "switchcancel"
-      } 
+      }       
+      else {
+        setPaymentStatus({ type: "error", message: "User rejected the request" })
+        setIsLoading(false)
+        setShowText(false)
+        setPayButton(false);
+      }
       return codeError
     }
   };

@@ -181,14 +181,14 @@ const mainnet = [
     name: 'Binance',
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
-    rpcUrl: 'https://bsc-dataseed.binance.org'
+    rpcUrl: 'https://bsc-dataseed.binance.org/'
   },
   {
     chainId: 137,
     name: 'Polygon Mainnet',
     currency: 'MATIC',
     explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'https://polygon-pokt.nodies.app'
+    rpcUrl: 'https://polygon-rpc.com/'
   },
   {
     chainId: 11155111,
@@ -1067,9 +1067,9 @@ function App() {
     // };
     // timeoutId = setInterval(checkConnection, timeout);
    
-    const newSocket = new WebSocket('wss://stream.crypto.com/v2/market');
+    const socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-    newSocket.onopen = () => {
+    socket.onopen = () => {
       console.log('WebSocket connection established.');
 
       // Subscription request
@@ -1082,21 +1082,21 @@ function App() {
       };
 
       // Send subscription request
-      newSocket.send(JSON.stringify(req));
+      socket.send(JSON.stringify(req));
     };
 
-    newSocket.onmessage = (event) => {
+    socket.onmessage = (event) => {
       // Handle incoming messages from the WebSocket
       const message = JSON.parse(event.data);
       // console.log('Received message:', message);
       // Handle received market data here
     };
 
-    newSocket.onerror = (error) => {
+    socket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
 
-    newSocket.onclose = (event) => {
+    socket.onclose = (event) => {
       console.log('WebSocket closed:', event);
       // Reconnect to WebSocket after a delay (e.g., 5 seconds)
       setTimeout(connect, 5000);
