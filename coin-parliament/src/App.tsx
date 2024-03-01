@@ -1277,7 +1277,7 @@ function App() {
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
   useEffect(()=>{
-    console.log(voteDetails,lessTimeVoteDetails,completedVotes,'history');
+    console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
     
   },[JSON.stringify({voteDetails,lessTimeVoteDetails,completedVotes})])
   useEffect(() => {
@@ -1304,14 +1304,9 @@ function App() {
       if (!tempTessTimeVote || tempTessTimeVote.expiration > voteDetails?.activeVotes[value]?.expiration) {
         tempTessTimeVote = voteDetails?.activeVotes[value];
       }
-      
       return {};
     });
-
-
     if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId && !pathname.includes('profile/mine')) {
-      
-      
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
@@ -1374,7 +1369,15 @@ function App() {
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,]
 
-        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
+        console.log(ExpriTime,getValue,"ravi123");
+        // const ExpriTime = [
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
+        // ];
+        
+        // const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction);
+
         console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
@@ -1406,8 +1409,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: StatusValue,
-                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
-                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
+                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
               }
               :
               {}

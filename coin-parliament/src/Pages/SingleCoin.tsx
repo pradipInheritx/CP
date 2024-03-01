@@ -261,6 +261,8 @@ const SingleCoin = () => {
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
+        console.log('promissAll');
+        
         let tempAllActiveVotes: VoteResultProps[] = [];
         Promise.all(responses.map((res, index) => {
           if (res) {
@@ -286,8 +288,9 @@ const SingleCoin = () => {
           }
         }))
 
-
+        
         setAllActiveVotes(() => {
+          console.log(tempAllActiveVotes,tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined),'tempAllActiveVotes');
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
       })
@@ -404,8 +407,11 @@ const SingleCoin = () => {
           [`${value.coin}_${value?.timeframe?.seconds}`]: { ...value, voteType: 'coin' }
         }
       }
-    })
+    });
+
+    console.log(allActiveVotes,'allActiveVotesabc');
     setVoteDetails((prev) => {
+      
       return {
         ...prev,
         voteNot: voteNumberEnd,
