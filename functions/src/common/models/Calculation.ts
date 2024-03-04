@@ -9,8 +9,9 @@ import { UserProps, UserTypeProps, Leader, Totals } from '../interfaces/User.int
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import {
-  voteExpireAndGetCpmNotification,
   poolMiningNotification,
+  voteExpireAndGetCpmNotification,
+  // poolMiningNotification,
 } from "./SendCustomNotification";
 import { errorLogging } from "../helpers/commonFunction.helper";
 
@@ -369,10 +370,13 @@ class Calculation {
       const refereeScrore: Number = parseFloat(
         ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(4)
       );
-      console.log("child data : ", voteStatistics, refereeScrore)
+      console.log("child data : ", voteStatistics)
 
       await ref.set(
-        { voteStatistics, refereeScrore: refereeScrore },
+        {
+          voteStatistics,
+          refereeScrore: refereeScrore
+        },
         { merge: true }
       );
       console.log("user.parent -----", user.parent);
@@ -537,8 +541,8 @@ const getTotalCountOfUserType = async () => {
 
 function influencersScoreCalculation(totalSuccessVotes: number, totalVotes: number) {
   console.log("totalSuccessVotes , totalVotes: ", totalSuccessVotes, totalVotes)
-  console.log("totalSuccessVotes/ (totalVotes * totalSuccessVotes) : ", totalSuccessVotes / (totalVotes * totalSuccessVotes));
-  return totalSuccessVotes && totalVotes ? parseFloat((totalSuccessVotes / (totalVotes * totalSuccessVotes)).toFixed(5)) : 0;
+  console.log("((totalSuccessVotes / totalVotes) * totalSuccessVotes) : ", ((totalSuccessVotes / totalVotes) * totalSuccessVotes).toFixed(5));
+  return totalSuccessVotes && totalVotes ? parseFloat(((totalSuccessVotes / totalVotes) * totalSuccessVotes).toFixed(5)) : 0;
 }
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =

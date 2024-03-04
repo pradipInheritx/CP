@@ -86,6 +86,7 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
+  poolMiningNotification,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
@@ -341,7 +342,7 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user");
+  console.log("create user : ", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -384,7 +385,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    isVoteToEarn: user.isVoteToEarn || false,
+    // isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -399,24 +400,25 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, { merge: true });
 
-    const getUserEmail: any = (
+    const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
-    console.log("new user email  : ", getUserEmail.email);
+    console.log("new user email  : ", getUser.email);
 
     //Send Welcome Mail To User
-    // if (user.isVoteToEarn == false) {
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    )
-    await sendEmailVerificationLink(getUserEmail.email);
-    //  }
-
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      );
+      await sendEmailVerificationLink(getUser.email);
+    }
     return newUser;
+
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -1154,6 +1156,58 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
   return await getLeaderUsersByIds(userIds);
 });
 
+exports.setParentCommission = functions.https.onCall(async (data: any) => {
+  const { childId, voteScore } = data;
+  const db = admin.firestore().collection('users')
+  try {
+    const getSettings: any = (await admin.firestore().collection('settings').doc('settings').get()).data();
+    const { pctReferralActivity } = getSettings.CPMSettings;
+
+    const getChild = (await db.doc(childId).get()).data();
+    if (!getChild) {
+      return {
+        status: false,
+        message: "child do not have parent",
+      }
+    }
+    const getParent = (await db.doc(getChild.parent).get()).data();
+    const parentVoteStatistics = getParent?.voteStatistics;
+    const getCommissionNumber = (Number(voteScore * pctReferralActivity) / 100).toFixed(4);
+    const commission: number = Number(getCommissionNumber)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
+    console.log("Score ", voteScore)
+    console.log("parentVoteStatistics : ", parentVoteStatistics)
+    console.log("parent get commission :", commission)
+    console.log("new Score ", newScore)
+    console.log("newCommission :", newCommission)
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4)
+    // child refer score
+    await db.doc(childId).set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
+    // parent commission
+    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: Number(newCommission), score: Number(newScore) } }, { merge: true });
+    console.log(
+      "pool mining Notification is calling: -- ",
+      getChild.parent,
+      getChild.displayName || "",
+      getChild.refereeScrore
+    );
+    console.log("commission : ", commission);
+    console.log("score -- ", voteScore);
+    await poolMiningNotification(
+      getChild.parent,
+      getChild.displayName || "",
+      commission
+    );
+    return {
+      status: true,
+      message: "parent commission and child refer score added successfully",
+    }
+  } catch (error) {
+    return errorLogging("setParentCommission", "Error: ", error);
+  }
+})
+
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
   sgMail.setApiKey(env.sendgrid_api_key);
@@ -1260,84 +1314,75 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
+
+
 // function that return some parameters for coin parliament players
-exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+exports.getCoinParliamentUsersDetails = functions.https.onCall(async () => {
   try {
-    const userId = data.userId; // Extract userId from data parameter
-    console.log("userId>>>>", userId);
-
-    const databaseQuery = await admin
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .get();
-
-    const userData = databaseQuery.data();
-    if (!userData) {
+    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+      let userData = user.data()
       return {
-        status: true,
-        message: "User not found.",
-        data: {} // Empty array when user not found
-      };
-    }
+        userId: user.id,
+        name: userData?.userName || "",
+        country: userData?.country || "",
+        remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
+        totalCMP: userData?.voteStatistics?.total || 0,
+        accountUpgrade: userData?.isUserUpgraded || false
+      }
+    });
+    console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
-    const name = userData.status.name;
-    console.log("name>>>>>", name)
-    const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>", userData.voteStatistics.total)
-    const totalCMP = userData.voteStatistics.score;
-    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+    // add sign up date
+    console.log("-----START TO ADD SIGNUP DATE-----");
 
-    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
-      .where('userId', '==', userId)
-      .limit(1)
-      .get();
+    const getAuthUserSignUpTime: any = []
+    await admin.auth().listUsers().then((data) => {
+      data.users.forEach((userRecord: any) => {
+        console.log("User signupDate added:", userRecord.uid);
 
-    let accountUpgrade = false; // Default value if not found
-    if (!paxTransactionQuery.empty) {
-      const paxTransactionData = paxTransactionQuery.docs[0].data();
-      console.log("paxTransactionData>>>>>", paxTransactionData)
-      accountUpgrade = paxTransactionData.isUserUpgraded || false;
-      console.log("accountUpgrade>>>>>", accountUpgrade)
-    }
+        getAuthUserSignUpTime.push({
+          userId: userRecord.uid,
+          signUpTime: userRecord.metadata.creationTime
+        })
+      });
+    });
+    console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime)
+    console.log("-----END TO ADD SIGNUP DATE-----");
 
-    const paymentQuery = await admin.firestore().collection('payments')
-      .where('userId', '==', userId)
-      .where('transactionType', '==', 'EXTRAVOTES')
-      .get();
 
-    const hasPurchasedVotes = !paymentQuery.empty;
-    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+    // // add number of vote days
+    //   console.log("-----START TO ADD VOTE DAYS-----");
+    // for (let index = 0; index < getAllUserData.length; index++) {
+    //   const user: any = getAllUserData[index];
+    //   let getVotes = (await admin.firestore().collection('votes').where('userId', '==', user.userId).get()).docs.map((vote: any) => new Date(vote.voteTime));
+    //   const uniqueDates = getVotes.length !== 0 ? [...new Set(getVotes.map(date => date.toDateString()))] : [];
+    //   user['numberOfDaysVoted'] = uniqueDates.length;
+    //   console.log("vote days added : ", user.userId, index);
+    // }
+    //   console.log("-----END TO ADD VOTE DAYS-----");
 
-    const userRecord = await admin.auth().getUser(userId);
+    // add votePurchase
+    // console.log("-----START TO VOTE PURCHASE -----");
+    // getAllUserData.forEach(async (user: any, index: number) => {
+    //   let checkPurchase = (await admin.firestore()
+    //     .collection('payments')
+    //     .where('userId', '==', user.userId)
+    //     .where('transactionType', '==', 'EXTRAVOTES')
+    //     .limit(1)
+    //     .get())
+    //   user['votePurchase'] = checkPurchase.empty ? 'No' : 'YES';
+    //   console.log("votePurchase added : ", user.userId, index);
+    // })
+    // console.log("-----END TO VOTE PURCHASE-----");
 
-    const votesQuerySnapshot = await admin
-      .firestore()
-      .collection("votes")
-      .where("userId", "==", userId)
-      .get();
-
-    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>", voteTimes);
-    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-    const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+    // console.log("check one user data : ", getAllUserData[0])
 
     return {
       status: true,
-      message: "User fetched successfully",
-      data: {
-        name: name,
-        country: userData.country,
-        signupDate: userRecord.metadata.creationTime,
-        totalVotes: totalVotes,
-        totalCMP: totalCMP,
-        accountUpgrade: accountUpgrade,
-        numberOfDaysVoted: numberOfDaysVoted,
-        votePurchase: votePurchaseStatus,
-        userId: userId,
-      }
+      message: "Users fetched successfully",
+      data: getAllUserData
     };
+
   } catch (error) {
     console.log("Error while fetching user data:", error);
     return {
@@ -1347,6 +1392,49 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     };
   }
 });
+
+/**
+ * If Data is huge then we will make into the batch
+ */
+exports.getAllVotes = functions.https.onCall(async (data: any) => {
+  try {
+    const getAllVotesQuery = await admin.firestore().collection('votes').get();
+    const getAllVotes: any = getAllVotesQuery.docs.map((vote: any) => {
+      let voteData = vote.data()
+      return {
+        userId: voteData.userId,
+        voteTime: voteData.voteTime,
+        voteId: vote.id
+      }
+    })
+    return {
+      total: getAllVotes.length,
+      votes: getAllVotes
+    }
+  } catch (error) {
+    return false
+  }
+})
+exports.getAllPayments = functions.https.onCall(async (data: any) => {
+  try {
+    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+    const getAllPayments: any = getAllPaymentsQuery.docs.map((payment: any) => {
+      let paymentData = payment.data();
+      return {
+        userId: paymentData.userId,
+        paymentId: paymentData.id,
+        transactionType: paymentData.transactionType
+      }
+    })
+    return {
+      total: getAllPayments.length,
+      payments: getAllPayments
+    }
+  } catch (error) {
+    return false
+  }
+})
+
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
@@ -1606,58 +1694,62 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 //   });
 
 // ******************* END CRON JOBS ****************
-
-// Define endpoint for sending push notifications
-exports.sendNotificationToUser = functions.https.onCall(async (data) => {
-  const { token, title, body } = data;
+exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
   try {
-    const message = {
-      token,
-      notification: {
-        title,
-        body
+    const getCommissionUsers = (await admin.firestore().collection('users').where('voteStatistics.commission', '>', 0).get()).docs.map((user: any) => {
+      let userData = user.data();
+      return {
+        parentId: user.id,
+        parentVoteStatistics: userData.voteStatistics,
+        childIds: userData.children
       }
-    };
-    const response = await admin.messaging().send(message);
-    console.log('Successfully sent message:', response);
-    return ({
+    });
+    console.log("getCommissionUsers ", getCommissionUsers.length)
+
+    return {
       status: true,
-      message: 'Notification sent successfully',
-      result: response
-    });
+      message: "success to get users",
+      result: getCommissionUsers
+    }
   } catch (error) {
-    console.error('Error sending message:', error);
-    return ({
+    return {
       status: false,
-      message: 'Failed to send notification',
-      return: error
-    });
+      message: "failed to get users",
+      error
+    }
   }
 });
 
-exports.updateUser = functions.https.onCall(async (data) => {
+exports.correctCommission = functions.https.onCall(async (data: any) => {
+  const { user } = data;
+
   try {
-    const userId = data.params.userId;
-    const userProfileData = data.body; // Assuming the request body contains user profile data
-
-    // Update user profile in Firebase
-    await admin.firestore().collection('users').doc(userId).update(userProfileData);
-
+    let commission = 0
+    for (let index = 0; index < user.children.length; index++) {
+      const element = user.children[index];
+      commission += await admin.firestore().collection('users').doc(element).get().then((child) => {
+        let childData = child.data();
+        return childData?.refereeScrore
+      })
+    }
+    console.log("commission : ", commission);
+    await admin.firestore().collection('users').doc(user.parentId).set({
+      voteStatistics: { ...user.parentVoteStatistics, commission }
+    }, { merge: true }).then(() => {
+      console.log("success to update users", user.parentId)
+    });
     return {
       status: true,
-      message: "User Profile Updated Successfully",
-      result: null
+      message: "success to update users",
     }
   } catch (error) {
-    console.error('Error updating user profile:', error);
     return {
       status: false,
-      message: "User Profile Not Updated",
-      result: null
+      message: "failed to get users",
+      error
     }
   }
-});
-
+})
 
 exports.appendUserName = functions.https.onCall(async (data) => {
   const { users } = data;

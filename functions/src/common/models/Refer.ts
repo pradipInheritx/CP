@@ -2,6 +2,7 @@ import {firestore} from "firebase-admin";
 import {userConverter} from "./User";
 import {UserProps} from "../interfaces/User.interface"
 import FieldValue = firestore.FieldValue;
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export type VoteRules = {
   maxVotes: number;
@@ -102,9 +103,9 @@ class Refer {
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
     const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
-    const commission = parseFloat(getCommissionNumber)
+    const commission = Number(getCommissionNumber)
     const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
-    const newCommission = Number(parentVoteStatistics?.commission || 0) + commission
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
     console.log("Score ",score)
     console.log("parentVoteStatistics : ",parentVoteStatistics)
     console.log("parent get commission :",commission)
@@ -122,9 +123,15 @@ class Refer {
         successful: Number(parentVoteStatistics?.successful || 0),
         rank: Number(parentVoteStatistics?.rank || 0),
         total: Number(parentVoteStatistics?.total || 0),
-        score: parseFloat(newScore),
-        commission: newCommission,
+        score: Number(newScore),
+        commission: Number(newCommission),
       },
+    }).then(()=>{
+      console.log("parent commission updated successfully : ",parentData?.uid)
+    }).catch((error)=>{
+      errorLogging("payParent","Error",`commission not updated : ${error}`)
+    }).finally(()=>{
+      console.log("parentCommission calling ",parentData?.uid, commission);
     });
   }
 }
