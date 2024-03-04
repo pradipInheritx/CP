@@ -870,7 +870,7 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
         });
     } else if (paymentDetails.network === "137") {
       // ploygonScan 
-      axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.PLOYGONSCAN_API_KEY}`, options)
+      axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.POLYGONSCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
           console.log("response : ", response)
