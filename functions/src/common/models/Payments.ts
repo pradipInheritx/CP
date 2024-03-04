@@ -7,9 +7,11 @@ import {
   //isParentExistAndGetReferalAmount,
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
+import env from "../../env/env.json";
 import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import { getAllPendingPaxByUserId } from "./PAX";
+import axios from "axios";
 
 
 // export const makePaymentToServer = async (req: any, res: any) => {
@@ -824,6 +826,48 @@ export const getAllPendingPaxByUser = async (req: any, res: any) => {
     });
   }
 }
+
+export const checkTransactionStatus = async (paymentDetails: any) => {
+  try {
+    console.log("paymentDetails : ", paymentDetails)
+    if (!paymentDetails.hash) {
+      errorLogging("checkTransactionStatus", "ERROR", "Transaction hash is required")
+      return {
+        status: false,
+        message: "Transaction hash is required"
+      }
+    }
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    };
+    return axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
+      .then((response: any) => response.json())
+      .then((apiResponse) => {
+        console.log("apiResponse : ", apiResponse)
+        if (apiResponse.status === 1) {
+          return apiResponse.result.status === 1 ? {
+            status: true,
+            message: "Transaction is confirmed"
+          } : {
+            status: false,
+            message: "Transaction is not confirmed"
+          };
+        } else {
+          return {
+            status: false,
+            message: apiResponse.message,
+            reason: apiResponse.resson
+          };
+        }
+      })
+  } catch (error) {
+    errorLogging("checkTransactionStatus", "ERROR", error)
+    return false
+  }
+}
+
 
 export const errorLogging = async (
   funcName: string,

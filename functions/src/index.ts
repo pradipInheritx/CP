@@ -112,6 +112,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
+import { checkTransactionStatus } from "./common/models/Payments";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -1369,50 +1370,57 @@ exports.updateLeadersCron = functions.pubsub
 //   });
 
 // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
-// export const pendingPaymentSettlement = functions.pubsub
-//   .schedule("*/5 * * * *")
-//   .onRun(async () => {
-//     console.log("pendingPaymentSettlement start");
+export const pendingPaymentSettlement = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    console.log("pendingPaymentSettlement start");
 
-//     // Get the current timestamp
-//     const currentTimeStamp = new Date();
-//     const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
-
-
-//     try {
-//       // Query payments collection for payments within the last 24 hours
-//       const paymentsSnapshot = await admin.firestore().collection('payments')
-//         .where("timestamp", ">=", twentyFourHoursAgo)
-//         .get();
-
-//       paymentsSnapshot.forEach(doc => {
-//         console.log("Document ID:", doc.id);
-//         console.log("Document Data:", doc.data());
-//       });
-
-//       // Filter payments where event is 'Approved'
-//       const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
-//         const paymentData = snapshot.data();
-//         console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
-//         console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
-//         return paymentData.event === 'Approved';
-//       });
+    // Get the current timestamp
+    const currentTimeStamp = new Date();
+    const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
 
 
-//       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
+    try {
+      // Query payments collection for payments within the last 24 hours
+      const paymentsSnapshot = await admin.firestore().collection('payments')
+        .where("timestamp", ">=", twentyFourHoursAgo)
+        .get();
 
-//       // Update each approved payment's event to 'Confirmed'
-//       for (const doc of approvedPayments) {
-//         console.log("approvedPayments>>>>>>>>>>>>>", doc)
-//         const paymentRef = doc.ref;
-//         console.log("approvedPaymentRef>>>>>>>>>>>>>", doc.ref)
-//         await paymentRef.update({ event: 'Confirmed' });
-//       }
-//       console.log('Payments updated successfully.');
-//     } catch (error) {
-//       console.error('Error updating payments:', error);
-//     }
-//   });
+      paymentsSnapshot.forEach(doc => {
+        console.log("Document ID:", doc.id);
+        console.log("Document Data:", doc.data());
+      });
+
+      // Filter payments where event is 'Approved'
+      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
+        const paymentData = snapshot.data();
+        console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
+        return paymentData.event === 'Approved';
+      });
+
+
+      console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
+
+      // Update each approved payment's event to 'Confirmed'
+      for (const transaction of approvedPayments) {
+        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
+        const paymentRef = transaction.ref;
+        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        // call the api to check transaction is confirmed or not
+        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        if (transactionStatus.status) {
+          console.log("transactionStatus : ", transactionStatus.message)
+          await paymentRef.update({ event: 'Confirmed' });
+        } else {
+          console.error("transactionStatus : ", transactionStatus)
+        }
+      }
+      console.log('Payments updated successfully.');
+    } catch (error) {
+      console.error('Error updating payments:', error);
+    }
+  });
 
 
 
