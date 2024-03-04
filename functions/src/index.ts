@@ -1409,7 +1409,7 @@ export const pendingPaymentSettlement = functions.pubsub
         // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
         const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
-        if (transactionStatus.status) {
+        if (transactionStatus.data.status) {
           console.log("transactionStatus : ", transactionStatus.message)
           await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' },{merge: true});
         } else {
