@@ -349,20 +349,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData);
 
-      const getUserEmail: any = (
-        await admin.firestore().collection("users").doc(user.uid).get()
-      ).data();
-      console.log("new user email  : ", getUserEmail.email);
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
 
-      //Send Welcome Mail To User
-      if (userData.isVoteToEarn === false) {
-        await sendEmail(
-          userData.email,
-          "Welcome To Coin Parliament!",
-          userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-        );
-        await sendEmailVerificationLink(getUserEmail.email);
-      }
+    //Send Welcome Mail To User
+    if (userData.isVoteToEarn === false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      );
+      await sendEmailVerificationLink(getUserEmail.email);
+    }
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
@@ -1303,17 +1303,17 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       .where("userId", "==", userId)
       .get();
 
-      const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
-      console.log("voteTimes>>>>>>>", voteTimes);
-      const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-      const numberOfDaysVoted = uniqueDates.length;
-      console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
-  
+    const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+    console.log("voteTimes>>>>>>>", voteTimes);
+    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+    const numberOfDaysVoted = uniqueDates.length;
+    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+
 
     return {
       status: true,
       message: "User fetched successfully",
-      data:{
+      data: {
         name: name,
         country: userData.country,
         signupDate: userRecord.metadata.creationTime,
@@ -1330,7 +1330,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {} 
+      data: {}
     };
   }
 });
@@ -1386,32 +1386,32 @@ export const pendingPaymentSettlement = functions.pubsub
         .where("timestamp", ">=", twentyFourHoursAgo)
         .get();
 
-      paymentsSnapshot.forEach(doc => {
-        console.log("Document ID:", doc.id);
-        console.log("Document Data:", doc.data());
-      });
+      // paymentsSnapshot.forEach(doc => {
+      //   console.log("Document ID:", doc.id);
+      //   console.log("Document Data:", doc.data());
+      // });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
+      const approvedPayments: any = paymentsSnapshot.docs.map((snapshot: any) => {
         const paymentData = snapshot.data();
-        console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
-        return paymentData.event === 'Approved';
+        console.log("paymentData >>>> ", paymentData)
+        console.log("paymentData.event === 'Approved' >>>>", paymentData.event === 'Approved')
+        return paymentData.event === 'Approved' ? { ...paymentData, transactionId: snapshot.id } : null;
       });
 
 
-      console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
+      console.log("approvedPayments >>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const transaction of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
-        const paymentRef = transaction.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        console.log("approvedPayments>>>>", transaction)
+        // const paymentRef = transaction.ref;
+        // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
         const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
         if (transactionStatus.status) {
           console.log("transactionStatus : ", transactionStatus.message)
-          await paymentRef.update({ event: 'Confirmed' });
+          await admin.firestore().collection('payments').doc(transaction.).update({ event: 'Confirmed' });
         } else {
           console.error("transactionStatus : ", transactionStatus)
         }
