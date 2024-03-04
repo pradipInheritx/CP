@@ -1411,7 +1411,7 @@ export const pendingPaymentSettlement = functions.pubsub
         const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
         if (transactionStatus.status) {
           console.log("transactionStatus : ", transactionStatus.message)
-          await admin.firestore().collection('payments').doc(transaction.).update({ event: 'Confirmed' });
+          await admin.firestore().collection('payments').doc(transaction.transactionId).update({ event: 'Confirmed' });
         } else {
           console.error("transactionStatus : ", transactionStatus)
         }
