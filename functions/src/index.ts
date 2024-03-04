@@ -112,6 +112,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
+import { checkTransactionStatus } from "./common/models/Payments";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -1402,11 +1403,18 @@ export const pendingPaymentSettlement = functions.pubsub
       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
-      for (const doc of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>", doc)
-        const paymentRef = doc.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>", doc.ref)
-        await paymentRef.update({ event: 'Confirmed' });
+      for (const transaction of approvedPayments) {
+        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
+        const paymentRef = transaction.ref;
+        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        // call the api to check transaction is confirmed or not
+        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        if (transactionStatus.status) {
+          console.log("transactionStatus : ", transactionStatus.message)
+          await paymentRef.update({ event: 'Confirmed' });
+        } else {
+          console.error("transactionStatus : ", transactionStatus)
+        }
       }
       console.log('Payments updated successfully.');
     } catch (error) {
