@@ -842,26 +842,79 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
         "Content-Type": "application/json",
       }
     };
-    return axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
-      .then((response: any) => response.json())
-      .then((apiResponse) => {
-        console.log("apiResponse : ", apiResponse)
-        if (apiResponse.status === 1) {
-          return apiResponse.result.status === 1 ? {
-            status: true,
-            message: "Transaction is confirmed"
-          } : {
-            status: false,
-            message: "Transaction is not confirmed"
-          };
-        } else {
-          return {
-            status: false,
-            message: apiResponse.message,
-            reason: apiResponse.resson
-          };
-        }
-      })
+
+    const returnFinalResponse: any = {}
+
+    // EhterScan API
+    if (paymentDetails.network === "1") {
+      axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === 1) {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+    } else if (paymentDetails.network === "137") {
+      // ploygonScan 
+      axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.PLOYGONSCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === 1) {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+    } else if (paymentDetails.network === "56") {
+      // binance 
+      axios.get(`https://api.bscscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.BINANCESCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === 1) {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+    }
+    console.log("returnFinalResponse >>>> ", returnFinalResponse)
+    return returnFinalResponse
   } catch (error) {
     errorLogging("checkTransactionStatus", "ERROR", error)
     return false
