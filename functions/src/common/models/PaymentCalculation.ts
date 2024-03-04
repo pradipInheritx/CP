@@ -145,13 +145,14 @@ export const isGasPriceCalculationOnCoin = async (coin: any): Promise<any> => {
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount, transactionType, numberOfVotes, token } = userData;
-        const parentUserDetails: any = (await firestore().collection("users").doc(userId).get()).data();
-        // const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
-        //     let data = snapshot.data();
-        //     return { childId: data.uid, parentId: data.parent }
-        // });
+        const getUserDetailsOnParentId: any = (await firestore().collection("users").doc(userId).get()).data();
+        console.info("parentUserDetails Docs", getUserDetailsOnParentId.docs)
+        const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
+            let data = snapshot.data();
+            return { childId: data.uid, parentId: data.parent }
+        });
 
-        console.info("parentUserDetails", parentUserDetails);
+        console.info("parentUserDetails--->>>>", parentUserDetails);
         // if (!parentUserDetails.parent) {
         //     console.log("Parent Not Found: ", "Parent user data is not exist");
         //     // return null;
@@ -181,6 +182,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         // set payment schedule accroding parent settings
         await setPaymentSchedulingDate({ ...userData, ...parentPaymentData });
     } catch (error) {
+
+        console.info("Error---->>>", (error))
         return {
             status: false,
             message: "Something went wrong while getting the parent referal",
