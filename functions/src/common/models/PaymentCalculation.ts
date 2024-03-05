@@ -2,6 +2,7 @@
 import { firestore } from "firebase-admin";
 import Web3 from "web3";
 import { log } from "firebase-functions/logger";
+import { Timestamp } from 'firebase-admin/firestore';
 import * as parentConst from "../consts/payment.const.json";
 
 import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
@@ -144,9 +145,18 @@ export const isGasPriceCalculationOnCoin = async (coin: any): Promise<any> => {
 
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
-        const { userId, amount, transactionType, numberOfVotes, token } = userData;
+        const { userId, amount, transactionType, numberOfVotes, token, origincurrency } = userData;
         console.info("userId....>>>", userId)
         const parentUserDetails: any = (await firestore().collection("users").doc(userId).get()).data();
+
+        const getParentData = await firestore()
+            .collection("parentReferralData").add({
+                userId: "Mukut",
+                origincurrency: "eth",
+            });
+
+
+        console.info("getParentData....", getParentData.id)
 
         console.info("parentUserDetails--->>>>", parentUserDetails);
 
@@ -162,6 +172,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
             transactionType,
             numberOfVotes,
             token,
+            origincurrency
         };
         const getParentPaymentData: any = await storeParentReferralAmount(parentPaymentData);
         console.info("getParentPaymentData", getParentPaymentData)
@@ -187,20 +198,25 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 export const storeParentReferralAmount = async (parentPaymentData: any) => {
     console.info("parentPaymentData in Function", parentPaymentData)
     try {
-        const getResponseFromPendingReferralAmount = await firestore()
-            .collection("pendingReferralToParent").add({
+        const response = await firestore()
+            .collection("pendingReferralToParent")
+            .add({
                 parentId: parentPaymentData.parentUserId,
                 childId: parentPaymentData.childUserId,
                 amount: parentPaymentData.amount,
                 status: "PENDING",
-                serverTimestamp: firestore.FieldValue.serverTimestamp()
+                origincurrency: parentPaymentData.origincurrency,
+                timestamp: Timestamp.now()
             });
-        console.info("getResponseFromPendingReferralAmount", getResponseFromPendingReferralAmount)
+
+        console.info("Time....", Timestamp.now())
+        console.info("Document added successfully at:", response.id);
+
         return {
             status: true,
-            message: "Temp payment transaction created successfully",
-            result: getResponseFromPendingReferralAmount
-        }
+            message: "Parent Referral Payment Stored Successfully",
+            result: response.id // Assuming you want to return the ID of the added document
+        };
     } catch (error) {
         return {
             status: false,
