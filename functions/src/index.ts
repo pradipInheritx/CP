@@ -1714,7 +1714,7 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
       const element = user.children[index];
       commission += await admin.firestore().collection('users').doc(element).get().then((child) => {
         let childData = child.data();
-        return childData?.refereeScrore
+        return childData?.refereeScrore || 0
       })
     }
     console.log("commission : ", commission);
