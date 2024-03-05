@@ -163,7 +163,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
             transactionType,
             numberOfVotes,
             token,
-            origincurrency
+            origincurrency,
+            wellDAddress: parentUserDetails.wellDAddress
         };
         const getParentPaymentData: any = await storeParentReferralAmount(parentPaymentData);
         console.info("getParentPaymentData", getParentPaymentData)
@@ -189,6 +190,17 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 export const storeParentReferralAmount = async (parentPaymentData: any) => {
     console.info("parentPaymentData in Function", parentPaymentData)
     try {
+        let getCoinAddress: any = null;
+
+        if (parentPaymentData && parentPaymentData.wellDAddress && parentPaymentData.wellDAddress.length) {
+            console.info("parentPaymentData.wellDAddress", parentPaymentData.wellDAddress)
+            let coinOfPayment = parentPaymentData.token.toUpperCase();
+            console.info("coinOfPayment", coinOfPayment)
+            let getCoinWellDAddress = parentPaymentData.wellDAddress.find((address: any) => address.coin === coinOfPayment);
+            console.info("getCoinWellDAddress", getCoinWellDAddress)
+            getCoinAddress = getCoinWellDAddress && getCoinWellDAddress.address ? getCoinWellDAddress.address : null;
+        }
+
         const getResponseFromPendingReferralAmount = await firestore()
             .collection("parentPayment")
             .add({
@@ -203,7 +215,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
                 transactionhash: "",
                 transactionType: parentPaymentData.transactionType,
                 type: parentPaymentData.type,
-                address: null,
+                address: getCoinAddress ? getCoinAddress : 'NO_ADDRESS',
                 timestamp: Timestamp.now()
             });
         console.info("Parent Referral Payment Doc Added Successfully", getResponseFromPendingReferralAmount);
