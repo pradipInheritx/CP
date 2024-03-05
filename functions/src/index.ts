@@ -1333,9 +1333,9 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
 
     for (const userDoc of usersSnapshot.docs) {
       const userId = userDoc.id;
-      console.log("userId>>>>>",userId);
+      console.log("userId>>>>>", userId);
       const userData = userDoc.data();
-      console.log("users>>>>>>>",userData.userName,);
+      console.log("users>>>>>>>", userData.userName,);
 
       if (!userData) {
         console.log("User data not found for userId:", userId);
@@ -1350,8 +1350,8 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         console.error("Error while fetching user data:", error);
         console.log('User record not found for user ID:', userId);
         continue; // Skip to the next user if user record is not found
-    }
-    
+      }
+
 
       let totalCMP = 0; // Default value for totalCMP
 
@@ -1370,18 +1370,18 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
 
       const votesQuerySnapshot = await admin.firestore().collection("votes")
-          .where("userId", "==", userId)
-          .get();
+        .where("userId", "==", userId)
+        .get();
 
-          let numberOfDaysVoted = 0;
-  
-        if (!votesQuerySnapshot.empty) {
-          const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
-          console.log("voteTimes>>>>>>>", voteTimes);
-          const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-          numberOfDaysVoted = uniqueDates.length;
-          console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
-        }
+      let numberOfDaysVoted = 0;
+
+      if (!votesQuerySnapshot.empty) {
+        const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+        console.log("voteTimes>>>>>>>", voteTimes);
+        const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+        numberOfDaysVoted = uniqueDates.length;
+        console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      }
 
       usersDetails.push({
         name: userData.userName || "",
@@ -1389,7 +1389,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
         signupDate: userRecord.metadata.creationTime,
         totalCMP: totalCMP,
-        accountUpgrade:userData?.isUserUpgraded || false,
+        accountUpgrade: userData?.isUserUpgraded || false,
         numberOfDaysVoted: numberOfDaysVoted,
         votePurchase: votePurchaseStatus,
         userId: userId,
@@ -1414,7 +1414,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {} 
+      data: {}
     };
   }
 });
@@ -1735,4 +1735,32 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
     }
   }
 })
+
+exports.appendUserName = functions.https.onCall(async (data) => {
+  const { users } = data;
+  let updatedUsers = [];
+  try {
+
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName = users[user].email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
+        updatedUsers.push({ ...users[user], userName })
+      }
+    }
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: updatedUsers
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null
+    }
+  };
+});
+
+
 
