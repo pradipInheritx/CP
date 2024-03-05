@@ -1333,9 +1333,9 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
 
     for (const userDoc of usersSnapshot.docs) {
       const userId = userDoc.id;
-      console.log("userId>>>>>",userId);
+      console.log("userId>>>>>", userId);
       const userData = userDoc.data();
-      console.log("users>>>>>>>",userData.userName,);
+      console.log("users>>>>>>>", userData.userName,);
 
       if (!userData) {
         console.log("User data not found for userId:", userId);
@@ -1350,8 +1350,8 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         console.error("Error while fetching user data:", error);
         console.log('User record not found for user ID:', userId);
         continue; // Skip to the next user if user record is not found
-    }
-    
+      }
+
 
       let totalCMP = 0; // Default value for totalCMP
 
@@ -1370,18 +1370,18 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
 
       const votesQuerySnapshot = await admin.firestore().collection("votes")
-          .where("userId", "==", userId)
-          .get();
+        .where("userId", "==", userId)
+        .get();
 
-          let numberOfDaysVoted = 0;
-  
-        if (!votesQuerySnapshot.empty) {
-          const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
-          console.log("voteTimes>>>>>>>", voteTimes);
-          const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-          numberOfDaysVoted = uniqueDates.length;
-          console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
-        }
+      let numberOfDaysVoted = 0;
+
+      if (!votesQuerySnapshot.empty) {
+        const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+        console.log("voteTimes>>>>>>>", voteTimes);
+        const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+        numberOfDaysVoted = uniqueDates.length;
+        console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      }
 
       usersDetails.push({
         name: userData.userName || "",
@@ -1389,7 +1389,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
         signupDate: userRecord.metadata.creationTime,
         totalCMP: totalCMP,
-        accountUpgrade:userData?.isUserUpgraded || false,
+        accountUpgrade: userData?.isUserUpgraded || false,
         numberOfDaysVoted: numberOfDaysVoted,
         votePurchase: votePurchaseStatus,
         userId: userId,
@@ -1414,7 +1414,7 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {} 
+      data: {}
     };
   }
 });
@@ -1736,3 +1736,25 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   }
 })
 
+exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
+  try {
+    const getAllUsers = (await admin.firestore().collection('users').where('referalReceiveType.name', '!=', 'ONDEMAND').limit(50).get()).docs.map((user: any) => {
+      let userData = user.data()
+      return { userId: user.id, referalType: userData.referalReceiveType }
+    });
+    console.log("getAllUsers length: " + getAllUsers.length);
+    const updateUserList = getAllUsers.map(async (user) => {
+      let getRefrealType = user.referalType
+      await admin.firestore().collection('users').doc(user.userId).set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } })
+    })
+    Promise.all(updateUserList)
+      .then(() => {
+        console.log('All updates completed successfully');
+      })
+      .catch(error => {
+        console.error('Error performing updates:', error);
+      });
+  } catch (error) {
+    console.error("scriptToUpdateAllUsers ERROR: " + error)
+  }
+})
