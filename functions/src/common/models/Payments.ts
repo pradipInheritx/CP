@@ -847,7 +847,8 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
     const returnFinalResponse: any = {}
 
     // EhterScan API
-    if (paymentDetails.network === 1) {
+    if (paymentDetails.network == 1) {
+      console.log("EtherScan")
       await axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
@@ -869,8 +870,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
-    } else if (paymentDetails.network === 137) {
+        console.log("returnFinalResponse ether: ",returnFinalResponse)
+      return returnFinalResponse
+    } else if (paymentDetails.network == 137) {
       // ploygonScan 
+      console.log("ploygonScan")
       await axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.POLYGONSCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
@@ -891,8 +895,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
-    } else if (paymentDetails.network === 56) {
+        console.log("returnFinalResponse polygon: ",returnFinalResponse)
+      return returnFinalResponse
+    } else if (paymentDetails.network == 56) {
       // binance 
+      console.log("binance")
       await axios.get(`https://api.bscscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.BINANCESCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
@@ -913,9 +920,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
+        console.log("returnFinalResponse binance: ",returnFinalResponse)
+      return returnFinalResponse
     }
     console.log("returnFinalResponse >>>> ", returnFinalResponse)
-    return returnFinalResponse
+    // return returnFinalResponse
   } catch (error) {
     errorLogging("checkTransactionStatus", "ERROR", error)
     return false
