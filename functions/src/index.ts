@@ -86,6 +86,7 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
+  poolMiningNotification,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
@@ -340,8 +341,8 @@ exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   return getReponse
 })
 // create user
-exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
-  console.log("create user");
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
+  console.log("create user : ", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -384,6 +385,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    // isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -398,22 +400,25 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, { merge: true });
 
-    //Send Welcome Mail To User
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
-
-    const getUserEmail: any = (
+    const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
-    console.log("new user email  : ", getUserEmail.email);
-    await sendEmailVerificationLink(getUserEmail.email);
+    console.log("new user email  : ", getUser.email);
 
+    //Send Welcome Mail To User
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === false) {
+      await sendEmail(
+        userData.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+      );
+      await sendEmailVerificationLink(getUser.email);
+    }
     return newUser;
+
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -796,7 +801,7 @@ exports.onUpdateUser = functions.firestore
     // const afterTotal: number = after.rewardStatistics?.total || 0;
     // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
     // console.log("snapshot.after.id : ",snapshot.after.id)
-    
+
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
@@ -1151,6 +1156,58 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
   return await getLeaderUsersByIds(userIds);
 });
 
+exports.setParentCommission = functions.https.onCall(async (data: any) => {
+  const { childId, voteScore } = data;
+  const db = admin.firestore().collection('users')
+  try {
+    const getSettings: any = (await admin.firestore().collection('settings').doc('settings').get()).data();
+    const { pctReferralActivity } = getSettings.CPMSettings;
+
+    const getChild = (await db.doc(childId).get()).data();
+    if (!getChild) {
+      return {
+        status: false,
+        message: "child do not have parent",
+      }
+    }
+    const getParent = (await db.doc(getChild.parent).get()).data();
+    const parentVoteStatistics = getParent?.voteStatistics;
+    const getCommissionNumber = (Number(voteScore * pctReferralActivity) / 100).toFixed(4);
+    const commission: number = Number(getCommissionNumber)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
+    console.log("Score ", voteScore)
+    console.log("parentVoteStatistics : ", parentVoteStatistics)
+    console.log("parent get commission :", commission)
+    console.log("new Score ", newScore)
+    console.log("newCommission :", newCommission)
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4)
+    // child refer score
+    await db.doc(childId).set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
+    // parent commission
+    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: Number(newCommission), score: Number(newScore) } }, { merge: true });
+    console.log(
+      "pool mining Notification is calling: -- ",
+      getChild.parent,
+      getChild.displayName || "",
+      getChild.refereeScrore
+    );
+    console.log("commission : ", commission);
+    console.log("score -- ", voteScore);
+    await poolMiningNotification(
+      getChild.parent,
+      getChild.displayName || "",
+      commission
+    );
+    return {
+      status: true,
+      message: "parent commission and child refer score added successfully",
+    }
+  } catch (error) {
+    return errorLogging("setParentCommission", "Error: ", error);
+  }
+})
+
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
   sgMail.setApiKey(env.sendgrid_api_key);
@@ -1257,84 +1314,103 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// function that return some parameters for coin parliament players
+
+//get details for the all the coin parliament users
 exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
   try {
-    const userId = data.userId; // Extract userId from data parameter
-    console.log("userId>>>>", userId);
+    const { pageToken } = data;
+    const pageSize = 40; // Set page size to 30 users per page
 
-    const databaseQuery = await admin
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .get();
+    let query = admin.firestore().collection("users").limit(pageSize);
 
-    const userData = databaseQuery.data();
-    if (!userData) {
-      return {
-        status: true,
-        message: "User not found.",
-        data: {} // Empty array when user not found
-      };
+    if (pageToken) {
+      query = query.startAfter(pageToken);
     }
 
-    const name = userData.status.name;
-    console.log("name>>>>>", name)
-    const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>", userData.voteStatistics.total)
-    const totalCMP = userData.voteStatistics.score;
-    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+    const usersSnapshot = await query.get();
 
-    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
-      .where('userId', '==', userId)
-      .limit(1)
-      .get();
+    const usersDetails = [];
 
-    let accountUpgrade = false; // Default value if not found
-    if (!paxTransactionQuery.empty) {
-      const paxTransactionData = paxTransactionQuery.docs[0].data();
-      console.log("paxTransactionData>>>>>", paxTransactionData)
-      accountUpgrade = paxTransactionData.isUserUpgraded || false;
-      console.log("accountUpgrade>>>>>", accountUpgrade)
-    }
+    for (const userDoc of usersSnapshot.docs) {
+      const userId = userDoc.id;
+      console.log("userId>>>>>",userId);
+      const userData = userDoc.data();
+      console.log("users>>>>>>>",userData.userName,);
 
-    const paymentQuery = await admin.firestore().collection('payments')
-      .where('userId', '==', userId)
-      .where('transactionType', '==', 'EXTRAVOTES')
-      .get();
+      if (!userData) {
+        console.log("User data not found for userId:", userId);
+        continue; // Skip to the next user if user data is not available
+      }
 
-    const hasPurchasedVotes = !paymentQuery.empty;
-    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+      // Check if the user exists in Firebase Authentication
+      let userRecord;
+      try {
+        userRecord = await admin.auth().getUser(userId);
+      } catch (error:any) {
+        if (error.code === 'auth/user-not-found') {
+          console.log('User record not found for user ID:', userId);
+          continue; // Skip to the next user if user record is not found
+        } else {
+          throw error;
+        }
+      }
 
-    const userRecord = await admin.auth().getUser(userId);
+      let totalCMP = 0; // Default value for totalCMP
 
-    const votesQuerySnapshot = await admin
-      .firestore()
-      .collection("votes")
-      .where("userId", "==", userId)
-      .get();
+      if (userData.voteStatistics) {
+        console.log("voteStatistics", userData.voteStatistics)
+        totalCMP = userData.voteStatistics.score || 0; // Set totalCMP to score, or 0 if score is undefined
+        console.log("totalCMP>>>>>", userData.voteStatistics.score)
+      }
 
-    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>", voteTimes);
-    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-    const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+      const paymentQuery = await admin.firestore().collection('payments')
+        .where('userId', '==', userId)
+        .where('transactionType', '==', 'EXTRAVOTES')
+        .get();
 
-    return {
-      status: true,
-      message: "User fetched successfully",
-      data:{
-        name: name,
-        country: userData.country,
+      const hasPurchasedVotes = !paymentQuery.empty;
+      const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+
+      const votesQuerySnapshot = await admin.firestore().collection("votes")
+          .where("userId", "==", userId)
+          .get();
+
+          let numberOfDaysVoted = 0;
+  
+        if (!votesQuerySnapshot.empty) {
+          const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
+          console.log("voteTimes>>>>>>>", voteTimes);
+          const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
+          numberOfDaysVoted = uniqueDates.length;
+          console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+        }
+
+      usersDetails.push({
+        name: userData.userName || "",
+        country: userData.country || "",
+        remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
         signupDate: userRecord.metadata.creationTime,
-        totalVotes: totalVotes,
         totalCMP: totalCMP,
-        accountUpgrade: accountUpgrade,
+        accountUpgrade:userData?.isUserUpgraded || false,
         numberOfDaysVoted: numberOfDaysVoted,
         votePurchase: votePurchaseStatus,
         userId: userId,
-      }
+      });
+    }
+
+    let nextPageToken = null;
+    const lastDoc = usersSnapshot.docs[usersSnapshot.docs.length - 1];
+    if (lastDoc) {
+      nextPageToken = lastDoc;
+    }
+
+    return {
+      status: true,
+      message: "Users fetched successfully",
+      data: usersDetails,
+      nextPageToken: nextPageToken
     };
+
   } catch (error) {
     console.log("Error while fetching user data:", error);
     return {
@@ -1344,6 +1420,8 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
     };
   }
 });
+
+
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
@@ -1417,12 +1495,12 @@ export const pendingPaymentSettlement = functions.pubsub
         const paymentRef = transaction.ref;
         console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus : any = await checkTransactionStatus(transaction?.paymentDetails);
-        if(transactionStatus.status){
-          console.log("transactionStatus : ",transactionStatus.message)
+        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        if (transactionStatus.status) {
+          console.log("transactionStatus : ", transactionStatus.message)
           await paymentRef.update({ event: 'Confirmed' });
-        }else{
-          console.error("transactionStatus : ",transactionStatus)
+        } else {
+          console.error("transactionStatus : ", transactionStatus)
         }
       }
       console.log('Payments updated successfully.');
@@ -1603,6 +1681,60 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 //   });
 
 // ******************* END CRON JOBS ****************
+exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const getCommissionUsers = (await admin.firestore().collection('users').where('voteStatistics.commission', '>', 0).get()).docs.map((user: any) => {
+      let userData = user.data();
+      return {
+        parentId: user.id,
+        parentVoteStatistics: userData.voteStatistics,
+        childIds: userData.children
+      }
+    });
+    console.log("getCommissionUsers ", getCommissionUsers.length)
 
+    return {
+      status: true,
+      message: "success to get users",
+      result: getCommissionUsers
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error
+    }
+  }
+});
 
+exports.correctCommission = functions.https.onCall(async (data: any) => {
+  const { user } = data;
+
+  try {
+    let commission = 0
+    for (let index = 0; index < user.children.length; index++) {
+      const element = user.children[index];
+      commission += await admin.firestore().collection('users').doc(element).get().then((child) => {
+        let childData = child.data();
+        return childData?.refereeScrore
+      })
+    }
+    console.log("commission : ", commission);
+    await admin.firestore().collection('users').doc(user.parentId).set({
+      voteStatistics: { ...user.parentVoteStatistics, commission }
+    }, { merge: true }).then(() => {
+      console.log("success to update users", user.parentId)
+    });
+    return {
+      status: true,
+      message: "success to update users",
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error
+    }
+  }
+})
 
