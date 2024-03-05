@@ -211,7 +211,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
                 numberOfVotes: parentPaymentData.numberOfVotes,
                 parentPendingPaymentId: null,
                 receiveType: "MANUAL",
-                token: parentPaymentData.token.toUpperCase(),
+                token: parentPaymentData.origincurrency.toUpperCase(),
                 transactionhash: "",
                 transactionType: parentPaymentData.transactionType,
                 type: parentPaymentData.type,
