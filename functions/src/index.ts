@@ -1758,3 +1758,31 @@ exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
     console.error("scriptToUpdateAllUsers ERROR: " + error)
   }
 })
+exports.appendUserName = functions.https.onCall(async (data) => {
+  const { users } = data;
+  let updatedUsers = [];
+  try {
+
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName = users[user].email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
+        updatedUsers.push({ ...users[user], userName })
+      }
+    }
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: updatedUsers
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null
+    }
+  };
+});
+
+
+
