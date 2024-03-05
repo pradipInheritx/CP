@@ -204,7 +204,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
         const getResponseFromPendingReferralAmount = await firestore()
             .collection("parentPayment")
             .add({
-                parentId: parentPaymentData.parentUserId,
+                parentUserId: parentPaymentData.parentUserId,
                 childId: parentPaymentData.childUserId,
                 amount: parentPaymentData.amount,
                 status: "PENDING",
