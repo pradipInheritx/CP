@@ -1346,14 +1346,12 @@ exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, cont
       let userRecord;
       try {
         userRecord = await admin.auth().getUser(userId);
-      } catch (error:any) {
-        if (error.code === 'auth/user-not-found') {
-          console.log('User record not found for user ID:', userId);
-          continue; // Skip to the next user if user record is not found
-        } else {
-          throw error;
-        }
-      }
+      } catch (error) {
+        console.error("Error while fetching user data:", error);
+        console.log('User record not found for user ID:', userId);
+        continue; // Skip to the next user if user record is not found
+    }
+    
 
       let totalCMP = 0; // Default value for totalCMP
 
