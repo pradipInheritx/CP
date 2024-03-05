@@ -848,11 +848,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
 
     // EhterScan API
     if (paymentDetails.network === 1) {
-      axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
+      await axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
           console.log("response : ", response)
-          if (response.status === 1) {
+          if (response.status === '1') {
             returnFinalResponse['data'] = response.result.status === "1" ? {
               status: true,
               message: "Transaction is confirmed"
@@ -871,11 +871,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
         });
     } else if (paymentDetails.network === 137) {
       // ploygonScan 
-      axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.POLYGONSCAN_API_KEY}`, options)
+      await axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.POLYGONSCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
           console.log("response : ", response)
-          if (response.status === 1) {
+          if (response.status === '1') {
             returnFinalResponse['data'] = response.result.status === "1" ? {
               status: true,
               message: "Transaction is confirmed"
@@ -893,11 +893,11 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
         });
     } else if (paymentDetails.network === 56) {
       // binance 
-      axios.get(`https://api.bscscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.BINANCESCAN_API_KEY}`, options)
+      await axios.get(`https://api.bscscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.BINANCESCAN_API_KEY}`, options)
         .then((apiResponse: any) => {
           const response = apiResponse.data
           console.log("response : ", response)
-          if (response.status === 1) {
+          if (response.status === '1') {
             returnFinalResponse['data'] = response.result.status === "1" ? {
               status: true,
               message: "Transaction is confirmed"
