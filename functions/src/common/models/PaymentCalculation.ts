@@ -149,15 +149,6 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         console.info("userId....>>>", userId)
         const parentUserDetails: any = (await firestore().collection("users").doc(userId).get()).data();
 
-        const getParentData = await firestore()
-            .collection("parentReferralData").add({
-                userId: "Mukut",
-                origincurrency: "eth",
-            });
-
-
-        console.info("getParentData....", getParentData.id)
-
         console.info("parentUserDetails--->>>>", parentUserDetails);
 
         const parentUserId = parentUserDetails && parentUserDetails.parent ? parentUserDetails.parent : parentConst.ADMIN_UID;
@@ -198,24 +189,29 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 export const storeParentReferralAmount = async (parentPaymentData: any) => {
     console.info("parentPaymentData in Function", parentPaymentData)
     try {
-        const response = await firestore()
-            .collection("pendingReferralToParent")
+        const getResponseFromPendingReferralAmount = await firestore()
+            .collection("parentPayment")
             .add({
                 parentId: parentPaymentData.parentUserId,
                 childId: parentPaymentData.childUserId,
                 amount: parentPaymentData.amount,
                 status: "PENDING",
-                origincurrency: parentPaymentData.origincurrency,
+                numberOfVotes: parentPaymentData.numberOfVotes,
+                parentPendingPaymentId: null,
+                receiveType: "MANUAL",
+                token: parentPaymentData.token.toUpperCase(),
+                transactionhash: "",
+                transactionType: parentPaymentData.transactionType,
+                type: parentPaymentData.type,
+                address: null,
                 timestamp: Timestamp.now()
             });
-
-        console.info("Time....", Timestamp.now())
-        console.info("Document added successfully at:", response.id);
+        console.info("Parent Referral Payment Doc Added Successfully", getResponseFromPendingReferralAmount);
 
         return {
             status: true,
             message: "Parent Referral Payment Stored Successfully",
-            result: response.id // Assuming you want to return the ID of the added document
+            result: getResponseFromPendingReferralAmount
         };
     } catch (error) {
         return {
