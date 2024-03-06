@@ -202,7 +202,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
             .collection("parentPayment")
             .add({
                 parentUserId: parentPaymentData.parentUserId,
-                childId: parentPaymentData.childUserId,
+                childUserId: parentPaymentData.childUserId,
                 amount: parentPaymentData.halfReferralAmount,
                 status: parentConst.PAYMENT_STATUS_PENDING,
                 numberOfVotes: parentPaymentData.numberOfVotes,
