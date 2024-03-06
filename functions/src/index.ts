@@ -1323,8 +1323,6 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
     // Fetch user details
     let userDetails = await getUsersDetails();
 
-    // Fetch votes details
-    const votesDetails = await getVotesDetailsForUser();
 
     let userData: any;
 
@@ -1349,7 +1347,6 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
     return {
       paymentDetails: paymentDetails,
       userDetails: userDetails,
-      votesDetails: votesDetails
     };
 
   } catch (error) {
@@ -1444,53 +1441,48 @@ async function getUsersDetails() {
   }
 }
 
-async function getVotesDetailsForUser() {
+exports.combineUserAndVote = functions.https.onCall(async (data: any) => {
+  const { userList, voteList } = data;
+
+  userList.map((user: any) => {
+    let userVote = voteList.filter((vote: any) => vote.userId == user.userId);
+    let voteDate: any = []
+    let voteDay = 0;
+    userVote.forEach((vote: any) => {
+      let voteTime = new Date(vote.voteTime);
+      voteDate.includes(voteTime.toLocaleDateString()) ? null : voteDate.push(voteTime.toLocaleDateString())
+      voteDay += voteDate.includes(voteTime.toLocaleDateString()) ? 1 : 0;
+    })
+    user['noOfVOtesDays'] = voteDay;
+    user['averageVotes'] = userVote.length / voteDay
+  })
+
+
+})
+
+exports.getVoteList = functions.https.onCall(async (data: any) => {
   try {
-    const votesSnapshot = await admin.firestore().collection("votes")
-      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-      .get();
-
-    // Create a map to store aggregated data for each user
-    let userDataMap = new Map<string, { totalDaysVoted: number, totalVotes: number }>();
-
-    votesSnapshot.forEach((doc: any) => {
-      const voteData = doc.data(); 
-      const voterId = voteData.userId; 
-
-
-
-      // Check if the user exists in the map
-      if (userDataMap.has(voterId)) {
-        const userData = userDataMap.get(voterId)!;
-        console.log(userData);
-        userData.totalDaysVoted += 1;
-        userData.totalVotes += 1; // Assuming each vote is counted equally
-        userDataMap.set(voterId, userData);
-      } else {
-        userDataMap.set(voterId, { totalDaysVoted: 1, totalVotes: 1 });
+    let voteDetails = (await admin.firestore().collection("votes")
+    .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
+    .get()).docs.map((vote: any) => {
+      let voteData = vote.data()
+      return {
+        userId: voteData.userId,
+        voteTime: voteData.voteTime,
       }
     });
 
-    // Calculate the average vote per day for each user
-    let userVoteDetails: any = [];
+  console.log("Votes fetched successfully",voteDetails)
+  return voteDetails;
 
-    userDataMap.forEach((userData, userId) => {
-      const averageVotePerDay = userData.totalVotes / userData.totalDaysVoted;
-      userVoteDetails.push({
-        userId: userId,
-        totalDaysVoted: userData.totalDaysVoted,
-        averageVotePerDay: averageVotePerDay
-      });
-    });
-
-    // Log or return the results
-    console.log('User Vote Details:', userVoteDetails);
-    return userVoteDetails;
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
+} catch (error) {
+  console.error('Error:', error);
+  return null
 }
+
+
+})
+
 
 
 
