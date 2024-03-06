@@ -1342,23 +1342,31 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
 async function getPaymentDetailsForUser() {
   try {
     const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
-    const extraVotesPurchased: string[] = getAllPaymentsQuery.docs.map((payment: any) => {
-      let paymentData = payment.data();
-      let extraVotePurchased = "no"; // Default value
+    const paymentDetails: any = {};
 
-      if (paymentData.transactionType === "EXTRAVOTES") {
-        extraVotePurchased = "yes";
+    getAllPaymentsQuery.docs.forEach((payment: any) => {
+      let paymentData = payment.data();
+      let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
+      let userId = paymentData.userId;
+
+      if (!paymentDetails[userId]) {
+        paymentDetails[userId] = { };
       }
 
-      return extraVotePurchased;
+      if (extraVotePurchased) {
+        paymentDetails[userId].extraVotePurchased = "yes";
+      } else {
+        paymentDetails[userId].extraVotePurchased = "no";
+      }
     });
 
-    return extraVotesPurchased;
+    return paymentDetails;
   } catch (error) {
     console.error("Error fetching payment details:", error);
     return false;
   }
 }
+
 
 // Function to get user details
 async function getUsersDetails() {
@@ -1419,42 +1427,47 @@ async function getVotesDetailsForUser() {
       .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000)) 
       .get();
 
-    let totalDaysVoted = 0;
-    let uniqueVoters = new Set<string>();
-    const votedDays: Set<number> = new Set();
+    // Create a map to store aggregated data for each user
+    let userDataMap = new Map<string, { totalDaysVoted: number, totalVotes: number }>();
 
     votesSnapshot.forEach((doc: any) => {
       const voteData = doc.data();
       const voteTime = voteData.voteTime; 
       const voterId = voteData.userId; 
 
-      // Convert voteTime to date
-      const voteDate = new Date(voteTime * 1000); // Assuming voteTime is in seconds
-
-      const dayOfYear = voteDate.getFullYear() * 1000 + voteDate.getMonth() * 100 + voteDate.getDate();
-
-      votedDays.add(dayOfYear);
-      uniqueVoters.add(voterId);
+      // Check if the user exists in the map
+      if (userDataMap.has(voterId)) {
+        const userData = userDataMap.get(voterId)!;
+        userData.totalDaysVoted += 1;
+        userData.totalVotes += 1; // Assuming each vote is counted equally
+        userDataMap.set(voterId, userData);
+      } else {
+        userDataMap.set(voterId, { totalDaysVoted: 1, totalVotes: 1 });
+      }
     });
 
-    // Calculate the number of days voted and average vote per day
-    totalDaysVoted = votedDays.size;
-    const averageVotePerDay = uniqueVoters.size / totalDaysVoted;
+    // Calculate the average vote per day for each user
+    let userVoteDetails:any = [];
 
-    console.log('Number of days voted in the last 60 days:', totalDaysVoted);
-    console.log('Average vote per day in the last 60 days:', averageVotePerDay);
+    userDataMap.forEach((userData, userId) => {
+      const averageVotePerDay = userData.totalVotes / userData.totalDaysVoted;
+      userVoteDetails.push({
+        userId: userId,
+        totalDaysVoted: userData.totalDaysVoted,
+        averageVotePerDay: averageVotePerDay
+      });
+    });
 
-    // Return the results or do something else with them if needed
-    return {
-      totalDaysVoted: totalDaysVoted,
-      averageVotePerDay: averageVotePerDay
-    };
+    // Log or return the results
+    console.log('User Vote Details:', userVoteDetails);
+    return userVoteDetails;
 
   } catch (error) {
     console.error('Error:', error);
     throw new functions.https.HttpsError('internal', 'An error occurred while processing votes.', error);
   }
 }
+
 
 
 // ******************* START CRON JOBS ****************
