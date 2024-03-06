@@ -167,3 +167,40 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
   }
 }
 
+export const initiatePendingParentPayment = async (req: any, res: any) => {
+  try {
+    const { userId } = req.params;
+    const userIds: any = [];
+
+    const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
+    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
+    console.info("getAllPendingPayment...", getAllPendingPayment)
+    getAllPendingPayment.forEach((payment: any) => {
+      userIds.push(payment.parentUserId)
+    })
+    const collectionRef = await firestore().collection('parentPayment');
+    const snapshot = await collectionRef.where("parentUserId", 'array-contains', userIds).get();
+
+    // Iterate over each document where the array contains the value
+    snapshot.forEach(async doc => {
+      const docRef = collectionRef.doc(doc.id);
+      console.info("snapshot...", snapshot)
+
+      // Write the updated array back to Firestore
+      await docRef.update({ status: "INITIATED" });
+      console.log(`Document ${doc.id} updated successfully.`);
+    });
+    res.status(200).send({
+      status: true,
+      data: userIds,
+    });
+  } catch (error) {
+    errorLogging("getPendingPaymentbyUserId", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+      result: error,
+    });
+  }
+}
+
