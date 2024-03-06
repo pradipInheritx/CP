@@ -1321,10 +1321,30 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
     const paymentDetails = await getPaymentDetailsForUser();
 
     // Fetch user details
-    const userDetails = await getUsersDetails();
+    let userDetails = await getUsersDetails();
 
     // Fetch votes details
     const votesDetails = await getVotesDetailsForUser();
+
+    let userData: any;
+
+    userData = userDetails.data;
+
+    userData.forEach((element: any) => {
+      let userId = element.userId;
+
+
+      // Key and value to filter
+    const keyToFilter = "userId";
+    const valueToFilter = userId;
+
+    // Filtering the array based on the key and value
+    const filteredObj = paymentDetails.find((obj: any) => obj[keyToFilter] === valueToFilter);
+
+    element.extraVotePurchased = filteredObj.extraVotePurchased;
+
+    });
+
 
     return {
       paymentDetails: paymentDetails,
@@ -1342,7 +1362,7 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
 async function getPaymentDetailsForUser() {
   try {
     const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
-    const paymentDetails: any = {};
+    const paymentDetails: any = [];
 
     getAllPaymentsQuery.docs.forEach((payment: any) => {
       let paymentData = payment.data();
@@ -1354,11 +1374,14 @@ async function getPaymentDetailsForUser() {
       }
 
       if (extraVotePurchased) {
-        paymentDetails[userId].extraVotePurchased = "yes";
+        let obj = { userId: userId, extraVotePurchased: "yes"}
+        paymentDetails.push(obj)
       } else {
-        paymentDetails[userId].extraVotePurchased = "no";
+        let obj = { userId: userId, extraVotePurchased: "no"}
+        paymentDetails.push(obj)
       }
     });
+
 
     return paymentDetails;
   } catch (error) {
@@ -1434,6 +1457,8 @@ async function getVotesDetailsForUser() {
       const voteData = doc.data(); 
       const voterId = voteData.userId; 
 
+
+
       // Check if the user exists in the map
       if (userDataMap.has(voterId)) {
         const userData = userDataMap.get(voterId)!;
@@ -1464,7 +1489,6 @@ async function getVotesDetailsForUser() {
 
   } catch (error) {
     console.error('Error:', error);
-    throw new functions.https.HttpsError('internal', 'An error occurred while processing votes.', error);
   }
 }
 
