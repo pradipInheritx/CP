@@ -358,7 +358,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
   const getUserPendingReferalAmount = await firestore()
     .collection("parentPayment")
     .where("parentUserId", "==", userId)
-    .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
+    .where("status", "in", [parentConst.PAYMENT_STATUS_PENDING, parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED])
     .get();
   const getUserPendingReferalAmountData: any =
     getUserPendingReferalAmount.docs.map((payment) => {
@@ -431,7 +431,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
       }
     }
     return res.status(200).send({
-      status: false,
+      status: true,
       message: parentConst.MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT,
       data: getUserPendingReferalAmountData,
     });
