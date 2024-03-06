@@ -1371,7 +1371,7 @@ exports.updateLeadersCron = functions.pubsub
 
 // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
 export const pendingPaymentSettlement = functions.pubsub
-  .schedule("*/5 * * * *")
+  .schedule("*/30 * * * *")
   .onRun(async () => {
     console.log("pendingPaymentSettlement start");
 
@@ -1392,19 +1392,17 @@ export const pendingPaymentSettlement = functions.pubsub
       // });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments: any = paymentsSnapshot.docs.map((snapshot: any) => {
+      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
         const paymentData = snapshot.data();
         console.log("paymentData >>>> ", paymentData)
         console.log("paymentData.event === 'Approved' >>>>", paymentData.event === 'Approved')
         return paymentData.event === 'Approved' ? { ...paymentData, transactionId: snapshot.id } : null;
       });
-
-
       console.log("approvedPayments >>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const transaction of approvedPayments) {
-        console.log("approvedPayments>>>>", transaction)
+        console.log("transaction>>>>", transaction)
         // const paymentRef = transaction.ref;
         // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
