@@ -1315,110 +1315,146 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 );
 
 
-//get details for the all the coin parliament users
-exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
+exports.getCombinedDetails = functions.https.onCall(async () => {
   try {
-    const { pageToken } = data;
-    const pageSize = 40; // Set page size to 30 users per page
+    // Fetch payment details
+    const paymentDetails = await getPaymentDetailsForUser();
 
-    let query = admin.firestore().collection("users").limit(pageSize);
+    // Fetch user details
+    const userDetails = await getUsersDetails();
 
-    if (pageToken) {
-      query = query.startAfter(pageToken);
-    }
+    // Fetch votes details
+    const votesDetails = await getVotesDetailsForUser();
 
-    const usersSnapshot = await query.get();
+    return {
+      paymentDetails: paymentDetails,
+      userDetails: userDetails,
+      votesDetails: votesDetails
+    };
 
-    const usersDetails = [];
+  } catch (error) {
+    console.error("Error fetching combined details:", error);
+    return false;
+  }
+});
 
-    for (const userDoc of usersSnapshot.docs) {
-      const userId = userDoc.id;
-      console.log("userId>>>>>", userId);
-      const userData = userDoc.data();
-      console.log("users>>>>>>>", userData.userName,);
+// Function to get payment details
+async function getPaymentDetailsForUser() {
+  try {
+    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+    const extraVotesPurchased: string[] = getAllPaymentsQuery.docs.map((payment: any) => {
+      let paymentData = payment.data();
+      let extraVotePurchased = "no"; // Default value
 
-      if (!userData) {
-        console.log("User data not found for userId:", userId);
-        continue; // Skip to the next user if user data is not available
+      if (paymentData.transactionType === "EXTRAVOTES") {
+        extraVotePurchased = "yes";
       }
 
-      // Check if the user exists in Firebase Authentication
-      let userRecord;
-      try {
-        userRecord = await admin.auth().getUser(userId);
-      } catch (error) {
-        console.error("Error while fetching user data:", error);
-        console.log('User record not found for user ID:', userId);
-        continue; // Skip to the next user if user record is not found
-      }
+      return extraVotePurchased;
+    });
 
+    return extraVotesPurchased;
+  } catch (error) {
+    console.error("Error fetching payment details:", error);
+    return false;
+  }
+}
 
-      let totalCMP = 0; // Default value for totalCMP
-
-      if (userData.voteStatistics) {
-        console.log("voteStatistics", userData.voteStatistics)
-        totalCMP = userData.voteStatistics.score || 0; // Set totalCMP to score, or 0 if score is undefined
-        console.log("totalCMP>>>>>", userData.voteStatistics.score)
-      }
-
-      const paymentQuery = await admin.firestore().collection('payments')
-        .where('userId', '==', userId)
-        .where('transactionType', '==', 'EXTRAVOTES')
-        .get();
-
-      const hasPurchasedVotes = !paymentQuery.empty;
-      const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
-
-      const votesQuerySnapshot = await admin.firestore().collection("votes")
-        .where("userId", "==", userId)
-        .get();
-
-      let numberOfDaysVoted = 0;
-
-      if (!votesQuerySnapshot.empty) {
-        const voteTimes = votesQuerySnapshot.docs.map(doc => new Date(doc.data().voteTime));
-        console.log("voteTimes>>>>>>>", voteTimes);
-        const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-        numberOfDaysVoted = uniqueDates.length;
-        console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
-      }
-
-      usersDetails.push({
-        name: userData.userName || "",
-        country: userData.country || "",
+// Function to get user details
+async function getUsersDetails() {
+  try {
+    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+      let userData = user.data()
+      return {
+        userId: user.id,
+        name: userData?.userName || "",
+        email: userData?.email || "",
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
-        signupDate: userRecord.metadata.creationTime,
-        totalCMP: totalCMP,
-        accountUpgrade: userData?.isUserUpgraded || false,
-        numberOfDaysVoted: numberOfDaysVoted,
-        votePurchase: votePurchaseStatus,
-        userId: userId,
-      });
-    }
+        accountUpgrade: userData?.isUserUpgraded || false
+      }
+    });
 
-    let nextPageToken = null;
-    const lastDoc = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-    if (lastDoc) {
-      nextPageToken = lastDoc;
-    }
+    console.log("TOTAL USER LENGTH : ", getAllUserData.length);
+
+    const getAuthUserSignUpTime: any = [];
+    const allUsers = await admin.auth().listUsers();
+    allUsers.users.forEach((userRecord: any) => {
+      console.log("User signupDate added:", userRecord.uid);
+
+      getAuthUserSignUpTime.push({
+        userId: userRecord.uid,
+        signUpTime: userRecord.metadata.creationTime
+      });
+    });
+
+    console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
+
+    const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
+      const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
+      if (signUpData) {
+        userData.signUpTime = signUpData.signUpTime;
+      }
+      return userData;
+    });
 
     return {
       status: true,
       message: "Users fetched successfully",
-      data: usersDetails,
-      nextPageToken: nextPageToken
+      data: userDetailsWithSignUpDate
     };
 
   } catch (error) {
-    console.log("Error while fetching user data:", error);
+    console.error("Error while fetching user data:", error);
     return {
       status: false,
       message: "Error while fetching user data",
       data: {}
     };
   }
-});
+}
 
+async function getVotesDetailsForUser() {
+  try {
+    const votesSnapshot = await admin.firestore().collection("votes")
+      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000)) 
+      .get();
+
+    let totalDaysVoted = 0;
+    let uniqueVoters = new Set<string>();
+    const votedDays: Set<number> = new Set();
+
+    votesSnapshot.forEach((doc: any) => {
+      const voteData = doc.data();
+      const voteTime = voteData.voteTime; 
+      const voterId = voteData.userId; 
+
+      // Convert voteTime to date
+      const voteDate = new Date(voteTime * 1000); // Assuming voteTime is in seconds
+
+      const dayOfYear = voteDate.getFullYear() * 1000 + voteDate.getMonth() * 100 + voteDate.getDate();
+
+      votedDays.add(dayOfYear);
+      uniqueVoters.add(voterId);
+    });
+
+    // Calculate the number of days voted and average vote per day
+    totalDaysVoted = votedDays.size;
+    const averageVotePerDay = uniqueVoters.size / totalDaysVoted;
+
+    console.log('Number of days voted in the last 60 days:', totalDaysVoted);
+    console.log('Average vote per day in the last 60 days:', averageVotePerDay);
+
+    // Return the results or do something else with them if needed
+    return {
+      totalDaysVoted: totalDaysVoted,
+      averageVotePerDay: averageVotePerDay
+    };
+
+  } catch (error) {
+    console.error('Error:', error);
+    throw new functions.https.HttpsError('internal', 'An error occurred while processing votes.', error);
+  }
+}
 
 
 // ******************* START CRON JOBS ****************
