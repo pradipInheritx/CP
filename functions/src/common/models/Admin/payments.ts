@@ -227,22 +227,17 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
 
 export const updateParentReferralPayment = async (req: any, res: any) => {
   try {
-    const { parentUserId } = req.params;
+    const { paymentId } = req.params;
+    console.info("parentUserId...", paymentId)
+    const updateParentPaymentRef = await firestore().collection("payments").doc(paymentId);
 
-    const getParentPaymentData = await firestore()
-      .collection("payments")
-      .where("parentUserId", "==", parentUserId)
-      .get();
-
-    console.info("getParentPaymentData", getParentPaymentData.docs.map(doc => doc.data()));
-
-    const updateParentPaymentData = await firestore().collection("payments").doc(parentUserId).update({ status: "SUCCESS" });
-    console.info("updateParentPaymentData", updateParentPaymentData)
+    await updateParentPaymentRef.update({ status: "SUCCESS" });
+    console.info("updateParentPaymentData", updateParentPaymentRef)
 
     res.status(200).send({
       status: true,
       message: "Parent Referral Payment Updated Successfully",
-      result: updateParentPaymentData,
+      result: updateParentPaymentRef,
     });
   } catch (error) {
     console.error("Error While Updating Parent Referral Payment:", error);
