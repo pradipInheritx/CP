@@ -1445,18 +1445,22 @@ exports.combineUserAndVote = functions.https.onCall(async (data: any) => {
   const { userList, voteList } = data;
 
   userList.map((user: any) => {
-    let userVote = voteList.filter((vote: any) => vote.userId == user.userId);
-    let voteDate: any = []
-    let voteDay = 0;
+    let userVote = voteList.filter((vote:any) => vote.userId === user.userId);
+    let voteDate: string[] = [];
+    let noOfVotesDays = 0;
+    let averageVotes = 0;
+    console.log("UserVote : ", userVote);
     userVote.forEach((vote: any) => {
-      let voteTime = new Date(vote.voteTime);
-      voteDate.includes(voteTime.toLocaleDateString()) ? null : voteDate.push(voteTime.toLocaleDateString())
-      voteDay += voteDate.includes(voteTime.toLocaleDateString()) ? 1 : 0;
-    })
-    user['noOfVOtesDays'] = voteDay;
-    user['averageVotes'] = userVote.length / voteDay
-  })
+        noOfVotesDays += voteDate.includes(vote.voteTime) ? 0 : 1;
+        voteDate.includes(vote.voteTime) ? null : voteDate.push(vote.voteTime);
+        averageVotes = userVote.length / noOfVotesDays;
+        console.log("averageVotes : ", user.userId, noOfVotesDays, averageVotes);
+        user['noOfVotesDays'] = noOfVotesDays;
+        user['averageVotes'] = averageVotes;
+    });
+});
 
+return userList
 
 })
 
