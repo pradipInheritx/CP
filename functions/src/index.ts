@@ -1315,29 +1315,146 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 );
 
 
-//get details for the all the coin parliament users
-exports.updateUserStatistics = functions.pubsub.schedule('every 10 minutes').onRun(async () => {
+exports.getCombinedDetails = functions.https.onCall(async () => {
+  try {
+    // Fetch payment details
+    const paymentDetails = await getPaymentDetailsForUser();
+
+    // Fetch user details
+    const userDetails = await getUsersDetails();
+
+    // Fetch votes details
+    const votesDetails = await getVotesDetailsForUser();
+
+    return {
+      paymentDetails: paymentDetails,
+      userDetails: userDetails,
+      votesDetails: votesDetails
+    };
+
+  } catch (error) {
+    console.error("Error fetching combined details:", error);
+    return false;
+  }
+});
+
+// Function to get payment details
+async function getPaymentDetailsForUser() {
+  try {
+    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+    const extraVotesPurchased: string[] = getAllPaymentsQuery.docs.map((payment: any) => {
+      let paymentData = payment.data();
+      let extraVotePurchased = "no"; // Default value
+
+      if (paymentData.transactionType === "EXTRAVOTES") {
+        extraVotePurchased = "yes";
+      }
+
+      return extraVotePurchased;
+    });
+
+    return extraVotesPurchased;
+  } catch (error) {
+    console.error("Error fetching payment details:", error);
+    return false;
+  }
+}
+
+// Function to get user details
+async function getUsersDetails() {
   try {
     const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
       let userData = user.data()
       return {
         userId: user.id,
         name: userData?.userName || "",
-        country: userData?.country || "",
+        email: userData?.email || "",
         remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
-        totalCMP: userData?.voteStatistics?.total || 0,
         accountUpgrade: userData?.isUserUpgraded || false
       }
     });
+
     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
+
+    const getAuthUserSignUpTime: any = [];
+    const allUsers = await admin.auth().listUsers();
+    allUsers.users.forEach((userRecord: any) => {
+      console.log("User signupDate added:", userRecord.uid);
+
+      getAuthUserSignUpTime.push({
+        userId: userRecord.uid,
+        signUpTime: userRecord.metadata.creationTime
+      });
+    });
+
+    console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
+
+    const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
+      const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
+      if (signUpData) {
+        userData.signUpTime = signUpData.signUpTime;
+      }
+      return userData;
+    });
+
+    return {
+      status: true,
+      message: "Users fetched successfully",
+      data: userDetailsWithSignUpDate
+    };
+
   } catch (error) {
-      console.error("Error updating user statistics:", error);
-      return null;
+    console.error("Error while fetching user data:", error);
+    return {
+      status: false,
+      message: "Error while fetching user data",
+      data: {}
+    };
   }
-});
+}
 
+async function getVotesDetailsForUser() {
+  try {
+    const votesSnapshot = await admin.firestore().collection("votes")
+      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000)) 
+      .get();
 
+    let totalDaysVoted = 0;
+    let uniqueVoters = new Set<string>();
+    const votedDays: Set<number> = new Set();
 
+    votesSnapshot.forEach((doc: any) => {
+      const voteData = doc.data();
+      const voteTime = voteData.voteTime; 
+      const voterId = voteData.userId; 
+
+      // Convert voteTime to date
+      const voteDate = new Date(voteTime * 1000); // Assuming voteTime is in seconds
+
+      const dayOfYear = voteDate.getFullYear() * 1000 + voteDate.getMonth() * 100 + voteDate.getDate();
+
+      votedDays.add(dayOfYear);
+      uniqueVoters.add(voterId);
+    });
+
+    // Calculate the number of days voted and average vote per day
+    totalDaysVoted = votedDays.size;
+    const averageVotePerDay = uniqueVoters.size / totalDaysVoted;
+
+    console.log('Number of days voted in the last 60 days:', totalDaysVoted);
+    console.log('Average vote per day in the last 60 days:', averageVotePerDay);
+
+    // Return the results or do something else with them if needed
+    return {
+      totalDaysVoted: totalDaysVoted,
+      averageVotePerDay: averageVotePerDay
+    };
+
+  } catch (error) {
+    console.error('Error:', error);
+    throw new functions.https.HttpsError('internal', 'An error occurred while processing votes.', error);
+  }
+}
 
 
 // ******************* START CRON JOBS ****************
