@@ -1350,7 +1350,7 @@ async function getPaymentDetailsForUser() {
       let userId = paymentData.userId;
 
       if (!paymentDetails[userId]) {
-        paymentDetails[userId] = { };
+        paymentDetails[userId] = {};
       }
 
       if (extraVotePurchased) {
@@ -1424,7 +1424,7 @@ async function getUsersDetails() {
 async function getVotesDetailsForUser() {
   try {
     const votesSnapshot = await admin.firestore().collection("votes")
-      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000)) 
+      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
       .get();
 
     // Create a map to store aggregated data for each user
@@ -1447,7 +1447,7 @@ async function getVotesDetailsForUser() {
     });
 
     // Calculate the average vote per day for each user
-    let userVoteDetails:any = [];
+    let userVoteDetails: any = [];
 
     userDataMap.forEach((userData, userId) => {
       const averageVotePerDay = userData.totalVotes / userData.totalDaysVoted;
