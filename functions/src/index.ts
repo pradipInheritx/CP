@@ -1772,3 +1772,53 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   }
 })
 
+exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
+  try {
+    const getAllUsers = (await admin.firestore().collection('users').where('referalReceiveType.name', '!=', 'ONDEMAND').limit(50).get()).docs.map((user: any) => {
+      let userData = user.data()
+      return { userId: user.id, referalType: userData.referalReceiveType }
+    });
+    console.log("getAllUsers length: " + getAllUsers.length);
+    const updateUserList = getAllUsers.map(async (user) => {
+      let getRefrealType = user.referalType
+      await admin.firestore().collection('users').doc(user.userId).set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } })
+    })
+    Promise.all(updateUserList)
+      .then(() => {
+        console.log('All updates completed successfully');
+      })
+      .catch(error => {
+        console.error('Error performing updates:', error);
+      });
+  } catch (error) {
+    console.error("scriptToUpdateAllUsers ERROR: " + error)
+  }
+})
+exports.appendUserName = functions.https.onCall(async (data) => {
+  const { users } = data;
+  let updatedUsers = [];
+  try {
+
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName = users[user].email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
+        updatedUsers.push({ ...users[user], userName })
+      }
+    }
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: updatedUsers
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null
+    }
+  };
+});
+
+
+
