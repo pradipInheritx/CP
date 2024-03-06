@@ -1431,13 +1431,13 @@ async function getVotesDetailsForUser() {
     let userDataMap = new Map<string, { totalDaysVoted: number, totalVotes: number }>();
 
     votesSnapshot.forEach((doc: any) => {
-      const voteData = doc.data();
-      const voteTime = voteData.voteTime; 
+      const voteData = doc.data(); 
       const voterId = voteData.userId; 
 
       // Check if the user exists in the map
       if (userDataMap.has(voterId)) {
         const userData = userDataMap.get(voterId)!;
+        console.log(userData);
         userData.totalDaysVoted += 1;
         userData.totalVotes += 1; // Assuming each vote is counted equally
         userDataMap.set(voterId, userData);
