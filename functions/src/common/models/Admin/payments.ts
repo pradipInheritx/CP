@@ -148,8 +148,8 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
     getAllPendingPayment.forEach((payment: any) => {
-      if (payment.token && payment.amount) {
-        coinObject[payment.token] += parseFloat(payment.amount);
+      if (payment.originCurrency && payment.amount) {
+        coinObject[payment.originCurrency] += parseFloat(payment.amount);
       }
     })
 
@@ -232,7 +232,10 @@ export const updateParentReferralPayment = async (req: any, res: any) => {
     const updateParentPaymentRef = await firestore().collection("payments").doc(paymentId);
 
     await updateParentPaymentRef.update({ status: "SUCCESS" });
-    console.info("updateParentPaymentData", updateParentPaymentRef)
+
+    // const getPaymentUpdatedData = (await firestore().collection("payments").doc(paymentId).get()).data();
+
+    // console.info("updateParentPaymentData", updateParentPaymentRef)
 
     res.status(200).send({
       status: true,
