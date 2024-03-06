@@ -6,7 +6,7 @@ import axios from "axios";
 import { log } from "firebase-functions/logger";
 import env from "../../env/env.json";
 import {
-  isParentExistAndGetReferalAmount,
+  //isParentExistAndGetReferalAmount,
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
@@ -116,13 +116,11 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     paymentDetails,
   });
   console.log("start parent payment");
+  // const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
+  //   req.body
+  // );
 
-  const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
-    req.body
-  );
-  console.info("getResponseAfterParentPayment", getResponseAfterParentPayment)
-
-  // const getResponseAfterParentPayment = {};
+  const getResponseAfterParentPayment = {};
   console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
   res.status(200).send({
     status: true,
