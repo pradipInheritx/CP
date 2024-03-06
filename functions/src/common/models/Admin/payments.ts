@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 
 import * as parentConst from "../../consts/payment.const.json";
+import { Timestamp } from 'firebase-admin/firestore';
 import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getAdminPayment = async (req: any, res: any) => {
@@ -167,10 +168,12 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
   }
 }
 
-export const initiatePendingParentPayment = async (req: any, res: any) => {
+export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
     const userIds: any = [];
+
+    const makeAllInitiatedTransaction: any = [];
 
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
@@ -179,20 +182,38 @@ export const initiatePendingParentPayment = async (req: any, res: any) => {
       userIds.push(payment.parentUserId)
     })
     const collectionRef = await firestore().collection('parentPayment');
-    const snapshot = await collectionRef.where("parentUserId", 'array-contains', userIds).get();
+    const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
 
     // Iterate over each document where the array contains the value
     snapshot.forEach(async doc => {
       const docRef = collectionRef.doc(doc.id);
-      console.info("snapshot...", snapshot)
-
-      // Write the updated array back to Firestore
-      await docRef.update({ status: "INITIATED" });
-      console.log(`Document ${doc.id} updated successfully.`);
+      let getPaymentDetails = doc.data();
+      makeAllInitiatedTransaction.push({
+        event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+        ...getPaymentDetails,
+        timestamp: Timestamp.now(),
+      });
+      console.info("makeAllInitiatedTransaction", makeAllInitiatedTransaction)
+      await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED });
+      console.log(`Document ${doc.id} Updated Successfully.`);
     });
+
+    let createBatch: any = firestore().batch();
+
+    for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
+      let paymentDocRefs: any = firestore().collection('payments').doc();
+      createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
+    }
+
+    createBatch.commit().then(function () {
+      console.log("Claimed Parent Payment Store Successfully");
+    }).catch(function (error: any) {
+      console.error("Error While Store Claimed Parent Payment :", error);
+    });
+
     res.status(200).send({
       status: true,
-      data: userIds,
+      data: makeAllInitiatedTransaction,
     });
   } catch (error) {
     errorLogging("getPendingPaymentbyUserId", "ERROR", error);
@@ -204,3 +225,32 @@ export const initiatePendingParentPayment = async (req: any, res: any) => {
   }
 }
 
+export const updateParentReferralPayment = async (req: any, res: any) => {
+  try {
+    const { parentUserId } = req.params;
+
+    const getParentPaymentData = await firestore()
+      .collection("payments")
+      .where("parentUserId", "==", parentUserId)
+      .get();
+
+    console.info("getParentPaymentData", getParentPaymentData.docs.map(doc => doc.data()));
+
+    const updateParentPaymentData = await firestore().collection("payments").doc(parentUserId).update({ status: "SUCCESS" });
+    console.info("updateParentPaymentData", updateParentPaymentData)
+
+    res.status(200).send({
+      status: true,
+      message: "Parent Referral Payment Updated Successfully",
+      result: updateParentPaymentData,
+    });
+  } catch (error) {
+    console.error("Error While Updating Parent Referral Payment:", error);
+    res.status(500).send({
+      status: false,
+      message: "Error While Updating Parent Referral Payment",
+      result: error,
+    });
+  }
+
+}

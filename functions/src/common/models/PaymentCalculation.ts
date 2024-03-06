@@ -158,7 +158,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const parentPaymentData = {
             parentUserId,
             childUserId: parentUserDetails.uid,
-            amount: halfAmount,
+            halfReferralAmount: halfAmount.toFixed(6),
             type: parentConst.PAYMENT_TYPE_REFERAL,
             transactionType,
             numberOfVotes,
@@ -166,7 +166,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
             origincurrency,
             wellDAddress: parentUserDetails.wellDAddress
         };
-        const getParentPaymentData: any = await storeParentReferralAmount(parentPaymentData);
+        const getParentPaymentData: any = await storeParentReferralAmount({ ...parentPaymentData, ...userData });
         console.info("getParentPaymentData", getParentPaymentData)
 
         console.log("parentPaymentData : ", parentPaymentData);
@@ -193,11 +193,8 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
         let getCoinAddress: any = null;
 
         if (parentPaymentData && parentPaymentData.wellDAddress && parentPaymentData.wellDAddress.length) {
-            console.info("parentPaymentData.wellDAddress", parentPaymentData.wellDAddress)
             let coinOfPayment = parentPaymentData.token.toUpperCase();
-            console.info("coinOfPayment", coinOfPayment)
             let getCoinWellDAddress = parentPaymentData.wellDAddress.find((address: any) => address.coin === coinOfPayment);
-            console.info("getCoinWellDAddress", getCoinWellDAddress)
             getCoinAddress = getCoinWellDAddress && getCoinWellDAddress.address ? getCoinWellDAddress.address : null;
         }
 
@@ -206,17 +203,20 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
             .add({
                 parentUserId: parentPaymentData.parentUserId,
                 childId: parentPaymentData.childUserId,
-                amount: parentPaymentData.amount,
-                status: "PENDING",
+                amount: parentPaymentData.halfReferralAmount,
+                status: parentConst.PAYMENT_STATUS_PENDING,
                 numberOfVotes: parentPaymentData.numberOfVotes,
                 parentPendingPaymentId: null,
-                receiveType: "MANUAL",
-                token: parentPaymentData.origincurrency.toUpperCase(),
+                receiveType: parentConst.PARENT_REFFERAL_PAYMENT_REFERRAL_TYPE_MANUAL,
+                originCurrency: parentPaymentData.origincurrency.toUpperCase(),
+                token: parentPaymentData.token.toUpperCase(),
                 transactionhash: "",
                 transactionType: parentPaymentData.transactionType,
                 type: parentPaymentData.type,
-                address: getCoinAddress ? getCoinAddress : 'NO_ADDRESS',
-                timestamp: Timestamp.now()
+                address: getCoinAddress ? getCoinAddress : parentConst.PARENT_REFFERAL_PAYMENT_ADDRESS_NO_ADDRESS,
+                timestamp: Timestamp.now(),
+                walletType: parentPaymentData.walletType,
+                paymentDetails: { ...parentPaymentData.paymentDetails }
             });
         console.info("Parent Referral Payment Doc Added Successfully", getResponseFromPendingReferralAmount);
 

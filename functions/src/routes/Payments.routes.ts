@@ -12,7 +12,7 @@ import {
     getAllPendingPaxByUser,
     createPaymentOnTempTransactionOnCreditCard
 } from "../common/models/Payments";
-import { getPendingPaymentbyUserId, initiatePendingParentPayment } from "../common/models/Admin/payments"
+import { getPendingPaymentbyUserId, collectPendingParentPayment, updateParentReferralPayment } from "../common/models/Admin/payments"
 
 const paymentRouter = Router();
 
@@ -26,7 +26,8 @@ paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
 paymentRouter.get("/getParentPayment/:userId", getParentPayment);
 paymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
 paymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
-paymentRouter.get("/initiatePendingParentPayment/:userId", initiatePendingParentPayment);
+paymentRouter.get("/collectPendingParentPayment/:userId", collectPendingParentPayment);
+paymentRouter.get("/updateParentReferralPayment/:userId", updateParentReferralPayment);
 paymentRouter.post("/getAllPendingPaxByUserId", getAllPendingPaxByUser);
 
 export default paymentRouter;
