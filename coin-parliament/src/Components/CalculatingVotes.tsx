@@ -1,6 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const CalculatingVotes = () => {
+  useEffect(() => {
+    const element = document.getElementById("app");
+
+    if (element) {
+      // Set pointer-events to none
+      element.style.pointerEvents = "none";
+    }
+
+    return () => {
+      if (element) {
+        // Reset pointer-events when the component is unmounted
+        element.style.pointerEvents = "auto";
+      }
+    };
+  }, []);
+
   return (
     <React.Fragment>
       <div
