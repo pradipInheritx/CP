@@ -172,44 +172,45 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
     const userIds: any = [];
-    let isETHAddressUpdated = false;
-    let isBTCAddressUpdated = false;
-    let isMATICAddressUpdated = false;
-
-    //ToDo get and check welldapp address for coin
+    let isAddressNotExists: any = false;
+    let notExistsCoinValue: any = "";
+    const allCoinNeedToPay: any = []
     const getWellDAppFromUser: any = (await firestore().collection('users').doc(userId).get()).data();
 
-    if (getWellDAppFromUser.wellDAddress && getWellDAppFromUser.wellDAddress.length) {
-      for (let address = 0; address < getWellDAppFromUser.wellDAddress.length; address++) {
-        if (getWellDAppFromUser.wellDAddress[address].coin === "ETH" && getWellDAppFromUser.wellDAddress[address].address) {
-          isETHAddressUpdated = true;
-        }
-        if (getWellDAppFromUser.wellDAddress[address].coin === "BTC" && getWellDAppFromUser.wellDAddress[address].address) {
-          isBTCAddressUpdated = true;
-        }
-        if (getWellDAppFromUser.wellDAddress[address].coin === "MATIC" && getWellDAppFromUser.wellDAddress[address].address) {
-          isMATICAddressUpdated = true;
+    console.info("getWellDAppFromUser", getWellDAppFromUser.wellDAddress)
+
+    const makeAllInitiatedTransaction: any = [];
+
+    const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
+    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
+    console.info("getAllPendingPayment...", getAllPendingPayment);
+
+    if (getAllPendingPayment.length) {
+      getAllPendingPayment.forEach((payment: any) => {
+        userIds.push(payment.parentUserId)
+        allCoinNeedToPay.push(payment.originCurrency)
+      })
+
+      for (let coin = 0; coin < allCoinNeedToPay.length; coin++) {
+        let isWellDAppAddressExit = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === allCoinNeedToPay[coin])
+        if (!isWellDAppAddressExit) {
+          isAddressNotExists = true;
+          notExistsCoinValue = allCoinNeedToPay[coin];
+          console.log("Loop Break & Return Response")
+          break;
+        } else {
+          console.log("WellDApp Address", isWellDAppAddressExit, "Coin", allCoinNeedToPay[coin])
         }
       }
-    } else {
-      res.status(200).send({
-        status: false,
-        message: parentConst.MESSAGE_PARENT_USER_COIN_ADDRESS_NOT_FOUND,
-        data: [],
-      });
-    }
-    console.info("getWellDAppFromUser", getWellDAppFromUser.wellDAddress)
-    if (isETHAddressUpdated && isBTCAddressUpdated && isMATICAddressUpdated) {
-      const makeAllInitiatedTransaction: any = [];
 
-      const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
-      const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
-      console.info("getAllPendingPayment...", getAllPendingPayment);
-
-      if (getAllPendingPayment.length) {
-        getAllPendingPayment.forEach((payment: any) => {
-          userIds.push(payment.parentUserId)
-        })
+      if (isAddressNotExists) {
+        console.info("isAddressNotExists--->", isAddressNotExists);
+        res.status(404).send({
+          status: false,
+          message: `Please make sure to update the coin address - ${notExistsCoinValue} for collect the referral`,
+          data: [],
+        });
+      } else {
         const collectionRef = await firestore().collection('parentPayment');
         const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
 
@@ -228,13 +229,18 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
 
 
           if (getAddressFromUser) {
+            console.info("getAddressFromUser--->", getAddressFromUser)
+            getPaymentDetails.address = getAddressFromUser;
+
+
+            console.info("getPaymentDetails.address-->", getPaymentDetails.address)
+
             makeAllInitiatedTransaction.push({
               event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-              address: getAddressFromUser,
               ...getPaymentDetails,
               timestamp: Timestamp.now(),
             });
-            console.info("makeAllInitiatedTransaction", makeAllInitiatedTransaction)
+            console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
             await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser });
             console.log(`Document ${doc.id} Updated Successfully.`);
           } else {
@@ -243,11 +249,10 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
               ...getPaymentDetails,
               timestamp: Timestamp.now(),
             });
-            console.info("makeAllInitiatedTransaction", makeAllInitiatedTransaction)
+            console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
             await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED });
             console.log(`Document ${doc.id} Updated Successfully.`);
           }
-
         });
 
         let createBatch: any = firestore().batch();
@@ -268,17 +273,11 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           message: parentConst.MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY,
           data: makeAllInitiatedTransaction,
         });
-      } else {
-        res.status(200).send({
-          status: false,
-          message: "No Parent Payment Found",
-          data: [],
-        });
       }
     } else {
       res.status(200).send({
         status: false,
-        message: parentConst.MESSAGE_PARENT_USER_ALL_COIN_ADDRESS_NOT_UPDATED,
+        message: "No Parent Payment Found",
         data: [],
       });
     }
