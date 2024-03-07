@@ -172,49 +172,115 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
     const userIds: any = [];
+    let isAddressNotExists: any = false;
+    let notExistsCoinValue: any = "";
+    const allCoinNeedToPay: any = []
+    const getWellDAppFromUser: any = (await firestore().collection('users').doc(userId).get()).data();
+
+    console.info("getWellDAppFromUser", getWellDAppFromUser.wellDAddress)
 
     const makeAllInitiatedTransaction: any = [];
 
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
-    console.info("getAllPendingPayment...", getAllPendingPayment)
-    getAllPendingPayment.forEach((payment: any) => {
-      userIds.push(payment.parentUserId)
-    })
-    const collectionRef = await firestore().collection('parentPayment');
-    const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
+    console.info("getAllPendingPayment...", getAllPendingPayment);
 
-    // Iterate over each document where the array contains the value
-    snapshot.forEach(async doc => {
-      const docRef = collectionRef.doc(doc.id);
-      let getPaymentDetails = doc.data();
-      makeAllInitiatedTransaction.push({
-        event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-        ...getPaymentDetails,
-        timestamp: Timestamp.now(),
+    if (getAllPendingPayment.length) {
+      getAllPendingPayment.forEach((payment: any) => {
+        userIds.push(payment.parentUserId)
+        allCoinNeedToPay.push(payment.originCurrency)
+      })
+
+      for (let coin = 0; coin < allCoinNeedToPay.length; coin++) {
+        let isWellDAppAddressExit = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === allCoinNeedToPay[coin])
+        if (!isWellDAppAddressExit) {
+          isAddressNotExists = true;
+          notExistsCoinValue = allCoinNeedToPay[coin];
+          console.log("Loop Break & Return Response")
+          break;
+        } else {
+          console.log("WellDApp Address", isWellDAppAddressExit, "Coin", allCoinNeedToPay[coin])
+        }
+      }
+
+      if (isAddressNotExists) {
+        console.info("isAddressNotExists--->", isAddressNotExists);
+        res.status(200).send({
+          status: false,
+          message: `Please make sure to update the coin address - ${notExistsCoinValue} for collect the referral`,
+          data: [],
+        });
+      } else {
+        const collectionRef = await firestore().collection('parentPayment');
+        const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
+
+        // Iterate over each document where the array contains the value
+        snapshot.forEach(async doc => {
+          const docRef = collectionRef.doc(doc.id);
+          let getPaymentDetails = doc.data();
+          console.info("getPaymentDetails...", getPaymentDetails.address, "Origin Currency", getPaymentDetails.originCurrency)
+          const isUserUpdatedAddress = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === getPaymentDetails.originCurrency);
+          console.info("isUserUpdatedAddress...", isUserUpdatedAddress)
+          let getAddressFromUser = "";
+          if (getPaymentDetails.address === "NO_ADDRESS") {
+            console.info("getPaymentDetails.address", getPaymentDetails.address)
+            getAddressFromUser = isUserUpdatedAddress.address;
+          }
+
+
+          if (getAddressFromUser) {
+            console.info("getAddressFromUser--->", getAddressFromUser)
+            getPaymentDetails.address = getAddressFromUser;
+
+
+            console.info("getPaymentDetails.address-->", getPaymentDetails.address)
+
+            makeAllInitiatedTransaction.push({
+              event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+              ...getPaymentDetails,
+              timestamp: Timestamp.now(),
+            });
+            console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
+            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser });
+            console.log(`Document ${doc.id} Updated Successfully.`);
+          } else {
+            makeAllInitiatedTransaction.push({
+              event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+              ...getPaymentDetails,
+              timestamp: Timestamp.now(),
+            });
+            console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
+            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED });
+            console.log(`Document ${doc.id} Updated Successfully.`);
+          }
+        });
+
+        let createBatch: any = firestore().batch();
+
+        for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
+          let paymentDocRefs: any = firestore().collection('payments').doc();
+          createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Claimed Parent Payment Store Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Store Claimed Parent Payment :", error);
+        });
+
+        res.status(200).send({
+          status: true,
+          message: parentConst.MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY,
+          data: makeAllInitiatedTransaction,
+        });
+      }
+    } else {
+      res.status(200).send({
+        status: false,
+        message: "No Parent Payment Found",
+        data: [],
       });
-      console.info("makeAllInitiatedTransaction", makeAllInitiatedTransaction)
-      await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED });
-      console.log(`Document ${doc.id} Updated Successfully.`);
-    });
-
-    let createBatch: any = firestore().batch();
-
-    for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
-      let paymentDocRefs: any = firestore().collection('payments').doc();
-      createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
     }
-
-    createBatch.commit().then(function () {
-      console.log("Claimed Parent Payment Store Successfully");
-    }).catch(function (error: any) {
-      console.error("Error While Store Claimed Parent Payment :", error);
-    });
-
-    res.status(200).send({
-      status: true,
-      data: makeAllInitiatedTransaction,
-    });
   } catch (error) {
     errorLogging("getPendingPaymentbyUserId", "ERROR", error);
     res.status(500).send({

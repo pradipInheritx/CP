@@ -45,8 +45,8 @@ import {
   addVoteResultForCPVI,
 } from "./common/models/Vote";
 import {
-  // getAllCoins,
-  // getAllPairs,
+  getAllCoins,
+  getAllPairs,
   prepareCPVI,
   fetchAskBidCoin,
   getUpdatedDataFromWebsocket,
@@ -1047,132 +1047,97 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     userId,
     isOpenVote
   );
-  const coins: any = [];
-  const pairs: any = []
 
-  if (!isOpenVote) {
-    const votes = admin.firestore().collection('votes').where('userId', '==', userId).orderBy('voteTime', 'desc').startAt(start).limit(end).get();
-    (await votes).docs.map((vote) => {
-      let voteData = vote.data()
-      voteData.coin.split("-").length === 1 ? coins.push(voteData) : pairs.push(voteData);
+  const [votes, coins, pairs] = await Promise.all([
+    admin
+      .firestore()
+      .collection("votes")
+      .withConverter(voteConverter)
+      .where("userId", "==", userId)
+      .get(),
+    getAllCoins(),
+    getAllPairs(),
+  ]);
+
+  const allVotes = votes.docs
+    .map((v) => {
+      return { ...v.data(), id: v.id };
     })
-    return {
-      coins: {
-        votes: coins,
-        total: coins.length,
+    .sort((a, b) => Number(b.voteTime) - Number(a.voteTime))
+    .reduce(
+      (total, current) => {
+        if (current.coin.split("-").length === 1) {
+          if (coins.includes(current.coin)) {
+            total.coins.push(current);
+          }
+        } else {
+          if (pairs.includes(current.coin)) {
+            total.pairs.push(current);
+          }
+        }
+
+        return total;
       },
-      pairs: {
-        votes: pairs,
-        total: pairs.length,
+      { coins: [], pairs: [] } as {
+        coins: VoteResultProps[];
+        pairs: VoteResultProps[];
       }
+    );
+  console.log("allVotes : ", allVotes);
+
+  if (isOpenVote) {
+    let filterVotes: any = {
+      coins: { votes: [], total: 0 },
+      pairs: { votes: [], total: 0 },
+    };
+
+    // for coins
+    if (allVotes.coins.length) {
+      let coinsVotes = allVotes.coins.filter(
+        (vote) => !vote.valueExpirationTime
+      );
+      filterVotes.coins.total = coinsVotes.length;
+      console.log(
+        "getAllVotesData.coins.total is called : ",
+        coinsVotes.length,
+        coinsVotes
+      );
+      filterVotes.coins.votes = coinsVotes.slice(start, end);
+      console.log("filterVotes.coins : ", filterVotes.coins);
     }
+
+    // For pairs
+    if (allVotes.pairs.length) {
+      let pairsVotes = allVotes.pairs.filter(
+        (vote) => !vote.valueExpirationTime
+      );
+      filterVotes.pairs.total = pairsVotes.slice().length;
+      console.log(
+        "getAllVotesData.pairs.total is called : ",
+        pairsVotes.length,
+        pairsVotes
+      );
+      filterVotes.pairs.votes = pairsVotes.slice(start, end);
+      console.log("filterVotes.pairs : ", filterVotes.pairs);
+    }
+    console.log("final filterVotes : ", filterVotes);
+
+    return JSON.stringify(filterVotes);
   } else {
-    const votes = admin.firestore().collection('votes').where('userId', '==', userId).where('score', '==', null).orderBy('voteTime', 'desc').startAt(start).limit(end).get();
-    (await votes).docs.map((vote) => {
-      let voteData = vote.data()
-      voteData.coin.split("-").length === 1 ? coins.push(voteData) : pairs.push(voteData);
-    })
-    return {
+    console.log("getAllVotesData called");
+    const getAllVotesData = {
       coins: {
-        votes: coins,
-        total: coins.length,
+        votes: allVotes.coins.slice(start, end),
+        total: allVotes.coins.length,
       },
       pairs: {
-        votes: pairs,
-        total: pairs.length,
-      }
-    }
+        votes: allVotes.pairs.slice(start, end),
+        total: allVotes.pairs.length,
+      },
+    };
+
+    return JSON.stringify(getAllVotesData);
   }
-  // const [votes, coins, pairs] = await Promise.all([
-  //   admin
-  //     .firestore()
-  //     .collection("votes")
-  //     .withConverter(voteConverter)
-  //     .where("userId", "==", userId)
-  //     .get(),
-  //   getAllCoins(),
-  //   getAllPairs(),
-  // ]);
-
-  // const allVotes = votes.docs
-  //   .map((v) => {
-  //     return { ...v.data(), id: v.id };
-  //   })
-  //   .sort((a, b) => Number(b.voteTime) - Number(a.voteTime))
-  //   .reduce(
-  //     (total, current) => {
-  //       if (current.coin.split("-").length === 1) {
-  //         if (coins.includes(current.coin)) {
-  //           total.coins.push(current);
-  //         }
-  //       } else {
-  //         if (pairs.includes(current.coin)) {
-  //           total.pairs.push(current);
-  //         }
-  //       }
-
-  //       return total;
-  //     },
-  //     { coins: [], pairs: [] } as {
-  //       coins: VoteResultProps[];
-  //       pairs: VoteResultProps[];
-  //     }
-  //   );
-  // console.log("allVotes : ", allVotes);
-
-  // if (isOpenVote) {
-  //   let filterVotes: any = {
-  //     coins: { votes: [], total: 0 },
-  //     pairs: { votes: [], total: 0 },
-  //   };
-
-  //   // for coins
-  //   if (allVotes.coins.length) {
-  //     let coinsVotes = allVotes.coins.filter(
-  //       (vote) => !vote.valueExpirationTime
-  //     );
-  //     filterVotes.coins.total = coinsVotes.length;
-  //     console.log(
-  //       "getAllVotesData.coins.total is called : ",
-  //       coinsVotes.length,
-  //       coinsVotes
-  //     );
-  //     filterVotes.coins.votes = coinsVotes.slice(start, end);
-  //     console.log("filterVotes.coins : ", filterVotes.coins);
-  //   }
-
-  //   // For pairs
-  //   if (allVotes.pairs.length) {
-  //     let pairsVotes = allVotes.pairs.filter(
-  //       (vote) => !vote.valueExpirationTime
-  //     );
-  //     filterVotes.pairs.total = pairsVotes.slice().length;
-  //     console.log(
-  //       "getAllVotesData.pairs.total is called : ",
-  //       pairsVotes.length,
-  //       pairsVotes
-  //     );
-  //     filterVotes.pairs.votes = pairsVotes.slice(start, end);
-  //     console.log("filterVotes.pairs : ", filterVotes.pairs);
-  //   }
-  //   console.log("final filterVotes : ", filterVotes);
-
-  //   return JSON.stringify(filterVotes);
-  // } else {
-  //   console.log("getAllVotesData called");
-  //   const getAllVotesData = {
-  //     coins: {
-  //       votes: allVotes.coins.slice(start, end),
-  //       total: allVotes.coins.length,
-  //     },
-  //     pairs: {
-  //       votes: allVotes.pairs.slice(start, end),
-  //       total: allVotes.pairs.length,
-  //     },
-  //   };
-
-  //   return JSON.stringify(getAllVotesData);
-  // }
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
