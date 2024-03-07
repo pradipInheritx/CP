@@ -107,7 +107,6 @@ const CoinsForm = ({
           voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
         } as VoteResultProps
       )
-      console.log(VoteRules,ref,);
       
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {

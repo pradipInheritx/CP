@@ -261,8 +261,6 @@ const SingleCoin = () => {
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
-        console.log('promissAll');
-        
         let tempAllActiveVotes: VoteResultProps[] = [];
         Promise.all(responses.map((res, index) => {
           if (res) {
