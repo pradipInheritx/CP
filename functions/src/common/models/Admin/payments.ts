@@ -205,7 +205,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
 
       if (isAddressNotExists) {
         console.info("isAddressNotExists--->", isAddressNotExists);
-        res.status(404).send({
+        res.status(200).send({
           status: false,
           message: `Please make sure to update the coin address - ${notExistsCoinValue} for collect the referral`,
           data: [],
