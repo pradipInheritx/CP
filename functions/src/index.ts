@@ -45,8 +45,8 @@ import {
   addVoteResultForCPVI,
 } from "./common/models/Vote";
 import {
-  getAllCoins,
-  getAllPairs,
+  // getAllCoins,
+  // getAllPairs,
   prepareCPVI,
   fetchAskBidCoin,
   getUpdatedDataFromWebsocket,
@@ -1047,97 +1047,132 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     userId,
     isOpenVote
   );
+  const coins: any = [];
+  const pairs: any = []
 
-  const [votes, coins, pairs] = await Promise.all([
-    admin
-      .firestore()
-      .collection("votes")
-      .withConverter(voteConverter)
-      .where("userId", "==", userId)
-      .get(),
-    getAllCoins(),
-    getAllPairs(),
-  ]);
-
-  const allVotes = votes.docs
-    .map((v) => {
-      return { ...v.data(), id: v.id };
+  if (!isOpenVote) {
+    const votes = admin.firestore().collection('votes').where('userId', '==', userId).orderBy('voteTime', 'desc').startAt(start).limit(end).get();
+    (await votes).docs.map((vote) => {
+      let voteData = vote.data()
+      voteData.coin.split("-").length === 1 ? coins.push(voteData) : pairs.push(voteData);
     })
-    .sort((a, b) => Number(b.voteTime) - Number(a.voteTime))
-    .reduce(
-      (total, current) => {
-        if (current.coin.split("-").length === 1) {
-          if (coins.includes(current.coin)) {
-            total.coins.push(current);
-          }
-        } else {
-          if (pairs.includes(current.coin)) {
-            total.pairs.push(current);
-          }
-        }
-
-        return total;
-      },
-      { coins: [], pairs: [] } as {
-        coins: VoteResultProps[];
-        pairs: VoteResultProps[];
-      }
-    );
-  console.log("allVotes : ", allVotes);
-
-  if (isOpenVote) {
-    let filterVotes: any = {
-      coins: { votes: [], total: 0 },
-      pairs: { votes: [], total: 0 },
-    };
-
-    // for coins
-    if (allVotes.coins.length) {
-      let coinsVotes = allVotes.coins.filter(
-        (vote) => !vote.valueExpirationTime
-      );
-      filterVotes.coins.total = coinsVotes.length;
-      console.log(
-        "getAllVotesData.coins.total is called : ",
-        coinsVotes.length,
-        coinsVotes
-      );
-      filterVotes.coins.votes = coinsVotes.slice(start, end);
-      console.log("filterVotes.coins : ", filterVotes.coins);
-    }
-
-    // For pairs
-    if (allVotes.pairs.length) {
-      let pairsVotes = allVotes.pairs.filter(
-        (vote) => !vote.valueExpirationTime
-      );
-      filterVotes.pairs.total = pairsVotes.slice().length;
-      console.log(
-        "getAllVotesData.pairs.total is called : ",
-        pairsVotes.length,
-        pairsVotes
-      );
-      filterVotes.pairs.votes = pairsVotes.slice(start, end);
-      console.log("filterVotes.pairs : ", filterVotes.pairs);
-    }
-    console.log("final filterVotes : ", filterVotes);
-
-    return JSON.stringify(filterVotes);
-  } else {
-    console.log("getAllVotesData called");
-    const getAllVotesData = {
+    return {
       coins: {
-        votes: allVotes.coins.slice(start, end),
-        total: allVotes.coins.length,
+        votes: coins,
+        total: coins.length,
       },
       pairs: {
-        votes: allVotes.pairs.slice(start, end),
-        total: allVotes.pairs.length,
+        votes: pairs,
+        total: pairs.length,
+      }
+    }
+  } else {
+    const votes = admin.firestore().collection('votes').where('userId', '==', userId).where('score', '==', null).orderBy('voteTime', 'desc').startAt(start).limit(end).get();
+    (await votes).docs.map((vote) => {
+      let voteData = vote.data()
+      voteData.coin.split("-").length === 1 ? coins.push(voteData) : pairs.push(voteData);
+    })
+    return {
+      coins: {
+        votes: coins,
+        total: coins.length,
       },
-    };
-
-    return JSON.stringify(getAllVotesData);
+      pairs: {
+        votes: pairs,
+        total: pairs.length,
+      }
+    }
   }
+  // const [votes, coins, pairs] = await Promise.all([
+  //   admin
+  //     .firestore()
+  //     .collection("votes")
+  //     .withConverter(voteConverter)
+  //     .where("userId", "==", userId)
+  //     .get(),
+  //   getAllCoins(),
+  //   getAllPairs(),
+  // ]);
+
+  // const allVotes = votes.docs
+  //   .map((v) => {
+  //     return { ...v.data(), id: v.id };
+  //   })
+  //   .sort((a, b) => Number(b.voteTime) - Number(a.voteTime))
+  //   .reduce(
+  //     (total, current) => {
+  //       if (current.coin.split("-").length === 1) {
+  //         if (coins.includes(current.coin)) {
+  //           total.coins.push(current);
+  //         }
+  //       } else {
+  //         if (pairs.includes(current.coin)) {
+  //           total.pairs.push(current);
+  //         }
+  //       }
+
+  //       return total;
+  //     },
+  //     { coins: [], pairs: [] } as {
+  //       coins: VoteResultProps[];
+  //       pairs: VoteResultProps[];
+  //     }
+  //   );
+  // console.log("allVotes : ", allVotes);
+
+  // if (isOpenVote) {
+  //   let filterVotes: any = {
+  //     coins: { votes: [], total: 0 },
+  //     pairs: { votes: [], total: 0 },
+  //   };
+
+  //   // for coins
+  //   if (allVotes.coins.length) {
+  //     let coinsVotes = allVotes.coins.filter(
+  //       (vote) => !vote.valueExpirationTime
+  //     );
+  //     filterVotes.coins.total = coinsVotes.length;
+  //     console.log(
+  //       "getAllVotesData.coins.total is called : ",
+  //       coinsVotes.length,
+  //       coinsVotes
+  //     );
+  //     filterVotes.coins.votes = coinsVotes.slice(start, end);
+  //     console.log("filterVotes.coins : ", filterVotes.coins);
+  //   }
+
+  //   // For pairs
+  //   if (allVotes.pairs.length) {
+  //     let pairsVotes = allVotes.pairs.filter(
+  //       (vote) => !vote.valueExpirationTime
+  //     );
+  //     filterVotes.pairs.total = pairsVotes.slice().length;
+  //     console.log(
+  //       "getAllVotesData.pairs.total is called : ",
+  //       pairsVotes.length,
+  //       pairsVotes
+  //     );
+  //     filterVotes.pairs.votes = pairsVotes.slice(start, end);
+  //     console.log("filterVotes.pairs : ", filterVotes.pairs);
+  //   }
+  //   console.log("final filterVotes : ", filterVotes);
+
+  //   return JSON.stringify(filterVotes);
+  // } else {
+  //   console.log("getAllVotesData called");
+  //   const getAllVotesData = {
+  //     coins: {
+  //       votes: allVotes.coins.slice(start, end),
+  //       total: allVotes.coins.length,
+  //     },
+  //     pairs: {
+  //       votes: allVotes.pairs.slice(start, end),
+  //       total: allVotes.pairs.length,
+  //     },
+  //   };
+
+  //   return JSON.stringify(getAllVotesData);
+  // }
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
@@ -1323,8 +1358,6 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
     // Fetch user details
     let userDetails = await getUsersDetails();
 
-    // Fetch votes details
-    const votesDetails = await getVotesDetailsForUser();
 
     let userData: any;
 
@@ -1335,13 +1368,13 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
 
 
       // Key and value to filter
-    const keyToFilter = "userId";
-    const valueToFilter = userId;
+      const keyToFilter = "userId";
+      const valueToFilter = userId;
 
-    // Filtering the array based on the key and value
-    const filteredObj = paymentDetails.find((obj: any) => obj[keyToFilter] === valueToFilter);
+      // Filtering the array based on the key and value
+      const filteredObj = paymentDetails.find((obj: any) => obj[keyToFilter] === valueToFilter);
 
-    element.extraVotePurchased = filteredObj.extraVotePurchased;
+      element.extraVotePurchased = filteredObj.extraVotePurchased;
 
     });
 
@@ -1349,7 +1382,6 @@ exports.getCombinedDetails = functions.https.onCall(async () => {
     return {
       paymentDetails: paymentDetails,
       userDetails: userDetails,
-      votesDetails: votesDetails
     };
 
   } catch (error) {
@@ -1374,10 +1406,10 @@ async function getPaymentDetailsForUser() {
       }
 
       if (extraVotePurchased) {
-        let obj = { userId: userId, extraVotePurchased: "yes"}
+        let obj = { userId: userId, extraVotePurchased: "yes" }
         paymentDetails.push(obj)
       } else {
-        let obj = { userId: userId, extraVotePurchased: "no"}
+        let obj = { userId: userId, extraVotePurchased: "no" }
         paymentDetails.push(obj)
       }
     });
@@ -1444,53 +1476,52 @@ async function getUsersDetails() {
   }
 }
 
-async function getVotesDetailsForUser() {
+exports.combineUserAndVote = functions.https.onCall(async (data: any) => {
+  const { userList, voteList } = data;
+
+  userList.map((user: any) => {
+    let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
+    let voteDate: string[] = [];
+    let noOfVotesDays = 0;
+    let averageVotes = 0;
+    console.log("UserVote : ", userVote);
+    userVote.forEach((vote: any) => {
+      noOfVotesDays += voteDate.includes(vote.voteTime) ? 0 : 1;
+      voteDate.includes(vote.voteTime) ? null : voteDate.push(vote.voteTime);
+      averageVotes = userVote.length / noOfVotesDays;
+      console.log("averageVotes : ", user.userId, noOfVotesDays, averageVotes);
+      user['noOfVotesDays'] = noOfVotesDays;
+      user['averageVotes'] = averageVotes;
+    });
+  });
+
+  return userList
+
+})
+
+exports.getVoteList = functions.https.onCall(async (data: any) => {
   try {
-    const votesSnapshot = await admin.firestore().collection("votes")
+    let voteDetails = (await admin.firestore().collection("votes")
       .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-      .get();
-
-    // Create a map to store aggregated data for each user
-    let userDataMap = new Map<string, { totalDaysVoted: number, totalVotes: number }>();
-
-    votesSnapshot.forEach((doc: any) => {
-      const voteData = doc.data(); 
-      const voterId = voteData.userId; 
-
-
-
-      // Check if the user exists in the map
-      if (userDataMap.has(voterId)) {
-        const userData = userDataMap.get(voterId)!;
-        console.log(userData);
-        userData.totalDaysVoted += 1;
-        userData.totalVotes += 1; // Assuming each vote is counted equally
-        userDataMap.set(voterId, userData);
-      } else {
-        userDataMap.set(voterId, { totalDaysVoted: 1, totalVotes: 1 });
-      }
-    });
-
-    // Calculate the average vote per day for each user
-    let userVoteDetails: any = [];
-
-    userDataMap.forEach((userData, userId) => {
-      const averageVotePerDay = userData.totalVotes / userData.totalDaysVoted;
-      userVoteDetails.push({
-        userId: userId,
-        totalDaysVoted: userData.totalDaysVoted,
-        averageVotePerDay: averageVotePerDay
+      .get()).docs.map((vote: any) => {
+        let voteData = vote.data()
+        return {
+          userId: voteData.userId,
+          voteTime: voteData.voteTime,
+        }
       });
-    });
 
-    // Log or return the results
-    console.log('User Vote Details:', userVoteDetails);
-    return userVoteDetails;
+    console.log("Votes fetched successfully", voteDetails)
+    return voteDetails;
 
   } catch (error) {
     console.error('Error:', error);
+    return null
   }
-}
+
+
+})
+
 
 
 
