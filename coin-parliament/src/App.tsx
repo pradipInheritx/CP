@@ -1442,15 +1442,14 @@ function App() {
   }, [searchParams]);
 
   const isIPhone = /iPhone/i.test(navigator.userAgent);
-  useEffect(() => {
-    if (isIPhone) {
-      // Show the popup for iPhones in Safari
-      setPwaPopUp('block');
-    } else {
-      // Hide the popup for other devices or browsers
-      setPwaPopUp('none');
-    }
-  }, []);
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+useEffect(() => {
+  if (isIPhone && !isPWA) {
+    setPwaPopUp('block');
+  } else {
+    setPwaPopUp('none');
+  }
+}, []);
 
 
 
