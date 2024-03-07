@@ -1552,7 +1552,7 @@ iframe[style^="position"]{
     border: 1px solid var(--blue-violet);
     background: white;
     min-width: 0px;
-    box-shadow: rgb(67, 47, 229) 0px 4px 1px, rgba(0, 0, 0, 0.22) 0px 6px 12px;
+    box-shadow: rgb(67, 47, 229) 0px 2px 1px, rgba(0, 0, 0, 0.22) 0px 6px 12px;
     transition: all 0.2s ease 0s;
     flex-direction: column;
     border-radius: 38px;
@@ -1562,9 +1562,10 @@ iframe[style^="position"]{
     justify-content: center;
     color: #6352e8;
     font-weight: 600;
-    flex: 0 0 76px;
-    max-width: 76px;
+    flex: 0 0 80px;
+    max-width: 80px;
     margin-bottom: 5px;
+    font-size: 10px;
 }
 
 .shaped-btn-row .btn-shaped.left-side {
@@ -1644,8 +1645,7 @@ border-top-left-radius: 0px !important;
 .gift-icon {
     position: absolute;
     top: 17px;
-    left: 312px;
+    left: 314px;
     z-index: 9999;
-    width: 30px;
-    height: 30px;
+    width: 25px;
 }
