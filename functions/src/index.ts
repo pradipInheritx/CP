@@ -1349,47 +1349,6 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-
-exports.getCombinedDetails = functions.https.onCall(async () => {
-  try {
-    // Fetch payment details
-    const paymentDetails = await getPaymentDetailsForUser();
-
-    // Fetch user details
-    let userDetails = await getUsersDetails();
-
-
-    let userData: any;
-
-    userData = userDetails.data;
-
-    userData.forEach((element: any) => {
-      let userId = element.userId;
-
-
-      // Key and value to filter
-      const keyToFilter = "userId";
-      const valueToFilter = userId;
-
-      // Filtering the array based on the key and value
-      const filteredObj = paymentDetails.find((obj: any) => obj[keyToFilter] === valueToFilter);
-
-      element.extraVotePurchased = filteredObj.extraVotePurchased;
-
-    });
-
-
-    return {
-      paymentDetails: paymentDetails,
-      userDetails: userDetails,
-    };
-
-  } catch (error) {
-    console.error("Error fetching combined details:", error);
-    return false;
-  }
-});
-
 // Function to get payment details
 async function getPaymentDetailsForUser() {
   try {
@@ -1400,10 +1359,6 @@ async function getPaymentDetailsForUser() {
       let paymentData = payment.data();
       let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
       let userId = paymentData.userId;
-
-      if (!paymentDetails[userId]) {
-        paymentDetails[userId] = {};
-      }
 
       if (extraVotePurchased) {
         let obj = { userId: userId, extraVotePurchased: "yes" }
@@ -1422,27 +1377,26 @@ async function getPaymentDetailsForUser() {
   }
 }
 
-
 // Function to get user details
 async function getUsersDetails() {
   try {
-    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user:any) => {
       let userData = user.data()
       return {
         userId: user.id,
         name: userData?.userName || "",
         email: userData?.email || "",
-        remainVote: userData?.rewardStatistics?.extraVote + Number(userData?.voteValue) || 0,
+        totalVotes: userData?.voteStatistics?.total  || 0,
         accountUpgrade: userData?.isUserUpgraded || false
       }
     });
 
     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
-    const getAuthUserSignUpTime: any = [];
+    const getAuthUserSignUpTime :any= [];
     const allUsers = await admin.auth().listUsers();
-    allUsers.users.forEach((userRecord: any) => {
-      console.log("User signupDate added:", userRecord.uid);
+    allUsers.users.forEach((userRecord :any) => {
+      //console.log("User signupDate added:", userRecord.uid);
 
       getAuthUserSignUpTime.push({
         userId: userRecord.uid,
@@ -1450,10 +1404,10 @@ async function getUsersDetails() {
       });
     });
 
-    console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
+    //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
 
-    const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
-      const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
+    const userDetailsWithSignUpDate = getAllUserData.map((userData:any) => {
+      const signUpData = getAuthUserSignUpTime.find((data:any) => data.userId === userData.userId);
       if (signUpData) {
         userData.signUpTime = signUpData.signUpTime;
       }
@@ -1476,53 +1430,109 @@ async function getUsersDetails() {
   }
 }
 
-exports.combineUserAndVote = functions.https.onCall(async (data: any) => {
-  const { userList, voteList } = data;
-
-  userList.map((user: any) => {
-    let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
-    let voteDate: string[] = [];
-    let noOfVotesDays = 0;
-    let averageVotes = 0;
-    console.log("UserVote : ", userVote);
-    userVote.forEach((vote: any) => {
-      noOfVotesDays += voteDate.includes(vote.voteTime) ? 0 : 1;
-      voteDate.includes(vote.voteTime) ? null : voteDate.push(vote.voteTime);
-      averageVotes = userVote.length / noOfVotesDays;
-      console.log("averageVotes : ", user.userId, noOfVotesDays, averageVotes);
-      user['noOfVotesDays'] = noOfVotesDays;
-      user['averageVotes'] = averageVotes;
-    });
-  });
-
-  return userList
-
-})
-
-exports.getVoteList = functions.https.onCall(async (data: any) => {
+async function getVoteList() {
   try {
-    let voteDetails = (await admin.firestore().collection("votes")
-      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-      .get()).docs.map((vote: any) => {
-        let voteData = vote.data()
-        return {
-          userId: voteData.userId,
-          voteTime: voteData.voteTime,
+      let voteDetails = (await admin.firestore().collection("votes")
+        .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
+        .get()).docs.map((vote:any) => {
+          let voteData = vote.data()
+          return {
+            userId: voteData.userId,
+            voteTime: voteData.voteTime,
+          }
+        });
+  
+      console.log("Votes fetched successfully", voteDetails)
+      return voteDetails;
+  
+    } catch (error) {
+      console.error('Error:', error);
+      return null
+    }
+}
+
+async function getCombinedDetails() {
+  try {
+      // Fetch payment details
+      const paymentDetails = await getPaymentDetailsForUser();
+
+      console.log("paymentDetails", paymentDetails)
+
+      // Fetch user details
+      let userDetails = await getUsersDetails();
+  
+     let userData:any = userDetails.data;
+  
+      userData.forEach((element:any) => {
+        let userId = element.userId;
+  
+  
+        // Key and value to filter
+        const keyToFilter = "userId";
+        const valueToFilter = userId;
+  
+        // Filtering the array based on the key and value
+        const filteredObj = paymentDetails.find((obj:any) => obj[keyToFilter] === valueToFilter);
+        //console.log(filteredObj);
+
+        if(filteredObj !== undefined) {
+          element.extraVotePurchased = filteredObj.extraVotePurchased;
+        }else{
+          element.extraVotePurchased = "no";
         }
+  
       });
 
-    console.log("Votes fetched successfully", voteDetails)
-    return voteDetails;
+      return userDetails;
+  
+  
+    } catch (error) {
+      console.error("Error fetching combined details:", error);
+      return false;
+    }
+}
+
+exports.getCoinParliamentAllUsersDeatils = functions.https.onCall(async (data: any) => {
+  try {
+    // Fetch payment details
+    const voteList :any = await getVoteList();
+
+    console.log("voteList", voteList)
+
+    // Fetch user details
+    let userList :any = await getCombinedDetails();
+
+    //console.log("userList", userList)
+
+    userList = userList.data;
+
+    userList.map((user:any) => {
+        let userVote = voteList.filter((vote:any) => vote.userId === user.userId);
+        console.log("UserVote : ", userVote);
+    
+        const voteTimes = userVote.map((doc :any)=> new Date(doc.voteTime));
+        console.log("voteTimes>>>>>>>", voteTimes);
+    
+        const uniqueDates = [...new Set(voteTimes.map((date:Date) => date.toDateString()))];
+        let numberOfDaysVoted= uniqueDates.length ;
+    
+        user['noOfVotesDays'] = numberOfDaysVoted;
+    
+        let averageVotes = userVote.length / numberOfDaysVoted;
+    
+        user['averageVotes'] = averageVotes;
+    
+      });
+
+
+    return userList 
 
   } catch (error) {
-    console.error('Error:', error);
-    return null
+    console.error("Error fetching combined details:", error);
+    return false;
   }
 
-
 })
-
-
 
 
 // ******************* START CRON JOBS ****************
