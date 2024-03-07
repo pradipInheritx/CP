@@ -34,18 +34,18 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
         <>
             <div className='d-flex justify-content-around w-100 py-3' style={{ background: "#7456ff" }}>
                 {
-                    headers.map((item: tableColumnType, index: number) => {
+                    headers?.map((item: tableColumnType, index: number) => {
                         return (<div style={{ width: `19%` }} key={index}>
                             <strong>{item?.title}</strong>
                         </div>)
                     })
                 }
             </div>
-            {!loading && data.map((value: any, index: number) => {
+            {!loading && data?.map((value: any, index: number) => {
                 return (
                     <div className='d-flex justify-content-around' key={index} style={{ textAlign: "center", }}>
                         {
-                            headers.map((item: tableColumnType, i: number) => {
+                            headers?.map((item: tableColumnType, i: number) => {
                                 return (
                                     <div style={{ width: "19%" }} key={i}>
                                         {item?.Row ?
@@ -65,9 +65,9 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
                                                 <RewardList>
 
                                                     {window.screen.width > 767 ?                                                                                                                    
-                                                             ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : value[item?.assessorName] ==undefined ?"NA" : "") || "NA")
                                                         :                                                        
-                                                            ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : value[item?.assessorName] == undefined ? "NA" : "") || "NA")
 
                                                     }
 

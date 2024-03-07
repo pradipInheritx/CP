@@ -43,7 +43,7 @@ const I = styled.i`
 `;
 const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
 
-  console.log(userTypes, userInfo,"userTypescehck")
+  // console.log(userTypes, userInfo,"userTypescehck")
   const translate = useTranslation();
   const [tooltipShow, setTooltipShow] = React.useState(false);
   return (

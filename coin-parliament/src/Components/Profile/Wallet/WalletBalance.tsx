@@ -35,11 +35,13 @@ const WalletBalance = () => {
 
 
     useEffect(() => {
-        ShowPendingAmount()        
-    }, [])
+        if (user?.uid) {            
+            ShowPendingAmount(user?.uid)        
+        }
+    }, [user?.uid])
 
-    const ShowPendingAmount = () => {
-        axios.get(`/payment/getPendingPaymentbyUserId/${user?.uid}`)
+    const ShowPendingAmount = (userId:any) => {
+        axios.get(`/payment/getPendingPaymentbyUserId/${userId}`)
             .then(async (response) => {                
                 setPendingAmount(response.data.data)
             })
@@ -59,9 +61,14 @@ const WalletBalance = () => {
 
     console.log(pendingPax,"pendingPax")
     const getPendingAmount = () => {
-        axios.get(`/payment/getInstantReferalAmount/${user?.uid}`)
+        axios.get(`/payment/collectPendingParentPayment/${user?.uid}`)
             .then(async (response) => {
-                // setPendingAmount(response.data.data)                
+                // setPendingAmount(response.data.data)     
+                if (!response?.data?.status) {                    
+                    // ShowPendingAmount(user?.uid)
+                } else {
+                    ShowPendingAmount(user?.uid)                    
+                }
             })
             .catch((error) => {
                 // console.log(error,"error")

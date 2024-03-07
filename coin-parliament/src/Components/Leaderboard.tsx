@@ -48,13 +48,13 @@ const Leaderboard = ({
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
   // @ts-ignore
-  // console.log(leaders[0]?.influencersScore, "leaderscheck")
+  // console.log(leaders, "leaderscheck")
   return (
     <div>
       <LeadersContainer>
 {/* @ts-ignore */}
         {leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
-          ?.map((leader) => {
+          ?.map((leader ,index) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
             <LeaderItem
@@ -66,7 +66,7 @@ const Leaderboard = ({
                     : "100%",
                 padding: "0 0 12px 0",
               }}
-              key={leader.userId}
+              key={index}
             >
               <UserCard
                 expanded={expanded}

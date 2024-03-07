@@ -67,8 +67,6 @@ const Footer = () => {
       console.log(err, "resultdata")
     })
   }
-
-  console.log(footerData, "footerData")
   
   const  formatNumberAbbreviated=(number:number)=> {
     if (number >= 1e9) {
