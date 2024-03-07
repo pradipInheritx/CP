@@ -365,6 +365,7 @@ function App() {
   const [paxDistribution, setPaxDistribution] = useState(0)
   const [addPaxWalletPop, setAddPaxWalletPop] = useState(false)
   const [walletTab, setWalletTab] = useState("Balance")
+  const [historyTab, setHistoryTab] = useState("Payment History")
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -475,14 +476,15 @@ function App() {
   if (!supportsPWA) {
     console.log('not supported')
   }
-  useEffect(() => {    
-    if (user?.email && userInfo?.displayName === undefined && !login) {      
+  useEffect(() => {            
+    if (user?.email && userInfo?.displayName === undefined && !login) {            
       console.log("lodding true")
       setLoader(true);
     } else if (!Object.keys(coins).length && !socketConnect){      
+      setLoader(true);      
+    } else if (user?.email && !userInfo) {
       setLoader(true);
-      // console.log("lodding false")
-    } else {
+    } else {    
       setLoader(false);            
     }
   }, [user, userInfo]);
@@ -1565,6 +1567,8 @@ useEffect(() => {
                     setAddPaxWalletPop,
                     walletTab,
                     setWalletTab,
+                    historyTab,
+                    setHistoryTab,
                     avatarImage,
                     setAvatarImage,
                     selectBioEdit,

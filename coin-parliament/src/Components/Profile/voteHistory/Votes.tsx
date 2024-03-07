@@ -41,17 +41,18 @@ const Votes = () => {
           end: start + pageSize,
           userId: user?.uid,
           isOpenVote
-        });
-        // @ts-ignore
-        let result = JSON.parse(newVotes?.data)
-        if (newVotes?.data) {
-          setVotes(result);
-        }
-        setIsLoading(false)
+        }).then((res) => {          
+          setVotes(res?.data)
+          setIsLoading(false)          
+        }).catch((error) => {
+          setIsLoading(false)  
+          console.log(error,"error vote")
+        });                
       }
     },
     [user?.uid, pageSize]
   );
+  console.log(votes, isLoading,"allvotes")
   useEffect(() => {
     // @ts-ignore
     const { coins, pairs } = votes

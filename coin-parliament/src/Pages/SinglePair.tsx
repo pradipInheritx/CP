@@ -59,6 +59,9 @@ const SinglePair = () => {
 
   const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>({});
+  // @ts-ignore
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const pairLivePrice = useRef<{ [symbol: string]: Coin }>(Object.keys(getCoinPrice).length ? getCoinPrice : coins)    
   useEffect(() => {
     setCoinUpdated(coins);
   }, [coins])
@@ -101,7 +104,12 @@ const SinglePair = () => {
 
         randomDecimal: (prevCoins[symbol2]?.randomDecimal || 5) + (Math.random() < 5 ? -1 : 1)
       },
-    }));
+    }    
+      
+    ));
+    if (Object.keys(pairLivePrice.current).length && coins != pairLivePrice.current) {
+      setCoins(pairLivePrice.current)
+    }
   }
   useEffect(() => {
     if (symbol1 == 'BTC' || symbol1 == 'ETH') return
@@ -133,6 +141,23 @@ const SinglePair = () => {
           },
         }));
       }
+      if (symbol) {
+        // @ts-ignore
+        const dot = decimal[symbol]
+        pairLivePrice.current = {
+          ...pairLivePrice.current,
+          [symbol]: {
+            ...pairLivePrice.current[symbol],
+            name: pairLivePrice.current[symbol].name,
+            symbol: symbol,
+            price: Number(message?.c).toFixed(dot?.decimal || 2),
+            randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(pairLivePrice.current[symbol]?.price) ? pairLivePrice.current[symbol]?.randomDecimal : 5
+          },
+        }
+        if (Object.keys(pairLivePrice.current).length) {
+          localStorage.setItem('CoinsPrice', JSON.stringify(pairLivePrice.current));
+        }
+      }
 
     };
 
@@ -152,10 +177,32 @@ const SinglePair = () => {
             randomDecimal: 5
           },
         }));
+        pairLivePrice.current = {
+          ...pairLivePrice.current,
+          ['CRO']: {
+            ...pairLivePrice.current['CRO'],
+            name: pairLivePrice.current['CRO'].name,
+            symbol: "CRO",
+            // @ts-ignore   
+            price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+            randomDecimal: 5
+          },
+        }
       }
     };
 
   }, [socket, socketConnect])
+
+
+  useEffect(() => {
+    if (!socketConnect && getCoinPrice) {
+      pairLivePrice.current = {
+        ...pairLivePrice.current,
+        ...getCoinPrice
+      }
+    }
+    // @ts-ignore
+  }, [JSON.parse(localStorage.getItem('CoinsPrice'))])
   useEffect(() => {
     // if (vote.timeframe) {
       getCpviData().then((data) => data && setPct(data.data));
