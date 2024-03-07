@@ -1236,7 +1236,10 @@ function App() {
   const currentCMP = useContext(CurrentCMPContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
-  
+  useEffect(()=>{
+    console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
+    
+  },[JSON.stringify({voteDetails,lessTimeVoteDetails,completedVotes})])
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       Swal.close();
@@ -1268,6 +1271,8 @@ function App() {
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
     }
+
+    
   }, [JSON.stringify(voteDetails?.activeVotes), pathname]);
   const voteImpact = useRef<{
     timeFrame: number,
@@ -1306,6 +1311,8 @@ function App() {
 
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
+      
+      
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1313,13 +1320,24 @@ function App() {
       let voteTime = new Date(lessTimeVote?.expiration);      
       // finding the difference in total seconds between two dates      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      console.log(lessTimeVote,latestCoinsPrice.current,'timer1');
       const timer = setTimeout(async () => {
+       try {
+        console.log(lessTimeVote,'timer2');
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,]
 
-        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
+        console.log(ExpriTime,getValue,"ravi123");
+        // const ExpriTime = [
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
+        // ];
+        
+        // const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction);
+
         console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
@@ -1351,15 +1369,17 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: StatusValue,
-                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
-                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
+                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
               }
               :
               {}
           )
         }
-        console.log(lessTimeVote, "ChecklessTimeVote")
+        console.log(lessTimeVote,'timer3');
         await getResultAfterVote(request).then(async (response) => {
+          console.log(getResultAfterVote,"getvote");
+          
         
           console.log(response?.data, "response?.data?.result?")
           // @ts-ignore
@@ -1397,6 +1417,10 @@ function App() {
             console.log(err.message);
           }
         });
+       } catch (error) {
+        console.log(error,'timerError');
+        
+       }
       }, (((second_diff || 0) * 1000)));
       return () => clearTimeout(timer);
       // }

@@ -286,8 +286,9 @@ const SingleCoin = () => {
           }
         }))
 
-
+        
         setAllActiveVotes(() => {
+          console.log(tempAllActiveVotes,tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined),'tempAllActiveVotes');
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
       })
@@ -404,8 +405,11 @@ const SingleCoin = () => {
           [`${value.coin}_${value?.timeframe?.seconds}`]: { ...value, voteType: 'coin' }
         }
       }
-    })
+    });
+
+    console.log(allActiveVotes,'allActiveVotesabc');
     setVoteDetails((prev) => {
+      
       return {
         ...prev,
         voteNot: voteNumberEnd,
