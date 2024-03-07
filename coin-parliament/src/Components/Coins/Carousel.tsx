@@ -141,7 +141,10 @@ const Carousel = ({
   const { width } = useWindowSize();
   const { ws, socket, socketConnect,setCoins } = useContext(CoinsContext);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
-  const livePrice = useRef(coins)
+  // @ts-ignore
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  // const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
+  const livePrice = useRef<{ [symbol: string]: Coin }>(Object.keys(getCoinPrice).length ? getCoinPrice : coins)    
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
       {
@@ -157,20 +160,22 @@ const Carousel = ({
       livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal || 5) + (Math.random() < 0.5 ? -1 : 1)
     }
     // console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
-    setCoinUpdated(livePrice.current)
+    // setCoinUpdated(livePrice.current)
+    // console.log(livePrice.current,"livePrice.current")
+    if (Object.keys(livePrice.current).length && coins != livePrice.current) {            
+      setCoins(livePrice.current)
+    }
   }
   useEffect(() => {
     const interval = setInterval(function () {
 
       updateCoin()
 
-    }, 500);
+    }, 1500);
 
     return () => {
       clearInterval(interval)
-      if (livePrice.current) {        
-        // setCoins(livePrice.current)
-      }
+
     }
   }, [])  
   const instance: Modify<TableInstance<BearVsBullRow>, {}> =
@@ -214,43 +219,31 @@ const Carousel = ({
   useEffect(() => {
     if (!ws) return
     ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
+      const message = JSON.parse(event.data);      
       const symbol = message?.s?.slice(0, -4)      
       if (symbol) {
 
         // @ts-ignore
         const dot = decimal[symbol]
-        // for (let obj in  livePrice.current) {
-        //   // Update the property value of prop1 in each object
-        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
-        // }
-
-        // @ts-ignore
-
-        // for (let obj in  livePrice.current) {
-        //   // Update the property value of prop1 in each object
-        //   livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?1:1)
-        // }
         livePrice.current = {
           ...livePrice.current,
           [symbol]: {
             ...livePrice.current[symbol],
+            name: livePrice.current[symbol].name,
+            symbol: symbol,
             price: Number(message?.c).toFixed(dot?.decimal || 2),
             randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(livePrice.current[symbol]?.price) ? livePrice.current[symbol]?.randomDecimal : 5
           },
         }
-
-        // setCoinUpdated((prevCoins) => ({
-        //   ...prevCoins,
-        //   [symbol]: {
-        //     ...prevCoins[symbol],
-        //     price:Number(message?.c).toFixed(dot?.decimal || 2), 
-        //   },
-        // }));
-      }
+        // setCoins(livePrice.current)
+        
+        if (Object.keys(livePrice.current).length) {                    
+          localStorage.setItem('CoinsPrice', JSON.stringify(livePrice.current));
+        }
+      }      
     };
   }, [ws, socketConnect])
-  // console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
+    
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
@@ -264,22 +257,29 @@ const Carousel = ({
           ...livePrice.current,
           ['CRO']: {
             ...livePrice.current['CRO'],
-            // @ts-ignore
+            name: livePrice.current['CRO'].name,
+            symbol: "CRO",
+            // @ts-ignore   
             price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
             randomDecimal: 5
           },
         }
-        // setCoinUpdated((prevCoins) => ({
-        //   ...prevCoins,
-        //   ['CRO']: {
-        //     ...prevCoins['CRO'],
-        //     price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
-        //   },
-        // }));
       }
     };
 
   }, [socket, socketConnect])
+
+  useEffect(() => {    
+    // console.log(socketConnect, getCoinPrice, "socketConnect , getCoinPrice")
+    if (!socketConnect && getCoinPrice) {
+      livePrice.current = {
+        ...livePrice.current,
+        ...getCoinPrice
+      }      
+    }
+// @ts-ignore
+  }, [JSON.parse(localStorage.getItem('CoinsPrice'))])
+  
 
   const [handleSoundClick] = useSound(buttonClick);
 
