@@ -15,6 +15,7 @@ import { voteProcedure } from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
 // import { timeStamp } from "console";
 import { cmpRangeCoin } from "../Profile/utils";
+import VoteRules from "Components/Admin/VoteRules";
 
 export const directions = {
   [Direction.BEAR]: { direction: "rise", name: "BEAR" },
@@ -106,6 +107,7 @@ const CoinsForm = ({
           voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
         } as VoteResultProps
       )
+      
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {
         // const userRef = doc(db, "users", user?.uid);

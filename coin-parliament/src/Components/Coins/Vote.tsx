@@ -194,7 +194,7 @@ const Vote = ({
                     //   .doc(user?.uid)
                     //   // @ts-ignore
                     //   .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });                    
-// @ts-ignore
+                    // @ts-ignore
                     const userDocRef = doc(firestore, 'users', user?.uid)
                     try {
                       setDoc(userDocRef, { voteValue: userInfo?.voteValue - 1 }, { merge: true });
