@@ -478,7 +478,8 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo, "AllInfo")
-      setPayamount(AllInfo[0])
+      // setPayamount(AllInfo[0])
+      setPayamount(0.0001)
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])

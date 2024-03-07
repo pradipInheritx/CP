@@ -22,7 +22,8 @@ const RewardList = styled.p`
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 function PaymentHistory() {
 
-  const { setAlbumOpen } = useContext(AppContext);
+  const { setAlbumOpen, setHistoryTab, historyTab } = useContext(AppContext);
+  
   const { userInfo, user } = useContext(UserContext);
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState<number>(0);
@@ -33,6 +34,7 @@ function PaymentHistory() {
   const [rowData, setRowData] = useState<any>([]);
   const [reciveRowData, setReciveRowData] = useState<any>([]);  
   const [pageIndex, setPageIndex] = useState(1);
+  const [selectTab, setSelectTab] = useState("Payment History");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -71,12 +73,27 @@ function PaymentHistory() {
     }      
   }
 
+  useEffect(() => {
+    if (historyTab) {
+      setSelectTab(historyTab)
+      setIndex(historyTab)
+    }
+  }, [historyTab])
+  
+
+
   return (
     <>
       <Tabs
-        defaultActiveKey="Payment History"
+        defaultActiveKey={selectTab}
+        activeKey={selectTab}
         id="Payment"
-        onSelect={(k?: number) => setIndex((k || 0))}
+        onSelect={(k?: number) => {
+          setIndex((k || 0))
+          console.log(k,"what is this ")
+          setSelectTab(selectTab == "Payment History" ? "Receive Payment" : "Payment History")
+          setHistoryTab("")
+        }}
         tabs={[
           {
             eventKey: "Payment History",

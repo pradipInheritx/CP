@@ -29,6 +29,8 @@ const Wallet = () => {
   const {walletTab, setWalletTab } = useContext(AppContext);
   let navigate = useNavigate();  
   const [modleShow, setModleShow] = useState(false)
+  const [selectTab, setSelectTab] = useState("Balance")
+  
   const [mfaLogin, setMfaLogin] = useState(false)  
   const [index, setIndex] = useState(0);  
   const [regexList, setRegexList] = useState({
@@ -47,7 +49,12 @@ const Wallet = () => {
   //     handleModleShow()
   //   }  
   // }, [])  
-    
+  useEffect(() => {
+    if (walletTab) {      
+      setSelectTab(walletTab)
+    }
+    }, [walletTab])
+  console.log(walletTab,"walletTab")
   
   return (    
     <>      
@@ -55,9 +62,13 @@ const Wallet = () => {
       {
       // userInfo?.mfa == true &&
        <Tabs
-        defaultActiveKey={walletTab}
-        id="Wallet"
-        onSelect={() => setIndex(1)}
+          defaultActiveKey={selectTab}
+          activeKey={selectTab}
+          id="Wallet"
+          onSelect={() => {            
+            setSelectTab(selectTab == "Balance" ? "setting" : "Balance")
+            setWalletTab("")            
+          }}
         tabs={[
           {
             eventKey: "Balance",
