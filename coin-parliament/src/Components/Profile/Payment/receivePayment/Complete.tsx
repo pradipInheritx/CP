@@ -226,7 +226,7 @@ const Complete: React.FC = () => {
                             return (
                                 <div key={index}
                                     style={{
-                                        width: `${(100 / tableHeader.length) - 1}`,
+                                        width: `${(100 / tableHeader?.length) - 1}`,
                                     }}
                                 >
                                     <RewardList>-</RewardList>
@@ -313,9 +313,9 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                                         <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
 
                                             {window.screen.width > 767 ?
-                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : "") || "NA")
                                                 :
-                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
+                                                ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : "") || "NA")
 
                                             }
 

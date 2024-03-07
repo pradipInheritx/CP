@@ -55,7 +55,7 @@ const Votes = () => {
   useEffect(() => {
     // @ts-ignore
     const { coins, pairs } = votes
-
+    console.log(coins, pairs,"coinspairsboth")
     let AllCoins = coins?.votes.filter((item: any) => {
       if (item.expiration < Date.now() && item.success == undefined) {
 
@@ -64,12 +64,13 @@ const Votes = () => {
     })
     let AllPairs = pairs?.votes.filter((item: any) => {
       if (item.expiration < Date.now() && item.success == undefined) {
-
         return item
       }
     })
     let allCoinsPair = [...AllCoins, ...AllPairs]
+    console.log(allCoinsPair,"allCoinsPair")
     let promiseArray: any = []
+    console.log(allCoinsPair.length, paxDistribution, userInfo?.uid,"yes i am calling")
     if (allCoinsPair.length > 0 && paxDistribution > 0) {
       allCoinsPair?.forEach((voteItem: any) => {
         promiseArray.push(checkprice(voteItem))
@@ -83,22 +84,24 @@ const Votes = () => {
       })
       .catch(error => {
         console.error('promiseAll', error);
-      });
-    if (userInfo?.uid) {      
-      axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
-        data: {}
-      }).then((res) => {
-        console.log(res.data.result, "resultdata")
-        setPaxDistribution(res.data.result.paxDistribution)
-      }).catch((err) => {
-        console.log(err, "resultdata")
-      })
-    }
-
+      });        
   }, [votes?.coins?.total, votes?.pairs?.total, pageSize, paxDistribution])
 
 
+  useEffect(() => {
+    if (userInfo?.uid) {
+      axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+        data: {}
+      }).then((res) => {        
+        setPaxDistribution(res.data.result.paxDistribution)
+      }).catch((err) => {
+        console.log(err, "votingresultdataerror")
+      })
+    }
+  }, [userInfo?.uid])
+    
   const checkprice = async (vote: any) => {
+    console.log("yes i am calling ")
     const voteCoins = vote?.coin.split("-");
     const coin1 = `${voteCoins[0] ? voteCoins[0].toLowerCase() || "" : ""}`
     const coin2 = `${voteCoins[1] ? voteCoins[1].toLowerCase() || "" : ""}`
@@ -111,7 +114,7 @@ const Votes = () => {
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null, 
       paxDistributionToUser: {
-        userId: userInfo?.uid,
+        userId: vote?.userId,
         currentPaxValue: Number(paxDistribution),
         isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
         mintForUserAddress: userInfo?.paxAddress?.address || "",
@@ -125,7 +128,7 @@ const Votes = () => {
         userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
-        console.log(res.data, "checkAndUpdateRewardTotal")
+        // console.log(res.data, "checkAndUpdateRewardTotal")
       }).catch((error) => {
         console.log(error, "checkAndUpdateRewardTotal")
       })
@@ -137,7 +140,7 @@ const Votes = () => {
         userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
-        console.log(res.data, "checkAndUpdateRewardTotal")
+        // console.log(res.data, "checkAndUpdateRewardTotal")
       }).catch((error) => {
         console.log(error, "checkAndUpdateRewardTotal")
       })

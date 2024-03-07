@@ -137,19 +137,19 @@ function PaymentHistory() {
                             style={{
                               marginTop: "-15px"
                             }}  
-                            id={`tooltip-name-${index}`}>{item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")}</Tooltip>}
+                            id={`tooltip-name-${index}`}>{item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}</Tooltip>}
                         
                         >                          
                           <RewardList                            
                           >
-                          {/* {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA"} */}
+                          {/* {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA"} */}
                             {/* {item?.paymentDetails?.transaction_id || "NA"} */}
                             {
                               window.screen.width > 767 ?
-                                item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")
-                                : item?.paymentDetails?.orderId && item?.paymentDetails?.orderId.slice(0,3) + "..."  || (item?.paymentDetails?.transaction_id ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4)).slice(0, 3) + "..." : item?.paymentDetails?.p2 ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4)).slice(0, 2) + "..." : "NA")
+                                item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")
+                                : item?.paymentDetails?.orderId && item?.paymentDetails?.orderId?.slice(0,3) + "..."  || (item?.paymentDetails?.transaction_id ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4))?.slice(0, 3) + "..." : item?.paymentDetails?.p2 ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4))?.slice(0, 2) + "..." : "NA")
                             }
-                          {/* {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")} */}
+                          {/* {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")} */}
                         </RewardList>
                         </OverlayTrigger>
                       </div>
@@ -177,7 +177,7 @@ function PaymentHistory() {
                             {window.screen.width > 767
                               ?
                               item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                              : item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm").slice(0, 10) + "..." : '-'
+                              : item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm")?.slice(0, 10) + "..." : '-'
                             }
                           </RewardList>
                         </OverlayTrigger>
@@ -204,7 +204,7 @@ function PaymentHistory() {
                                 
                               item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"
                             :
-                                item?.transactionType == "EXTRAVOTES" ? (item?.numberOfVotes + " " + "Extra Votes").slice(0, 4) + "..." : (item?.transactionType).slice(0, 4) + "..." || "-"
+                                item?.transactionType == "EXTRAVOTES" ? (item?.numberOfVotes + " " + "Extra Votes")?.slice(0, 4) + "..." : (item?.transactionType)?.slice(0, 4) + "..." || "-"
                               
                             }
                           
@@ -253,9 +253,9 @@ function PaymentHistory() {
                           <RewardList>
                             {window.screen.width > 767 ?
                             
-                              item?.token ? (item?.token).slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType).slice(0, 5) + (item?.walletType?.length > 10 ? "..." : "") : "-"
+                              item?.token ? (item?.token)?.slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType)?.slice(0, 5) + (item?.walletType?.length > 10 ? "..." : "") : "-"
                             :
-                              item?.token ? (item?.token).slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType.slice(0, 5) + "...") + (item?.walletType?.length > 10 ? "..." : "") : "-"                                                         
+                              item?.token ? (item?.token)?.slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType?.slice(0, 5) + "...") + (item?.walletType?.length > 10 ? "..." : "") : "-"                                                         
                             }
                           </RewardList>
                         </OverlayTrigger>
@@ -301,7 +301,7 @@ function PaymentHistory() {
                             <div className=''
                               key={index}
                               style={{
-                                width: `${(100 / tableHeader.length) - 1}`,
+                                width: `${(100 / tableHeader?.length) - 1}`,
                               }}
                             >
                               <RewardList>-</RewardList>

@@ -1,7 +1,7 @@
 import { texts } from 'Components/LoginComponent/texts';
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components';
-import { ButtonGroup } from "react-bootstrap";
+import { ButtonGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
 import axios from 'axios';
@@ -24,16 +24,26 @@ const tableHeader: tableColumnType[] = [
         title: 'Date',
         assessorName: 'timestamp',
         Row: ({ value, data }) => {
-            return (
-                <span>
-                    {/* {value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'} */}
-                    {window.screen.width > 767 ?
+            return (                                    
+                    <OverlayTrigger
+                        trigger={['hover', 'focus']}
+                        placement="bottom"
+                        overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                            style={{
+                                // marginTop: "-15px"
+                            }}
+                        >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
+
+                    >
+                        <span>
+                            {window.screen.width > 767 ?
 
                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                         :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0, 10) + "..." : '-'
+                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm"))?.slice(0, 10) + "..." : '-'
                     }
-                </span>
+                        </span>
+                    </OverlayTrigger>                
             );
 
         }
@@ -42,16 +52,27 @@ const tableHeader: tableColumnType[] = [
         title: 'Item',
         assessorName: 'item',
         Row: ({ value, data }) => {
-            return (
-                <span>
-                    {/* {data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"} */}
-                    {
+            return (                                
+                    <OverlayTrigger
+                        trigger={['hover', 'focus']}
+                        placement="bottom"
+                        overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                            style={{
+                                // marginTop: "-15px"
+                            }}
+                        >{data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"}</Tooltip>}
+
+                    >
+                        <span>
+                            {
                     window.screen.width > 767 ?
                         data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
                         :
-                        data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
+                        data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes")?.slice(0, 6) + "..." : (data?.transactionType)?.slice(0, 6) + "..." || "-"
                     }
-                </span>
+                        </span>
+                    </OverlayTrigger>
+                
             )
         }
     },
@@ -87,7 +108,7 @@ const Complete: React.FC = () => {
     useEffect(() => {
         if (userInfo?.uid) {
             setLoading(true);
-            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=PENDING&pageNumber=${pageIndex}&pageSize=${pageSize}`).then((response) => {
+            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=CLAIMED&pageNumber=${pageIndex}&pageSize=${pageSize}`).then((response) => {
                 setData(response?.data?.data);
                 setTotalRecord(response.data?.total)
                 setLoading(false);

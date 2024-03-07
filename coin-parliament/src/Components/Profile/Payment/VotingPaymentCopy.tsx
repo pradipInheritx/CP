@@ -455,11 +455,8 @@ const VotingPaymentCopy: React.FC<{
   const events = useWeb3ModalEvents()
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-
-    // useEffect(() => {
-    //   // window.scrollTo({ top: 500, behavior: 'smooth' });
-    //   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    // }, [payType, selectPayment,])
+  // @ts-ignore  
+  const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
   
   useEffect(() => {
     // window.scrollTo({ top: 500, behavior: 'smooth' });
@@ -606,13 +603,7 @@ const VotingPaymentCopy: React.FC<{
     }
 
   const { open, close } = useWeb3Modal()
-  const {disconnect} = useDisconnect()
-  
-
-  
-  console.log(events,"allevents")
-  
-
+  const {disconnect} = useDisconnect()  
 
   useEffect(() => {
     // let CoinPay = localStorage.getItem("CoinPay")
@@ -638,9 +629,8 @@ const VotingPaymentCopy: React.FC<{
       }
       }
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
-  
-
-    console.log(address, chainId, isConnected, "address,chainId,isConnected")
+      
+    // console.log(address, chainId, isConnected, "address,chainId,isConnected")
   const payNow = (detail?: any) => {
       
       const headers = {
@@ -650,13 +640,13 @@ const VotingPaymentCopy: React.FC<{
         "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
         "content-type": "application/json"
       }
-
+    
       const data = {
 
         userId: `${user?.uid}`,
         userEmail: `${user?.email}`,
         walletType: `wallet connect`,
-        amount:Number(payamount && Number(payamount)/coins[`${coinInfo?.currency}`]?.price).toFixed(18),
+        amount: Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18),
         // amount: 0.0001,
         // @ts-ignore
         network: `${coinInfo.chainId || ""}`,
@@ -701,9 +691,8 @@ const VotingPaymentCopy: React.FC<{
         console.log("take more that 5 sec")
       }, 5000);
       let ethereum = (window as any).ethereum;      
-      
-      console.log(coins[`${coinInfo?.currency}`],"coins[`${coinInfo?.currency}`]?.price")
-      const amountInCrypto = Number(payamount && Number(payamount) / coins[`${coinInfo?.currency}`]?.price).toFixed(18)
+            
+      const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
       // console.log(coinInfo,"coinInfoUSDT ERC20")
       try {
@@ -719,11 +708,7 @@ const VotingPaymentCopy: React.FC<{
           const amountToSend = ethers.utils.parseUnits(amountInCrypto);
           console.log(amountToSend,"amountToSend")
           console.log(coinInfo?.currency, "coinInfo?.currency")
-          // const gasLimit = await usdtContract.estimateGas.transfer(
-          //   "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d",
-          //   amountToSend
-          // );
-          // console.log("Estimated Gas Limit:", gasLimit.toString());
+          
           const trax = {
             to: usdtContractAddress,
             value: ethers.utils.parseUnits(amountInCrypto),
