@@ -192,7 +192,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
         }
       }
     } else {
-      res.status(404).send({
+      res.status(200).send({
         status: false,
         message: parentConst.MESSAGE_PARENT_USER_COIN_ADDRESS_NOT_FOUND,
         data: [],
@@ -269,14 +269,14 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           data: makeAllInitiatedTransaction,
         });
       } else {
-        res.status(404).send({
+        res.status(200).send({
           status: false,
           message: "No Parent Payment Found",
           data: [],
         });
       }
     } else {
-      res.status(404).send({
+      res.status(200).send({
         status: false,
         message: parentConst.MESSAGE_PARENT_USER_ALL_COIN_ADDRESS_NOT_UPDATED,
         data: [],
