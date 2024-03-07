@@ -1328,7 +1328,6 @@ function App() {
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,]
-<<<<<<< HEAD
 
         const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
         console.log(ExpriTime,getValue,"ravi123");
@@ -1338,8 +1337,6 @@ function App() {
         // ];
         
         // const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction);
-=======
->>>>>>> a7444822e1f2b4e1f04efcba4414589f97438c31
 
         console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
