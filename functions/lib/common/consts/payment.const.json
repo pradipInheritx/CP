@@ -20,6 +20,7 @@
     "MESSAGE_PENDING_PAX_VALUE": "Get All Pending Pax Data Successfully",
     "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY": "Temp Payment Transaction Deleted Successfully",
     "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED": "Temp Payment Trasaction Is Not Deleted",
+    "MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY": "You have claimed your referral amount successfully",
     "PAYMENT_SETTING_NAME_LIMIT": "LIMIT",
     "PAYMENT_SETTING_NAME_MANUAL": "MANUAL",
     "PAYMENT_SETTING_NAME_IMMEDIATE": "IMMEDIATE",
