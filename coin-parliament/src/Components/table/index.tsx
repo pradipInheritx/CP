@@ -65,9 +65,9 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
                                                 <RewardList>
 
                                                     {window.screen.width > 767 ?                                                                                                                    
-                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : value[item?.assessorName] ==undefined ?"NA" : "") || "NA")
+                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." :  "") || "NA")
                                                         :                                                        
-                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : value[item?.assessorName] == undefined ? "NA" : "") || "NA")
+                                                        ((value[item?.assessorName])?.slice(0, 6) + (value[item?.assessorName]?.length > 10 ? "..." : "") || "NA")
 
                                                     }
 
