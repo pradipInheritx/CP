@@ -262,7 +262,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
         data: makeAllInitiatedTransaction,
       });
     } else {
-      res.status(404).send({
+      res.status(200).send({
         status: false,
         message: "No Parent Payment Found",
         data: [],
