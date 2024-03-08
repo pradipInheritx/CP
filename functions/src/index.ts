@@ -1471,25 +1471,23 @@ exports.getCoinParliamentAllUsersDeatils = functions.https.onCall(async (data: a
 
     userList = userList.data;
 
-    userList.map((user:any) => {
-        let userVote = voteList.filter((vote:any) => vote.userId === user.userId);
-        console.log("UserVote : ", userVote);
-    
-        const voteTimes = userVote.map((doc :any)=> new Date(doc.voteTime));
-        console.log("voteTimes>>>>>>>", voteTimes);
-    
-        const uniqueDates = [...new Set(voteTimes.map((date:Date) => date.toDateString()))];
-        let numberOfDaysVoted= uniqueDates.length ;
-    
-        user['noOfVotesDays'] = numberOfDaysVoted;
-    
-        let averageVotes = userVote.length / numberOfDaysVoted;
-    
-        user['averageVotes'] = averageVotes;
-    
-      });
-
-
+    userList.map((user: any) => {
+      let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
+      console.log("UserVote : ", userVote);
+  
+      const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
+      console.log("voteTimes>>>>>>>", voteTimes);
+  
+      const uniqueDates = [...new Set(voteTimes.map((date: Date) => date.toDateString()))];
+      let numberOfDaysVoted = uniqueDates.length;
+  
+      user['noOfVotesDays'] = numberOfDaysVoted;
+  
+      let averageVotes = numberOfDaysVoted !== 0 ? userVote.length / numberOfDaysVoted : 0;
+  
+      user['averageVotes'] = averageVotes;
+  });
+  
     return userList 
 
   } catch (error) {
