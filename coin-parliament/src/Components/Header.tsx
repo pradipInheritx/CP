@@ -354,7 +354,7 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
-	console.log(headerExtraVote, voteNumber, "headerExtraVote")
+	// console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {		
 		// handleSoundClick()
@@ -443,7 +443,7 @@ const Header = ({
 	};
 
 
-	console.log(followerInfo,"followerInfo")
+	// console.log(followerInfo,"followerInfo")
 	return (
 <>
 {userInfo?

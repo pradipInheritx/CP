@@ -327,7 +327,7 @@ const Minting = ({
   // }, [paxDistribution]);
 
 
-  console.log(pendingPax,"pendingPax")
+  // console.log(pendingPax,"pendingPax")
 
   useEffect(() => {
     if (CmpPopupShow) {
@@ -392,12 +392,12 @@ const Minting = ({
   // const tooltip = (props:any) => {
 
   // };
-  console.log(claim, "setAnimateButton")
+  // console.log(claim, "setAnimateButton")
 
-  console.log(inOutReward, "inOutReward")
+  // console.log(inOutReward, "inOutReward")
   const updateState = () => {
     setShowReward(1);
-    console.log(inOutReward, "inOutReward2")
+    // console.log(inOutReward, "inOutReward2")
     setInOutReward(1);
 
     setCountShow(true)

@@ -101,22 +101,14 @@ const SingleCoin = () => {
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules, voteNumberEnd } = useContext(AppContext);
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
-
+  // @ts-ignore
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const singleLivePrice = useRef<{ [symbol: string]: Coin }>(Object.keys(getCoinPrice).length ? getCoinPrice : coins)    
   useEffect(() => {
     if (coinUpdated) {
-      setMyCoins(coinUpdated)
+      setMyCoins(coinUpdated)      
     }
   }, [coinUpdated])
-  // console.log(coinUpdated, myCoins, 'mycoins');
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-
-  //     setCount(prevCount => prevCount +( Math.random()<0.5?-1:1));
-  //   }, 2000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
 
   const newTimeframe: any = []
   // const AllcssDegree: any = [];
@@ -130,6 +122,9 @@ const SingleCoin = () => {
         randomDecimal: (prevCoins[symbol1]?.randomDecimal || 5) + (Math.random() < 5 ? -1 : 1)
       },
     }));
+    if (Object.keys(singleLivePrice.current).length && coins != singleLivePrice.current) {
+      setCoins(singleLivePrice.current)
+    }
   }
   useEffect(() => {
     if (symbol1 == 'BTC' || symbol1 == 'ETH') return
@@ -148,18 +143,10 @@ const SingleCoin = () => {
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const symbol = message?.s?.slice(0, -4)
-
+      
       if (symbol && symbol == params?.id) {
         // console.log('coinprice',message?.c)
         const dot = decimal[symbol]
-
-        // setCount(prevCount => 5);
-        // for (let obj in  livePrice.current) {
-        //   // Update the property value of prop1 in each object
-        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
-        // }
-
-        // console.log('coinprice', Number(message?.c).toFixed(dot?.decimal || 2), coinUpdated[symbol]?.price, Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(coinUpdated[symbol]?.price))
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           [symbol]: {
@@ -168,12 +155,30 @@ const SingleCoin = () => {
             randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(prevCoins[symbol]?.price) ? prevCoins[symbol].randomDecimal : 5
           },
         }));
+      }      
+      if (symbol) {
+
+        // @ts-ignore
+        const dot = decimal[symbol]
+        singleLivePrice.current = {
+          ...singleLivePrice.current,
+          [symbol]: {
+            ...singleLivePrice.current[symbol],
+            name: singleLivePrice.current[symbol].name,
+            symbol: symbol,
+            price: Number(message?.c).toFixed(dot?.decimal || 2),
+            randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(singleLivePrice.current[symbol]?.price) ? singleLivePrice.current[symbol]?.randomDecimal : 5
+          },
+        }
+        if (Object.keys(singleLivePrice.current).length) {
+          localStorage.setItem('CoinsPrice', JSON.stringify(singleLivePrice.current));
+        }
       }
-
+      
     };
-
-
   }, [ws, socketConnect])
+
+
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
@@ -188,10 +193,32 @@ const SingleCoin = () => {
             randomDecimal: 5
           },
         }));
+        singleLivePrice.current = {
+          ...singleLivePrice.current,
+          ['CRO']: {
+            ...singleLivePrice.current['CRO'],
+            name: singleLivePrice.current['CRO'].name,
+            symbol: "CRO",
+            // @ts-ignore   
+            price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+            randomDecimal: 5
+          },
+        }
       }
     };
 
   }, [socket, socketConnect])
+  
+  useEffect(() => {    
+    if (!socketConnect && getCoinPrice) {
+      singleLivePrice.current = {
+        ...singleLivePrice.current,
+        ...getCoinPrice
+      }
+    }
+    // @ts-ignore
+  }, [JSON.parse(localStorage.getItem('CoinsPrice'))])
+
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
@@ -286,8 +313,9 @@ const SingleCoin = () => {
           }
         }))
 
-
+        
         setAllActiveVotes(() => {
+          console.log(tempAllActiveVotes,tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined),'tempAllActiveVotes');
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
       })
@@ -404,8 +432,11 @@ const SingleCoin = () => {
           [`${value.coin}_${value?.timeframe?.seconds}`]: { ...value, voteType: 'coin' }
         }
       }
-    })
+    });
+
+    console.log(allActiveVotes,'allActiveVotesabc');
     setVoteDetails((prev) => {
+      
       return {
         ...prev,
         voteNot: voteNumberEnd,

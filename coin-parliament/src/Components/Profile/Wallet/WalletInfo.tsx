@@ -172,7 +172,7 @@ function WalletInfo() {
         }
         
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
-        setSelectRadio(userInfo?.referalReceiveType?.name || '');
+        setSelectRadio(userInfo?.referalReceiveType?.name || 'ONDEMAND');
         setDefaultValue();
     }, [JSON.stringify(userInfo?.wellDAddress)]);
     const [timeError, setTimeError] = useState("")
@@ -182,7 +182,7 @@ function WalletInfo() {
     let navigate = useNavigate();
     const [coinList, setCoinsList] = useState([])
     const [coinListPax, setCoinsListPax] = useState([])
-    const [selectRadio, setSelectRadio] = useState<string>('');
+    const [selectRadio, setSelectRadio] = useState<string>('ONDEMAND');
     const [regexList, setRegexList] = useState({
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
@@ -1186,6 +1186,7 @@ function WalletInfo() {
                                 type="radio"
                                 id={`immediate`}
                                 checked={selectRadio === 'IMMEDIATE'}
+                                disabled={true}
                                 onClick={(e) => {
                                     hideError();
                                     setSelectRadio('IMMEDIATE');
@@ -1202,6 +1203,7 @@ function WalletInfo() {
                                     type="radio"
                                     id={`limit`}
                                     checked={selectRadio == 'LIMIT'}
+                                    disabled={true}
                                     onClick={(e) => {
                                         setDefaultValue();
                                         setSelectRadio('LIMIT')

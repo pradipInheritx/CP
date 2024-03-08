@@ -61,6 +61,8 @@ function PaymentFun({ isVotingPayment }: any) {
   console.log(coinInfo, 'coinInfo1');
 
   let navigate = useNavigate();  
+  // @ts-ignore  
+  const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice'))
 
   useEffect(() => {
     // (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
