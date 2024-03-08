@@ -434,7 +434,7 @@ function WalletInfo() {
         setTimeError("");
         setAmountError("");
         let errorCount = 0;
-
+        const allwalletData = [...walletDetailsObj]
         if (selectRadio === 'LIMIT' && limitType != "") {
             if (selectRadio === 'LIMIT' && limitType == "ANY_OF_THEM"  && timeAmount.time === "" && timeAmount.amount === "") {
                 setTimeError("Please select limit.");
@@ -475,15 +475,16 @@ function WalletInfo() {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
                     await setDoc(userRef, {
+                        wellDAddress: allwalletData,
                         referalReceiveType: data
                     }, { merge: true });
-                    if (auth?.currentUser) {
-                        const allwalletData = [...walletDetailsObj]
-                        const userRef = doc(db, "users", auth?.currentUser?.uid);
-                        await setDoc(userRef, {
-                            wellDAddress: allwalletData
-                        }, { merge: true });
-                    }
+                    // if (auth?.currentUser) {
+                    //     const allwalletData = [...walletDetailsObj]
+                    //     const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    //     await setDoc(userRef, {
+                    //         wellDAddress: allwalletData
+                    //     }, { merge: true });
+                    // }
                     showToast("Update Wallet Successfully", ToastType.SUCCESS);
                 } catch (error) {   
                     // @ts-ignore
@@ -502,7 +503,8 @@ function WalletInfo() {
                 try {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
-                    await setDoc(userRef, {
+                    await setDoc(userRef, {                        
+                        wellDAddress: allwalletData,
                         referalReceiveType: {
                             days: "",
                             name: selectRadio,
@@ -526,6 +528,7 @@ function WalletInfo() {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
                     await setDoc(userRef, {
+                        wellDAddress: allwalletData,
                         referalReceiveType: {
                             days: "",
                             name: selectRadio,
