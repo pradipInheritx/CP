@@ -1457,7 +1457,7 @@ async function getCombinedDetails() {
     }
 }
 
-exports.getCoinParliamentAllUsersDeatils = functions.https.onCall(async (data: any) => {
+async function getCoinParliamentAllUsersDeatils () {
   try {
     // Fetch payment details
     const voteList :any = await getVoteList();
@@ -1494,8 +1494,8 @@ exports.getCoinParliamentAllUsersDeatils = functions.https.onCall(async (data: a
     console.error("Error fetching combined details:", error);
     return false;
   }
-
-})
+  
+}
 
 
 // ******************* START CRON JOBS ****************
@@ -1582,6 +1582,32 @@ export const pendingPaymentSettlement = functions.pubsub
     } catch (error) {
       console.error('Error updating payments:', error);
     }
+  });
+
+  exports.storeCPUsersDetailsIntoDB = functions.pubsub
+  .schedule("*/30 * * * *")
+  .onRun(async () => {
+    try {
+      const userList = await getCoinParliamentAllUsersDeatils();
+      
+      const usersRef = admin.firestore().collection('userStatistics');
+      console.log("usersRef: created")
+      
+      for (const user of userList) {
+          try {
+              await usersRef.doc(user.userId).set(user);
+              console.log(`User data stored successfully for user ${user.userId}`);
+          } catch (error) {
+              console.error(`Error storing user data for user ${user.userId}:`, error);
+          }
+      }
+
+      console.log('User data stored successfully in users collection.');
+      return true;
+  } catch (error) {
+      console.error('Error storing user data in users collection:', error);
+      return false;
+  }
   });
 
 
