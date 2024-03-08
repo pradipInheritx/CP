@@ -1658,6 +1658,47 @@ border-top-left-radius: 0px !important;
         z-index: 100;transform: rotate(315deg);}
 }
 
+/* New loader */
+
+.custom-circle-progress .progress-cir {
+    display: block;
+    margin: 0 auto;
+    overflow: hidden;
+    transform: rotate(-90deg) rotateX(180deg);
+    background: #ffffff;
+    border-radius: 9999px;
+  }
+  
+  .custom-circle-progress .progress-cir circle {
+      stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s ease;
+        stroke: #6352e8;
+        stroke-width: 4px;
+  }
+  
+  .custom-circle-progress .progress-cir .bar {
+      stroke: #ffffff;
+  }
+  
+  .custom-circle-progress .progressdiv {
+    position: relative;
+  }
+  
+  .custom-circle-progress .progressdiv:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 35px;
+    transform: translate(-50%, -50%);
+    content: attr(data-percent) " %";
+    display: none;
+  }
+
+  .custom-circle-progress .progress-cir circle {
+    r: 28;
+    cx: 30;
+    cy: 30;
+}
 
 @media only screen and (max-width: 979px) {
 
@@ -1691,6 +1732,17 @@ border-top-left-radius: 0px !important;
             margin-bottom: 3px;
             font-size: 8px;
         }
+
+        .mobileHeader .custom-circle-progress .progress-cir circle {
+            r: 21;
+            cx: 22;
+            cy: 22;
+        }
+        .custom-circle-progress .progress-cir {
+            width: 45px;
+            height: 45px;
+        }
+        
 }
 
 @media only screen and (max-width: 575px) {
@@ -1707,3 +1759,4 @@ border-top-left-radius: 0px !important;
     text-align: right;}
 
 }
+

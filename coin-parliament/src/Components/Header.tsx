@@ -710,8 +710,15 @@ const Header = ({
 
 
 											<div className="custom-circle-progress">
-<img src={giftIcon} alt='' className="gift-icon" width="20px" />
-<div className="progress-cs">
+											<img src={giftIcon} alt='' className="gift-icon" width="20px" />
+											<div className="progressdiv"  data-percent="86">
+  <svg className="progress-cir" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <circle r="80" cx="89" cy="89" fill="transparent" stroke-dasharray="502.4" stroke-dashoffset="0" ></circle>
+  <circle className="bar" r="80" cx="89" cy="89" fill="transparent" stroke-dasharray="502.4" stroke-dashoffset="0"></circle>
+</svg>
+</div>
+
+<div className="progress-cs d-none">
             <span className="title timer" data-from="0" data-to="40" data-speed="1800">40</span>
             <div className="overlay"></div>
             <div className="left"></div>
@@ -1018,9 +1025,18 @@ const Header = ({
 													</div>
 	
 												}
+												
 <div className="custom-circle-progress">
+
+<div className="progressdiv"  data-percent="86">
+  <svg className="progress-cir" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <circle r="80" cx="89" cy="89" fill="transparent" stroke-dasharray="502.4" stroke-dashoffset="0" ></circle>
+  <circle className="bar" r="80" cx="89" cy="89" fill="transparent" stroke-dasharray="502.4" stroke-dashoffset="0"></circle>
+</svg>
+</div>
+
 <img src={giftIcon} alt='' className="gift-icon" width="30px" />
-<div className="progress-cs">
+<div className="progress-cs d-none">
             <span className="title timer" data-from="0" data-to="85" data-speed="1800">85</span>
             <div className="overlay"></div>
             <div className="left"></div>
