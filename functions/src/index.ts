@@ -1584,9 +1584,10 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-  exports.storeCPUsersDetailsIntoDB = functions.pubsub
+  export const storeCPUsersDetailsIntoDB = functions.pubsub
   .schedule("*/5 * * * *")
   .onRun(async () => {
+    console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
     try {
       console.log("Starting")
       const userList = await getCoinParliamentAllUsersDeatils();
