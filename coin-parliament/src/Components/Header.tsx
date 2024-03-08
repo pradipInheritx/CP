@@ -20,7 +20,7 @@ import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.png";
 import BigLogo2 from "../assets/svg/logoiconxbig2.png";
-import giftIcon from "../assets/images/Framegift.png"
+import giftIcon from "../assets/images/gift-icon-head.png"
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -104,6 +104,9 @@ export const HeaderCenterMob = styled.div`
   @media (min-width: 768px) and (max-width: 1000px) {
 		width:9rem
 	}
+	@media (max-width: 767px) {
+		width:9rem
+	}
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -125,14 +128,15 @@ export const PlusButton = styled.div`
   cursor: pointer;
 `;
 export const PlusButtonMob = styled.div`
-  width: 27px;
-  height: 27px;
+  width: 20px;
+  height: 20px;
   background: #6352e8;
   color: white;
   border-radius: 50px;
-  padding: 3px 8px;
-  margin-top:1px;
-  font-size: 15px;
+  padding: 1px 5px;
+  margin-top:0px;
+  margin-right: 11px;
+  font-size: 13px;
   cursor: pointer;
 `;
 
@@ -544,12 +548,12 @@ const Header = ({
 
 			{!desktop ? (
 				<div className='' style={{ width: "80%" }}>
-					<div className='d-flex w-100  '>
+					<div className='d-flex w-100  mobileHeader'>
 						<ForZoom {...{ showReward, inOutReward }} className="w-100"
 						>
 							{user?.uid && !login ? (
 								<div
-									className="d-flex"
+									className="d-flex mobile-centered-element"
 									style={{
 										position: "relative",
 										margin: '0 auto',
@@ -568,7 +572,8 @@ const Header = ({
 										style={{
 											position: "absolute",
 											marginTop: "7px",
-											cursor: "pointer"
+											cursor: "pointer",
+											left: "4px"
 										}}
 									>
 										<Avatars
@@ -583,9 +588,9 @@ const Header = ({
 										/>
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-										<HeaderCenterMob className=''>
+										<HeaderCenterMob className='align-items-center'>
 											{/* <div></div> */}
-											<div className='mt-1' style={{marginLeft:"18px"}}>
+											<div className='mt-0' style={{marginLeft:"18px"}}>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
 																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
@@ -595,7 +600,7 @@ const Header = ({
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span style={{ color: '#6352e8', fontSize: window.screen.width <= 340 ? '0.7889em' : '12px', fontWeight: 100, lineHeight: "10%", }}>
+																			<span style={{ color: '#6352e8', fontSize: window.screen.width <= 340 ? '0.7889em' : '10px', fontWeight: 100, lineHeight: "10%", }}>
 																				{/* Wait {" "} */}
 																				{Number(voteRules?.maxVotes)} Votes in{" "}
 																				{hours < 1 ? null : `${hours}:`}
@@ -610,7 +615,7 @@ const Header = ({
 																/>
 															</div>
 															:
-															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
+															<span style={{ color: "#6352E8", marginLeft: "0px", fontSize: window.screen.width <= 340 ? '0.7889em' : '10px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																			<CountUp useEasing={false} className={"HeaderText "} start={voteNumber == 0 ? 0 : voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
@@ -698,15 +703,28 @@ const Header = ({
 											}
 										</HeaderCenterMob>
 										<div
-											className=''
-											style={{ marginLeft: "45px", marginTop: "5px" }}
+											className='text-center'
+											style={{ marginLeft: "35px", marginTop: "3px" }}
 										>
 											{/* <p>{"unique_Username"}</p> */}
 
 
+											<div className="custom-circle-progress">
+<img src={giftIcon} alt='' className="gift-icon" width="20px" />
+<div className="progress-cs">
+            <span className="title timer" data-from="0" data-to="40" data-speed="1800">40</span>
+            <div className="overlay"></div>
+            <div className="left"></div>
+            <div className="right"></div>
 
+        </div>
+		</div>
 
-											<div  className="d-flex">
+		<div className="d-flex align-items-center shaped-btn-row">
+	<button className="btn-shaped me-1">COIN VOTE</button>
+	<button className="btn-shaped left-side">PAIRS VOTE</button>
+</div>
+											<div  className="d-none">
 												{
 													(followerPage && followerInfo != "") ?
 														<></> :
@@ -910,7 +928,7 @@ const Header = ({
 																style={{
 																	color: "#6352E8",
 																	marginLeft: "40px",
-																	fontSize: window.screen.width <= 340 ? '0.7889em' : '12px'
+																	fontSize: window.screen.width <= 340 ? '0.7889em' : '11px'
 																}}
 															>
 																{/* reward modal 4 */}
@@ -964,7 +982,7 @@ const Header = ({
 														</p>
 												}
 												{
-													<div style={{ marginRight: '1em' }}>
+													<div style={{ marginRight: '25px' }}>
 														{followerPage && followerInfo != "" ?
 															<Form.Check.Label
 																className=""
@@ -1001,9 +1019,8 @@ const Header = ({
 	
 												}
 <div className="custom-circle-progress">
-<img src={giftIcon} alt='' className="gift-icon" width="25px" />
-<svg className="gift-icon d-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="rgba(99,82,232,1)"><path d="M15.0049 2.00281C17.214 2.00281 19.0049 3.79367 19.0049 6.00281C19.0049 6.73184 18.8098 7.41532 18.4691 8.00392L23.0049 8.00281V10.0028H21.0049V20.0028C21.0049 20.5551 20.5572 21.0028 20.0049 21.0028H4.00488C3.4526 21.0028 3.00488 20.5551 3.00488 20.0028V10.0028H1.00488V8.00281L5.54065 8.00392C5.19992 7.41532 5.00488 6.73184 5.00488 6.00281C5.00488 3.79367 6.79574 2.00281 9.00488 2.00281C10.2001 2.00281 11.2729 2.52702 12.0058 3.35807C12.7369 2.52702 13.8097 2.00281 15.0049 2.00281ZM13.0049 10.0028H11.0049V20.0028H13.0049V10.0028ZM9.00488 4.00281C7.90031 4.00281 7.00488 4.89824 7.00488 6.00281C7.00488 7.05717 7.82076 7.92097 8.85562 7.99732L9.00488 8.00281H11.0049V6.00281C11.0049 5.00116 10.2686 4.1715 9.30766 4.02558L9.15415 4.00829L9.00488 4.00281ZM15.0049 4.00281C13.9505 4.00281 13.0867 4.81869 13.0104 5.85355L13.0049 6.00281V8.00281H15.0049C16.0592 8.00281 16.923 7.18693 16.9994 6.15207L17.0049 6.00281C17.0049 4.89824 16.1095 4.00281 15.0049 4.00281Z"></path></svg>
-<div className="progress">
+<img src={giftIcon} alt='' className="gift-icon" width="30px" />
+<div className="progress-cs">
             <span className="title timer" data-from="0" data-to="85" data-speed="1800">85</span>
             <div className="overlay"></div>
             <div className="left"></div>
@@ -1016,7 +1033,7 @@ const Header = ({
 												// !(followerPage && followerInfo != "") &&
 												<div
 													className=''
-													style={{ width: "170px", marginLeft: "137px", marginTop: "5px", textAlign: "center", fontWeight: "100px", }}												
+													style={{ width: "170px", marginLeft: "138px", marginTop: "5px", textAlign: "center", fontWeight: "100px", }}												
 												>
 													{/* {userInfo?.displayName &&
 														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
