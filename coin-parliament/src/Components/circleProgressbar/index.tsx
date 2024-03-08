@@ -68,7 +68,7 @@ const CircularProgress = ({ percentage }) => {
                                 <>
                                     <div>
                                         <CircularProgressbarWithChildren
-                                            value={roundedValue}
+                                            value={roundedValue < 0 ? 0 : roundedValue}
                                             strokeWidth={w > 767 ? 11 : 13}
                                             styles={buildStyles({
                                                 pathColor: "#6352e8",
@@ -77,7 +77,7 @@ const CircularProgress = ({ percentage }) => {
                                                 trailColor: (w > 767 ? "transparent" : '#160133')
                                             })}
                                         >
-                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{roundedValue.toFixed(3)}/100</span>
+                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(roundedValue > 100 ? 100 : roundedValue).toFixed(3)}/100</span>
                                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                                         </CircularProgressbarWithChildren>
@@ -87,7 +87,7 @@ const CircularProgress = ({ percentage }) => {
                         }}
                     </AnimatedProgressProvider> : <div>
                         <CircularProgressbarWithChildren
-                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`))}
+                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`) < 0 ? 0 : percentage - localStorage.getItem(`${user?.uid}_newScores`))}
                             strokeWidth={w > 767 ? 11 : 13}
                             styles={buildStyles({
                                 pathColor: "#6352e8",
@@ -97,7 +97,7 @@ const CircularProgress = ({ percentage }) => {
                             })}
                         >
                             
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */).toFixed(3)}/100</span>
+                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{((percentage - currentCMP) > 100 ? 100 : percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */).toFixed(3)}/100</span>
                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                         </CircularProgressbarWithChildren>
