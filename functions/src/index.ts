@@ -1585,7 +1585,7 @@ export const pendingPaymentSettlement = functions.pubsub
   });
 
   exports.storeCPUsersDetailsIntoDB = functions.pubsub
-  .schedule("*/30 * * * *")
+  .schedule("*/5 * * * *")
   .onRun(async () => {
     try {
       console.log("Starting")
