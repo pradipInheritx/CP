@@ -1588,7 +1588,9 @@ export const pendingPaymentSettlement = functions.pubsub
   .schedule("*/30 * * * *")
   .onRun(async () => {
     try {
+      console.log("Starting")
       const userList = await getCoinParliamentAllUsersDeatils();
+      console.log("userList", userList)
       
       const usersRef = admin.firestore().collection('userStatistics');
       console.log("usersRef: created")
