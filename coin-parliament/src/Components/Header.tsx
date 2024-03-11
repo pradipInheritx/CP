@@ -767,6 +767,7 @@ const Header = ({
 														<button className="btn-shaped me-1"
 															onClick={() => {
 																navigate("/coins")
+																
 														}}
 														>COIN VOTE</button>
 														<button className="btn-shaped left-side"
