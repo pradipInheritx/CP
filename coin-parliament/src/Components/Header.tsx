@@ -578,7 +578,7 @@ const Header = ({
 											}}
 										>
 											<div className='' onClick={() => {
-												if (!showMenubar && !followerPage) navigate("/profile/mine")
+												if (!showMenubar && !followerPage) navigate("/profile/edit")
 											}
 											}
 												style={{
@@ -731,7 +731,12 @@ const Header = ({
 
 														</div>
 													</div> */}
-													<div className="custom-circle-progress">
+													<div className="custom-circle-progress"
+														onClick={() => {
+															//  if (!showMenubar && !followerPage) navigate("/profile/mine")
+															navigate("/profile/mine")
+													}}
+													>
 														{/* <div
 															style={{
 																width: 5, height: 5,
@@ -913,7 +918,7 @@ const Header = ({
 														transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
 													}}>
 													<div onClick={() => {
-														if (!showMenubar && !followerPage) navigate("/profile/mine")
+														if (!showMenubar && !followerPage) navigate("/profile/edit")
 													}}
 
 														style={{
@@ -1064,7 +1069,11 @@ const Header = ({
 																</div>
 
 															}
-															<div className="custom-circle-progress">
+															<div className="custom-circle-progress"
+																onClick={() => {
+																	navigate("/profile/mine")
+															}}
+															>
 																{/* <div
 																	style={{
 																		width: 55, height: 55,																		
