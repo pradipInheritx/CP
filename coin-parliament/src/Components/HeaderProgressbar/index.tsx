@@ -53,7 +53,7 @@ const HeaderProgressbar = ({ percentage }) => {
         }, [800]);
     }, [percentage]);
 
-    console.log(percentage,"percentage")
+    // console.log(percentage,"percentage")
     // currentScore=localStorage.getItem('')
     return (
         <div style={{

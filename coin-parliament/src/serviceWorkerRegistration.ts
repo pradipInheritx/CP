@@ -62,7 +62,7 @@ function registerValidSW(swUrl: string, config?: Config) {
     .register(swUrl)
     .then((registration) => {
       registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
+        const installingWorker = registration?.installing;
         if (installingWorker == null) {
           return;
         }
@@ -95,8 +95,8 @@ function registerValidSW(swUrl: string, config?: Config) {
           }
         };
       };
-      return registration.pushManager.getSubscription().then((subscription) => {
-        return registration.pushManager.subscribe({
+      return registration?.pushManager.getSubscription().then((subscription) => {
+        return registration?.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
         })
