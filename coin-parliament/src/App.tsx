@@ -389,6 +389,7 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
@@ -850,7 +851,10 @@ function App() {
         }
       });
     }
-  }, [user, fcmToken, coins]);
+  }, [user, fcmToken]);  
+
+  // rutul sir need to ask why you add coins here
+
   // useEffect(() => {
   //   auth.signOut();
   // }, []);
@@ -982,58 +986,61 @@ function App() {
           id: 1
         }));
       }
-    };
-    //  Check device name
-    // var userAgent = navigator.userAgent.toLowerCase();
-    // const isInstagramAvailable = /iphone/.test(userAgent);
-    
-    // console.log(userAgent,"isInstagramAvailable")
+    };    
     ws.onclose = async (event: any) => {
-      // if (isInstagramAvailable) {
-      //   console.log("reloadtrue")
-      //   // window.location.reload()
-      //   // connect()
-      // }
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);   
       reconnectWebSocket()
     };
-
-    ws.onerror = () => {
-      // if (!login) window.location.reload()
+    ws.onerror = () => {      
       console.log('WebSocket connection occurred');
       reconnectWebSocket()
     };      
   }    
 
   function croConnect() {
-    const socket = new WebSocket('wss://stream.crypto.com/v2/market');
+    const connectWebSocket = () => {
+     socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-    socket.onopen = () => {
-      console.log('WebSocket connection established.');
-
-      // Subscription request
-      const req = {
-        id: 1,
-        method: 'subscribe',
-        params: {
-          channels: ['ticker.CRO_USDT'],
-        },
+     socket.onopen = () => {
+        // Subscribe to CRO/USDT pair
+       socket.send(JSON.stringify({
+          "id": 1,
+          "method": "subscribe",
+          "params": {
+            "channels": ["tickers"],
+            "instrument_name": ["CRO_USDT"]
+          }
+        }));
+        setRetryCount(0);
+        // setError(null);
       };
 
-      // Send subscription request
-      socket.send(JSON.stringify(req));
-    };
+    //  socket.onmessage = (event) => {
+    //     const data = JSON.parse(event.data);
+    //     if (data.method === "ticker") {
+    //       // setPrice(data.data[0].a); // 'a' represents the best ask price
+    //     }
+    //   };
 
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setTimeout(croConnect, 5000);
-    };
+     socket.onerror = (error:any) => {
+        console.error('WebSocket error:', error);
+        // setError(error);
+      };
 
-    socket.onclose = (event) => {
-      console.log('WebSocket closed:', event);
-      setTimeout(croConnect, 5000);
-    };    
+     socket.onclose = () => {
+        console.log('WebSocket closed');
+        if (retryCount < 5) {
+          // Retry connecting after a delay (exponential backoff)
+          const delay = Math.pow(2, retryCount) * 1000;
+          setTimeout(connectWebSocket, delay);
+          setRetryCount(retryCount + 1);
+        } else {
+          // setError('Max retry attempts reached');
+          console.log("Max retry attempts reached")
+        }
+      };
+    };   
   }
 
   async function reconnectWebSocket () {

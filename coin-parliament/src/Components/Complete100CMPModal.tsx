@@ -42,7 +42,7 @@ const Complete100CMPModal: React.FC<{
                             onClick={() => {
                                 setShowComplete100CMP(false)
                                 navigate('/profile/mine');
-                                // setShowBack(true);
+                                setShowBack(true);
                             }}
                         >
                             <Other>{("CHECK IT OUT")}</Other>

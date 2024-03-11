@@ -27,13 +27,23 @@ const HeaderProgressbar = ({ percentage }) => {
     // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
-        if (progressBarValue && newScore != '0') {
+        if (progressBarValue != '0' && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
-            setStartValue((prevScore <= 0 ? 0 : prevScore));
+            // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
+            setStartValue((pre) => {
+                if ((userInfo?.voteStatistics?.score % 100) > 100 && ((userInfo?.voteStatistics?.score - newScore) % 100) < 6 ) {
+                    
+                    // (prevScore <= 0 ? 0 : prevScore)
+                    return 0
+                } else {
+                    return prevScore
+                }
+            });
+            // setStartValue((prevScore <= 0 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
-            }, [1000]);
+            }, [5000]);
         }
     }, [progressBarValue]);
     useEffect(() => {
@@ -43,6 +53,7 @@ const HeaderProgressbar = ({ percentage }) => {
         }, [800]);
     }, [percentage]);
 
+    console.log(percentage,"percentage")
     // currentScore=localStorage.getItem('')
     return (
         <div style={{
@@ -54,7 +65,7 @@ const HeaderProgressbar = ({ percentage }) => {
                     <AnimatedProgressProvider
                         valueStart={startValue}
                         valueEnd={progressBarValue}
-                        duration={5}
+                        duration={4}
                         easingFunction={easeQuadIn}
                     >
                         {(value) => {
@@ -64,7 +75,7 @@ const HeaderProgressbar = ({ percentage }) => {
                                     <div                                        
                                     >
                                         <CircularProgressbarWithChildren
-                                            value={roundedValue}
+                                            value={roundedValue < 0 ? 0 : roundedValue }
                                             background={true}
                                             strokeWidth={8}
                                             styles={buildStyles({
@@ -76,7 +87,7 @@ const HeaderProgressbar = ({ percentage }) => {
                                             })}
                                         >
                                             <img src={giftIcon} alt='' className="gift-icon" width="20px" />
-
+                                            {/* <p>h</p> */}
                                         </CircularProgressbarWithChildren>
                                     </div>
                                 </>
@@ -87,7 +98,7 @@ const HeaderProgressbar = ({ percentage }) => {
                 <div                        
                     >
                         <CircularProgressbarWithChildren
-                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`))}                            
+                        value={(percentage - localStorage.getItem(`${user?.uid}_newScores`)) < 0 ? 0 : (percentage - localStorage.getItem(`${user?.uid}_newScores`))}                            
                             background={true}                            
                             strokeWidth={8}
                             styles={buildStyles({
@@ -98,7 +109,7 @@ const HeaderProgressbar = ({ percentage }) => {
                                 backgroundColor: "white",
                             })}
                         >                                                        
-                            <img src={giftIcon} alt='' className="gift-icon" width="20px" />
+                        <img src={giftIcon} alt='' className="gift-icon" width="20px" />                        
                         </CircularProgressbarWithChildren>
                     </div>
                 }
