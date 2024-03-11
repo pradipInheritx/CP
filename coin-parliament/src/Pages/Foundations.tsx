@@ -233,7 +233,7 @@ const Foundations = () => {
               <strong style={{
                 width: "30%",
                 textAlign: `${window.screen.width > 767 ?"center":"left"}`,
-              }}>Cpm</strong>
+              }}>Cmp</strong>
               <strong style={{width:"10%"}}>Pax</strong>
             </div>
             {FoundationArray.map((item: any, index: number) => {
@@ -289,7 +289,7 @@ const Foundations = () => {
                                     }}
                                  >
                                   {/* {item.commission} */}
-                                  {item?.paxValue || 0}
+                                  {item.paxEarned || 0}
                                   </span>
                               </div>
                               
