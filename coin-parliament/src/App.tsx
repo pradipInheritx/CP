@@ -484,14 +484,16 @@ function App() {
     } else if (!Object.keys(coins).length && !socketConnect){      
       console.log("lodding true")
       setLoader(true);      
-    } else if (user?.email && !userInfo) {
+    } else if (!!user?.email && !userInfo) {
       console.log("lodding true")
       setLoader(true);
     } else {    
       console.log("lodding false")
       setLoader(false);            
     }
-  }, [user, userInfo]);
+  }, [user, userInfo, login, socketConnect, JSON.stringify(Object.keys(coins).length)]);
+
+  console.log(Object.keys(coins).length, socketConnect, !Object.keys(coins).length && !socketConnect, !!user?.email && !userInfo, "forloader")
 
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
@@ -592,6 +594,7 @@ function App() {
 
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
+    console.log(messagingResolve,"messagingResolve")
     if (messagingResolve) {
       getToken(messagingResolve, {
         vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
@@ -600,6 +603,7 @@ function App() {
         // console.log('token', token);
       }).catch((e) => {
         console.log('token', e);
+        // setLoader(false)
       });
     }
   }
