@@ -482,10 +482,13 @@ function App() {
       console.log("lodding true")
       setLoader(true);
     } else if (!Object.keys(coins).length && !socketConnect){      
+      console.log("lodding true")
       setLoader(true);      
     } else if (user?.email && !userInfo) {
+      console.log("lodding true")
       setLoader(true);
     } else {    
+      console.log("lodding false")
       setLoader(false);            
     }
   }, [user, userInfo]);

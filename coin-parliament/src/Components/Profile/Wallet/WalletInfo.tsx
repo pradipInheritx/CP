@@ -367,7 +367,7 @@ function WalletInfo() {
 
     const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
         return axios.get(
-            `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
+            `https://api.blockcypher.com/v1/${"eth"}/main/addrs/${inputAddress}`
         ).then(async (response) => {            
             const { error } = response.data;
             console.log(response,"geterror")

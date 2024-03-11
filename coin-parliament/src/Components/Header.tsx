@@ -261,7 +261,7 @@ const Header = ({
 	const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 0 : score);
-	console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
+	// console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
 	const voteDetails = useContext(VoteContext);
 	const [handleSoundClick] = useSound(buttonClick);
 	// useEffect(() => {
