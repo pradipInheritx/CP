@@ -1546,3 +1546,164 @@ iframe[style^="position"]{
     }  
   }
 
+
+  .shaped-btn-row .btn-shaped {
+    height: 26px;
+    border: 1px solid var(--blue-violet);
+    background: white;
+    min-width: 0px;
+    box-shadow: rgb(67, 47, 229) 0px 2px 1px, rgba(0, 0, 0, 0.22) 0px 6px 12px;
+    transition: all 0.2s ease 0s;
+    flex-direction: column;
+    border-radius: 38px;
+    border-top-right-radius: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6352e8;
+    font-weight: 600;
+    flex: 0 0 76px;
+    max-width: 76px;
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+.shaped-btn-row .btn-shaped.left-side {
+border-radius: 38px !important;
+border-top-left-radius: 0px !important;
+}
+
+
+.custom-circle-progress {
+    position: relative;
+    background: transparent;
+    text-align: center;
+    position: absolute;
+    right: -40px;
+    top: 0px;
+}
+
+
+.custom-circle-progress .gift-icon {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    width: 30px;
+    z-index: 2;
+    transform: translateY(-50%);
+}
+
+.custom-circle-progress .progress-cs {
+    width: 60px;
+    height: 60px;
+    font-size: 0px;
+    color: #fff;
+    border-radius: 9999px;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+    text-align: center;
+    flex: 0 0 60px;
+    max-width: 60px;
+}
+
+.custom-circle-progress .progress-cs::after {content: "%";}
+
+.custom-circle-progress .progress-cs .title {position: relative;z-index: 100;}
+
+.custom-circle-progress .progress-cs .overlay {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: #ffffff
+}
+
+.custom-circle-progress .progress-cs .left, .custom-circle-progress .progress-cs .right {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 4px solid #6352e8;
+    border-radius: 100px 0px 0px 100px;
+    border-right: 0;
+    transform-origin: right;
+}
+
+.custom-circle-progress .progress-cs .left {animation: load1 1s linear forwards;}
+
+.custom-circle-progress .progress-cs:nth-of-type(2) .right, .custom-circle-progress .progress-cs:nth-of-type(3) .right {animation: load2 .5s linear forwards 1s;}
+
+.custom-circle-progress .progress-cs:last-of-type .right, .custom-circle-progress .progress-cs:first-of-type .right {animation: load3 .8s linear forwards 1s;}
+
+@keyframes load1 {
+    0% {transform: rotate(0deg);}
+
+    100% {transform: rotate(180deg);}
+}
+
+@keyframes load2 {
+    0% {z-index: 100;transform: rotate(180deg);}
+
+    100% {z-index: 100;transform: rotate(270deg);}
+}
+
+@keyframes load3 {
+    0% {z-index: 100;transform: rotate(180deg);}
+
+    100% {
+        z-index: 100;transform: rotate(315deg);}
+}
+
+
+@media only screen and (max-width: 979px) {
+
+    .mobileHeader .custom-circle-progress .progress-cs {
+        width: 45px;
+        height: 45px;
+        flex: 0 0 45px;
+        max-width: 45px;
+    }
+    .mobileHeader .custom-circle-progress .gift-icon {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        width: 20px;
+        z-index: 2;
+        transform: translateY(-50%);
+    }
+    .mobileHeader .custom-circle-progress .progress-cs .left, .mobileHeader .custom-circle-progress .progress-cs .right {
+        border-width: 3px;
+        border-radius: 100px 0px 0px 100px;
+        }
+        .mobileHeader .custom-circle-progress {
+            right: -32px;
+            top: 7px;
+        }
+
+        .mobileHeader .shaped-btn-row .btn-shaped {
+            height: 20px;
+            flex: 0 0 62px;
+            max-width: 62px;
+            margin-bottom: 3px;
+            font-size: 8px;
+        }
+}
+
+@media only screen and (max-width: 575px) {
+    .mobileHeader .mobile-centered-element {
+    left: -20px;
+    }
+    .mobileHeader .navbar-brand {
+        display: inline-block;
+        text-align: right;
+        margin-right: 0px;
+}
+.mobileHeader .navbar-brand img {
+    max-width: 50px;
+    text-align: right;}
+
+}

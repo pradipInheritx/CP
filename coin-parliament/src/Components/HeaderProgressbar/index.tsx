@@ -9,6 +9,7 @@ import {
     buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import giftIcon from "../../assets/images/gift-icon-head.png"
 
 // Animation
 import { easeQuadInOut, easeQuadIn } from "d3-ease";
@@ -16,7 +17,7 @@ import AnimatedProgressProvider from "./AnimatedProgressProvider";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "Contexts/User";
 import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
-const CircularProgress = ({ percentage }) => {
+const HeaderProgressbar = ({ percentage }) => {
     const { width: w = 0 } = useWindowSize();
     const [progressBarValue, setProgressBarValue] = useState(0);
     const [startValue, setStartValue] = useState(false);
@@ -26,9 +27,19 @@ const CircularProgress = ({ percentage }) => {
     // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
-        if (progressBarValue && newScore != '0') {
+        if (progressBarValue != '0' && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
-            setStartValue((prevScore <= 0 ? 0 : prevScore));
+            // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
+            setStartValue((pre) => {
+                if ((userInfo?.voteStatistics?.score % 100) > 100 && ((userInfo?.voteStatistics?.score - newScore) % 100) < 6 ) {
+                    
+                    // (prevScore <= 0 ? 0 : prevScore)
+                    return 0
+                } else {
+                    return prevScore
+                }
+            });
+            // setStartValue((prevScore <= 0 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
@@ -42,19 +53,14 @@ const CircularProgress = ({ percentage }) => {
         }, [800]);
     }, [percentage]);
 
+    console.log(percentage,"percentage")
     // currentScore=localStorage.getItem('')
     return (
-        <div style={{ width: w > 767 ? "98%" : "52%" }}>
-            <CircularProgressbarWithChildren
-                value={100}
-                strokeWidth={1}
-                styles={buildStyles({
-                    pathColor: w > 767 ? "#fff" : '#d9d9d9',
-                    pathTransition: "none",
-                    strokeLinecap: "butt",
-                    trailColor: "transparent"
-                })}
-            >
+        <div style={{
+            width: w > 767 ? "55px" : "45px", height: w > 767 ? "55px" : "45px",
+        }}        
+        >
+           
                 {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
                     <AnimatedProgressProvider
                         valueStart={startValue}
@@ -66,46 +72,50 @@ const CircularProgress = ({ percentage }) => {
                             const roundedValue = parseFloat(value.toFixed(3));
                             return (
                                 <>
-                                    <div>
+                                    <div                                        
+                                    >
                                         <CircularProgressbarWithChildren
-                                            value={roundedValue < 0 ? 0 : roundedValue}
-                                            strokeWidth={w > 767 ? 11 : 13}
+                                            value={roundedValue < 0 ? 0 : roundedValue }
+                                            background={true}
+                                            strokeWidth={8}
                                             styles={buildStyles({
                                                 pathColor: "#6352e8",
-                                                pathTransition: 'none',
+                                                pathTransition: "none",
                                                 strokeLinecap: "butt",
-                                                trailColor: (w > 767 ? "transparent" : '#160133')
+                                                trailColor: ('white'),
+                                                backgroundColor: "white",
                                             })}
                                         >
-                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(roundedValue > 100 ? 100 : roundedValue).toFixed(3)}/100</span>
-                                            <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
-
+                                            <img src={giftIcon} alt='' className="gift-icon" width="20px" />
+                                            {/* <p>h</p> */}
                                         </CircularProgressbarWithChildren>
                                     </div>
                                 </>
                             );
                         }}
-                    </AnimatedProgressProvider> : <div>
+                </AnimatedProgressProvider>
+                :
+                <div                        
+                    >
                         <CircularProgressbarWithChildren
-                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`) < 0 ? 0 : percentage - localStorage.getItem(`${user?.uid}_newScores`))}
-                            strokeWidth={w > 767 ? 11 : 13}
+                        value={(percentage - localStorage.getItem(`${user?.uid}_newScores`)) < 0 ? 0 : (percentage - localStorage.getItem(`${user?.uid}_newScores`))}                            
+                            background={true}                            
+                            strokeWidth={8}
                             styles={buildStyles({
                                 pathColor: "#6352e8",
                                 pathTransition: "none",
                                 strokeLinecap: "butt",
-                                trailColor: (w > 767 ? "transparent" : '#160133')
+                                trailColor: ('white'),
+                                backgroundColor: "white",
                             })}
-                        >
-                            
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{((percentage - currentCMP) > 100 ? 100 : percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */).toFixed(3)}/100</span>
-                            <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
-
+                        >                                                        
+                        <img src={giftIcon} alt='' className="gift-icon" width="20px" />                        
                         </CircularProgressbarWithChildren>
                     </div>
                 }
-            </CircularProgressbarWithChildren>
+            {/* </CircularProgressbarWithChildren> */}
         </div >
     );
 };
 
-export default CircularProgress;
+export default HeaderProgressbar;

@@ -41,8 +41,10 @@ const Votes = () => {
           end: start + pageSize,
           userId: user?.uid,
           isOpenVote
-        }).then((res) => {          
-          setVotes(res?.data)
+        }).then((res) => {   
+          // @ts-ignore
+          const result = JSON.parse(res?.data)
+          setVotes(result)
           setIsLoading(false)          
         }).catch((error) => {
           setIsLoading(false)  
