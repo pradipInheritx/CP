@@ -1457,7 +1457,7 @@ async function getCombinedDetails() {
     }
 }
 
-async function getCoinParliamentAllUsersDeatils () {
+export const getCoinParliamentAllUsersDeatils = async () =>{
   try {
     // Fetch payment details
     const voteList :any = await getVoteList();
@@ -1533,7 +1533,7 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
 
 // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
 export const pendingPaymentSettlement = functions.pubsub
-  .schedule("*/5 * * * *")
+  .schedule("*/30 * * * *")
   .onRun(async () => {
     console.log("pendingPaymentSettlement start");
 
@@ -1584,13 +1584,14 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-  export const storeCPUsersDetailsIntoDB = functions.pubsub
+  exports.storeCPUsersDetailsIntoDB = functions.pubsub
   .schedule("*/5 * * * *")
   .onRun(async () => {
     console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
     try {
       console.log("Starting")
       const userList = await getCoinParliamentAllUsersDeatils();
+      console.log("function is executing correctly-----")
       console.log("userList", userList)
       
       const usersRef = admin.firestore().collection('userStatistics');
