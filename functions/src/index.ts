@@ -9,6 +9,7 @@ import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
+import multer from "multer";
 //import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -25,11 +26,9 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink
+  sendEmailVerificationLink,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
-
-
 
 import {
   getLeaderUsers,
@@ -90,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -103,13 +102,12 @@ import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
-// import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
+// import sendGrid Email function and templates
+import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
-
 
 // Routers files
 import Routers from "./routes/index";
@@ -119,8 +117,7 @@ import { checkTransactionStatus } from "./common/models/Payments";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 // initialize express server
@@ -158,7 +155,7 @@ app.use("/admin/FollowTable", Routers.FollowTableRouter);
 app.use("/admin/payments", Routers.adminPaymentRouter);
 app.use("/admin/foundation", Routers.foundationRouter);
 app.use("/payment", Routers.paymentRouter);
-app.patch("/updateReferScore", correctReferScoreToAllUsers)
+app.patch("/updateReferScore", correctReferScoreToAllUsers);
 
 // global routers
 app.post(
@@ -189,25 +186,71 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid)
+    console.log("decodedToken.uid : ", decodedToken.uid);
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then((userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
-        let userData: any = userRecord.toJSON()
+        let userData: any = userRecord.toJSON();
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
           res.send(successTemplate);
         }
-      })
-  }
-  catch (error: any) {
+      });
+  } catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
     return res.status(400).send(failureTemplate);
   }
 });
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
+app.post("/authBulk", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+    const users: any = [];
+    req.file.buffer
+      .toString()
+      .split("\n")
+      .forEach((line) => {
+        // Parse each CSV line and push to users array
+        const [firstName, lastName, email] = line.split(",");
+        !firstName && !lastName && !email
+          ? null
+          : users.push({ firstName, lastName, email });
+      });
+    users.shift();
+    await Promise.all(
+      users.map((user: any) => {
+        let password = generateRandomPassword(8);
+
+        console.log(" user : ", { email: user.email, password });
+        admin.auth().createUser({
+          email: user.email.trim(),
+          password: user.password,
+        });
+      })
+    );
+    return res.status(200).send("Users imported from CSV successfully.");
+  } catch (error) {
+    console.error("Error importing users from CSV:", error);
+    return res.status(500).send("Error importing users from CSV.");
+  }
+});
+function generateRandomPassword(length: number) {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -221,25 +264,47 @@ exports.api = functions.https.onRequest(main);
 
 async function correctReferScoreToAllUsers() {
   try {
-    const getAllUser = (await admin.firestore().collection('users').where('children', "!=", []).get()).docs.map((user) => user.data());
-    const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
-    console.log("filter the user length : ", filterTheUser.length)
+    const getAllUser = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("children", "!=", [])
+        .get()
+    ).docs.map((user) => user.data());
+    const filterTheUser = getAllUser.filter((user) =>
+      user.children?.length > 0
+        ? { id: user.uid, children: user.children }
+        : null
+    );
+    console.log("filter the user length : ", filterTheUser.length);
     for (let index = 0; index < filterTheUser.length; index++) {
       const user = filterTheUser[index];
-      console.log("user : ", user, index)
+      console.log("user : ", user, index);
       let commission = 0;
       for (let child = 0; child < user.children; child++) {
-        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => {
-          let userData = snapshot.data();
-          commission = commission + parseFloat(userData?.refereeScrore);
-        })
+        admin
+          .firestore()
+          .collection("users")
+          .doc(user.children[child])
+          .get()
+          .then((snapshot) => {
+            let userData = snapshot.data();
+            commission = commission + parseFloat(userData?.refereeScrore);
+          });
       }
-      await admin.firestore().collection('users').doc(user.id).set({ commission }, { merge: true }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.id)
+        .set({ commission }, { merge: true })
+        .then(() => {
+          console.log("userid : ", user.id, "update commission ", commission);
+        });
     }
 
-    return { status: true, message: "All user Refer score", result: true }
+    return { status: true, message: "All user Refer score", result: true };
   } catch (error) {
-    return { status: false, message: "something went wrong", error }
+    return { status: false, message: "something went wrong", error };
   }
 }
 
@@ -280,10 +345,14 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
+    console.log("user record : ", userRecord);
 
     // Check if the user registered with Google
-    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+    if (
+      userRecord.providerData.some(
+        (provider) => provider.providerId === "google.com"
+      )
+    ) {
       console.log("User registered with Google. Skipping verification email.");
       return { skipped: true };
     }
@@ -301,45 +370,66 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       await sendEmail(
         email,
         "Verify Your Account",
-        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+        userVerifyEmailTemplate(
+          email,
+          verificationLink,
+          "Your account has been created. Please verify your email for login."
+        )
       );
       console.info("Send Email Successfully");
     }
 
     console.log("Verification link:", verificationLink);
-    return { verificationLink }
+    return { verificationLink };
   } catch (error) {
     console.error("Error sending verification link:", error);
-    return { error }
+    return { error };
   }
 });
 
 exports.callBackURLFromServerToServer = functions.https.onCall(async (data) => {
   try {
+    const {
+      userId,
+      payloadKey,
+      uniqueId,
+      childUserEmail,
+      notificationType,
+      amount,
+      currency,
+      commission,
+    } = data;
 
-    const { userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission } = data;
-
-
-    console.info("data--->", data)
-    const getResponseAfterInsert = await admin.firestore()
-      .collection("userServerPushNotification").add({ userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission });
+    console.info("data--->", data);
+    const getResponseAfterInsert = await admin
+      .firestore()
+      .collection("userServerPushNotification")
+      .add({
+        userId,
+        payloadKey,
+        uniqueId,
+        childUserEmail,
+        notificationType,
+        amount,
+        currency,
+        commission,
+      });
     return {
       status: true,
       message: "Push Notification Server Data Added Successfully ",
-      result: getResponseAfterInsert.id
-    }
+      result: getResponseAfterInsert.id,
+    };
   } catch (error) {
-    console.info("catch", (error))
+    console.info("catch", error);
     return error;
   }
-}
-)
+});
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   const getReponse = await createPushNotificationOnCallbackURL(data);
   console.info("getReponse--->", getReponse);
-  return getReponse
-})
+  return getReponse;
+});
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user : ", user);
@@ -408,17 +498,19 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     console.log("new user email  : ", getUser.email);
 
     //Send Welcome Mail To User
-    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn);
     if (getUser.isVoteToEarn === false) {
       await sendEmail(
         userData.email,
         "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+        userWelcomeEmailTemplate(
+          `${userData.userName ? userData.userName : "user"}`,
+          env.BASE_SITE_URL
+        )
       );
       await sendEmailVerificationLink(getUser.email);
     }
     return newUser;
-
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -730,8 +822,6 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-
-
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
   const { auth } = context;
@@ -858,8 +948,6 @@ exports.assignReferrer = functions.https.onCall(async (data) => {
     console.log(e);
   }
 });
-
-
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
@@ -1004,11 +1092,10 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   }
 );
 
-exports.checkAndUpdateRewardTotal = functions.https.onCall(
-  async (data) => {
-    const { userId } = data;
-    return await checkAndUpdateRewardTotal(userId);
-  });
+exports.checkAndUpdateRewardTotal = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  return await checkAndUpdateRewardTotal(userId);
+});
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -1158,9 +1245,11 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
 
 exports.setParentCommission = functions.https.onCall(async (data: any) => {
   const { childId, voteScore } = data;
-  const db = admin.firestore().collection('users')
+  const db = admin.firestore().collection("users");
   try {
-    const getSettings: any = (await admin.firestore().collection('settings').doc('settings').get()).data();
+    const getSettings: any = (
+      await admin.firestore().collection("settings").doc("settings").get()
+    ).data();
     const { pctReferralActivity } = getSettings.CPMSettings;
 
     const getChild = (await db.doc(childId).get()).data();
@@ -1168,24 +1257,43 @@ exports.setParentCommission = functions.https.onCall(async (data: any) => {
       return {
         status: false,
         message: "child do not have parent",
-      }
+      };
     }
     const getParent = (await db.doc(getChild.parent).get()).data();
     const parentVoteStatistics = getParent?.voteStatistics;
-    const getCommissionNumber = (Number(voteScore * pctReferralActivity) / 100).toFixed(4);
-    const commission: number = Number(getCommissionNumber)
-    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
-    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
-    console.log("Score ", voteScore)
-    console.log("parentVoteStatistics : ", parentVoteStatistics)
-    console.log("parent get commission :", commission)
-    console.log("new Score ", newScore)
-    console.log("newCommission :", newCommission)
-    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4)
+    const getCommissionNumber = (
+      Number(voteScore * pctReferralActivity) / 100
+    ).toFixed(4);
+    const commission: number = Number(getCommissionNumber);
+    const newScore = (
+      Number(parentVoteStatistics?.score || 0) + commission
+    ).toFixed(4);
+    const newCommission = (
+      Number(parentVoteStatistics?.commission || 0) + commission
+    ).toFixed(4);
+    console.log("Score ", voteScore);
+    console.log("parentVoteStatistics : ", parentVoteStatistics);
+    console.log("parent get commission :", commission);
+    console.log("new Score ", newScore);
+    console.log("newCommission :", newCommission);
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4);
     // child refer score
-    await db.doc(childId).set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
+    await db
+      .doc(childId)
+      .set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
     // parent commission
-    await db.doc(getChild.parent).set({ voteStatistics: { ...getParent?.voteStatistics, commission: Number(newCommission), score: Number(newScore) } }, { merge: true });
+    await db
+      .doc(getChild.parent)
+      .set(
+        {
+          voteStatistics: {
+            ...getParent?.voteStatistics,
+            commission: Number(newCommission),
+            score: Number(newScore),
+          },
+        },
+        { merge: true }
+      );
     console.log(
       "pool mining Notification is calling: -- ",
       getChild.parent,
@@ -1202,11 +1310,11 @@ exports.setParentCommission = functions.https.onCall(async (data: any) => {
     return {
       status: true,
       message: "parent commission and child refer score added successfully",
-    }
+    };
   } catch (error) {
     return errorLogging("setParentCommission", "Error: ", error);
   }
-})
+});
 
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
@@ -1317,7 +1425,10 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
 // Function to get payment details
 async function getPaymentDetailsForUser() {
   try {
-    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+    const getAllPaymentsQuery = await admin
+      .firestore()
+      .collection("payments")
+      .get();
     const paymentDetails: any = [];
 
     getAllPaymentsQuery.docs.forEach((payment: any) => {
@@ -1326,14 +1437,13 @@ async function getPaymentDetailsForUser() {
       let userId = paymentData.userId;
 
       if (extraVotePurchased) {
-        let obj = { userId: userId, extraVotePurchased: "yes" }
-        paymentDetails.push(obj)
+        let obj = { userId: userId, extraVotePurchased: "yes" };
+        paymentDetails.push(obj);
       } else {
-        let obj = { userId: userId, extraVotePurchased: "no" }
-        paymentDetails.push(obj)
+        let obj = { userId: userId, extraVotePurchased: "no" };
+        paymentDetails.push(obj);
       }
     });
-
 
     return paymentDetails;
   } catch (error) {
@@ -1345,34 +1455,38 @@ async function getPaymentDetailsForUser() {
 // Function to get user details
 async function getUsersDetails() {
   try {
-    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user:any) => {
-      let userData = user.data()
+    const getAllUserData = (
+      await admin.firestore().collection("users").get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
       return {
         userId: user.id,
         name: userData?.userName || "",
         email: userData?.email || "",
-        totalVotes: userData?.voteStatistics?.total  || 0,
-        accountUpgrade: userData?.isUserUpgraded || false
-      }
+        totalVotes: userData?.voteStatistics?.total || 0,
+        accountUpgrade: userData?.isUserUpgraded || false,
+      };
     });
 
     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
-    const getAuthUserSignUpTime :any= [];
+    const getAuthUserSignUpTime: any = [];
     const allUsers = await admin.auth().listUsers();
-    allUsers.users.forEach((userRecord :any) => {
+    allUsers.users.forEach((userRecord: any) => {
       //console.log("User signupDate added:", userRecord.uid);
 
       getAuthUserSignUpTime.push({
         userId: userRecord.uid,
-        signUpTime: userRecord.metadata.creationTime
+        signUpTime: userRecord.metadata.creationTime,
       });
     });
 
     //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
 
-    const userDetailsWithSignUpDate = getAllUserData.map((userData:any) => {
-      const signUpData = getAuthUserSignUpTime.find((data:any) => data.userId === userData.userId);
+    const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
+      const signUpData = getAuthUserSignUpTime.find(
+        (data: any) => data.userId === userData.userId
+      );
       if (signUpData) {
         userData.signUpTime = signUpData.signUpTime;
       }
@@ -1382,121 +1496,123 @@ async function getUsersDetails() {
     return {
       status: true,
       message: "Users fetched successfully",
-      data: userDetailsWithSignUpDate
+      data: userDetailsWithSignUpDate,
     };
-
   } catch (error) {
     console.error("Error while fetching user data:", error);
     return {
       status: false,
       message: "Error while fetching user data",
-      data: {}
+      data: {},
     };
   }
 }
 
 async function getVoteList() {
   try {
-      let voteDetails = (await admin.firestore().collection("votes")
-        .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-        .get()).docs.map((vote:any) => {
-          let voteData = vote.data()
-          return {
-            userId: voteData.userId,
-            voteTime: voteData.voteTime,
-          }
-        });
-  
-      console.log("Votes fetched successfully", voteDetails)
-      return voteDetails;
-  
-    } catch (error) {
-      console.error('Error:', error);
-      return null
-    }
+    let voteDetails = (
+      await admin
+        .firestore()
+        .collection("votes")
+        .where("voteTime", ">=", Date.now() - 60 * 24 * 60 * 60 * 1000)
+        .get()
+    ).docs.map((vote: any) => {
+      let voteData = vote.data();
+      return {
+        userId: voteData.userId,
+        voteTime: voteData.voteTime,
+      };
+    });
+
+    console.log("Votes fetched successfully", voteDetails);
+    return voteDetails;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
 }
 
 async function getCombinedDetails() {
   try {
-      // Fetch payment details
-      const paymentDetails = await getPaymentDetailsForUser();
-
-      console.log("paymentDetails", paymentDetails)
-
-      // Fetch user details
-      let userDetails = await getUsersDetails();
-  
-     let userData:any = userDetails.data;
-  
-      userData.forEach((element:any) => {
-        let userId = element.userId;
-  
-  
-        // Key and value to filter
-        const keyToFilter = "userId";
-        const valueToFilter = userId;
-  
-        // Filtering the array based on the key and value
-        const filteredObj = paymentDetails.find((obj:any) => obj[keyToFilter] === valueToFilter);
-        //console.log(filteredObj);
-
-        if(filteredObj !== undefined) {
-          element.extraVotePurchased = filteredObj.extraVotePurchased;
-        }else{
-          element.extraVotePurchased = "no";
-        }
-  
-      });
-
-      return userDetails;
-  
-  
-    } catch (error) {
-      console.error("Error fetching combined details:", error);
-      return false;
-    }
-}
-
-async function getCoinParliamentAllUsersDeatils () {
-  try {
     // Fetch payment details
-    const voteList :any = await getVoteList();
+    const paymentDetails = await getPaymentDetailsForUser();
 
-    console.log("voteList", voteList)
+    console.log("paymentDetails", paymentDetails);
 
     // Fetch user details
-    let userList :any = await getCombinedDetails();
+    let userDetails = await getUsersDetails();
+
+    let userData: any = userDetails.data;
+
+    userData.forEach((element: any) => {
+      let userId = element.userId;
+
+      // Key and value to filter
+      const keyToFilter = "userId";
+      const valueToFilter = userId;
+
+      // Filtering the array based on the key and value
+      const filteredObj = paymentDetails.find(
+        (obj: any) => obj[keyToFilter] === valueToFilter
+      );
+      //console.log(filteredObj);
+
+      if (filteredObj !== undefined) {
+        element.extraVotePurchased = filteredObj.extraVotePurchased;
+      } else {
+        element.extraVotePurchased = "no";
+      }
+    });
+
+    return userDetails;
+  } catch (error) {
+    console.error("Error fetching combined details:", error);
+    return false;
+  }
+}
+
+async function getCoinParliamentAllUsersDeatils() {
+  try {
+    // Fetch payment details
+    const voteList: any = await getVoteList();
+
+    console.log("voteList", voteList);
+
+    // Fetch user details
+    let userList: any = await getCombinedDetails();
 
     //console.log("userList", userList)
 
     userList = userList.data;
 
     userList.map((user: any) => {
-      let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
+      let userVote = voteList.filter(
+        (vote: any) => vote.userId === user.userId
+      );
       console.log("UserVote : ", userVote);
-  
+
       const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
       console.log("voteTimes>>>>>>>", voteTimes);
-  
-      const uniqueDates = [...new Set(voteTimes.map((date: Date) => date.toDateString()))];
-      let numberOfDaysVoted = uniqueDates.length;
-  
-      user['noOfVotesDays'] = numberOfDaysVoted;
-  
-      let averageVotes = numberOfDaysVoted !== 0 ? userVote.length / numberOfDaysVoted : 0;
-  
-      user['averageVotes'] = averageVotes;
-  });
-  
-    return userList 
 
+      const uniqueDates = [
+        ...new Set(voteTimes.map((date: Date) => date.toDateString())),
+      ];
+      let numberOfDaysVoted = uniqueDates.length;
+
+      user["noOfVotesDays"] = numberOfDaysVoted;
+
+      let averageVotes =
+        numberOfDaysVoted !== 0 ? userVote.length / numberOfDaysVoted : 0;
+
+      user["averageVotes"] = averageVotes;
+    });
+
+    return userList;
   } catch (error) {
     console.error("Error fetching combined details:", error);
     return false;
   }
-  
 }
-
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
@@ -1539,81 +1655,91 @@ export const pendingPaymentSettlement = functions.pubsub
 
     // Get the current timestamp
     const currentTimeStamp = new Date();
-    const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
-
+    const twentyFourHoursAgo = new Date(
+      currentTimeStamp.getTime() - 24 * 60 * 60 * 1000
+    );
 
     try {
       // Query payments collection for payments within the last 24 hours
-      const paymentsSnapshot = await admin.firestore().collection('payments')
+      const paymentsSnapshot = await admin
+        .firestore()
+        .collection("payments")
         .where("timestamp", ">=", twentyFourHoursAgo)
         .get();
 
-      paymentsSnapshot.forEach(doc => {
+      paymentsSnapshot.forEach((doc) => {
         console.log("Document ID:", doc.id);
         console.log("Document Data:", doc.data());
       });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
-        const paymentData = snapshot.data();
-        console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
-        return paymentData.event === 'Approved';
-      });
-
+      const approvedPayments: any = paymentsSnapshot.docs.filter(
+        (snapshot: any) => {
+          const paymentData = snapshot.data();
+          console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData);
+          console.log(
+            ">>>>>>>>>>>>>>>>>>>>>>>>>",
+            paymentData.event === "Approved"
+          );
+          return paymentData.event === "Approved";
+        }
+      );
 
       console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const transaction of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
+        console.log("approvedPayments>>>>>>>>>>>>>", transaction);
         const paymentRef = transaction.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref);
         // call the api to check transaction is confirmed or not
-        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
+        const transactionStatus: any = await checkTransactionStatus(
+          transaction?.paymentDetails
+        );
         if (transactionStatus.status) {
-          console.log("transactionStatus : ", transactionStatus.message)
-          await paymentRef.update({ event: 'Confirmed' });
+          console.log("transactionStatus : ", transactionStatus.message);
+          await paymentRef.update({ event: "Confirmed" });
         } else {
-          console.error("transactionStatus : ", transactionStatus)
+          console.error("transactionStatus : ", transactionStatus);
         }
       }
-      console.log('Payments updated successfully.');
+      console.log("Payments updated successfully.");
     } catch (error) {
-      console.error('Error updating payments:', error);
+      console.error("Error updating payments:", error);
     }
   });
 
-  export const storeCPUsersDetailsIntoDB = functions.pubsub
+export const storeCPUsersDetailsIntoDB = functions.pubsub
   .schedule("*/5 * * * *")
   .onRun(async () => {
-    console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
+    console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
     try {
-      console.log("Starting")
+      console.log("Starting");
       const userList = await getCoinParliamentAllUsersDeatils();
-      console.log("userList", userList)
-      
-      const usersRef = admin.firestore().collection('userStatistics');
-      console.log("usersRef: created")
-      
+      console.log("userList", userList);
+
+      const usersRef = admin.firestore().collection("userStatistics");
+      console.log("usersRef: created");
+
       for (const user of userList) {
-          try {
-              await usersRef.doc(user.userId).set(user);
-              console.log(`User data stored successfully for user ${user.userId}`);
-          } catch (error) {
-              console.error(`Error storing user data for user ${user.userId}:`, error);
-          }
+        try {
+          await usersRef.doc(user.userId).set(user);
+          console.log(`User data stored successfully for user ${user.userId}`);
+        } catch (error) {
+          console.error(
+            `Error storing user data for user ${user.userId}:`,
+            error
+          );
+        }
       }
 
-      console.log('User data stored successfully in users collection.');
+      console.log("User data stored successfully in users collection.");
       return true;
-  } catch (error) {
-      console.error('Error storing user data in users collection:', error);
+    } catch (error) {
+      console.error("Error storing user data in users collection:", error);
       return false;
-  }
+    }
   });
-
-
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -1700,74 +1826,91 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 //----------END CPVI scheduler-------------
 
-
 // -------- pax distribution -----------
 // ------ 24 hours --------
 exports.paxDistribution = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(async () => {
     try {
-      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+      const getPaxTransactionList = (
+        await admin.firestore().collection("paxTransaction").get()
+      ).docs.map((pax: any) => {
+        return { ...pax.data(), id: pax.id };
+      });
+      const getIsVirtualTransaction = getPaxTransactionList.filter(
+        (pax: any) => pax.isVirtual == true
+      );
       console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
       if (getIsVirtualTransaction.length == 0) {
         return {
           status: true,
           message: "pax transaction is updated successfully",
-          result: getIsVirtualTransaction
-        }
+          result: getIsVirtualTransaction,
+        };
       }
       for (let index = 0; index < getIsVirtualTransaction.length; index++) {
         let pax = getIsVirtualTransaction[index];
-        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-          isVirtual: admin.firestore.FieldValue.delete()
-        }, { merge: true });
+        await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+          {
+            isVirtual: admin.firestore.FieldValue.delete(),
+          },
+          { merge: true }
+        );
       }
       return {
         status: true,
         message: "pax transaction is updated successfully",
-        result: null
-      }
+        result: null,
+      };
     } catch (error: any) {
-      errorLogging("paxDistribution", "ERROR", error)
+      errorLogging("paxDistribution", "ERROR", error);
       return {
         status: false,
         message: "Something went wrong",
-        result: null
-      }
+        result: null,
+      };
     }
   });
 
 exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
   try {
-    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-    const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+    const getPaxTransactionList = (
+      await admin.firestore().collection("paxTransaction").get()
+    ).docs.map((pax: any) => {
+      return { ...pax.data(), id: pax.id };
+    });
+    const getIsVirtualTransaction = getPaxTransactionList.filter(
+      (pax: any) => pax.isVirtual == true
+    );
     console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
     if (getIsVirtualTransaction.length == 0) {
       return {
         status: true,
         message: "pax transaction is updated successfully",
-        result: getIsVirtualTransaction
-      }
+        result: getIsVirtualTransaction,
+      };
     }
     for (let index = 0; index < getIsVirtualTransaction.length; index++) {
       let pax = getIsVirtualTransaction[index];
-      await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-        isVirtual: admin.firestore.FieldValue.delete()
-      }, { merge: true });
+      await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+        {
+          isVirtual: admin.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
     }
     return {
       status: true,
       message: "pax transaction is updated successfully",
-      result: null
-    }
+      result: null,
+    };
   } catch (error: any) {
-    errorLogging("paxDistribution", "ERROR", error)
+    errorLogging("paxDistribution", "ERROR", error);
     return {
       status: false,
       message: "Something went wrong",
-      result: null
-    }
+      result: null,
+    };
   }
 });
 
@@ -1787,27 +1930,33 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 // ******************* END CRON JOBS ****************
 exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
   try {
-    const getCommissionUsers = (await admin.firestore().collection('users').where('voteStatistics.commission', '>', 0).get()).docs.map((user: any) => {
+    const getCommissionUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("voteStatistics.commission", ">", 0)
+        .get()
+    ).docs.map((user: any) => {
       let userData = user.data();
       return {
         parentId: user.id,
         parentVoteStatistics: userData.voteStatistics,
-        childIds: userData.children
-      }
+        childIds: userData.children,
+      };
     });
-    console.log("getCommissionUsers ", getCommissionUsers.length)
+    console.log("getCommissionUsers ", getCommissionUsers.length);
 
     return {
       status: true,
       message: "success to get users",
-      result: getCommissionUsers
-    }
+      result: getCommissionUsers,
+    };
   } catch (error) {
     return {
       status: false,
       message: "failed to get users",
-      error
-    }
+      error,
+    };
   }
 });
 
@@ -1815,80 +1964,102 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   const { user } = data;
 
   try {
-    let commission = 0
+    let commission = 0;
     for (let index = 0; index < user.children.length; index++) {
       const element = user.children[index];
-      commission += await admin.firestore().collection('users').doc(element).get().then((child) => {
-        let childData = child.data();
-        return childData?.refereeScrore || 0
-      })
+      commission += await admin
+        .firestore()
+        .collection("users")
+        .doc(element)
+        .get()
+        .then((child) => {
+          let childData = child.data();
+          return childData?.refereeScrore || 0;
+        });
     }
     console.log("commission : ", commission);
-    await admin.firestore().collection('users').doc(user.parentId).set({
-      voteStatistics: { ...user.parentVoteStatistics, commission }
-    }, { merge: true }).then(() => {
-      console.log("success to update users", user.parentId)
-    });
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(user.parentId)
+      .set(
+        {
+          voteStatistics: { ...user.parentVoteStatistics, commission },
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("success to update users", user.parentId);
+      });
     return {
       status: true,
       message: "success to update users",
-    }
+    };
   } catch (error) {
     return {
       status: false,
       message: "failed to get users",
-      error
-    }
+      error,
+    };
   }
-})
+});
 
 exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
   try {
-    const getAllUsers = (await admin.firestore().collection('users').where('referalReceiveType.name', '!=', 'ONDEMAND').limit(50).get()).docs.map((user: any) => {
-      let userData = user.data()
-      return { userId: user.id, referalType: userData.referalReceiveType }
+    const getAllUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("referalReceiveType.name", "!=", "ONDEMAND")
+        .limit(50)
+        .get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
+      return { userId: user.id, referalType: userData.referalReceiveType };
     });
     console.log("getAllUsers length: " + getAllUsers.length);
     const updateUserList = getAllUsers.map(async (user) => {
-      let getRefrealType = user.referalType
-      await admin.firestore().collection('users').doc(user.userId).set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } })
-    })
+      let getRefrealType = user.referalType;
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.userId)
+        .set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } });
+    });
     Promise.all(updateUserList)
       .then(() => {
-        console.log('All updates completed successfully');
+        console.log("All updates completed successfully");
       })
-      .catch(error => {
-        console.error('Error performing updates:', error);
+      .catch((error) => {
+        console.error("Error performing updates:", error);
       });
   } catch (error) {
-    console.error("scriptToUpdateAllUsers ERROR: " + error)
+    console.error("scriptToUpdateAllUsers ERROR: " + error);
   }
-})
+});
 exports.appendUserName = functions.https.onCall(async (data) => {
   const { users } = data;
   let updatedUsers = [];
   try {
-
     let date = Date.now();
     if (users && users.length) {
       for (let user = 0; user < users.length; user++) {
-        let userName = users[user].email.split('@')[0] || ("cpUser" + date.toString().slice(-4));
-        updatedUsers.push({ ...users[user], userName })
+        let userName =
+          users[user].email.split("@")[0] ||
+          "cpUser" + date.toString().slice(-4);
+        updatedUsers.push({ ...users[user], userName });
       }
     }
     return {
       status: true,
       message: "User Created Successfully",
-      data: updatedUsers
+      data: updatedUsers,
     };
   } catch (error) {
     return {
       status: false,
       message: "User Not Created ",
-      data: null
-    }
-  };
+      data: null,
+    };
+  }
 });
-
-
-
