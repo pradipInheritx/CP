@@ -189,24 +189,33 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid)
-    auth
-      .updateUser(decodedToken.uid, { emailVerified: true })
-      .then((userRecord) => {
-        console.log("User successfully verified:", userRecord.toJSON());
-        let userData: any = userRecord.toJSON()
-        if (userData?.emailVerified == true) {
-          const successTemplate = newUserVerifySuccessTemplate();
-          res.send(successTemplate);
-        }
-      })
-  }
-  catch (error: any) {
+    console.log("decodedToken.uid : ", decodedToken.uid);
+    const userRecord = await auth.getUser(decodedToken.uid);
+
+    if (!userRecord.emailVerified) {
+      console.log("user Verfy",userRecord.emailVerified)
+      // If the email is not verified, return a response indicating verification pending
+      return res.status(200).send({
+        status: true,
+        message: "Email verification pending",
+        result: null,
+      });
+    }
+
+    // If the email is verified, update the user's emailVerified status
+    await auth.updateUser(decodedToken.uid, { emailVerified: true });
+    console.log("User successfully verified.");
+
+    // Now you can send the welcome email or perform any other necessary actions
+    const successTemplate = newUserVerifySuccessTemplate();
+    res.status(200).send(successTemplate);
+  } catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
     return res.status(400).send(failureTemplate);
   }
 });
+
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
