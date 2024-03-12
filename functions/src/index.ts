@@ -1591,7 +1591,7 @@ export const pendingPaymentSettlement = functions.pubsub
   });
 
   exports.storeCPUsersDetailsIntoDB = functions.pubsub
-  .schedule("*/10 * * * *")
+  .schedule("0 0 * * *")
   .onRun(async () => {
     console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
     try {
