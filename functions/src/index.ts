@@ -114,6 +114,8 @@ import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
 import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
 import { checkTransactionStatus } from "./common/models/Payments";
+import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
+import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -229,10 +231,22 @@ app.post("/authBulk", upload.single("file"), async (req, res) => {
         let password = generateRandomPassword(8);
 
         console.log(" user : ", { email: user.email, password });
-        admin.auth().createUser({
-          email: user.email.trim(),
-          password: user.password,
-        });
+        admin
+          .auth()
+          .createUser({
+            email: user.email.trim(),
+            password,
+          })
+          .then(() => console.log("Created user: ", user.email));
+        sendBulkEmail(
+          user.email.trim(),
+          "Vote to Earn",
+          adminSignupTemplate(
+            user.email.trim(),
+            password,
+            "Welcome to Vote to earn"
+          )
+        );
       })
     );
     return res.status(200).send("Users imported from CSV successfully.");
@@ -1282,18 +1296,16 @@ exports.setParentCommission = functions.https.onCall(async (data: any) => {
       .doc(childId)
       .set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
     // parent commission
-    await db
-      .doc(getChild.parent)
-      .set(
-        {
-          voteStatistics: {
-            ...getParent?.voteStatistics,
-            commission: Number(newCommission),
-            score: Number(newScore),
-          },
+    await db.doc(getChild.parent).set(
+      {
+        voteStatistics: {
+          ...getParent?.voteStatistics,
+          commission: Number(newCommission),
+          score: Number(newScore),
         },
-        { merge: true }
-      );
+      },
+      { merge: true }
+    );
     console.log(
       "pool mining Notification is calling: -- ",
       getChild.parent,
