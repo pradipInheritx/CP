@@ -114,7 +114,7 @@ export type LoginProps = {
 const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e, setLogin } = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e, setLogin, setLoader } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   console.log(smsVerification)
@@ -193,7 +193,10 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
-            successFunc: (params) => setUser(params),
+            successFunc: (params) => {
+              setLoader(true)
+              setUser(params)
+            },
             errorFunc: (e) => showToast(e.message, ToastType.ERROR),
           }}
           login={login}

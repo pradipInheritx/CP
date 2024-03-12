@@ -156,7 +156,7 @@ const SingleCoin = () => {
           },
         }));
       }      
-      if (symbol) {
+      if (symbol && Object.keys(coins).includes(symbol)) {
 
         // @ts-ignore
         const dot = decimal[symbol]
@@ -184,7 +184,7 @@ const SingleCoin = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data?.result?.data[0].a) {
+      if (data?.result?.data[0].a && Object.keys(coins).includes("CRO")) {
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           ['CRO']: {

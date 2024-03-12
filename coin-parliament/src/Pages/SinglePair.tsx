@@ -141,7 +141,7 @@ const SinglePair = () => {
           },
         }));
       }
-      if (symbol) {
+      if (symbol && Object.keys(coins).includes(symbol)) {
         // @ts-ignore
         const dot = decimal[symbol]
         pairLivePrice.current = {
@@ -168,7 +168,7 @@ const SinglePair = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data?.result?.data[0].a) {
+      if (data?.result?.data[0].a && Object.keys(coins).includes("CRO")) {
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           ['CRO']: {

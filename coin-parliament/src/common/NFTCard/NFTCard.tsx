@@ -99,13 +99,16 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [scratchFinish, setScratchFinish] = useState<any>(false)
   const [Videoshow, setVideoshow] = useState(false)
   const [fulldata, setFulldata] = useState([])
-  const [handleSoundClickCardplay, { pause: handleSoundClickCardpause }] = useSound(scratchsound)
+  const [handleSoundClickCardplay, { stop: handleSoundClickCardpause }] = useSound(
+    scratchsound,
+    { interrupt: false, loop: true }
+  )
   // const [befornotShow, setBefornotShow] = useState<any>(true)
 
   const { showReward, setShowReward } = useContext(AppContext);
   const [mintedTime, setMintedTime] = useState("");
   const { user } = useContext(UserContext);
-  const [claimRewardSoundplay, { pause: claimRewardSoundpause }] = useSound(claimSound);
+  const [claimRewardSoundplay, { stop: claimRewardSoundpause }] = useSound(claimSound);
 
   const [allFrontImg, setAllFrontImg] = useState<any>({
     COMMON: common,
@@ -332,7 +335,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   // for PC
   const scratchStart = (e: any) => {
-    console.log('PCStart', e)
+    handleSoundClickCardplay()
+    // console.log('scratchStart', e)
     // console.log(scratchStart,"scratchStartWork")
     const { layerX, offsetX, layerY, offsetY } = e.nativeEvent;
     setisDrawing(true);
@@ -344,20 +348,20 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   };
   const scratch = (e: any) => {
-    console.log('PC continue');
+    // console.log('scratch',e);
 
     const { offsetX, layerX, offsetY, layerY } = e.nativeEvent;
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     if (scratchShound == true) {
-      handleSoundClickCardplay()
+      // handleSoundClickCardplay()
     } else {
       handleSoundClickCardpause()
     }
     if (!isDrawing) {
       return;
     }
-    console.log(offsetX, offsetY, e, "contextCheck")
+    // console.log(offsetX, offsetY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     // context.moveTo(startX,startY);
@@ -371,7 +375,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   };
 
   const scratchEnd = (e: any) => {
-    console.log('PcEND');
+    // console.log('scratchEnd', e);
     handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
@@ -386,6 +390,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true);
       setRotateCard(true);
+      // setisDrawing(false)
       setScratchShound(false)
       openpopup()
       claimRewardSoundplay()
@@ -412,19 +417,19 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   //for mobile
   const scratchStartMobile = (e: any) => {
-    console.log('mobileStart', e);
+    handleSoundClickCardplay()
+    // console.log('mobileStart', e);
     const { clientX, clientY } = e.touches[0];
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
 
-    console.log(rect, "rect")
+    // console.log(rect, "rect")
     const offsetX = clientX - rect.left;
     const offsetY = clientY - rect.top;
     setisDrawing(true);
     setStartX(offsetX);
     setStartY(offsetY);
-    // setScratchShound(true);
-    handleSoundClickCardplay();
+    setScratchShound(true);    
     setShowImg(true);
 
     setBefornotShow(false)
@@ -432,10 +437,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   };
 
   const scratchMobile = (e: any) => {
-    console.log('mobile continue');
+    // console.log('mobile continue');
     const { clientX, clientY } = e.touches[0];
     // if (scratchShound == true) {
-    handleSoundClickCardplay();
+    // handleSoundClickCardplay();
     // }
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
@@ -445,7 +450,11 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     // const { clientX, clientY } = e.targetTouches[0];
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-
+    if (scratchShound == true) {
+      // handleSoundClickCardplay()
+    } else {
+      handleSoundClickCardpause()
+    }
     if (!isDrawing) {
       return;
     }
@@ -460,7 +469,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     setStartY(offsetY);
   };
   const scratchEndMobile = () => {
-    console.log('mobileEnd');
+    // console.log('mobileEnd');
     handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");

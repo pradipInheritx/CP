@@ -493,7 +493,7 @@ function App() {
     }
   }, [user, userInfo, login, socketConnect, JSON.stringify(Object.keys(coins).length)]);
 
-  console.log(Object.keys(coins).length, socketConnect, !Object.keys(coins).length && !socketConnect, !!user?.email && !userInfo, "forloader")
+  // console.log(Object.keys(coins).length, socketConnect, !Object.keys(coins).length && !socketConnect, !!user?.email && !userInfo, "forloader")
 
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);

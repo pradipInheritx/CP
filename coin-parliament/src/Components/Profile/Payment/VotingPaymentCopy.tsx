@@ -1351,7 +1351,7 @@ const VotingPaymentCopy: React.FC<{
                         }}
                       >
 
-                        {payButton ? "Changeing..." : 'Change network'}
+                        {payButton ? "Changing..." : 'Change network'}
                       </button>
                     </ButttonDiv>
                   </div >

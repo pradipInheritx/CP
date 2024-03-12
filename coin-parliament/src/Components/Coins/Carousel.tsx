@@ -215,13 +215,14 @@ const Carousel = ({
       numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
+  
 
   useEffect(() => {
     if (!ws) return
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);      
       const symbol = message?.s?.slice(0, -4)      
-      if (symbol) {
+      if (symbol && Object.keys(coins).includes(symbol) ) {
 
         // @ts-ignore
         const dot = decimal[symbol]
@@ -251,7 +252,7 @@ const Carousel = ({
       const data = JSON.parse(event.data);
       const dot = decimal["CRO"]
       // console.log('cro price',data?.result?.data[0])
-      if (data?.result?.data[0].a) {
+      if (data?.result?.data[0].a && Object.keys(coins).includes("CRO")) {
         // @ts-ignore
         livePrice.current = {
           ...livePrice.current,

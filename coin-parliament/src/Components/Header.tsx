@@ -260,7 +260,7 @@ const Header = ({
 	const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
 	const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 0 : score);
+	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
 	// console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
 	const voteDetails = useContext(VoteContext);
 	const [handleSoundClick] = useSound(buttonClick);
@@ -578,7 +578,7 @@ const Header = ({
 											}}
 										>
 											<div className='' onClick={() => {
-												if (!showMenubar && !followerPage) navigate("/profile/edit")
+												if (!showMenubar && !followerPage) navigate("/profile/wallet")
 											}
 											}
 												style={{
@@ -732,6 +732,9 @@ const Header = ({
 														</div>
 													</div> */}
 													<div className="custom-circle-progress"
+														style={{
+														cursor:"pointer"	
+														}}
 														onClick={() => {
 															//  if (!showMenubar && !followerPage) navigate("/profile/mine")
 															navigate("/profile/mine")
@@ -919,7 +922,7 @@ const Header = ({
 														transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
 													}}>
 													<div onClick={() => {
-														if (!showMenubar && !followerPage) navigate("/profile/edit")
+														if (!showMenubar && !followerPage) navigate("/profile/wallet")
 													}}
 
 														style={{
@@ -1071,6 +1074,9 @@ const Header = ({
 
 															}
 															<div className="custom-circle-progress"
+																style={{
+																	cursor: "pointer"
+																}}
 																onClick={() => {
 																	navigate("/profile/mine")
 															}}

@@ -23,23 +23,25 @@ const HeaderProgressbar = ({ percentage }) => {
     const [startValue, setStartValue] = useState(false);
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
-    const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+    const setCurrentCMP = useContext(CurrentCMPDispatchContext);    
     // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue != '0' && newScore != '0') {
-            let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
+            let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100           
+            console.log(progressBarValue, prevScore,"progressBarValue, prevScore")
             // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
-            setStartValue((pre) => {
-                if ((userInfo?.voteStatistics?.score % 100) > 100 && ((userInfo?.voteStatistics?.score - newScore) % 100) < 6 ) {
-                    
-                    // (prevScore <= 0 ? 0 : prevScore)
-                    return 0
-                } else {
-                    return prevScore
-                }
-            });
-            // setStartValue((prevScore <= 0 ? 0 : prevScore));
+
+            // setStartValue((pre) => {
+            //     if (percentage != 0) {                    
+            //         // (prevScore <= 0 ? 0 : prevScore)
+            //         // return 0
+            //         return prevScore
+            //     }
+            //     // else {
+            //     // }
+            // });
+            setStartValue((prevScore <= 0 || percentage == 100 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
@@ -47,13 +49,12 @@ const HeaderProgressbar = ({ percentage }) => {
         }
     }, [progressBarValue]);
     useEffect(() => {
-        setProgressBarValue(0);
+        // setProgressBarValue(0);
         const time = setTimeout(() => {
             setProgressBarValue(percentage);
         }, [800]);
     }, [percentage]);
-
-    // console.log(percentage,"percentage")
+    
     // currentScore=localStorage.getItem('')
     return (
         <div style={{
