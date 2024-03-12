@@ -189,16 +189,25 @@ app.get("/user/verified", async (req: any, res: any) => {
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
     console.log("decodedToken.uid : ", decodedToken.uid);
-    auth
-      .updateUser(decodedToken.uid, { emailVerified: true })
-      .then((userRecord) => {
-        console.log("User successfully verified:", userRecord.toJSON());
-        let userData: any = userRecord.toJSON();
-        if (userData?.emailVerified == true) {
-          const successTemplate = newUserVerifySuccessTemplate();
-          res.send(successTemplate);
-        }
+    const userRecord = await auth.getUser(decodedToken.uid);
+
+    if (!userRecord.emailVerified) {
+      console.log("user Verfy",userRecord.emailVerified)
+      // If the email is not verified, return a response indicating verification pending
+      return res.status(200).send({
+        status: true,
+        message: "Email verification pending",
+        result: null,
       });
+    }
+
+    // If the email is verified, update the user's emailVerified status
+    await auth.updateUser(decodedToken.uid, { emailVerified: true });
+    console.log("User successfully verified.");
+
+    // Now you can send the welcome email or perform any other necessary actions
+    const successTemplate = newUserVerifySuccessTemplate();
+    res.status(200).send(successTemplate);
   } catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
@@ -265,6 +274,7 @@ function generateRandomPassword(length: number) {
   }
   return password;
 }
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -511,19 +521,22 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUser.email);
 
-    //Send Welcome Mail To User
-    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn);
-    if (getUser.isVoteToEarn === false) {
-      await sendEmail(
-        userData.email,
-        "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(
-          `${userData.userName ? userData.userName : "user"}`,
-          env.BASE_SITE_URL
-        )
-      );
-      await sendEmailVerificationLink(getUser.email);
+    // Send Email Verification Link to User
+    await sendEmailVerificationLink(getUser.email);
+
+    // Return if user isVoteToEarn is true
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === true) {
+      return newUser;
     }
+
+    // Send Welcome Mail To User if isVoteToEarn is false
+    await sendEmail(
+      userData.email,
+      "Welcome To Coin Parliament!",
+      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    );
+
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
@@ -1721,8 +1734,8 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-export const storeCPUsersDetailsIntoDB = functions.pubsub
-  .schedule("*/5 * * * *")
+  exports.storeCPUsersDetailsIntoDB = functions.pubsub
+  .schedule("0 0 * * *")
   .onRun(async () => {
     console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
     try {
