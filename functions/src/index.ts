@@ -189,27 +189,26 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid);
-    const userRecord = await auth.getUser(decodedToken.uid);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then(async (userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          const successTemplate = newUserVerifySuccessTemplate();
 
-    if (!userRecord.emailVerified) {
-      console.log("user Verfy",userRecord.emailVerified)
-      // If the email is not verified, return a response indicating verification pending
-      return res.status(200).send({
-        status: true,
-        message: "Email verification pending",
-        result: null,
-      });
-    }
+          await sendEmail(
+            userData.email,
+            "Welcome To Coin Parliament!",
+            userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+          );
+          res.send(successTemplate);
 
-    // If the email is verified, update the user's emailVerified status
-    await auth.updateUser(decodedToken.uid, { emailVerified: true });
-    console.log("User successfully verified.");
-
-    // Now you can send the welcome email or perform any other necessary actions
-    const successTemplate = newUserVerifySuccessTemplate();
-    res.status(200).send(successTemplate);
-  } catch (error: any) {
+        }
+      })
+  }
+  catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
     return res.status(400).send(failureTemplate);
@@ -426,11 +425,11 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     }
 
     // Send Welcome Mail To User if isVoteToEarn is false
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    );
+    // await sendEmail(
+    //   userData.email,
+    //   "Welcome To Coin Parliament!",
+    //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    // );
 
     return newUser;
 
