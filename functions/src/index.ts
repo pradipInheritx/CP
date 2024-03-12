@@ -407,16 +407,22 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUser.email);
 
-    //Send Welcome Mail To User
+    // Send Email Verification Link to User
+    await sendEmailVerificationLink(getUser.email);
+
+    // Return if user isVoteToEarn is true
     console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
-    if (getUser.isVoteToEarn === false) {
-      await sendEmail(
-        userData.email,
-        "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-      );
-      await sendEmailVerificationLink(getUser.email);
+    if (getUser.isVoteToEarn === true) {
+      return newUser;
     }
+
+    // Send Welcome Mail To User if isVoteToEarn is false
+    await sendEmail(
+      userData.email,
+      "Welcome To Coin Parliament!",
+      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    );
+
     return newUser;
 
   } catch (e) {
