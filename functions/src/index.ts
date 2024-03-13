@@ -147,12 +147,19 @@ app.get("/user/verified", async (req: any, res: any) => {
     console.log("decodedToken.uid : ", decodedToken.uid)
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
-      .then((userRecord) => {
+      .then(async (userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
         let userData: any = userRecord.toJSON()
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
+
+          await sendEmail(
+            userData.email,
+            "Welcome To Vote to Earn!",
+            userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+          );
           res.send(successTemplate);
+
         }
       })
   }
@@ -162,6 +169,7 @@ app.get("/user/verified", async (req: any, res: any) => {
     return res.status(400).send(failureTemplate);
   }
 });
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -261,15 +269,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUser.email);
 
+        // Send Email Verification Link to User
+        await sendEmailVerificationLink(getUser.email);
+
+
+
     //Send Welcome Mail To User
     console.log("get isVoteToearn : ", getUser.isVoteToEarn)
-    if (getUser.isVoteToEarn === true) {
-      await sendEmail(
-        userData.email,
-        "Welcome To Vote To Earn Parliament!",
-        userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-      );
-      await sendEmailVerificationLink(getUser.email);
+    if (getUser.isVoteToEarn === false) {
+      // await sendEmail(
+      //   userData.email,
+      //   "Welcome To Vote To Earn Parliament!",
+      //   userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+      // );
+      return newUser;
     }
 
     return newUser;
