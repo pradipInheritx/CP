@@ -353,7 +353,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    isVoteToEarn: user.isVoteToEarn || false,
+    //isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -368,7 +368,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, { merge: true });
 
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
@@ -379,6 +379,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     await sendEmailVerificationLink(getUserEmail.email);
 
     // Return if user isVoteToEarn is true
+    console.log("get userData",getUserEmail)
     console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
     if (getUserEmail.isVoteToEarn === true) {
       return newUser;
