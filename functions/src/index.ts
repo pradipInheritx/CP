@@ -188,12 +188,19 @@ app.get("/user/verified", async (req: any, res: any) => {
     console.log("decodedToken.uid : ", decodedToken.uid)
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
-      .then((userRecord) => {
+      .then(async (userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
         let userData: any = userRecord.toJSON()
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
+
+          await sendEmail(
+            userData.email,
+            "Welcome To Coin Parliament!",
+            userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+          );
           res.send(successTemplate);
+
         }
       })
   }
@@ -203,7 +210,6 @@ app.get("/user/verified", async (req: any, res: any) => {
     return res.status(400).send(failureTemplate);
   }
 });
-
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -254,7 +260,17 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
+    console.log("user record : ", userRecord);
+
+    // Check if the user registered with Google
+    if (
+      userRecord.providerData.some(
+        (provider) => provider.providerId === "google.com"
+      )
+    ) {
+      console.log("User registered with Google. Skipping verification email.");
+      return { skipped: true };
+    }
 
     // Create a JWT token with user data
     const token = jwt.sign(
@@ -269,18 +285,23 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       await sendEmail(
         email,
         "Verify Your Account",
-        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+        userVerifyEmailTemplate(
+          email,
+          verificationLink,
+          "Your account has been created. Please verify your email for login."
+        )
       );
       console.info("Send Email Successfully");
     }
 
     console.log("Verification link:", verificationLink);
-    return { verificationLink }
+    return { verificationLink };
   } catch (error) {
     console.error("Error sending verification link:", error);
-    return { error }
+    return { error };
   }
 });
+
 
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
@@ -354,15 +375,25 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUserEmail.email);
 
-    //Send Welcome Mail To User
-    if (userData.isVoteToEarn === false) {
-      await sendEmail(
-        userData.email,
-        "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-      );
-      await sendEmailVerificationLink(getUserEmail.email);
+    // Send Email Verification Link to User
+    await sendEmailVerificationLink(getUserEmail.email);
+
+    // Return if user isVoteToEarn is true
+    console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
+    if (getUserEmail.isVoteToEarn === true) {
+      return newUser;
     }
+
+    // //Send Welcome Mail To User
+    // if (userData.isVoteToEarn === false) {
+    //   await sendEmail(
+    //     userData.email,
+    //     "Welcome To Coin Parliament!",
+    //     userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    //   );
+    //   await sendEmailVerificationLink(getUserEmail.email);
+    // }
+
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
