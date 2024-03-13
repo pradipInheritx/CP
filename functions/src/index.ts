@@ -268,12 +268,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
     console.log("new user email  : ", getUser.email);
-
-        // Send Email Verification Link to User
-        await sendEmailVerificationLink(getUser.email);
-
-
-
+    
     //Send Welcome Mail To User
     console.log("get new userData",getUser)
     console.log("get isVoteToearn : ", getUser.isVoteToEarn)
@@ -285,7 +280,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       // );
       return newUser;
     }
-
+    // Send Email Verification Link to User
+    await sendEmailVerificationLink(getUser.email);
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
