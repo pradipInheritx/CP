@@ -275,6 +275,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
 
 
     //Send Welcome Mail To User
+    console.log("get new userData",getUser)
     console.log("get isVoteToearn : ", getUser.isVoteToEarn)
     if (getUser.isVoteToEarn === false) {
       // await sendEmail(
