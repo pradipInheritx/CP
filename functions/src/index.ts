@@ -1560,37 +1560,37 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-  exports.storeCPUsersDetailsIntoDB = functions.pubsub
-  .schedule("*/30 * * * *")
-  .onRun(async () => {
-    console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
-    try {
-      console.log("Starting");
-      const userList = await getCoinParliamentAllUsersDeatils();
-      console.log("userList", userList);
+  // exports.storeCPUsersDetailsIntoDB = functions.pubsub
+  // .schedule("*/30 * * * *")
+  // .onRun(async () => {
+  //   console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
+  //   try {
+  //     console.log("Starting");
+  //     const userList = await getCoinParliamentAllUsersDeatils();
+  //     console.log("userList", userList);
 
-      const usersRef = admin.firestore().collection("userStatistics");
-      console.log("usersRef: created");
+  //     const usersRef = admin.firestore().collection("userStatistics");
+  //     console.log("usersRef: created");
 
-      for (const user of userList) {
-        try {
-          await usersRef.doc(user.userId).set(user);
-          console.log(`User data stored successfully for user ${user.userId}`);
-        } catch (error) {
-          console.error(
-            `Error storing user data for user ${user.userId}:`,
-            error
-          );
-        }
-      }
+  //     for (const user of userList) {
+  //       try {
+  //         await usersRef.doc(user.userId).set(user);
+  //         console.log(`User data stored successfully for user ${user.userId}`);
+  //       } catch (error) {
+  //         console.error(
+  //           `Error storing user data for user ${user.userId}:`,
+  //           error
+  //         );
+  //       }
+  //     }
 
-      console.log("User data stored successfully in users collection.");
-      return true;
-    } catch (error) {
-      console.error("Error storing user data in users collection:", error);
-      return false;
-    }
-  });
+  //     console.log("User data stored successfully in users collection.");
+  //     return true;
+  //   } catch (error) {
+  //     console.error("Error storing user data in users collection:", error);
+  //     return false;
+  //   }
+  // });
 
 
 
