@@ -79,9 +79,11 @@ const CoinsForm = ({
   }, []);
 
   const vote = useCallback(async () => {
+
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
+    console.log("checkalldataforvote give vote")
     const chosenTimeframe = timeframes[selectedTimeFrame];
     try {
       setLoading(true);
@@ -150,8 +152,6 @@ const CoinsForm = ({
       Date.now() >= propVote?.expiration),
     [selectedTimeFrame, canVote]
   );
-
-  console.log(selectedTimeFrame, canVote, disabled, "disabled")
 
   const throttled_vote = useMemo(
     () => voteProcedure({ vote, sound, setConfetti }),

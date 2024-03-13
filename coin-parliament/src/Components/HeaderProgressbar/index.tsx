@@ -29,18 +29,9 @@ const HeaderProgressbar = ({ percentage }) => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue != '0' && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100           
-            console.log(progressBarValue, prevScore,"progressBarValue, prevScore")
+            // console.log(progressBarValue, prevScore,"allCmp1234")
             // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
-
-            // setStartValue((pre) => {
-            //     if (percentage != 0) {                    
-            //         // (prevScore <= 0 ? 0 : prevScore)
-            //         // return 0
-            //         return prevScore
-            //     }
-            //     // else {
-            //     // }
-            // });
+            
             setStartValue((prevScore <= 0 || percentage == 100 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
@@ -62,7 +53,7 @@ const HeaderProgressbar = ({ percentage }) => {
         }}        
         >
            
-                {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
+                {/* {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
                     <AnimatedProgressProvider
                         valueStart={startValue}
                         valueEnd={progressBarValue}
@@ -70,7 +61,7 @@ const HeaderProgressbar = ({ percentage }) => {
                         easingFunction={easeQuadIn}
                     >
                         {(value) => {
-                            const roundedValue = parseFloat(value.toFixed(3));
+                        const roundedValue = parseFloat(value.toFixed(3));                        
                             return (
                                 <>
                                     <div                                        
@@ -87,19 +78,18 @@ const HeaderProgressbar = ({ percentage }) => {
                                                 backgroundColor: "white",
                                             })}
                                         >
-                                            <img src={giftIcon} alt='' className="gift-icon" width="20px" />
-                                            {/* <p>h</p> */}
+                                            <img src={giftIcon} alt='' className="gift-icon" width="20px" />                                            
                                         </CircularProgressbarWithChildren>
                                     </div>
                                 </>
                             );
                         }}
                 </AnimatedProgressProvider>
-                :
+                : */}
                 <div                        
                     >
                         <CircularProgressbarWithChildren
-                        value={(percentage - localStorage.getItem(`${user?.uid}_newScores`)) < 0 ? 0 : (percentage - localStorage.getItem(`${user?.uid}_newScores`))}                            
+                        value={(percentage) < 0 ? 0 : (percentage)}                            
                             background={true}                            
                             strokeWidth={8}
                             styles={buildStyles({
@@ -113,7 +103,7 @@ const HeaderProgressbar = ({ percentage }) => {
                         <img src={giftIcon} alt='' className="gift-icon" width="20px" />                        
                         </CircularProgressbarWithChildren>
                     </div>
-                }
+                {/* } */}
             {/* </CircularProgressbarWithChildren> */}
         </div >
     );

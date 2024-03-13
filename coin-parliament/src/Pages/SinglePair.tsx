@@ -283,18 +283,9 @@ const SinglePair = () => {
   const setVoteDetails = useContext(VoteDispatchContext);
   const canVote = useMemo(() => {
     return !!!voteDetails?.activeVotes[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
-    return vote &&
-      ((!vote.expiration && vote.success === undefined) ||
-        (vote.expiration && vote.success !== undefined));
-    return (
-      ((!vote.expiration && vote.success === undefined) ||
-        (vote.expiration && vote.success !== undefined) ||
-        Date.now() >= vote?.expiration)
-    );
   }, [/* vote.expiration, vote.success,  */selectedTimeFrame, voteDetails?.activeVotes]);
 
   useEffect(() => {
-
     if (!canVote && loading) {
       setLoading(false);
     }
