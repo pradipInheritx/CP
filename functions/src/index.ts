@@ -1281,186 +1281,186 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// Function to get payment details
-async function getPaymentDetailsForUser() {
-  try {
-    const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
-    const paymentDetails: any = [];
+// // Function to get payment details
+// async function getPaymentDetailsForUser() {
+//   try {
+//     const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
+//     const paymentDetails: any = [];
 
-    await Promise.all(getAllPaymentsQuery.docs.map((payment: any) => {
-      let paymentData = payment.data();
-      let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
-      // let userId = paymentData.userId;
+//     await Promise.all(getAllPaymentsQuery.docs.map((payment: any) => {
+//       let paymentData = payment.data();
+//       let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
+//       // let userId = paymentData.userId;
 
-      if (extraVotePurchased) {
-        let obj = { userId: paymentData.userId, extraVotePurchased: "yes" }
-        paymentDetails.push(obj)
-      } else {
-        let obj = { userId: paymentData.userId, extraVotePurchased: "no" }
-        paymentDetails.push(obj)
-      }
-    }))
+//       if (extraVotePurchased) {
+//         let obj = { userId: paymentData.userId, extraVotePurchased: "yes" }
+//         paymentDetails.push(obj)
+//       } else {
+//         let obj = { userId: paymentData.userId, extraVotePurchased: "no" }
+//         paymentDetails.push(obj)
+//       }
+//     }))
     
 
-    return paymentDetails;
-  } catch (error) {
-    console.error("Error fetching payment details:", error);
-    return false;
-  }
-}
+//     return paymentDetails;
+//   } catch (error) {
+//     console.error("Error fetching payment details:", error);
+//     return false;
+//   }
+// }
 
-// Function to get user details
-async function getUsersDetails() {
-  try {
-    const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
-      let userData = user.data()
-      return {
-        userId: user.id,
-        name: userData?.userName || "",
-        email: userData?.email || "",
-        totalVotes: userData?.voteStatistics?.total || 0,
-        accountUpgrade: userData?.isUserUpgraded || false
-      }
-    });
+// // Function to get user details
+// async function getUsersDetails() {
+//   try {
+//     const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
+//       let userData = user.data()
+//       return {
+//         userId: user.id,
+//         name: userData?.userName || "",
+//         email: userData?.email || "",
+//         totalVotes: userData?.voteStatistics?.total || 0,
+//         accountUpgrade: userData?.isUserUpgraded || false
+//       }
+//     });
 
-    console.log("TOTAL USER LENGTH : ", getAllUserData.length);
+//     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
-    const getAuthUserSignUpTime: any = [];
-    const allUsers = await admin.auth().listUsers();
-    for (let userRecord of allUsers.users) {
-      //console.log("User signupDate added:", userRecord.uid);
+//     const getAuthUserSignUpTime: any = [];
+//     const allUsers = await admin.auth().listUsers();
+//     for (let userRecord of allUsers.users) {
+//       //console.log("User signupDate added:", userRecord.uid);
 
-      getAuthUserSignUpTime.push({
-        userId: userRecord.uid,
-        signUpTime: userRecord.metadata.creationTime
-      });
-    }
+//       getAuthUserSignUpTime.push({
+//         userId: userRecord.uid,
+//         signUpTime: userRecord.metadata.creationTime
+//       });
+//     }
 
-    //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
+//     //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
 
-    const userDetailsWithSignUpDate = await Promise.all(getAllUserData.map((userData: any) => {
-      const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
-      if (signUpData) {
-        userData.signUpTime = signUpData.signUpTime;
-      }
-      return userData;
-    }));
+//     const userDetailsWithSignUpDate = await Promise.all(getAllUserData.map((userData: any) => {
+//       const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
+//       if (signUpData) {
+//         userData.signUpTime = signUpData.signUpTime;
+//       }
+//       return userData;
+//     }));
 
-    return {
-      status: true,
-      message: "Users fetched successfully",
-      data: userDetailsWithSignUpDate
-    };
+//     return {
+//       status: true,
+//       message: "Users fetched successfully",
+//       data: userDetailsWithSignUpDate
+//     };
 
-  } catch (error) {
-    console.error("Error while fetching user data:", error);
-    return {
-      status: false,
-      message: "Error while fetching user data",
-      data: {}
-    };
-  }
-}
-
-
-async function getVoteList() {
-  try {
-    let voteDetails = (await admin.firestore().collection("votes")
-      .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-      .get()).docs.map((vote: any) => {
-        let voteData = vote.data()
-        return {
-          userId: voteData.userId,
-          voteTime: voteData.voteTime,
-        }
-      });
-
-    console.log("Votes fetched successfully", voteDetails)
-    return voteDetails;
-
-  } catch (error) {
-    console.error('Error:', error);
-    return null
-  }
-}
-
-async function getCombinedDetails() {
-  try {
-    // Fetch payment details
-    const paymentDetails = await getPaymentDetailsForUser();
-
-    console.log("paymentDetails", paymentDetails)
-
-    // Fetch user details
-    let userDetails = await getUsersDetails();
-
-    let userData: any = userDetails.data;
-
-    for (let element of userData) {
-      let userId = element.userId;
-      // Key and value to filter
-      // const keyToFilter = ;
-      // const valueToFilter = userId;
-
-      // Filtering the array based on the key and value
-      const filteredObj = paymentDetails.find((obj: any) => obj["userId"] === userId);
-      //console.log(filteredObj);
-
-      if (filteredObj !== undefined) {
-        element.extraVotePurchased = filteredObj.extraVotePurchased;
-      } else {
-        element.extraVotePurchased = "no";
-      }
-    }
-
-    return userDetails;
+//   } catch (error) {
+//     console.error("Error while fetching user data:", error);
+//     return {
+//       status: false,
+//       message: "Error while fetching user data",
+//       data: {}
+//     };
+//   }
+// }
 
 
-  } catch (error) {
-    console.error("Error fetching combined details:", error);
-    return false;
-  }
-}
+// async function getVoteList() {
+//   try {
+//     let voteDetails = (await admin.firestore().collection("votes")
+//       .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
+//       .get()).docs.map((vote: any) => {
+//         let voteData = vote.data()
+//         return {
+//           userId: voteData.userId,
+//           voteTime: voteData.voteTime,
+//         }
+//       });
 
-export const getCoinParliamentAllUsersDeatils = async () => {
-  try {
-    // Fetch payment details
-    const voteList: any = await getVoteList();
+//     console.log("Votes fetched successfully", voteDetails)
+//     return voteDetails;
 
-    console.log("voteList", voteList)
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return null
+//   }
+// }
 
-    // Fetch user details
-    let userList: any = await getCombinedDetails();
+// async function getCombinedDetails() {
+//   try {
+//     // Fetch payment details
+//     const paymentDetails = await getPaymentDetailsForUser();
 
-    //console.log("userList", userList)
+//     console.log("paymentDetails", paymentDetails)
 
-    userList = userList.data;
+//     // Fetch user details
+//     let userDetails = await getUsersDetails();
 
-    await Promise.all(userList.map((user: any) => {
-      let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
-      console.log("UserVote : ", userVote);
+//     let userData: any = userDetails.data;
 
-      const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
-      console.log("voteTimes>>>>>>>", voteTimes);
+//     for (let element of userData) {
+//       let userId = element.userId;
+//       // Key and value to filter
+//       // const keyToFilter = ;
+//       // const valueToFilter = userId;
 
-      const uniqueDates = [...new Set(voteTimes.map((date: Date) => date.toDateString()))];
-      // let numberOfDaysVoted = ;
+//       // Filtering the array based on the key and value
+//       const filteredObj = paymentDetails.find((obj: any) => obj["userId"] === userId);
+//       //console.log(filteredObj);
 
-      user['noOfVotesDays'] = uniqueDates.length;
+//       if (filteredObj !== undefined) {
+//         element.extraVotePurchased = filteredObj.extraVotePurchased;
+//       } else {
+//         element.extraVotePurchased = "no";
+//       }
+//     }
 
-      let averageVotes = uniqueDates.length !== 0 ? userVote.length / uniqueDates.length : 0;
+//     return userDetails;
 
-      user['averageVotes'] = averageVotes;
-    }))
 
-    return userList
+//   } catch (error) {
+//     console.error("Error fetching combined details:", error);
+//     return false;
+//   }
+// }
 
-  } catch (error) {
-    console.error("Error fetching combined details:", error);
-    return false;
-  }
+// export const getCoinParliamentAllUsersDeatils = async () => {
+//   try {
+//     // Fetch payment details
+//     const voteList: any = await getVoteList();
 
-}
+//     console.log("voteList", voteList)
+
+//     // Fetch user details
+//     let userList: any = await getCombinedDetails();
+
+//     //console.log("userList", userList)
+
+//     userList = userList.data;
+
+//     await Promise.all(userList.map((user: any) => {
+//       let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
+//       console.log("UserVote : ", userVote);
+
+//       const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
+//       console.log("voteTimes>>>>>>>", voteTimes);
+
+//       const uniqueDates = [...new Set(voteTimes.map((date: Date) => date.toDateString()))];
+//       // let numberOfDaysVoted = ;
+
+//       user['noOfVotesDays'] = uniqueDates.length;
+
+//       let averageVotes = uniqueDates.length !== 0 ? userVote.length / uniqueDates.length : 0;
+
+//       user['averageVotes'] = averageVotes;
+//     }))
+
+//     return userList
+
+//   } catch (error) {
+//     console.error("Error fetching combined details:", error);
+//     return false;
+//   }
+
+// }
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
@@ -1547,35 +1547,35 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-  exports.storeCPUsersDetailsIntoDB = functions.pubsub
-  .schedule("*/10 * * * *")
-  .onRun(async () => {
-    console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
-    try {
-      console.log("Starting")
-      const userList = await getCoinParliamentAllUsersDeatils();
-      console.log("function is executing correctly-----")
-      console.log("userList", userList)
+  // exports.storeCPUsersDetailsIntoDB = functions.pubsub
+  // .schedule("*/10 * * * *")
+  // .onRun(async () => {
+  //   console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
+  //   try {
+  //     console.log("Starting")
+  //     const userList = await getCoinParliamentAllUsersDeatils();
+  //     console.log("function is executing correctly-----")
+  //     console.log("userList", userList)
 
-      const usersRef = admin.firestore().collection('userStatistics');
-      console.log("usersRef: created")
+  //     const usersRef = admin.firestore().collection('userStatistics');
+  //     console.log("usersRef: created")
 
-      await Promise.all(userList.map(async(user: any) =>{
-        try {
-          await usersRef.doc(user.userId).set(user);
-          console.log(`User data stored successfully for user ${user.userId}`);
-        } catch (error) {
-          console.error(`Error storing user data for user ${user.userId}:`, error);
-        }
-      }))
+  //     await Promise.all(userList.map(async(user: any) =>{
+  //       try {
+  //         await usersRef.doc(user.userId).set(user);
+  //         console.log(`User data stored successfully for user ${user.userId}`);
+  //       } catch (error) {
+  //         console.error(`Error storing user data for user ${user.userId}:`, error);
+  //       }
+  //     }))
 
-      console.log('User data stored successfully in users collection.');
-      return true;
-    } catch (error) {
-      console.error('Error storing user data in users collection:', error);
-      return false;
-    }
-  });
+  //     console.log('User data stored successfully in users collection.');
+  //     return true;
+  //   } catch (error) {
+  //     console.error('Error storing user data in users collection:', error);
+  //     return false;
+  //   }
+  // });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
