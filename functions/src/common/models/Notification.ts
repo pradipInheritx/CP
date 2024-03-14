@@ -104,7 +104,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
   const currentTime = Timestamp.now();
   const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo).where('sendEmailForVoiceMatter', '==', false);
+  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
 
   const getAckIds: any = [];
 
@@ -114,13 +114,16 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
         console.log('No users created in the last 24 hours for voice Matters.');
         return;
       }
+
       userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
+          // To Do Send Email To User
 
-        getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
 
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
       });
 
       let createBatch: any = firestore().batch();
@@ -146,7 +149,7 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const currentTime = Timestamp.now();
   const fourtyEightHoursAgo = new Date(currentTime.toMillis() - 48 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('timestamp', '>=', fourtyEightHoursAgo).where('sendEmailForUserUpgrade', '==', false);
+  const query = usersRef.where('timestamp', '>=', fourtyEightHoursAgo);
 
   const getAckIds: any = [];
 
@@ -157,8 +160,15 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
         return;
       }
       userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForUserUpgrade === false) {
+          // To Do Send Email To User
 
-        getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true })
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
 
         console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
 
