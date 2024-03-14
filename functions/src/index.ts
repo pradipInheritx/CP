@@ -89,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdated, sendEmailForLifetimePassiveIncome, sendEmailForEarnRewardsByPaxTokens } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFreindInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1867,11 +1867,19 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
     await sendEmailForUserUpgradeInLast48Hours();
 
-    await sendEmailForAddressNotUpdated();
+    await sendEmailForAddressNotUpdatedInLast72Hours();
 
-    await sendEmailForLifetimePassiveIncome();
+    await sendEmailForLifetimePassiveIncomeInLast92Hours();
 
-    await sendEmailForEarnRewardsByPaxTokens();
+    await sendEmailForEarnRewardsByPaxTokensInLast168Hours();
+
+    await sendEmailForUnloackRewardsInLast192Hours();
+
+    await sendEmailForSVIUpdateInLast216Hours();
+
+    await sendEmailForProgressWithFreindInLast240Hours();
+
+    await sendEmailForTopInfluencerInLast264Hours();
 
     console.log("Come to email Acknowledge", new Date())
   });
