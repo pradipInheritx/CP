@@ -89,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdated } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdated, sendEmailForLifetimePassiveIncome, sendEmailForEarnRewardsByPaxTokens } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1860,7 +1860,7 @@ exports.prepareWeeklyCPVI = functions.pubsub
  */
 
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
-  .schedule("every 5 minutes")
+  .schedule("every 2 minutes")
   .onRun(async () => {
 
     await sendEmailForVoiceMatterInLast24Hours();
@@ -1868,6 +1868,11 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
     await sendEmailForUserUpgradeInLast48Hours();
 
     await sendEmailForAddressNotUpdated();
+
+    await sendEmailForLifetimePassiveIncome();
+
+    await sendEmailForEarnRewardsByPaxTokens();
+
     console.log("Come to email Acknowledge", new Date())
   });
 
