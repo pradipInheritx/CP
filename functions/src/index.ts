@@ -1698,6 +1698,16 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 //----------END CPVI scheduler-------------
 
+/**
+ * @author Mukut Prasad
+ * @description Prepare all emails on time based
+ */
+
+exports.sendEmailOnTimeForAcknowledge = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+    console.log("Come to email Acknowledge", new Date())
+  });
 
 // -------- pax distribution -----------
 // ------ 24 hours --------
