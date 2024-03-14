@@ -104,7 +104,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
   const currentTime = Timestamp.now();
   const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
+  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo).where('sendEmailForVoiceMatter', '==', false);
 
   const getAckIds: any = [];
 
@@ -134,6 +134,48 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
         console.log("Ack For Voice Matter Email Send Successfully");
       }).catch(function (error: any) {
         console.error("Error While Ack For Voice Matter Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
+
+
+export const sendEmailForUserUpgradeInLast48Hours = async () => {
+  const currentTime = Timestamp.now();
+  const fourtyEightHoursAgo = new Date(currentTime.toMillis() - 48 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', fourtyEightHoursAgo).where('sendEmailForUserUpgrade', '==', false);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 48 hours for user upgrade.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+
+        getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true })
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For User Upgrade Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For User Upgrade Email Send  :", error);
       });
     })
     .catch(err => {
