@@ -96,7 +96,7 @@ const HeaderProgressbar = ({ percentage }) => {
                                 pathColor: "#6352e8",
                                 pathTransition: "none",
                                 strokeLinecap: "butt",
-                                trailColor: ('white'),
+                                trailColor: ('#160133'),
                                 backgroundColor: "white",
                             })}
                         >                                                        
