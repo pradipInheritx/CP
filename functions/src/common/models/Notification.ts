@@ -432,3 +432,100 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
       console.error('Error while getting users Ack:', err);
     });
 }
+
+export const sendEmailForProgressWithFreindInLast240Hours = async () => {
+  const currentTime = Timestamp.now();
+  const twoHundredFourtyHoursAgo = new Date(currentTime.toMillis() - 240 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', twoHundredFourtyHoursAgo);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 240 hours for Coin Mining Progress with Your Friends Support.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForProgressWithFreind === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFreind: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForProgressWithFreind: getAckIds[docRef].sendEmailForProgressWithFreind });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For Coin Mining Progress with Your Friends Support Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Coin Mining Progress with Your Friends Support Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
+
+export const sendEmailForTopInfluencerInLast264Hours = async () => {
+  const currentTime = Timestamp.now();
+  const twoHundredSixtyFourHoursAgo = new Date(currentTime.toMillis() - 264 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', twoHundredSixtyFourHoursAgo);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 264 hours for Top Influencer.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForTopInfluencer === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForTopInfluencer: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForTopInfluencer: getAckIds[docRef].sendEmailForTopInfluencer });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For Top Influencer Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Top Influencer Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
+
