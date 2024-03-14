@@ -240,3 +240,99 @@ export const sendEmailForAddressNotUpdated = async () => {
       console.error('Error while getting users Ack:', err);
     });
 }
+
+export const sendEmailForLifetimePassiveIncome = async () => {
+  const currentTime = Timestamp.now();
+  const NinetySixHoursAgo = new Date(currentTime.toMillis() - 96 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', NinetySixHoursAgo);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 96 hours for life time passive income.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForLifetimePassiveIncome === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForLifetimePassiveIncome: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForLifetimePassiveIncome: getAckIds[docRef].sendEmailForLifetimePassiveIncome });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For live time passive income Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Life Time Passive Income Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
+
+export const sendEmailForEarnRewardsByPaxTokens = async () => {
+  const currentTime = Timestamp.now();
+  const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', oneSixtyEightHoursAgo);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 168 hours for Earn Rewards by Your PAX Tokens.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForEarnRewardsByPaxTokens: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForEarnRewardsByPaxTokens: getAckIds[docRef].sendEmailForEarnRewardsByPaxTokens });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For Earn Rewards By Your PAX Tokens Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Earn Rewards By Your PAX Tokens Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
