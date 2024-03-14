@@ -106,14 +106,34 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
   const usersRef = await firestore().collection('userEmailAcknowledgement');
   const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
 
-  query.get()
+  const getAckIds: any = [];
+
+  await query.get()
     .then((userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 24 hours for voice Matters.');
         return;
       }
       userSnapshot.forEach((userAckDoc: any) => {
+
+        getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
+
         console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.set(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For Voice Matter Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Voice Matter Email Send  :", error);
       });
     })
     .catch(err => {
