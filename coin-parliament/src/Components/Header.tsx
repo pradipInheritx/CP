@@ -110,10 +110,10 @@ export const HeaderCenterMob = styled.div`
   // align-items: center;
 
   @media (min-width: 768px) and (max-width: 1000px) {
-		width:9rem
+		width:10rem
 	}
 	@media (max-width: 767px) {
-		width:9rem
+		width:10rem
 	}
 `;
 export const MemberText = styled.span`
@@ -600,12 +600,12 @@ const Header = ({
 											<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
 												<HeaderCenterMob className='align-items-center'>
 													{/* <div></div> */}
-													<div className='mt-0' style={{ marginLeft: "18px" }}>
+													<div className='mt-0' style={{ marginLeft: "20px" }}>
 														{
 															followerPage && followerInfo != "" ? followerInfo?.displayName :
 																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
 																	// @ts-ignore */
-																	<div style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%", textAlign: 'center', }}>
+																	<div style={{ marginLeft: '2px', marginTop: "2px", lineHeight: "90%", textAlign: 'center', }}>
 																		{/* @ts-ignore */}
 																		<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																			renderer={({ hours, minutes, seconds, completed }) => {
@@ -929,7 +929,7 @@ const Header = ({
 																		<Countdown date={votingTimer}
 																			renderer={({ hours, minutes, seconds, completed }) => {
 																				return (
-																					<span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
+																					<span style={{ color: '#6352e8', fontSize: '11px', fontWeight: 500, paddingLeft: '3.3em' }}>
 																						{Number(voteRules?.maxVotes)} Votes in {" "}
 																						{hours < 1 ? null : `${hours}:`}
 																						{minutes < 10 ? `0${minutes}` : minutes}:
@@ -946,7 +946,7 @@ const Header = ({
 																		<span
 																			style={{
 																				color: "#6352E8",
-																				marginLeft: "40px",
+																				marginLeft: "45px",
 																				fontSize: window.screen.width <= 340 ? '0.7889em' : '11px'
 																			}}
 																		>
