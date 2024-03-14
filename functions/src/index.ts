@@ -1860,7 +1860,7 @@ exports.prepareWeeklyCPVI = functions.pubsub
  */
 
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
-  .schedule("every 5 minutes")
+  .schedule("every 2 minutes")
   .onRun(async () => {
 
     await sendEmailForVoiceMatterInLast24Hours();
