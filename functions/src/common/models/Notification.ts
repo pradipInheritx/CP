@@ -99,3 +99,24 @@ export const sendEmailAcknowledgementStatus = async (userId: any) => {
       console.error('Error adding document: ', error);
     });
 }
+
+export const sendEmailForVoiceMatterInLast24Hours = async () => {
+  const currentTime = Timestamp.now();
+  const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
+
+  query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 24 hours for voice Matters.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}

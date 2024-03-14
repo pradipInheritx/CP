@@ -89,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1852,6 +1852,8 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 //----------END CPVI scheduler-------------
 
+
+
 /**
  * @author Mukut Prasad
  * @description Prepare all emails on time based
@@ -1860,6 +1862,9 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 5 minutes")
   .onRun(async () => {
+
+    await sendEmailForVoiceMatterInLast24Hours();
+
     console.log("Come to email Acknowledge", new Date())
   });
 
