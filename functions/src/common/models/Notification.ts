@@ -192,3 +192,51 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
       console.error('Error while getting users Ack:', err);
     });
 }
+
+export const sendEmailForAddressNotUpdated = async () => {
+  const currentTime = Timestamp.now();
+  const SeventyTwoHoursAgo = new Date(currentTime.toMillis() - 72 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('timestamp', '>=', SeventyTwoHoursAgo);
+
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 72 hours for address not update.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForAddressNotUpdated: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+
+        // To Do Send Email To User
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForAddressNotUpdated: getAckIds[docRef].sendEmailForAddressNotUpdated });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For address not updated Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Address Not Updated Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
