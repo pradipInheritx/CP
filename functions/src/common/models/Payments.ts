@@ -277,9 +277,13 @@ export const getParentPayment = async (req: any, res: any) => {
     const getQuery = firestore()
       .collection("parentPayment")
       .where("parentUserId", "==", userId);
+
     const getParentPaymentQuery: any = !status
       ? await getQuery.get()
-      : await getQuery.where("status", "==", status).get();
+      : await getQuery.where("status", "in", [status, "CLAIMED"]).get();
+    // const getParentPaymentQuery: any = !status
+    //   ? await getQuery.get()
+    //   : await getQuery.where("status", "==", status).get();
     getParentPaymentQuery.docs.forEach((snapshot: any) => {
       let payment = snapshot.data();
       let id = snapshot?.id;
