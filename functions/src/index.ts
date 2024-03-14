@@ -89,7 +89,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -535,6 +535,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     //   "Welcome To Coin Parliament!",
     //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
     // );
+
+    await sendEmailAcknowledgementStatus(user.uid); // Added Email Settings For Acknowledgement
 
     return newUser;
   } catch (e) {
