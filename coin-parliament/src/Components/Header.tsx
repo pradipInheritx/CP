@@ -260,7 +260,7 @@ const Header = ({
 	const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
 	const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
+	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? score : score);
 	// console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
 	const voteDetails = useContext(VoteContext);
 	const [handleSoundClick] = useSound(buttonClick);
@@ -274,8 +274,6 @@ const Header = ({
 
 	// 	}
 	// }, [score]);
-
-	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
 
 	const getFollowerData = async () => {
@@ -569,7 +567,7 @@ const Header = ({
 											style={{
 												position: "relative",
 												margin: '0 auto',
-												width: `${showReward == 2 && inOutReward == 2 ? "220px" : "fit-content"}`,
+												width: `${showReward == 2 && inOutReward == 2 ? "fit-content" : "fit-content"}`,
 												transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 												transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
 												transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
@@ -717,52 +715,15 @@ const Header = ({
 												<div
 													className='text-center'
 													style={{ marginLeft: "35px", marginTop: "3px" }}
-												>
-													{/* <p>{"unique_Username"}</p> */}
-
-
-													{/* <div className="custom-circle-progress">
-														<img src={giftIcon} alt='' className="gift-icon" width="20px" />
-														<div className="progress-cs">
-															<span className="title timer" data-from="0" data-to="40" data-speed="1800">40</span>
-															<div className="overlay"></div>
-															<div className="left"></div>
-															<div className="right"></div>
-
-														</div>
-													</div> */}
+												>												
 													<div className="custom-circle-progress"
 														style={{
 														cursor:"pointer"	
 														}}
 														onClick={() => {
-															//  if (!showMenubar && !followerPage) navigate("/profile/mine")
 															navigate("/profile/mine")
-													}}
-													>
-														{/* <div
-															style={{
-																width: 5, height: 5,
-															}}
-														>
-
-															<CircularProgressbarWithChildren
-																background={true}
-																value={85}
-																strokeWidth={8}
-																styles={buildStyles({
-																	pathColor: "#6352e8",
-																	pathTransition: "none",
-																	strokeLinecap: "butt",
-																	trailColor: ('white'),
-																	backgroundColor: "white",
-																})}
-															>
-
-																<img src={giftIcon} alt='' className="gift-icon" width="20px" />
-
-															</CircularProgressbarWithChildren>
-														</div> */}
+														}}
+													>													
 														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} />
 													</div>
 
@@ -913,14 +874,17 @@ const Header = ({
 											}}
 										>
 											{(user?.uid && !login) && (
-												<div className='d-flex mx-auto w-auto '
+												<div className='d-flex mx-auto w-auto'
 													style={{
+														left: `${showReward == 2 && inOutReward == 2 ? "-85px" : "-20px"}`,
 														position: "relative",
 														height: "50px",
 														transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
-														transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
-														transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
-													}}>
+														transformOrigin: `${showReward == 2 && inOutReward == 2 ? "50% 0%" : ""}`,
+														transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,																																										
+													}}
+												
+												>
 													<div onClick={() => {
 														if (!showMenubar && !followerPage) navigate("/profile/wallet")
 													}}

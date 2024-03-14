@@ -315,7 +315,6 @@ const SingleCoin = () => {
 
         
         setAllActiveVotes(() => {
-          console.log(tempAllActiveVotes,tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined),'tempAllActiveVotes');
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
       })
@@ -384,13 +383,7 @@ const SingleCoin = () => {
 
 
   const canVote = useMemo(() => {
-
-    return !!!voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
-    return (
-      ((!vote.expiration && vote.success === undefined) ||
-        (vote.expiration && vote.success !== undefined) ||
-        Date.now() >= vote?.expiration)
-    );
+    return !!!voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];    
   }, [vote.expiration, vote.success, selectedTimeFrame, voteDetails]);
   useEffect(() => {
     if (!canVote && loading) {
@@ -444,6 +437,7 @@ const SingleCoin = () => {
       }
     })
   }, [allActiveVotes]);
+  console.log(voteDetails,"allsetVoteDetails")
   useEffect(() => {
     setVoteDetails((prev) => {
       return {
