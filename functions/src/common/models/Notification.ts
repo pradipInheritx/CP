@@ -1,5 +1,6 @@
 //import axios from "axios";
 import { firestore, messaging } from "firebase-admin";
+import { Timestamp } from 'firebase-admin/firestore';
 
 export const sendNotification = async ({
   token,
@@ -69,4 +70,32 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
       result: error
     };
   }
+}
+
+export const sendEmailAcknowledgementStatus = async (userId: any) => {
+  const userEmailAcknowledgementRef = await firestore().collection('userEmailAcknowledgement');
+
+  const acknowledgementEmailSettings = {
+    userId: userId,
+    sendEmailForVoiceMatter: false,
+    sendEmailForUserUpgrade: false,
+    sendEmailForAddressNotUpdated: false,
+    sendEmailForLifetimePassiveIncome: false,
+    sendEmailForEarnRewardsByPaxTokens: false,
+    sendEmailForUnloackRewards: false,
+    sendEmailForSVIUpdate: false,
+    sendEmailForProgressWithFreind: false,
+    sendEmailForTopInfluencer: false,
+    sendEmailForAfterUpgrade: false,
+    timestamp: Timestamp.now()
+  };
+
+  userEmailAcknowledgementRef
+    .add(acknowledgementEmailSettings)
+    .then((docRefAck: any) => {
+      console.log('Acknowledgement Document written with ID: ', docRefAck.id);
+    })
+    .catch((error: any) => {
+      console.error('Error adding document: ', error);
+    });
 }
