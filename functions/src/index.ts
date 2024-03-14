@@ -375,15 +375,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUserEmail.email);
 
-    // Send Email Verification Link to User
-    await sendEmailVerificationLink(getUserEmail.email);
-
     // Return if user isVoteToEarn is true
     console.log("get userData",getUserEmail)
     console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
     if (getUserEmail.isVoteToEarn === true) {
       return newUser;
     }
+    // Send Email Verification Link to User
+    await sendEmailVerificationLink(getUserEmail.email);
+    return newUser;
 
     // //Send Welcome Mail To User
     // if (userData.isVoteToEarn === false) {
@@ -395,7 +395,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     //   await sendEmailVerificationLink(getUserEmail.email);
     // }
 
-    return newUser;
   } catch (e) {
     console.log("create user Error....", e);
     return false;
