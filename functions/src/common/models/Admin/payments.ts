@@ -234,8 +234,6 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           paymentDetails: null
         });
 
-
-
         const collectionRef = await firestore().collection('parentPayment');
         const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
 

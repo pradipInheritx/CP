@@ -280,7 +280,7 @@ export const getParentPayment = async (req: any, res: any) => {
 
     const getParentPaymentQuery: any = !status
       ? await getQuery.get()
-      : await getQuery.where("status", "in", [status, "CLAIMED"]).get();
+      : await getQuery.where("status", "==", status).get();
     // const getParentPaymentQuery: any = !status
     //   ? await getQuery.get()
     //   : await getQuery.where("status", "==", status).get();
