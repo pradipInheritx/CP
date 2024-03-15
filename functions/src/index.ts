@@ -10,6 +10,7 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
 import multer from "multer";
+
 //import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -465,8 +466,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     share: 0,
     color: Colors.PLATINUM,
   };
+  const createdAt = new Date().toUTCString()
   const userData: UserProps = {
     uid: user.uid,
+    createdAt: createdAt,
     address: "",
     avatar: "",
     bio: "",
