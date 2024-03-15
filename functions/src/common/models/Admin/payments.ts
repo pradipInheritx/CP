@@ -170,9 +170,7 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
 
 export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
-    const { userId, totalAmount, transactionType } = req.params;
-
-
+    const { userId, totalAmount, transactionType } = req.body;
 
     const userIds: any = [];
     let isAddressNotExists: any = false;
