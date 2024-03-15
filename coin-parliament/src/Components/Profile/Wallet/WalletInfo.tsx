@@ -1104,7 +1104,9 @@ function WalletInfo() {
                                 handleChangeValue(e, "walletDetails")
                             }}
                         />         
-                        {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}   
+                        <div style={{whiteSpace:"nowrap"}}>
+                        {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
+                        </div>   
                         </div>              
                         <RemoveButton type='button'
                             disabled={!walletDetails?.address || saveAddress}
