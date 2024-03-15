@@ -239,41 +239,46 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
         snapshot.forEach(async doc => {
           const docRef = collectionRef.doc(doc.id);
           let getPaymentDetails = doc.data();
-          console.info("getPaymentDetails...", getPaymentDetails.address, "Origin Currency", getPaymentDetails.originCurrency)
-          const isUserUpdatedAddress = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === getPaymentDetails.originCurrency);
-          console.info("isUserUpdatedAddress...", isUserUpdatedAddress)
-          let getAddressFromUser = "";
-          if (getPaymentDetails.address === "NO_ADDRESS") {
-            console.info("getPaymentDetails.address", getPaymentDetails.address)
-            getAddressFromUser = isUserUpdatedAddress.address;
-          }
+          if (getPaymentDetails.status === parentConst.PAYMENT_STATUS_PENDING) {
+
+            console.info("getPaymentDetails...", getPaymentDetails.address, "Origin Currency", getPaymentDetails.originCurrency)
+            const isUserUpdatedAddress = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === getPaymentDetails.originCurrency);
+            console.info("isUserUpdatedAddress...", isUserUpdatedAddress)
+            let getAddressFromUser = "";
+            if (getPaymentDetails.address === "NO_ADDRESS") {
+              console.info("getPaymentDetails.address", getPaymentDetails.address)
+              getAddressFromUser = isUserUpdatedAddress.address;
+            }
 
 
-          if (getAddressFromUser) {
-            console.info("getAddressFromUser--->", getAddressFromUser)
-            getPaymentDetails.address = getAddressFromUser;
+            if (getAddressFromUser) {
+              console.info("getAddressFromUser--->", getAddressFromUser)
+              getPaymentDetails.address = getAddressFromUser;
 
 
-            console.info("getPaymentDetails.address-->", getPaymentDetails.address)
+              console.info("getPaymentDetails.address-->", getPaymentDetails.address)
 
-            makeAllInitiatedTransaction.push({
-              event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-              ...getPaymentDetails,
-              timestamp: Timestamp.now(),
-            });
-            console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
-            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
-            console.log(`Document ${doc.id} Updated Successfully.`);
+              makeAllInitiatedTransaction.push({
+                event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+                ...getPaymentDetails,
+                timestamp: Timestamp.now(),
+              });
+              console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
+              await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
+              console.log(`Document ${doc.id} Updated Successfully.`);
+            } else {
+              makeAllInitiatedTransaction.push({
+                event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+                ...getPaymentDetails,
+                timestamp: Timestamp.now(),
+              });
+              console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
+
+              await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, parentPendingPaymentId: getParentClaimedWholePayment.id });
+              console.log(`Document ${doc.id} Updated Successfully.`);
+            }
           } else {
-            makeAllInitiatedTransaction.push({
-              event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-              ...getPaymentDetails,
-              timestamp: Timestamp.now(),
-            });
-            console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
-
-            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, parentPendingPaymentId: getParentClaimedWholePayment.id });
-            console.log(`Document ${doc.id} Updated Successfully.`);
+            console.log("This record is for Success Payment", doc.id); //No need to do for success payment. Only Update the Pending Payment
           }
         });
 
