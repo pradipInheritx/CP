@@ -143,10 +143,10 @@ const ChildTableHeader: tableColumnType[] = [
                 <span>
                     {window.screen.width > 767 ?
                         
-                        data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
+                            data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 5) + "..." : (data?.transactionType).slice(0, 5) + "..." || "-"
                         :
                         // data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
-                        data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
+                            data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 5) + "..." : data?.transactionType.slice(0, 5) + "..." || "-"
 
                     }
                     </span>

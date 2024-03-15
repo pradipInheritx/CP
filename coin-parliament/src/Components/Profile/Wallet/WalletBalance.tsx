@@ -73,52 +73,98 @@ const WalletBalance = () => {
 
     console.log(pendingAmount,"pendingAmount")
 
-    const getTotalValue = () => {
-        let total = 0;
-        for (const coin in pendingAmount) {
-            // @ts-ignore
-            total += pendingAmount[coin];
-        }
-        return total;
-    };
+    // const getTotalValue = () => {
+    //     let total = 0;
+    //     for (const coin in pendingAmount) {
+    //         // @ts-ignore
+    //         total += pendingAmount[coin];
+    //     }
+    //     return total;
+    // };
 
-    console.log(getTotalValue(),"getTotalValue")
+    // const getPendingAmount = (uid:any) => {        
+    //     const data = {
+    //         userId: uid,
+    //         totalAmount: Number(getTotalValue()),
+    //         transactionType: "REFERAL"
+    //     }
+    //     axios.post(`/payment/parent/collectPendingParentPayment`,{
+    //         ...data
+    //     })
+    //         .then(async (response) => {
+    //             // setPendingAmount(response.data.data)     
+    //             if (!response?.data?.status) {                    
+    //                 // ShowPendingAmount(user?.uid)
+    //                 if (response?.data?.message == "No Parent Payment Found") {
+    //                     showToast(response?.data?.message, ToastType.ERROR)
+    //                 } else {                        
+    //                     setWalletPopup("error")
+    //                     setPopupMessage(response?.data.message)
+    //                     handleShow()
+    //                 }
 
-    const getPendingAmount = (uid:any) => {        
-        const data = {
-            userId: uid,
-            totalAmount: Number(getTotalValue()),
-            transactionType: "REFERAL"
-        }
-        axios.post(`/payment/parent/collectPendingParentPayment`,{
-            ...data
-        })
-            .then(async (response) => {
-                // setPendingAmount(response.data.data)     
-                if (!response?.data?.status) {                    
-                    // ShowPendingAmount(user?.uid)
-                    if (response?.data?.message == "No Parent Payment Found") {
-                        showToast(response?.data?.message, ToastType.ERROR)
-                    } else {                        
-                        setWalletPopup("error")
-                        setPopupMessage(response?.data.message)
-                        handleShow()
-                    }
-
-                } else {
-                    setWalletPopup("success")
-                    ShowPendingAmount(user?.uid)           
-                    setPopupMessage(response?.data.message)
-                    handleShow()
-                }
-                console.log(response?.data, response?.data?.status, response?.data?.message, "response?.data?.message ")
-            })
-            .catch((error) => {
-                console.log(error, "error")
+    //             } else {
+    //                 setWalletPopup("success")
+    //                 ShowPendingAmount(user?.uid)           
+    //                 setPopupMessage(response?.data.message)
+    //                 handleShow()
+    //             }
+    //             console.log(response?.data, response?.data?.status, response?.data?.message, "response?.data?.message ")
+    //         })
+    //         .catch((error) => {
+    //             console.log(error, "error")
                 
-            })
-    }
+    //         })
+    // }
 
+
+    const handleButtonClick = async (uid: any) => {        
+        for (const coin in pendingAmount) {
+            
+            // @ts-ignore
+            if (pendingAmount[coin] > 0) {
+                try {
+                    const data = {
+                        userId: uid,
+                        // @ts-ignore
+                        totalAmount: pendingAmount[coin],
+                        transactionType: "REFERAL",
+                        paymentToken: coin,
+                    }
+                    
+                    axios.post(`/payment/parent/collectPendingParentPayment`, {
+                        ...data
+                    })
+                        .then(async (response) => {
+                            // setPendingAmount(response.data.data)     
+                            if (!response?.data?.status) {
+                                // ShowPendingAmount(user?.uid)
+                                if (response?.data?.message == "No Parent Payment Found") {
+                                    showToast(response?.data?.message, ToastType.ERROR)
+                                } else {
+                                    setWalletPopup("error")
+                                    setPopupMessage(response?.data.message)
+                                    handleShow()
+                                }
+
+                            } else {
+                                setWalletPopup("success")
+                                ShowPendingAmount(user?.uid)
+                                setPopupMessage(response?.data.message)
+                                handleShow()
+                            }
+                            console.log(response?.data, response?.data?.status, response?.data?.message, "response?.data?.message ")
+                        })
+                        .catch((error) => {
+                            console.log(error, "error")
+
+                        })
+                } catch (error) {
+                    console.error(`Error fetching ${coin} value:`, error);
+                }
+            }
+        }
+    };
 
     const AfterCollect = (type: any) => {
         
@@ -236,7 +282,7 @@ const WalletBalance = () => {
                         }}
                         disabled={!userInfo?.uid}
                         onClick={() => {
-                            getPendingAmount(userInfo?.uid)
+                            handleButtonClick(userInfo?.uid)
                         }}
                     >
                         {/* {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'} */}

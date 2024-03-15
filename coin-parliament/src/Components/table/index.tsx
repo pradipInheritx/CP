@@ -33,7 +33,7 @@ interface TableType<T> {
 const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, pageIndex, setPageIndex ,type}: TableType<T>) => {
     return (
         <>
-            <div className='d-flex justify-content-around w-100 py-3'
+            <div className='d-flex justify-content-around w-100 py-2'
                 style={{
                     background: `${type == "pending" ? "#7456ff":""} `
                 }}
