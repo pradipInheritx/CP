@@ -563,11 +563,14 @@ const VotingPaymentCopy: React.FC<{
           sendTransaction()
         }      
     }
+    if (window.screen.width < 767 && events?.data?.event == "MODAL_LOADED" || events?.data?.event == "MODAL_CLOSE") {
+      
+      window.scrollTo({ top: 850, behavior: 'smooth' });
+    }
     // return () => {
     //   setTransactionInst(false)
     // }
-  }, [events])
-  
+  }, [events])  
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
@@ -1316,7 +1319,14 @@ const VotingPaymentCopy: React.FC<{
                           //   open({view:"Networks"})
                           // } else {
                           // }
-                          open()                                                      
+                          open().then((result) => {
+                            window.scrollTo({ top: 800, behavior: 'smooth' });    
+                            console.log("yes i am open" , events.data)
+                          }).catch((err) => {
+                            window.scrollTo({ top: 800, behavior: 'smooth' });  
+                            console.log("yes i am close", events.data)
+                          });  
+                          
                         }}
                       >
 

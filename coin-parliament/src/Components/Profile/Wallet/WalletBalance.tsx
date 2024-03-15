@@ -33,7 +33,8 @@ const WalletBalance = () => {
         ETH: 0,
         BNB: 0,
         MATIC: 0
-    })
+    })    
+
     let navigate = useNavigate();
     const { userInfo, user } = useContext(UserContext);
     const [pendingPax, setPendingPax] = React.useState(0);
@@ -70,9 +71,28 @@ const WalletBalance = () => {
         })
     }
 
-    console.log(pendingPax,"pendingPax")
-    const getPendingAmount = () => {
-        axios.get(`/payment/collectPendingParentPayment/${user?.uid}`)
+    console.log(pendingAmount,"pendingAmount")
+
+    const getTotalValue = () => {
+        let total = 0;
+        for (const coin in pendingAmount) {
+            // @ts-ignore
+            total += pendingAmount[coin];
+        }
+        return total;
+    };
+
+    console.log(getTotalValue(),"getTotalValue")
+
+    const getPendingAmount = (uid:any) => {        
+        const data = {
+            userId: uid,
+            totalAmount: Number(getTotalValue()),
+            transactionType: "REFERAL"
+        }
+        axios.post(`/payment/parent/collectPendingParentPayment`,{
+            ...data
+        })
             .then(async (response) => {
                 // setPendingAmount(response.data.data)     
                 if (!response?.data?.status) {                    
@@ -214,8 +234,9 @@ const WalletBalance = () => {
                             marginLeft: `${window.screen.width > 767 ? "25px" : ""}`,
                             // opacity: `${getPendingShow ? 0.8 : 1}`
                         }}
+                        disabled={!userInfo?.uid}
                         onClick={() => {
-                            getPendingAmount()
+                            getPendingAmount(userInfo?.uid)
                         }}
                     >
                         {/* {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'} */}

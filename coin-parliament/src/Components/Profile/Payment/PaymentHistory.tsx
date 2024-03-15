@@ -28,12 +28,16 @@ function PaymentHistory() {
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState<number>(0);
   const [tableHeader, setTableHerder] = useState<any>([
-    "Order ID", "Date", "Item", "Amount", "Payment method" , "Status"
+    "Date","Amount", "Status"
+  ]);
+  const [IntableHeader, setInTableHerder] = useState<any>([
+    "Order ID","Item","Payment method",
   ]);
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
   const [reciveRowData, setReciveRowData] = useState<any>([]);  
   const [pageIndex, setPageIndex] = useState(1);
+  const [showChild, setShowChild] = useState<any>("");
   const [selectTab, setSelectTab] = useState("Payment History");
   let navigate = useNavigate();
 
@@ -81,6 +85,68 @@ function PaymentHistory() {
   }, [historyTab])
   
 
+  const childTable = (item:any) => {
+    return (
+      <>
+        <div className='d-flex justify-content-around w-100 py-3 px-2'
+          style={{
+            background: "#7456ff"
+          }}
+        >
+          {
+            IntableHeader?.map((item: string, index: number) => {
+              return (<div className=''
+                key={index}
+                style={{
+                  width: `30%`,
+                  fontSize: `${window.screen.width > 767 ? "12px" : "10px"}`,
+                }}
+              >
+                <strong>{item}</strong>
+              </div>)
+            })
+          }
+        </div>
+        <div className='d-flex justify-content-around w-100 border'>
+          <div
+            style={{
+              width: "30%"
+            }}
+
+          >
+            <RewardList
+            >
+
+              {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}
+            </RewardList>
+
+          </div>
+          <div
+            style={{
+              width: "30%"
+            }}
+
+          >
+            <RewardList>
+              {item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}
+            </RewardList>
+          </div>
+          <div
+            style={{
+              width: "30%"
+            }}
+
+          >
+
+            <RewardList>
+              {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
+            </RewardList>
+          </div>
+        </div>
+      </>
+  )
+}
+
 
   return (
     <>
@@ -123,7 +189,7 @@ function PaymentHistory() {
                       return (<div className=''
                         key={index}
                         style={{
-                          width: `19%`,
+                          width: `33%`,
                           fontSize:`${window.screen.width >767? "12px":"10px"}`,
                         }}
                       >
@@ -134,175 +200,52 @@ function PaymentHistory() {
                 </div>
                 {rowData?.map((item: any, index: number) => {
                   return (
-                    <div className='d-flex justify-content-around'
+                    <div className='d-flex justify-content-around flex-wrap'
                       key={index}
                       style={{
                         textAlign: "center",
 
                       }}
+                      onClick={() => {
+                        setShowChild(showChild == (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id) ? "" : (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id))
+                      }}
                     >
                       <div
                         style={{
-                          width: "19%"
+                          width: "33%"
                         }}
                         
                       >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                            id={`tooltip-name-${index}`}>{item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}</Tooltip>}
-                        
-                        >                          
-                          <RewardList                            
-                          >
-                          {/* {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA"} */}
-                            {/* {item?.paymentDetails?.transaction_id || "NA"} */}
-                            {
-                              window.screen.width > 767 ?
-                                item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")
-                                : item?.paymentDetails?.orderId && item?.paymentDetails?.orderId?.slice(0,3) + "..."  || (item?.paymentDetails?.transaction_id ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4))?.slice(0, 3) + "..." : item?.paymentDetails?.p2 ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4))?.slice(0, 2) + "..." : "NA")
-                            }
-                          {/* {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")} */}
-                        </RewardList>
-                        </OverlayTrigger>
+                        <RewardList>                       
+                            {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}                       
+                          </RewardList>                        
                       </div>
                       <div
                         style={{
-                          width: "19%"
+                          width: "33%"
                         }}
                         
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                            id={`tooltip-name-${index}`}
-                          > 
-                          {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
-                        
-                        >
-                        <RewardList>
-                          {/* {item?.transaction_time?._seconds} */}
-                            {/* {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'} */}
-                            {window.screen.width > 767
-                              ?
-                              item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                              : item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm")?.slice(0, 10) + "..." : '-'
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`} 
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                          >{item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            {
-                              window.screen.width > 767 ?
-                                
-                              item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"
-                            :
-                                item?.transactionType == "EXTRAVOTES" ? (item?.numberOfVotes + " " + "Extra Votes")?.slice(0, 4) + "..." : (item?.transactionType)?.slice(0, 4) + "..." || "-"
-                              
-                            }
-                          
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}
-                            id={`tooltip-name-${index}`}
-                          >${item?.amount}</Tooltip>}
-                        
-                        >
+                      >                        
                         <RewardList>
                           
                           ${item?.amount}
-                          </RewardList>
-                        </OverlayTrigger>
+                          </RewardList>                       
                       </div>
                       <div
                         style={{
-                          width: "19%"
+                          width: "33%"
                         }}
                         
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                         placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`}
-                            style={{
-                              marginTop: "-15px"
-                            }}
-                          >{item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            {window.screen.width > 767 ?
-                            
-                              item?.token ? (item?.token)?.slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType)?.slice(0, 5) + (item?.walletType?.length > 10 ? "..." : "") : "-"
-                            :
-                              item?.token ? (item?.token)?.slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType?.slice(0, 5) + "...") + (item?.walletType?.length > 10 ? "..." : "") : "-"                                                         
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`}
-                            style={{
-                            marginTop:"-15px"
-                          }}
-                          >{(item?.event).toUpperCase() || "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            
-                            {window.screen.width > 767 ?
-                              (item?.event).toUpperCase() || "-"
-                              :
-                              ((item?.event).toUpperCase()) || "-"
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
+                      >                        
+                          <RewardList>                            
+                           {(item?.event).toUpperCase() || "-"}                        
+                          </RewardList>                        
+                      </div>  
+                      
+                      {showChild === (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id) && <div className='w-100'>
+                        {/* @ts-ignore */}
+                        {childTable(item)} 
+                      </div>}
                     </div>
                   )
                 })}
