@@ -26,7 +26,7 @@ paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
 paymentRouter.get("/getParentPayment/:userId", getParentPayment);
 paymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
 paymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
-paymentRouter.get("/collectPendingParentPayment/:userId", collectPendingParentPayment);
+paymentRouter.post("/parent/collectPendingParentPayment", collectPendingParentPayment);
 paymentRouter.get("/updateParentReferralPayment/:paymentId", updateParentReferralPayment);
 paymentRouter.post("/getAllPendingPaxByUserId", getAllPendingPaxByUser);
 

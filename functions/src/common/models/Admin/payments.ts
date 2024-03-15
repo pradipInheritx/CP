@@ -170,7 +170,10 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
 
 export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
-    const { userId } = req.params;
+    const { userId, totalAmount, transactionType } = req.params;
+
+
+
     const userIds: any = [];
     let isAddressNotExists: any = false;
     let notExistsCoinValue: any = "";
@@ -211,6 +214,28 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           data: [],
         });
       } else {
+
+        const getParentClaimedWholePayment = await firestore().collection('parentPayment').add({
+          parentUserId: userId,
+          childUserId: null,
+          amount: totalAmount,
+          status: "SUCCESS",
+          numberOfVotes: null,
+          parentPendingPaymentId: null,
+          receiveType: "MANUAL",
+          originCurrency: "SELF",
+          token: "SELF",
+          transactionhash: "",
+          transactionType: transactionType,
+          type: null,
+          address: "SELF",
+          timestamp: Timestamp.now(),
+          walletType: null,
+          paymentDetails: null
+        });
+
+
+
         const collectionRef = await firestore().collection('parentPayment');
         const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
 
@@ -241,7 +266,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
               timestamp: Timestamp.now(),
             });
             console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
-            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser });
+            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
             console.log(`Document ${doc.id} Updated Successfully.`);
           } else {
             makeAllInitiatedTransaction.push({
@@ -250,23 +275,24 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
               timestamp: Timestamp.now(),
             });
             console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
-            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED });
+
+            await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, parentPendingPaymentId: getParentClaimedWholePayment.id });
             console.log(`Document ${doc.id} Updated Successfully.`);
           }
         });
 
-        let createBatch: any = firestore().batch();
+        // let createBatch: any = firestore().batch();
 
-        for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
-          let paymentDocRefs: any = firestore().collection('payments').doc();
-          createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
-        }
+        // for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
+        //   let paymentDocRefs: any = firestore().collection('payments').doc();
+        //   createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
+        // }
 
-        createBatch.commit().then(function () {
-          console.log("Claimed Parent Payment Store Successfully");
-        }).catch(function (error: any) {
-          console.error("Error While Store Claimed Parent Payment :", error);
-        });
+        // createBatch.commit().then(function () {
+        //   console.log("Claimed Parent Payment Store Successfully");
+        // }).catch(function (error: any) {
+        //   console.error("Error While Store Claimed Parent Payment :", error);
+        // });
 
         res.status(200).send({
           status: true,
