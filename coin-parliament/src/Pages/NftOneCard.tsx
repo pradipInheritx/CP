@@ -586,8 +586,19 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
 
               <span>
                 {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ?
-                  <div className="d-flex">                    
-                    Quantity : &nbsp;{<u>{ShowQuantity}</u>}                   
+                  <div className="d-flex" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTooltipShow2((prev) => !prev)
+                    }}  
+                  >                    
+                    Quantity : &nbsp;{<u
+                      onClick={() => {
+                        navigate(`/singlecarddetails/${CollectionType || type}/${id}`)
+                        // setSingalCardData({ ...fulldata, myID: userId })
+                        localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId, isFollower: isFollower }))
+                      }}
+                    >{ShowQuantity}</u>}                   
                   <img src={information2} alt=""
                     className="mx-1"
                     width={"10px"}

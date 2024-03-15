@@ -40,8 +40,8 @@ const tableHeader: tableColumnType[] = [
                         
                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                         :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'
-                        // value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
+                        // value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'
+                        value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")  : '-'
                     }
                     </span>
                 </OverlayTrigger>
@@ -65,6 +65,30 @@ const tableHeader: tableColumnType[] = [
         title: 'Payment Method ',
         assessorName: 'token',
 
+    },
+    {
+        title: 'Status',
+        assessorName: 'status',
+        Row: ({ value, data }) => {
+            return (
+                <OverlayTrigger
+                    trigger={['hover', 'focus']}
+                    placement="bottom"
+                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+                        style={{
+                            // marginTop: "-15px"
+                        }}
+                    >${value}</Tooltip>}
+
+                >
+                <span>
+                        {/* ${value} */}
+                        {(value.slice(0, 5) + "..." || "NA")}
+                    </span>
+                </OverlayTrigger>
+            );
+
+        }
     },
 ];
 const ChildTableHeader: tableColumnType[] = [
@@ -91,7 +115,8 @@ const ChildTableHeader: tableColumnType[] = [
                     {window.screen.width > 767 ?                        
                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                         :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'            
+                            // value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'            
+                            value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
                     }
                     </span>
                 </OverlayTrigger>
@@ -269,36 +294,25 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                 {
                     tableHeader.map((item: tableColumnType, index: number) => {
                         return (
-                            <div style={{ width: "19%" }} key={index}>
-                                {/* <OverlayTrigger
-                                    trigger={['hover', 'focus']}
-                                    placement="bottom"
-                                    overlay={<Tooltip id={`tooltip-name-${index}`}
-                                        style={{
-                                            marginTop: "-15px"
-                                        }}
-                                    >{item?.Row ?
-                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                        : (value[item?.assessorName] || "NA")}</Tooltip>}
-
-                                >
-
-                                <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
-                                    
-                                        {window.screen.width > 767 ?
-                                            
-
-                                            item?.Row ?
-                                            <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
-                                            
-                                                :
-                                                item?.Row ?
-                                                <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ?"...":""  )|| "NA")
-                                        }
-                                    </RewardList>
-                                    </OverlayTrigger> */}
+                            <div style={{ width: "19%" }} key={index} className={`${index == 0 && 'd-flex align-items-center'}`}>
+                                {index==0 && <div>
+                                    {showChildren && value?.childPayment && value?.childPayment?.length > 0
+                                        ?
+                                        <i className="bi bi-chevron-up"
+                                            style={{
+                                                color: "white",
+                                                marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                                            }}
+                                        ></i>
+                                        :
+                                        <i className="bi bi-chevron-down "
+                                            style={{
+                                                color: "white",
+                                                marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                                            }}
+                                        ></i>
+                                    }
+                                </div>}
                                 {item?.Row ?
                                     <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
                                         <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
@@ -331,9 +345,18 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
             </div> 
             {(showChildren && value?.childPayment && value?.childPayment?.length > 0) &&                                            
                 
-                <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>                    
+                <div style={{
+                    paddingLeft: '15px', paddingRight: '15px',
+                    
+                }}>                    
+                    <div
+                        style={{
+                            border: "1px solid"
+                    }}
+                    >
                     <Table data={value?.childPayment} headers={ChildTableHeader} />
-                    <div style={{ width: '100%', height: '3px', backgroundColor: '#7456ff', margin: '0px' }} />
+                    </div>
+                    {/* <div style={{ width: '100%', height: '3px', backgroundColor: '#7456ff', margin: '0px' }} /> */}
                 </div>}
         </>
     );

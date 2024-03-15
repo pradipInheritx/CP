@@ -17,14 +17,28 @@ import AnimatedProgressProvider from "./AnimatedProgressProvider";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "Contexts/User";
 import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
-const HeaderProgressbar = ({ percentage }) => {
+import styled from "styled-components";
+
+export const TotalCmpDiv = styled.div`
+  background: red;
+  color: white;
+  border-radius:50%;
+  width:11px;  
+  height:11px;  
+  font-size:7px;
+  position:absolute;
+  right:7px;
+  top:9px;
+  z-index:1000;
+`;
+const HeaderProgressbar = ({ percentage, remainingReward }) => {
     const { width: w = 0 } = useWindowSize();
     const [progressBarValue, setProgressBarValue] = useState(0);
     const [startValue, setStartValue] = useState(false);
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
     const setCurrentCMP = useContext(CurrentCMPDispatchContext);    
-    // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
+    // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');    
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue != '0' && newScore != '0') {
@@ -85,7 +99,7 @@ const HeaderProgressbar = ({ percentage }) => {
                             );
                         }}
                 </AnimatedProgressProvider>
-                : */}
+                : */}            
                 <div                        
                     >
                         <CircularProgressbarWithChildren
@@ -96,11 +110,22 @@ const HeaderProgressbar = ({ percentage }) => {
                                 pathColor: "#6352e8",
                                 pathTransition: "none",
                                 strokeLinecap: "butt",
-                                trailColor: ('#160133'),
+                                trailColor: ('white'),
                                 backgroundColor: "white",
                             })}
-                        >                                                        
-                        <img src={giftIcon} alt='' className="gift-icon" width="20px" />                        
+                >  
+                    <div
+                        style={{
+                            width: w > 767 ? "47px" : "38px", height: w > 767 ? "47px" : "38px",
+                            border: "1px solid #160133",
+                            borderRadius:"50%",
+                        }}  
+                    >
+                        {remainingReward  > 0 && <TotalCmpDiv>
+                            <span>{remainingReward}</span>
+                        </TotalCmpDiv>}
+                        <img src={giftIcon} alt='' className="gift-icon" width="20px" />                                            
+                    </div>
                         </CircularProgressbarWithChildren>
                     </div>
                 {/* } */}

@@ -28,14 +28,20 @@ interface TableType<T> {
     pageSize?: number;
     pageIndex?: number;
     setPageIndex?: React.Dispatch<React.SetStateAction<number>>;
+    type?:string
 }
-const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, pageIndex, setPageIndex }: TableType<T>) => {
+const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, pageIndex, setPageIndex ,type}: TableType<T>) => {
     return (
         <>
-            <div className='d-flex justify-content-around w-100 py-3' style={{ background: "#7456ff" }}>
+            <div className='d-flex justify-content-around w-100 py-3'
+                style={{
+                    background: `${type == "pending" ? "#7456ff":""} `
+                }}
+                
+            >
                 {
                     headers?.map((item: tableColumnType, index: number) => {
-                        return (<div style={{ width: `19%` }} key={index}>
+                        return (<div style={{ width: `20%` }} key={index}>
                             <strong>{item?.title}</strong>
                         </div>)
                     })
@@ -47,7 +53,7 @@ const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, 
                         {
                             headers?.map((item: tableColumnType, i: number) => {
                                 return (
-                                    <div style={{ width: "19%" }} key={i}>
+                                    <div style={{ width: "20%" }} key={i}>
                                         {item?.Row ?
                                             <RewardList>
                                                 <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
