@@ -171,147 +171,136 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
 export const collectPendingParentPayment = async (req: any, res: any) => {
   try {
     const { userId, totalAmount, transactionType } = req.body;
-
-    const userIds: any = [];
-    let isAddressNotExists: any = false;
-    let notExistsCoinValue: any = "";
-    const allCoinNeedToPay: any = []
+    const resultData: any = [];
     const getWellDAppFromUser: any = (await firestore().collection('users').doc(userId).get()).data();
-
     console.info("getWellDAppFromUser", getWellDAppFromUser.wellDAddress)
 
-    const makeAllInitiatedTransaction: any = [];
+    let considerCoinNeedToPay: any = ["ETH, BNB, MATIC"];
 
+    for (let coin = 0; coin < considerCoinNeedToPay.length; coin++) {
+      const userIds: any = [];
+      let isAddressNotExists: any = false;
+      let notExistsCoinValue: any = "";
+      const allCoinNeedToPay: any = []
+      const makeAllInitiatedTransaction: any = [];
 
+      const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
+      const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING && payment.originCurrency.toUpperCase() === considerCoinNeedToPay[coin].toUpperCase());
 
-    const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
-    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
-    console.info("getAllPendingPayment...", getAllPendingPayment);
+      console.info("getAllPendingPayment---->", getAllPendingPayment);
 
-    if (getAllPendingPayment.length) {
-      getAllPendingPayment.forEach((payment: any) => {
-        userIds.push(payment.parentUserId)
-        allCoinNeedToPay.push(payment.originCurrency)
-      })
-
-      for (let coin = 0; coin < allCoinNeedToPay.length; coin++) {
-        let isWellDAppAddressExit = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === allCoinNeedToPay[coin])
-        if (!isWellDAppAddressExit) {
-          isAddressNotExists = true;
-          notExistsCoinValue = allCoinNeedToPay[coin];
-          console.log("Loop Break & Return Response")
-          break;
-        } else {
-          console.log("WellDApp Address", isWellDAppAddressExit, "Coin", allCoinNeedToPay[coin])
-        }
-      }
-
-      if (isAddressNotExists) {
-        console.info("isAddressNotExists--->", isAddressNotExists);
-        res.status(200).send({
-          status: false,
-          message: `Please make sure to update the coin address - ${notExistsCoinValue} for collect the referral`,
-          data: [],
-        });
-      } else {
-        const currentTimestamp = Date.now();
-        const currentEpochTimestamp = Math.floor(currentTimestamp / 1000);
-        const getParentClaimedWholePayment = await firestore().collection('parentPayment').add({
-          parentUserId: userId,
-          childUserId: null,
-          amount: totalAmount,
-          status: parentConst.PAYMENT_STATUS_SUCCESS,
-          numberOfVotes: null,
-          parentPendingPaymentId: null,
-          receiveType: parentConst.PAYMENT_RECEIVE_TYPE_MANUAL,
-          originCurrency: parentConst.PAYMENT_STATUS_SELF,
-          token: parentConst.PAYMENT_STATUS_SELF,
-          transactionId: `REF-${userId.slice(0, 4)}-${currentEpochTimestamp}`,
-          transactionhash: "",
-          transactionType: transactionType,
-          type: null,
-          address: parentConst.PAYMENT_STATUS_SELF,
-          timestamp: Timestamp.now(),
-          walletType: null,
-          paymentDetails: null
-        });
-
-        const collectionRef = await firestore().collection('parentPayment');
-        const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
-
-        // Iterate over each document where the array contains the value
-        snapshot.forEach(async doc => {
-          const docRef = collectionRef.doc(doc.id);
-          let getPaymentDetails = doc.data();
-          if (getPaymentDetails.status === parentConst.PAYMENT_STATUS_PENDING) {
-
-            console.info("getPaymentDetails...", getPaymentDetails.address, "Origin Currency", getPaymentDetails.originCurrency)
-            const isUserUpdatedAddress = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === getPaymentDetails.originCurrency);
-            console.info("isUserUpdatedAddress...", isUserUpdatedAddress)
-            let getAddressFromUser = "";
-            if (getPaymentDetails.address === "NO_ADDRESS") {
-              console.info("getPaymentDetails.address", getPaymentDetails.address)
-              getAddressFromUser = isUserUpdatedAddress.address;
-            }
-
-
-            if (getAddressFromUser) {
-              console.info("getAddressFromUser--->", getAddressFromUser)
-              getPaymentDetails.address = getAddressFromUser;
-
-
-              console.info("getPaymentDetails.address-->", getPaymentDetails.address)
-
-              makeAllInitiatedTransaction.push({
-                event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-                ...getPaymentDetails,
-                timestamp: Timestamp.now(),
-              });
-              console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
-              await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
-              console.log(`Document ${doc.id} Updated Successfully.`);
-            } else {
-              makeAllInitiatedTransaction.push({
-                event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
-                ...getPaymentDetails,
-                timestamp: Timestamp.now(),
-              });
-              console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
-
-              await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, parentPendingPaymentId: getParentClaimedWholePayment.id });
-              console.log(`Document ${doc.id} Updated Successfully.`);
-            }
-          } else {
-            console.log("This record is for Success Payment", doc.id); //No need to do for success payment. Only Update the Pending Payment
+      if (getAllPendingPayment.length) {
+        getAllPendingPayment.forEach((payment: any) => {
+          if (considerCoinNeedToPay[coin] === payment.originCurrency) {
+            userIds.push(payment.parentUserId)
+            allCoinNeedToPay.push(payment.originCurrency)
           }
-        });
+        })
 
-        // let createBatch: any = firestore().batch();
+        for (let coin = 0; coin < allCoinNeedToPay.length; coin++) {
+          let isWellDAppAddressExit = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === allCoinNeedToPay[coin])
+          if (!isWellDAppAddressExit) {
+            isAddressNotExists = true;
+            notExistsCoinValue = allCoinNeedToPay[coin];
+            console.log("Loop Break & Return Response")
+            break;
+          } else {
+            console.log("WellDApp Address", isWellDAppAddressExit, "Coin", allCoinNeedToPay[coin])
+          }
+        }
 
-        // for (let docRef = 0; docRef < makeAllInitiatedTransaction.length; docRef++) {
-        //   let paymentDocRefs: any = firestore().collection('payments').doc();
-        //   createBatch.set(paymentDocRefs, makeAllInitiatedTransaction[docRef]);
-        // }
+        if (isAddressNotExists) {
+          resultData.push({
+            status: false,
+            message: `Please make sure to update the coin address - ${notExistsCoinValue} for collect the referral`,
+            data: [],
+          })
+          console.info("isAddressNotExists--->", isAddressNotExists);
+        } else {
+          const currentTimestamp = Date.now();
+          const currentEpochTimestamp = Math.floor(currentTimestamp / 1000);
+          const getParentClaimedWholePayment = await firestore().collection('parentPayment').add({
+            parentUserId: userId,
+            childUserId: null,
+            amount: totalAmount,
+            status: parentConst.PAYMENT_STATUS_SUCCESS,
+            numberOfVotes: null,
+            parentPendingPaymentId: null,
+            receiveType: parentConst.PAYMENT_RECEIVE_TYPE_MANUAL,
+            originCurrency: considerCoinNeedToPay[coin],
+            token: considerCoinNeedToPay[coin],
+            transactionId: `REF-${userId.slice(0, 4)}-${currentEpochTimestamp}`,
+            transactionhash: "",
+            transactionType: transactionType,
+            type: null,
+            address: considerCoinNeedToPay[coin],
+            timestamp: Timestamp.now(),
+            walletType: null,
+            paymentDetails: null
+          });
 
-        // createBatch.commit().then(function () {
-        //   console.log("Claimed Parent Payment Store Successfully");
-        // }).catch(function (error: any) {
-        //   console.error("Error While Store Claimed Parent Payment :", error);
-        // });
+          const collectionRef = await firestore().collection('parentPayment');
+          const snapshot = await collectionRef.where("parentUserId", 'in', userIds).get();
 
-        res.status(200).send({
-          status: true,
-          message: parentConst.MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY,
-          data: makeAllInitiatedTransaction,
-        });
+          // Iterate over each document where the array contains the value
+          snapshot.forEach(async doc => {
+            const docRef = collectionRef.doc(doc.id);
+            let getPaymentDetails = doc.data();
+            if (getPaymentDetails.status === parentConst.PAYMENT_STATUS_PENDING) {
+
+              console.info("getPaymentDetails...", getPaymentDetails.address, "Origin Currency", getPaymentDetails.originCurrency)
+              const isUserUpdatedAddress = getWellDAppFromUser.wellDAddress.find((address: any) => address.coin === getPaymentDetails.originCurrency);
+              console.info("isUserUpdatedAddress...", isUserUpdatedAddress)
+              let getAddressFromUser = "";
+              if (getPaymentDetails.address === "NO_ADDRESS") {
+                console.info("getPaymentDetails.address", getPaymentDetails.address)
+                getAddressFromUser = isUserUpdatedAddress.address;
+              }
+              if (getAddressFromUser) {
+                getPaymentDetails.address = getAddressFromUser;
+                console.info("getPaymentDetails.address-->", getPaymentDetails.address)
+                makeAllInitiatedTransaction.push({
+                  event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+                  ...getPaymentDetails,
+                  timestamp: Timestamp.now(),
+                });
+                console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
+                await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
+                console.log(`Document ${doc.id} Updated Successfully.`);
+              } else {
+                makeAllInitiatedTransaction.push({
+                  event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
+                  ...getPaymentDetails,
+                  timestamp: Timestamp.now(),
+                });
+                console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
+
+                await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, parentPendingPaymentId: getParentClaimedWholePayment.id });
+                console.log(`Document ${doc.id} Updated Successfully.`);
+              }
+            } else {
+              console.log("This record is for Success Payment", doc.id); //No need to do for success payment. Only Update the Pending Payment
+            }
+          });
+          resultData.push({
+            status: true,
+            message: `${parentConst.MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY} For ${considerCoinNeedToPay[coin].toUpperCase()}`,
+            data: makeAllInitiatedTransaction,
+          })
+        }
+      } else {
+        resultData.push({
+          status: false,
+          message: `No Parent Payment Found For ${considerCoinNeedToPay[coin].toUpperCase()} This Coin.`,
+          data: [],
+        })
       }
-    } else {
-      res.status(200).send({
-        status: false,
-        message: "No Parent Payment Found",
-        data: [],
-      });
     }
+    res.status(200).send({
+      status: true,
+      message: parentConst.MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY,
+      result: resultData,
+    });
   } catch (error) {
     errorLogging("getPendingPaymentbyUserId", "ERROR", error);
     res.status(500).send({

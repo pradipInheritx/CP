@@ -529,3 +529,48 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
     });
 }
 
+export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
+
+  console.info("userDetails--->", userDetails);
+
+  const usersRef = await firestore().collection('userEmailAcknowledgement');
+  const query = usersRef.where('uid', '==', userDetails.uid);
+  const getAckIds: any = [];
+
+  await query.get()
+    .then((userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No user is for user upgraded.');
+        return;
+      }
+      userSnapshot.forEach((userAckDoc: any) => {
+        let getDataOfUserAsk = userAckDoc.data();
+        if (getDataOfUserAsk.sendEmailForAfterUpgrade === false) {
+          // To Do Send Email To User
+
+          getAckIds.push({ ackId: userAckDoc.id, sendEmailForAfterUpgrade: true })
+
+          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+        }
+
+        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+      });
+
+      let createBatch: any = firestore().batch();
+
+      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+        createBatch.update(ackIdDocRefs, { sendEmailForAfterUpgrade: getAckIds[docRef].sendEmailForAfterUpgrade });
+      }
+
+      createBatch.commit().then(function () {
+        console.log("Ack For Account Upgrade Email Send Successfully");
+      }).catch(function (error: any) {
+        console.error("Error While Ack For Account Upgrade Email Send  :", error);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users Ack:', err);
+    });
+}
+
