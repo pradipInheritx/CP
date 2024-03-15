@@ -182,6 +182,8 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
 
     const makeAllInitiatedTransaction: any = [];
 
+
+
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
     console.info("getAllPendingPayment...", getAllPendingPayment);
@@ -212,21 +214,23 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           data: [],
         });
       } else {
-
+        const currentTimestamp = Date.now();
+        const currentEpochTimestamp = Math.floor(currentTimestamp / 1000);
         const getParentClaimedWholePayment = await firestore().collection('parentPayment').add({
           parentUserId: userId,
           childUserId: null,
           amount: totalAmount,
-          status: "SUCCESS",
+          status: parentConst.PAYMENT_STATUS_SUCCESS,
           numberOfVotes: null,
           parentPendingPaymentId: null,
-          receiveType: "MANUAL",
-          originCurrency: "SELF",
-          token: "SELF",
+          receiveType: parentConst.PAYMENT_RECEIVE_TYPE_MANUAL,
+          originCurrency: parentConst.PAYMENT_STATUS_SELF,
+          token: parentConst.PAYMENT_STATUS_SELF,
+          transactionId: `REF-${userId.slice(0, 4)}-${currentEpochTimestamp}`,
           transactionhash: "",
           transactionType: transactionType,
           type: null,
-          address: "SELF",
+          address: parentConst.PAYMENT_STATUS_SELF,
           timestamp: Timestamp.now(),
           walletType: null,
           paymentDetails: null
