@@ -730,7 +730,7 @@ const Header = ({
 														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />														
 													</div>
 
-													<div className="d-flex align-items-center shaped-btn-row">
+													<div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
 														<button className="btn-shaped me-1"
 															onClick={() => {
 																navigate("/coins")
@@ -1090,7 +1090,7 @@ const Header = ({
 
 
 
-																<div className="d-flex align-items-center shaped-btn-row">
+																<div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
 																	<button className="btn-shaped me-1"
 																		onClick={() => {
 																			navigate("/coins")

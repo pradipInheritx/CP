@@ -321,7 +321,7 @@ function WalletInfo() {
             if (validate) {
                 setSaveAddress(false);
             } else {
-                setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
+                setErrorValue({ ...errorValue, walletError: "Enter Valid Wallet Address " })
                 setSaveAddress(false);
             }
         }
@@ -1064,12 +1064,13 @@ function WalletInfo() {
                     ></I> 
                     </div>  }                 
                     <div className={`${window.screen.width > 350 ? 'd-flex mt-2' : ''} w-100`}  >
+                        <div style={{width:"45%"}}>
                         <select
                             name="coin"
                                 id="coin"
                                 
                             style={{
-                                width: "45%",
+                                width: "100%",
                                 padding: "11px 0px 11px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
@@ -1084,12 +1085,14 @@ function WalletInfo() {
                                 return <option className='text-uppercase' key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
                         </select>
+                        </div>
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
+                        <div style={{width:"45%"}}>
                         <input
 
                             style={{
-                                width: "45%",
-                                padding: "10px 0px 10px 10px",
+                                width: "100%",
+                                padding: "11px 0px 11px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
@@ -1100,7 +1103,11 @@ function WalletInfo() {
                             onChange={(e) => {
                                 handleChangeValue(e, "walletDetails")
                             }}
-                        />                       
+                        />         
+                        <div style={{whiteSpace:"nowrap"}}>
+                        {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
+                        </div>   
+                        </div>              
                         <RemoveButton type='button'
                             disabled={!walletDetails?.address || saveAddress}
                             style={{
@@ -1118,7 +1125,7 @@ function WalletInfo() {
                         </RemoveButton>
                     </div>
                     {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
-                    {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
+                    
 
                     </SelectTextfield>
                     
