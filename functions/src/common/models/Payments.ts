@@ -12,6 +12,7 @@ import {
 import * as parentConst from "../consts/payment.const.json";
 import { getAllPendingPaxByUserId } from "./PAX";
 import { errorLogging } from "../helpers/commonFunction.helper";
+import { sendEmailForAfterUpgradeOnImmediate } from "../models/Notification";
 
 
 export const callbackFromServer = async (req: any, res: any) => {
@@ -210,6 +211,8 @@ export const addIsUpgradedValue = async (userId: string) => {
     .collection("users")
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
+
+  await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
 
   const rewardData = {
     winData: {
