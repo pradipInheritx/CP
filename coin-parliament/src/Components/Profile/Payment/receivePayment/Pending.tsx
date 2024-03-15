@@ -108,7 +108,7 @@ const Complete: React.FC = () => {
     useEffect(() => {
         if (userInfo?.uid) {
             setLoading(true);
-            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=CLAIMED&pageNumber=${pageIndex}&pageSize=${pageSize}`).then((response) => {
+            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=PENDING&pageNumber=${pageIndex}&pageSize=${pageSize}`).then((response) => {
                 setData(response?.data?.data);
                 setTotalRecord(response.data?.total)
                 setLoading(false);

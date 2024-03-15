@@ -169,7 +169,10 @@ const Complete: React.FC = () => {
                         // console.log(prev, prev + current?.amount, 'current?.amount 1');
                         return parseFloat(prev + current?.amount);
                     }, 0);
-                    return { ...value, childPayment: [...value?.childPayment, { ...temp, amount: (temp?.amount - childAmountSum).toFixed(5) }] }
+                    return {
+                        ...value,
+                        // childPayment: [...value?.childPayment, { ...temp, amount: (temp?.amount - childAmountSum).toFixed(5) }]
+                    }
                 }))
                 setLoading(false);
             }).catch((error) => {
@@ -325,9 +328,10 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                         )
                     })
                 }
-            </div>
-            {(showChildren && value?.childPayment && value?.childPayment?.length > 0) &&
-                <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+            </div> 
+            {(showChildren && value?.childPayment && value?.childPayment?.length > 0) &&                                            
+                
+                <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>                    
                     <Table data={value?.childPayment} headers={ChildTableHeader} />
                     <div style={{ width: '100%', height: '3px', backgroundColor: '#7456ff', margin: '0px' }} />
                 </div>}
