@@ -261,6 +261,7 @@ const Header = ({
 	const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? score : score);
+	const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 	// console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
 	const voteDetails = useContext(VoteContext);
 	const [handleSoundClick] = useSound(buttonClick);
@@ -718,16 +719,18 @@ const Header = ({
 												>												
 													<div className="custom-circle-progress"
 														style={{
-														cursor:"pointer"	
+															cursor: "pointer"	,
+															borderRadius: "50%",
+															border:"1px solid #160133"
 														}}
 														onClick={() => {
 															navigate("/profile/mine")
 														}}
-													>													
-														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} />
+													>															
+														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />														
 													</div>
 
-													<div className="d-flex align-items-center shaped-btn-row">
+													<div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
 														<button className="btn-shaped me-1"
 															onClick={() => {
 																navigate("/coins")
@@ -1039,7 +1042,9 @@ const Header = ({
 															}
 															<div className="custom-circle-progress"
 																style={{
-																	cursor: "pointer"
+																	cursor: "pointer",
+																	borderRadius: "50%",
+																	border:"1px solid #160133"
 																}}
 																onClick={() => {
 																	navigate("/profile/mine")
@@ -1068,7 +1073,7 @@ const Header = ({
 
 																</CircularProgressbarWithChildren>
 																</div> */}
-																<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} />
+																<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />
 															</div>
 														</HeaderCenter>
 														{
@@ -1085,7 +1090,7 @@ const Header = ({
 
 
 
-																<div className="d-flex align-items-center shaped-btn-row">
+																<div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
 																	<button className="btn-shaped me-1"
 																		onClick={() => {
 																			navigate("/coins")

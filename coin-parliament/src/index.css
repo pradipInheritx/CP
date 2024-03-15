@@ -1579,7 +1579,7 @@ border-top-left-radius: 0px !important;
     background: transparent;
     text-align: center;
     position: absolute;
-    right: -32px;
+    right: -34px;
     top: 0px;
 }
 
@@ -1680,7 +1680,7 @@ border-top-left-radius: 0px !important;
         border-radius: 100px 0px 0px 100px;
         }
         .mobileHeader .custom-circle-progress {
-            right: -32px;
+            right: -34px;
             top: 7px;
         }
 

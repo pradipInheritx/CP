@@ -131,7 +131,7 @@ const Complete: React.FC = () => {
                 width: `${window.screen.width > 767 ? "730px" : "100%"}`,
                 margin: "auto",
             }}>
-            <Table data={data} headers={tableHeader} totalRecord={totalRecord} loading={loading} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} />
+            <Table data={data} headers={tableHeader} totalRecord={totalRecord} loading={loading} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} type="pending"/>
         </div>
     )
 }

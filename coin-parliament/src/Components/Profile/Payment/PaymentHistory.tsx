@@ -19,6 +19,13 @@ const RewardList = styled.p`
   cursor: pointer;   
    padding:15px 11px;   
 `;
+const ArrowButton = styled.button`
+  background:none;
+  border:none;
+  margin-left:10px;
+  // width :10px;
+  // height:10px;
+`;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 function PaymentHistory() {
 
@@ -87,8 +94,8 @@ function PaymentHistory() {
 
   const childTable = (item:any) => {
     return (
-      <>
-        <div className='d-flex justify-content-around w-100 py-3 px-2'
+      <div className='p-3'>
+        {/* <div className='d-flex justify-content-around w-100 py-3 px-2'
           style={{
             background: "#7456ff"
           }}
@@ -106,44 +113,46 @@ function PaymentHistory() {
               </div>)
             })
           }
-        </div>
-        <div className='d-flex justify-content-around w-100 border'>
+        </div> */}
+        <div className='d-flex justify-content-around w-100 border p-2'>
           <div
             style={{
-              width: "30%"
+              width: "32%"
             }}
 
           >
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[0]}</strong>}
             <RewardList
             >
 
-              {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}
+              {window.screen.width > 767 && <strong>{IntableHeader[0] + " -" }</strong>} {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}
             </RewardList>
 
           </div>
           <div
             style={{
-              width: "30%"
+              width: "32%"
             }}
 
           >
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[1]}</strong>}
             <RewardList>
-              {item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}
+              {window.screen.width > 767 && <strong>{IntableHeader[1] + " -"}</strong>} {item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}
             </RewardList>
           </div>
           <div
             style={{
-              width: "30%"
+              width: "32%"
             }}
 
           >
-
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[2]}</strong>}
             <RewardList>
-              {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
+              {window.screen.width > 767 && <strong>{IntableHeader[2] + " -"}</strong>} {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
             </RewardList>
           </div>
         </div>
-      </>
+      </div>
   )
 }
 
@@ -214,26 +223,46 @@ function PaymentHistory() {
                         style={{
                           width: "33%"
                         }}
-                        
+                        className='d-flex align-items-center'
                       >
+                        <div                          
+                        >
+                        {/* <ArrowButton> */}
+                            {showChild === (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id)
+                              ?                           
+                            <i className="bi bi-chevron-up"
+                              style={{
+                                color: "white",
+                                marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                              }}
+                            ></i>  
+                              :                                                      
+                            <i className="bi bi-chevron-down "
+                                style={{
+                                  color: "white",
+                                  marginLeft:`${window.screen.width < 767 ?"10px":"15px"}`
+                              }}
+                              ></i>
+                            }
+                          {/* </ArrowButton> */}
+                        </div>
                         <RewardList>                       
                             {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}                       
                           </RewardList>                        
                       </div>
                       <div
                         style={{
-                          width: "33%"
+                          width: "32%"
                         }}
                         
                       >                        
-                        <RewardList>
-                          
-                          ${item?.amount}
+                        <RewardList>                          
+                          ${(Number(item?.amount)?.toFixed(4) || 0)}
                           </RewardList>                       
                       </div>
                       <div
                         style={{
-                          width: "33%"
+                          width: "32%"
                         }}
                         
                       >                        

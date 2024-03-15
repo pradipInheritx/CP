@@ -155,7 +155,7 @@ const Vote = ({
 
   }
 
-
+  
 
   const scrollAtVoteFrame = () => {
     if (pageTrue && user?.uid && !login) {
@@ -184,7 +184,9 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  handleSoundClick()
+                  if (voteNumber > 0) {
+                    handleSoundClick()
+                  }
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
@@ -264,7 +266,9 @@ const Vote = ({
               {...{
                 ...option1.buttonProps,
                 onClick: () => {
-                  handleSoundClick()
+                  if (voteNumber > 0) {
+                    handleSoundClick()
+                  }
                   openPopup()
                   
                   // @ts-ignore
