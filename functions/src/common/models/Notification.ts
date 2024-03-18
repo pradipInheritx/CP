@@ -148,8 +148,10 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
         const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
         const getUserDocs: any = (
-          await firestore().collection("users").where("userId", "in", userIds).get()
+          await firestore().collection("users").where("uid", "in", userIds).get()
         ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
 
         console.log("UserIds Fetch --->", userIds);
 
