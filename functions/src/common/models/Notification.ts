@@ -121,10 +121,12 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         userSnapshot.forEach(async (userAckDoc: any) => {
           let getDataOfUserAsk: any = userAckDoc.data();
+
+          console.log("Get sendEmailForVoiceMatter---->", getDataOfUserAsk.sendEmailForVoiceMatter);
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
             // To Do Send Email To User
 
-            console.info("Get User ID--->", getDataOfUserAsk.userId)
+            console.log("Get User ID--->", getDataOfUserAsk.userId)
 
             const getUserDoc: any = (
               await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
