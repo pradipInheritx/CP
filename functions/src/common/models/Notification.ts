@@ -113,7 +113,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
     const getAckIds: any = [];
 
     await query.get()
-      .then((userSnapshot: any) => {
+      .then(async (userSnapshot: any) => {
         if (userSnapshot.empty) {
           console.log('No users created in the last 24 hours for voice Matters.');
           return;
@@ -121,23 +121,21 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         userSnapshot.forEach(async (userAckDoc: any) => {
           let getDataOfUserAsk: any = userAckDoc.data();
+
+          console.log("Get sendEmailForVoiceMatter---->", getDataOfUserAsk.sendEmailForVoiceMatter);
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
             // To Do Send Email To User
-            const getUserDoc: any = (
-              await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
-            ).data(); // Get User
-
-            console.info("getUserDoc....", getUserDoc);
-
-            if (getUserDoc.email) {
-              await sendEmail(
-                getUserDoc.email,
-                "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
-                sendEmailForVoiceMatterTemplate(`${getUserDoc.userName ? getUserDoc.userName : 'user'}`, env.BASE_SITE_URL)
-              );
-
-              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
-
+            console.log("Get User ID--->", getDataOfUserAsk.userId);
+            // const getUserDoc: any = (
+            //   await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
+            // ).data(); // Get User
+            // const getUserDoc = {
+            //   email: "tempuser28@yopmail.com",
+            //   userName: "TestUser"
+            // }
+            //console.log("getUserDoc....", getUserDoc);
+            if (getDataOfUserAsk.userId) {
+              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, userId: getDataOfUserAsk.userId });
               console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
             } else {
               console.log("No user email found for send notification", userAckDoc.id)
@@ -147,9 +145,33 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         let createBatch: any = firestore().batch();
 
+        const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
           let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
           createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
+
+          console.log("Come Here For Send Email For Voice Matters");
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
+            sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
+          );
         }
 
         createBatch.commit().then(function () {
