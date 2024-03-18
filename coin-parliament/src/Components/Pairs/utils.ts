@@ -8,6 +8,8 @@ import EXTRA2 from "../../assets/images/EXTRA2.png";
 import EXTRA3 from "../../assets/images/EXTRA3.png";
 import EXTRA4 from "../../assets/images/EXTRA4.png";
 import EXTRA5 from "../../assets/images/EXTRA5.png";
+import EXTRA6 from "../../assets/images/EXTRA6.png";
+import EXTRA7 from "../../assets/images/EXTRA7.png";
 
 
 export const symbolCombination = (coins: string[]) =>
@@ -90,5 +92,13 @@ export const listData = [
     price2: "132.103",
     img1: EXTRA4,
     img2: EXTRA5,
+  },
+  {
+    name1: "Jake Paul",
+    name2: "Mike Tyson",
+    price1: "232.012",
+    price2: "123.103",
+    img1: EXTRA6,
+    img2: EXTRA7,
   }
 ]
