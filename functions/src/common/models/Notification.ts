@@ -80,9 +80,6 @@ export const sendEmailAcknowledgementStatus = async (userObj: any) => {
 
   const acknowledgementEmailSettings = {
     userId: userObj.uid,
-    userName: userObj.userName,
-    displayName: userObj.displayName,
-    email: userObj.email,
     sendEmailForVoiceMatter: false,
     sendEmailForUserUpgrade: false,
     sendEmailForAddressNotUpdated: false,
@@ -126,12 +123,19 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
           let getDataOfUserAsk: any = userAckDoc.data();
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
             // To Do Send Email To User
-            if (getDataOfUserAsk.email) {
+            const getUserDoc: any = (
+              await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
+            ).data(); // Get User
+
+            console.info("getUserDoc....", getUserDoc);
+
+            if (getUserDoc.email) {
               await sendEmail(
-                getDataOfUserAsk.email,
+                getUserDoc.email,
                 "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
-                sendEmailForVoiceMatterTemplate(`${getDataOfUserAsk.userName ? getDataOfUserAsk.userName : 'user'}`, env.BASE_SITE_URL)
+                sendEmailForVoiceMatterTemplate(`${getUserDoc.userName ? getUserDoc.userName : 'user'}`, env.BASE_SITE_URL)
               );
+
               getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
 
               console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
@@ -592,4 +596,3 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
       console.error('Error while getting users Ack:', err);
     });
 }
-
