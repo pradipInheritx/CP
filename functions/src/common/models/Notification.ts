@@ -113,7 +113,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
     const getAckIds: any = [];
 
     await query.get()
-      .then((userSnapshot: any) => {
+      .then(async (userSnapshot: any) => {
         if (userSnapshot.empty) {
           console.log('No users created in the last 24 hours for voice Matters.');
           return;
@@ -125,23 +125,17 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
           console.log("Get sendEmailForVoiceMatter---->", getDataOfUserAsk.sendEmailForVoiceMatter);
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
             // To Do Send Email To User
-
-            console.log("Get User ID--->", getDataOfUserAsk.userId)
-
+            console.log("Get User ID--->", getDataOfUserAsk.userId);
             // const getUserDoc: any = (
             //   await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
             // ).data(); // Get User
-
-            const getUserDoc = {
-              email: "tempuser28@yopmail.com",
-              userName: "TestUser"
-            }
-
-            console.log("getUserDoc....", getUserDoc);
-
-            if (getUserDoc.email) {
-              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, email: getUserDoc.email, userName: getUserDoc.userName ? getUserDoc.userName : 'user' })
-
+            // const getUserDoc = {
+            //   email: "tempuser28@yopmail.com",
+            //   userName: "TestUser"
+            // }
+            //console.log("getUserDoc....", getUserDoc);
+            if (getDataOfUserAsk.userId) {
+              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, userId: getDataOfUserAsk.userId });
               console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
             } else {
               console.log("No user email found for send notification", userAckDoc.id)
@@ -151,6 +145,14 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         let createBatch: any = firestore().batch();
 
+        const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("userId", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("UserIds Fetch --->", userIds);
+
         console.log("getAckIds-------->", getAckIds)
 
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
@@ -159,10 +161,14 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
           console.log("Come Here For Send Email For Voice Matters");
 
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
           sendEmail(
-            getAckIds[docRef].email,
+            getUserDetails[0].email,
             "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
-            sendEmailForVoiceMatterTemplate(`${getAckIds[docRef].userName}`, env.BASE_SITE_URL)
+            sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
           );
         }
 
