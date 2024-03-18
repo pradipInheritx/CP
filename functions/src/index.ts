@@ -527,8 +527,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     await sendEmailVerificationLink(getUser.email);
 
     // Return if user isVoteToEarn is true
-    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
-    if (getUser.isVoteToEarn === true) {
+    console.log("getUser.isVoteToEarn : ", getUser && getUser.isVoteToEarn)
+    if (getUser && getUser.isVoteToEarn === true) {
       return newUser;
     }
 
@@ -539,7 +539,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
     // );
 
-    await sendEmailAcknowledgementStatus(user); // Added Email Settings For Acknowledgement
+    await sendEmailAcknowledgementStatus(getUser); // Added Email Settings For Acknowledgement
 
     return newUser;
   } catch (e) {
