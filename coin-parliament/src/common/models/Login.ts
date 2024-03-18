@@ -289,9 +289,9 @@ export const SignupRegular = async (
       payload.password
     );
     // @ts-ignore
-    await sendEmailVerification(auth?.currentUser).then((data) => {
-      showToast("Successfully sent  verification link on your mail");
-    });
+    // await sendEmailVerification(auth?.currentUser).then((data) => {
+    //   showToast("Successfully sent  verification link on your mail");
+    // });
     const firstTimeLogin: Boolean = true
     // @ts-ignore
 
@@ -300,7 +300,8 @@ export const SignupRegular = async (
     console.log('firsttimelogin success')
     // @ts-ignore
     // saveUsername(auth?.currentUser?.uid, '', '')
-    showToast("User register successfully.", ToastType.SUCCESS);
+    // showToast("User register successfully.", ToastType.SUCCESS);
+    showToast("Successfully sent  verification link on your mail", ToastType.SUCCESS);
     // Logout(); 
     // @ts-ignore
     callback.successFunc(auth?.currentUser);
