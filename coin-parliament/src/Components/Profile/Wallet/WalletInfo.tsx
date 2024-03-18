@@ -1109,11 +1109,12 @@ function WalletInfo() {
                         </div>   
                         </div>              
                         <RemoveButton type='button'
-                            disabled={!walletDetails?.address || saveAddress}
+                            disabled={(!walletDetails?.address && !walletDetails?.coin) || saveAddress}
                             style={{
                                 marginLeft: "10px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"":"18px"}`,
+                                backgroundColor: `${walletDetails?.address || walletDetails?.coin ?"":"gray"}`
                             }}
                             onClick={() => {
                                 updateAddress()
