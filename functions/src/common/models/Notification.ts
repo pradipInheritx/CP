@@ -123,20 +123,17 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
           let getDataOfUserAsk: any = userAckDoc.data();
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
             // To Do Send Email To User
+
+            console.info("Get User ID--->", getDataOfUserAsk.userId)
+
             const getUserDoc: any = (
               await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
             ).data(); // Get User
 
-            console.info("getUserDoc....", getUserDoc);
+            console.log("getUserDoc....", getUserDoc);
 
             if (getUserDoc.email) {
-              await sendEmail(
-                getUserDoc.email,
-                "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
-                sendEmailForVoiceMatterTemplate(`${getUserDoc.userName ? getUserDoc.userName : 'user'}`, env.BASE_SITE_URL)
-              );
-
-              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
+              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, email: getUserDoc.email, userName: getUserDoc.userName ? getUserDoc.userName : 'user' })
 
               console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
             } else {
@@ -150,6 +147,14 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
           let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
           createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
+
+          console.info("Come Here For Send Email For Voice Matters");
+
+          sendEmail(
+            getAckIds[docRef].email,
+            "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
+            sendEmailForVoiceMatterTemplate(`${getAckIds[docRef].userName}`, env.BASE_SITE_URL)
+          );
         }
 
         createBatch.commit().then(function () {
