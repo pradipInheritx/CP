@@ -144,11 +144,13 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         let createBatch: any = firestore().batch();
 
+        console.log("getAckIds-------->", getAckIds)
+
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
           let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
           createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
 
-          console.info("Come Here For Send Email For Voice Matters");
+          console.log("Come Here For Send Email For Voice Matters");
 
           sendEmail(
             getAckIds[docRef].email,
