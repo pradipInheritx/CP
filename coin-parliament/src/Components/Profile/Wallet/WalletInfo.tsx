@@ -1071,6 +1071,7 @@ function WalletInfo() {
                                 
                             style={{
                                 width: "100%",
+                                height:"100%",
                                 padding: "11px 0px 11px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
@@ -1092,6 +1093,7 @@ function WalletInfo() {
 
                             style={{
                                 width: "100%",
+                                height: "100%",
                                 padding: "11px 0px 11px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
