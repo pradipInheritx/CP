@@ -5,6 +5,7 @@ import { sendEmail } from "../services/emailServices";
 import { sendEmailForVoiceMatterTemplate } from "../emailTemplates/sendEmailForVoiceMatterTemplate";
 import { sendEmailForUserUpgradeTemplate } from "../emailTemplates/sendEmailForUserUpgradeTemplate";
 import { sendEmailForAddressNotUpdatedTemplate } from "../emailTemplates/sendEmailForAddressNotUpdated";
+import { sendEmailForLifetimePassiveIncomeTemplate } from "../emailTemplates/sendEmailForLifetimePassiveIncomeTemplate";
 
 
 import env from "./../../env/env.json";
@@ -292,6 +293,7 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
           }
         }
       });
+
       let createBatch: any = firestore().batch();
 
       const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
@@ -308,22 +310,10 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
         console.log("getAckIds-------->", getAckIds)
 
-        userSnapshot.forEach((userAckDoc: any) => {
-          let getDataOfUserAsk = userAckDoc.data();
-          if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false) {
-
-            getAckIds.push({ ackId: userAckDoc.id, sendEmailForAddressNotUpdated: true })
-
-            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-          }
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-          // To Do Send Email To User
-        });
-
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
 
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForAddressNotUpdated: getAckIds[docRef].sendEmailForAddressNotUpdated });
           console.log("Come Here For Send Email For Voice Matters");
 
           let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
@@ -335,9 +325,6 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
             "Important: Update Your Wallet Address for Seamless Rewards on Coin Parliament",
             sendEmailForAddressNotUpdatedTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
           );
-
-          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-          createBatch.update(ackIdDocRefs, { sendEmailForAddressNotUpdated: getAckIds[docRef].sendEmailForAddressNotUpdated });
         }
 
         createBatch.commit().then(function () {
@@ -364,39 +351,67 @@ export const sendEmailForLifetimePassiveIncomeInLast92Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 96 hours for life time passive income.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
+
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForLifetimePassiveIncome---->", getDataOfUserAsk.sendEmailForLifetimePassiveIncome);
         if (getDataOfUserAsk.sendEmailForLifetimePassiveIncome === false) {
-          // To Do Send Email To User
-
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForLifetimePassiveIncome: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForLifetimePassiveIncome: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForLifetimePassiveIncome", userAckDoc.id)
+          }
         }
-
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
       });
 
       let createBatch: any = firestore().batch();
 
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForLifetimePassiveIncome: getAckIds[docRef].sendEmailForLifetimePassiveIncome });
-      }
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-      createBatch.commit().then(function () {
-        console.log("Ack For live time passive income Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Life Time Passive Income Email Send  :", error);
-      });
+      if (userIds && userIds.length) {
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForLifetimePassiveIncome: getAckIds[docRef].sendEmailForLifetimePassiveIncome });
+
+          console.log("Come Here For Send Email For Passive Income");
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->Passive Income", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "🌟 Your social media can make you Lifetime Passive Income! 🚀",
+            sendEmailForLifetimePassiveIncomeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
+          );
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Ack For live time passive income Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Life Time Passive Income Email Send  :", error);
+        });
+      } else {
+        console.log("No User Found To Send Email Of sendEmailForLifetimePassiveIncomeInLast92Hours");
+      }
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
