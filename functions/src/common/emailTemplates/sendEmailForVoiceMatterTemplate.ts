@@ -148,7 +148,7 @@ export const sendEmailForVoiceMatterTemplate = (userName: any, appLink: any) => 
                                              <td align="left" valign="middle" width="30" height="30">
                                                 <a href="https://twitter.com/CoinParliament" target="_blank"
                                                    style="text-decoration:none; display:inline-block;"><img
-                                                      src="images/x-twitter.svg" alt="X Twitter" width="30" height="30"
+                                                      src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Fx-twitter.png?alt=media&token=5b0afbe6-f269-4ae0-9e2d-b05e01df6f85" alt="X Twitter" width="30" height="30"
                                                       border="0"
                                                       style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                              </td>
@@ -156,7 +156,7 @@ export const sendEmailForVoiceMatterTemplate = (userName: any, appLink: any) => 
                                              <td align="left" valign="middle" width="30" height="30">
                                                 <a href="https://www.facebook.com/CoinParliament/" target="_blank"
                                                    style="text-decoration:none; display:inline-block;"><img
-                                                      src="images/facebook.svg" alt="facebook" width="30" height="30"
+                                                      src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Ffacebook.png?alt=media&token=c0669dc8-4542-476b-bc4e-b5bb4366fc1b" alt="facebook" width="30" height="30"
                                                       border="0"
                                                       style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                              </td>
@@ -164,7 +164,7 @@ export const sendEmailForVoiceMatterTemplate = (userName: any, appLink: any) => 
                                              <td align="left" valign="middle" width="30" height="30">
                                                 <a href="https://www.instagram.com/coinparliament/" target="_blank"
                                                    style="text-decoration:none; display:inline-block;"><img
-                                                      src="images/instagram.svg" alt="instagram" width="30" height="30"
+                                                      src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Finstagram.png?alt=media&token=1acfe5c4-e570-45a1-b7e5-76ae7c4007af" alt="instagram" width="30" height="30"
                                                       border="0"
                                                       style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                              </td>
@@ -172,7 +172,7 @@ export const sendEmailForVoiceMatterTemplate = (userName: any, appLink: any) => 
                                              <td align="left" valign="middle" width="30" height="30">
                                                 <a href="https://www.tiktok.com/@coinparliament" target="_blank"
                                                    style="text-decoration:none; display:inline-block;"><img
-                                                      src="images/tiktok.svg" alt="tiktok" width="30" height="30"
+                                                      src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Ftiktok.png?alt=media&token=5f4e633d-14dc-412f-9c2b-91480f1028e2" alt="tiktok" width="30" height="30"
                                                       border="0"
                                                       style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                              </td>
