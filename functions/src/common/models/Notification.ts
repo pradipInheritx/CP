@@ -128,9 +128,14 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
             console.log("Get User ID--->", getDataOfUserAsk.userId)
 
-            const getUserDoc: any = (
-              await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
-            ).data(); // Get User
+            // const getUserDoc: any = (
+            //   await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
+            // ).data(); // Get User
+
+            const getUserDoc = {
+              email: "tempuser28@yopmail.com",
+              userName: "TestUser"
+            }
 
             console.log("getUserDoc....", getUserDoc);
 
