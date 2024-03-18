@@ -518,35 +518,56 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData, { merge: true });
 
+      // Create user statistics data
+      await createUserStatistics(userData, user.uid);
+
     const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
     console.log("new user email  : ", getUser.email);
 
+    // Return if user isVoteToEarn is true
+    console.log("get userData",getUser)
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === true) {
+      return newUser;
+    }
     // Send Email Verification Link to User
     await sendEmailVerificationLink(getUser.email);
 
-    // Return if user isVoteToEarn is true
-    console.log("getUser.isVoteToEarn : ", getUser && getUser.isVoteToEarn)
-    if (getUser && getUser.isVoteToEarn === true) {
-      return newUser;
-    }
-
-    // Send Welcome Mail To User if isVoteToEarn is false
-    // await sendEmail(
-    //   userData.email,
-    //   "Welcome To Coin Parliament!",
-    //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    // );
-
-    await sendEmailAcknowledgementStatus(getUser); // Added Email Settings For Acknowledgement
+    await sendEmailAcknowledgementStatus(getUser);
 
     return newUser;
+
   } catch (e) {
     console.log("create user Error....", e);
     return false;
   }
 });
+
+async function createUserStatistics(userData: any, userId: any) {
+  try {
+      const userStatisticsData = {
+        userId: userData.uid,
+        name: userData?.userName || "",
+        email: userData?.email || "",
+        totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
+        accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
+        signUpTime: userData?.createdAt || "",
+        numbersOfDaysVoted: 0,
+        averageVotePerDay: 0,
+        extraVotePurchased: false,
+      };
+
+      await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
+      
+      console.log("User statistics data added successfully for user:", userId);
+  } catch (error) {
+      console.error("Error adding user statistics data for user:", userId, error);
+      throw error; 
+  }
+}
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
