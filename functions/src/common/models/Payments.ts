@@ -102,6 +102,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+    dollarAmount
   } = req.body;
   await storeInDBOfPayment({
     userId,
@@ -115,6 +116,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+    dollarAmount
   });
   console.log("start parent payment");
 
