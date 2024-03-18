@@ -3,6 +3,7 @@ import { firestore, messaging } from "firebase-admin";
 import { Timestamp } from 'firebase-admin/firestore';
 import { sendEmail } from "../services/emailServices";
 import { sendEmailForVoiceMatterTemplate } from "../emailTemplates/sendEmailForVoiceMatterTemplate";
+import { sendEmailForUserUpgradeTemplate } from "../emailTemplates/sendEmailForUserUpgradeTemplate";
 import env from "./../../env/env.json";
 
 export const sendNotification = async ({
@@ -121,19 +122,9 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         userSnapshot.forEach(async (userAckDoc: any) => {
           let getDataOfUserAsk: any = userAckDoc.data();
-
           console.log("Get sendEmailForVoiceMatter---->", getDataOfUserAsk.sendEmailForVoiceMatter);
           if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
-            // To Do Send Email To User
             console.log("Get User ID--->", getDataOfUserAsk.userId);
-            // const getUserDoc: any = (
-            //   await firestore().collection("users").doc(getDataOfUserAsk.userId).get()
-            // ).data(); // Get User
-            // const getUserDoc = {
-            //   email: "tempuser28@yopmail.com",
-            //   userName: "TestUser"
-            // }
-            //console.log("getUserDoc....", getUserDoc);
             if (getDataOfUserAsk.userId) {
               getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, userId: getDataOfUserAsk.userId });
               console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
@@ -194,7 +185,6 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
   }
 }
 
-
 export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const currentTime = Timestamp.now();
   const fourtyEightHoursAgo = new Date(currentTime.toMillis() - 48 * 60 * 60 * 1000);
@@ -204,39 +194,67 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 48 hours for user upgrade.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
+
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForUserUpgrade);
         if (getDataOfUserAsk.sendEmailForUserUpgrade === false) {
-          // To Do Send Email To User
-
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForUserUpgrade", userAckDoc.id)
+          }
         }
-
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
       });
 
       let createBatch: any = firestore().batch();
 
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
-      }
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-      createBatch.commit().then(function () {
-        console.log("Ack For User Upgrade Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For User Upgrade Email Send  :", error);
-      });
+      if (userIds && userIds.length) {
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
+
+          console.log("Come Here For Send Email For Voice Matters");
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Don't Miss Out on Your PAX Tokens – Upgrade Your Account Today!",
+            sendEmailForUserUpgradeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
+          );
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Ack For UserUpgradeInLast48Hours Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For UserUpgradeInLast48Hours Email Send  :", error);
+        });
+      } else {
+        console.log("No User Found To Send Email Of UserUpgradeInLast48Hours");
+      }
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
