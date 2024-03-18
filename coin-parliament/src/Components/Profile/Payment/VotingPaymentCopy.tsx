@@ -651,6 +651,7 @@ const VotingPaymentCopy: React.FC<{
         userEmail: `${user?.email}`,
         walletType: `wallet connect`,
         amount: Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18),
+        dollarAmount: Number(payamount),
         // amount: 0.0001,
         // @ts-ignore
         network: `${coinInfo.chainId || ""}`,

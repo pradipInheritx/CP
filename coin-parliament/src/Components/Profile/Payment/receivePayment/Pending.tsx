@@ -82,7 +82,7 @@ const tableHeader: tableColumnType[] = [
         Row: ({ value, data }) => {
             return (
                 <span>
-                    ${value}
+                    {value}
                 </span>
             );
 

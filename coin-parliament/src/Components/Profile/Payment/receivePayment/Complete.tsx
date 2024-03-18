@@ -55,7 +55,7 @@ const tableHeader: tableColumnType[] = [
         Row: ({ value, data }) => {
             return (
                 <span>
-                    ${value}
+                    {value}
                 </span>
             );
 
@@ -78,7 +78,7 @@ const tableHeader: tableColumnType[] = [
                         style={{
                             // marginTop: "-15px"
                         }}
-                    >${value}</Tooltip>}
+                    >{value}</Tooltip>}
 
                 >
                 <span>
@@ -160,7 +160,7 @@ const ChildTableHeader: tableColumnType[] = [
         Row: ({ value, data }) => {
             return (
                 <span>
-                    ${value}
+                    {value}
                 </span>
             );
 
