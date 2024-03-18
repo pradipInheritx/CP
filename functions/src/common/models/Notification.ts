@@ -282,14 +282,14 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
-        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForUserUpgrade);
-        if (getDataOfUserAsk.sendEmailForUserUpgrade === false) {
+        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForAddressNotUpdated);
+        if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
-            getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true, userId: getDataOfUserAsk.userId });
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForAddressNotUpdated: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForUserUpgrade", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForAddressNotUpdated", userAckDoc.id)
           }
         }
       });
