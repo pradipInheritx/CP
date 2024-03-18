@@ -147,38 +147,43 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
         const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-        const getUserDocs: any = (
-          await firestore().collection("users").where("uid", "in", userIds).get()
-        ).docs.map(doc => doc.data());
+        if (userIds && userIds.length) {
 
-        console.log("getUserDocs------>", getUserDocs)
+          const getUserDocs: any = (
+            await firestore().collection("users").where("uid", "in", userIds).get()
+          ).docs.map(doc => doc.data());
 
-        console.log("UserIds Fetch --->", userIds);
+          console.log("getUserDocs------>", getUserDocs)
 
-        console.log("getAckIds-------->", getAckIds)
+          console.log("UserIds Fetch --->", userIds);
 
-        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-          createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
+          console.log("getAckIds-------->", getAckIds)
 
-          console.log("Come Here For Send Email For Voice Matters");
+          for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+            let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+            createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
 
-          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+            console.log("Come Here For Send Email For Voice Matters");
 
-          console.info("Get User Details:----->", getUserDetails);
+            let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
 
-          sendEmail(
-            getUserDetails[0].email,
-            "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
-            sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
-          );
+            console.info("Get User Details:----->", getUserDetails);
+
+            sendEmail(
+              getUserDetails[0].email,
+              "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
+              sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
+            );
+          }
+
+          createBatch.commit().then(function () {
+            console.log("Ack For Voice Matter Email Send Successfully");
+          }).catch(function (error: any) {
+            console.error("Error While Ack For Voice Matter Email Send  :", error);
+          });
+        } else {
+          console.log("No User Found To Send Email Of Voice Matters");
         }
-
-        createBatch.commit().then(function () {
-          console.log("Ack For Voice Matter Email Send Successfully");
-        }).catch(function (error: any) {
-          console.error("Error While Ack For Voice Matter Email Send  :", error);
-        });
       })
       .catch(err => {
         console.error('Error while getting users Ack:', err);
