@@ -990,6 +990,7 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     .where("coin", "==", symbol)
     .get();
 
+
   const users = uniq(votes.docs.map((v) => v.data().userId)) as string[];
 
   return users.reduce(
@@ -1865,6 +1866,8 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 2 minutes")
   .onRun(async () => {
+
+
 
     await sendEmailForVoiceMatterInLast24Hours();
 
