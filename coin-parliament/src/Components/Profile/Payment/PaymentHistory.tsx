@@ -257,7 +257,7 @@ function PaymentHistory() {
                         
                       >                        
                         <RewardList>                          
-                          ${(Number(item?.amount)?.toFixed(4) || 0)}
+                          {(Number(item?.amount)?.toFixed(4) || 0)}
                           </RewardList>                       
                       </div>
                       <div
