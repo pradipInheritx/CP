@@ -1,6 +1,9 @@
 //import axios from "axios";
 import { firestore, messaging } from "firebase-admin";
 import { Timestamp } from 'firebase-admin/firestore';
+import { sendEmail } from "../services/emailServices";
+import { sendEmailForVoiceMatterTemplate } from "../emailTemplates/sendEmailForVoiceMatterTemplate";
+import env from "./../../env/env.json";
 
 export const sendNotification = async ({
   token,
@@ -72,11 +75,14 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
   }
 }
 
-export const sendEmailAcknowledgementStatus = async (userId: any) => {
+export const sendEmailAcknowledgementStatus = async (userObj: any) => {
   const userEmailAcknowledgementRef = await firestore().collection('userEmailAcknowledgement');
 
   const acknowledgementEmailSettings = {
-    userId: userId,
+    userId: userObj.uid,
+    userName: userObj.userName,
+    displayName: userObj.displayName,
+    email: userObj.email,
     sendEmailForVoiceMatter: false,
     sendEmailForUserUpgrade: false,
     sendEmailForAddressNotUpdated: false,
@@ -101,47 +107,60 @@ export const sendEmailAcknowledgementStatus = async (userId: any) => {
 }
 
 export const sendEmailForVoiceMatterInLast24Hours = async () => {
-  const currentTime = Timestamp.now();
-  const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
-  const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
+  try {
+    const currentTime = Timestamp.now();
+    const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
+    const usersRef = await firestore().collection('userEmailAcknowledgement');
+    const query = usersRef.where('timestamp', '>=', twentyFourHoursAgo);
 
-  const getAckIds: any = [];
+    const getAckIds: any = [];
 
-  await query.get()
-    .then((userSnapshot: any) => {
-      if (userSnapshot.empty) {
-        console.log('No users created in the last 24 hours for voice Matters.');
-        return;
-      }
-
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
-        if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
-          // To Do Send Email To User
-
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+    await query.get()
+      .then((userSnapshot: any) => {
+        if (userSnapshot.empty) {
+          console.log('No users created in the last 24 hours for voice Matters.');
+          return;
         }
+
+        userSnapshot.forEach(async (userAckDoc: any) => {
+          let getDataOfUserAsk: any = userAckDoc.data();
+          if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
+            // To Do Send Email To User
+            if (getDataOfUserAsk.email) {
+              await sendEmail(
+                getDataOfUserAsk.email,
+                "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
+                sendEmailForVoiceMatterTemplate(`${getDataOfUserAsk.userName ? getDataOfUserAsk.userName : 'user'}`, env.BASE_SITE_URL)
+              );
+              getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true })
+
+              console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+            } else {
+              console.log("No user email found for send notification", userAckDoc.id)
+            }
+          }
+        });
+
+        let createBatch: any = firestore().batch();
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Ack For Voice Matter Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Voice Matter Email Send  :", error);
+        });
+      })
+      .catch(err => {
+        console.error('Error while getting users Ack:', err);
       });
 
-      let createBatch: any = firestore().batch();
-
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForVoiceMatter: getAckIds[docRef].sendEmailForVoiceMatter });
-      }
-
-      createBatch.commit().then(function () {
-        console.log("Ack For Voice Matter Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Voice Matter Email Send  :", error);
-      });
-    })
-    .catch(err => {
-      console.error('Error while getting users Ack:', err);
-    });
+  } catch (error: any) {
+    console.log("Getting error while send the email to sendEmailForVoiceMatterInLast24Hours", error);
+  }
 }
 
 

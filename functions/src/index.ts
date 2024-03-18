@@ -539,7 +539,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     //   userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
     // );
 
-    await sendEmailAcknowledgementStatus(user.uid); // Added Email Settings For Acknowledgement
+    await sendEmailAcknowledgementStatus(user); // Added Email Settings For Acknowledgement
 
     return newUser;
   } catch (e) {
