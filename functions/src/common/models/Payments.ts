@@ -116,7 +116,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
-    dollarAmount
+    dollarAmount : dollarAmount || 0
   });
   console.log("start parent payment");
 
