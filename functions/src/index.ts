@@ -1024,7 +1024,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
 
     await admin
       .firestore()
-      .collection("usersStatistics")
+      .collection("userStatistics")
       .doc(userId)
       .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
 
