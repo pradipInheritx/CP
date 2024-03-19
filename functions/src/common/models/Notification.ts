@@ -731,11 +731,11 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
-        console.log("Get sendEmailForProgressWithFriend---->", getDataOfUserAsk.sendEmailForProgressWithFriend);
-        if (getDataOfUserAsk.sendEmailForProgressWithFriend === false) {
+        console.log("Get sendEmailForTopInfluencer---->", getDataOfUserAsk.sendEmailForTopInfluencer);
+        if (getDataOfUserAsk.sendEmailForTopInfluencer === false) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
-            getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFriend: true, userId: getDataOfUserAsk.userId });
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForTopInfluencer: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
             console.log("No user email found for send notification sendEmailForTopInfluencerInLast264Hours", userAckDoc.id)
@@ -792,51 +792,30 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 }
 
 export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
+
+  console.log("userDetails-----> In Function", userDetails)
+
+  await sendEmail(
+    userDetails.email,
+    "Congratulations on Upgrading Your Coin Parliament Account!",
+    sendEmailForAfterUpgradeTemplate(`${userDetails.userName ? userDetails.userName : 'User'}`, env.BASE_SITE_URL) // To Do For Change the template
+  );
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
   const query = usersRef.where('userId', '==', userDetails.uid);
-  const getAckIds: any = [];
 
-  await query.get()
-    .then(async (userSnapshot: any) => {
-      if (userSnapshot.empty) {
-        console.log('No user is for user upgraded.');
-        return;
-      }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
-        if (getDataOfUserAsk.sendEmailForAfterUpgrade === false) {
-          // To Do Send Email To User
+  const updatedData = {
+    sendEmailForAfterUpgrade: true
+  };
 
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForAfterUpgrade: true })
+  const querySnapshot = await query.get();
 
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-        }
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-      });
-
-      let createBatch: any = firestore().batch();
-
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForAfterUpgrade: getAckIds[docRef].sendEmailForAfterUpgrade });
-      }
-
-      createBatch.commit().then(function () {
-        console.log("Ack For Account Upgrade Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Account Upgrade Email Send  :", error);
-      });
-
-      console.info("userDetails--->", userDetails);
-
-      await sendEmail(
-        userDetails.email,
-        "Congratulations on Upgrading Your Coin Parliament Account!",
-        sendEmailForAfterUpgradeTemplate(`${userDetails.userName ? userDetails.userName : 'User'}`, env.BASE_SITE_URL) // To Do For Change the template
-      );
-    })
-    .catch(err => {
-      console.error('Error while getting users Ack:', err);
-    });
+  querySnapshot.forEach(async (doc: any) => {
+    try {
+      await doc.ref.update(updatedData);
+      console.log(`Document of userId : ${userDetails.uid} successfully updated!`);
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  });
 }
