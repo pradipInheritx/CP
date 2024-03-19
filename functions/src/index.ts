@@ -554,8 +554,8 @@ async function createUserStatistics(userData: any, userId: any) {
       totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
       accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
       signUpTime: userData?.createdAt || "",
-      numbersOfDaysVoted: 0,
-      averageVotePerDay: 0,
+      noOfVotesDays: 0,
+      averageVotes: 0,
       extraVotePurchased: false,
     };
 

@@ -118,6 +118,9 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     paymentDetails,
     dollarAmount : dollarAmount || 0
   });
+
+  await updateExtraVotePurchasedValue(userId)
+
   console.log("start parent payment");
 
   const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
@@ -132,6 +135,31 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
     data: req.body,
   });
+};
+
+export const updateExtraVotePurchasedValue = async (userId: string) => {
+  const paymentSnapshot = await firestore().collection("payments").where("userId", "==", userId).get();
+
+  if (!paymentSnapshot.empty) {
+    paymentSnapshot.forEach(async (doc) => {
+      const paymentData = doc.data();
+
+      let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
+
+
+      // If isUserUpgraded is true, update accountUpgrade in the userStatistics collection
+      if (extraVotePurchased) {
+        await firestore().collection("userStatistics").doc(userId).set(
+          { extraVotePurchased: true },
+          { merge: true }
+        );
+      }
+    });
+  } else {
+    console.error("Error adding user statistics data for user:", userId, Error);
+    throw Error;
+    
+  }
 };
 
 
@@ -214,6 +242,8 @@ export const addIsUpgradedValue = async (userId: string) => {
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
 
+    await updateIsUpgradedValue(userId);
+
   await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
 
   const rewardData = {
@@ -239,6 +269,32 @@ export const addIsUpgradedValue = async (userId: string) => {
     console.log("rewardData is not added")
   }
 };
+
+export const updateIsUpgradedValue = async (userId: string) => {
+  const userSnapshot = await firestore().collection("users").where("userId", "==", userId).get();
+
+  if (!userSnapshot.empty) {
+    userSnapshot.forEach(async (doc) => {
+      const userData = doc.data();
+
+      const isUserUpgraded = userData?.isUserUpgraded || false;
+
+      // If isUserUpgraded is true, update accountUpgrade in the userStatistics collection
+      if (isUserUpgraded) {
+        await firestore().collection("userStatistics").doc(userId).set(
+          { accountUpgrade: true },
+          { merge: true }
+        );
+      }
+    });
+  } else {
+    console.error("Error adding user statistics data for user:", userId, Error);
+    throw Error;
+    
+  }
+};
+
+
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
   try {
