@@ -938,6 +938,18 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
+    // Check if username has been updated
+    if (before.userName !== after.userName) {
+      const userId = snapshot.after.id;
+      const updatedUsername = after.userName;
+
+      // Update name field in userStatistics collection
+      await admin.firestore().collection("userStatistics").doc(userId).set(
+        { name: updatedUsername },
+        { merge: true }
+      );
+    }
+
     // console.info("after", after)
     // const beforeTotal: number = before.rewardStatistics?.total || 0;
     // const afterTotal: number = after.rewardStatistics?.total || 0;
