@@ -100,6 +100,9 @@ export const sendEmailAcknowledgementStatus = async (userObj: any) => {
     sendEmailForProgressWithFriend: false,
     sendEmailForTopInfluencer: false,
     sendEmailForAfterUpgrade: false,
+    isUserLogin: false,
+    isUserFirstVoted: false,
+    firstTimeUserVoteTime: null,
     timestamp: Timestamp.now()
   };
 
