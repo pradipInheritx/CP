@@ -138,29 +138,25 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
 };
 
 export const updateExtraVotePurchasedValue = async (userId: string) => {
-  const paymentSnapshot = await firestore().collection("payments").where("userId", "==", userId).get();
+  const paymentSnapshot = await firestore().collection("payments")
+    .where("userId", "==", userId)
+    .where("transactionType", "==", "EXTRAVOTES")
+    .get();
 
   if (!paymentSnapshot.empty) {
     paymentSnapshot.forEach(async (doc) => {
-      const paymentData = doc.data();
-
-      let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
-
-
       // If isUserUpgraded is true, update accountUpgrade in the userStatistics collection
-      if (extraVotePurchased) {
-        await firestore().collection("userStatistics").doc(userId).set(
-          { extraVotePurchased: true },
-          { merge: true }
-        );
-      }
+      await firestore().collection("userStatistics").doc(userId).set(
+        { extraVotePurchased: true },
+        { merge: true }
+      );
     });
   } else {
     console.error("Error adding user statistics data for user:", userId, Error);
-    throw Error;
-
+    throw new Error("No payment documents found for user: " + userId);
   }
 };
+
 
 
 
