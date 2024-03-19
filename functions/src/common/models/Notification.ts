@@ -793,7 +793,7 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 
 export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('uid', '==', userDetails.uid);
+  const query = usersRef.where('userId', '==', userDetails.uid);
   const getAckIds: any = [];
 
   await query.get()
