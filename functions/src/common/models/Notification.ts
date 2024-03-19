@@ -136,7 +136,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
         userSnapshot.forEach(async (userAckDoc: any) => {
           let getDataOfUserAsk: any = userAckDoc.data();
           console.log("Get sendEmailForVoiceMatter---->", getDataOfUserAsk.sendEmailForVoiceMatter);
-          if (getDataOfUserAsk.sendEmailForVoiceMatter === false) {
+          if (getDataOfUserAsk.sendEmailForVoiceMatter === false && getDataOfUserAsk.isUserLogin) {
             console.log("Get User ID--->", getDataOfUserAsk.userId);
             if (getDataOfUserAsk.userId) {
               getAckIds.push({ ackId: userAckDoc.id, sendEmailForVoiceMatter: true, userId: getDataOfUserAsk.userId });
@@ -144,6 +144,8 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
             } else {
               console.log("No user email found for send notification", userAckDoc.id)
             }
+          } else {
+            console.log("No user logged in or already email sent in sendEmailForVoiceMatterInLast24Hours", userAckDoc.id)
           }
         });
 
@@ -216,14 +218,16 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForUserUpgrade);
-        if (getDataOfUserAsk.sendEmailForUserUpgrade === false) {
+        if (getDataOfUserAsk.sendEmailForUserUpgrade === false && getDataOfUserAsk.isUserFirstVoted) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForUserUpgrade: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForUserUpgrade", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForUserUpgradeInLast48Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user voted yet or already email sent in sendEmailForVoiceMatterInLast24Hours", userAckDoc.id)
         }
       });
 
@@ -241,23 +245,28 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
 
         console.log("UserIds Fetch --->", userIds);
 
-        console.log("getAckIds-------->", getAckIds)
+        console.log("getAckIds-------->", getAckIds);
 
         for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-          createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
-
-          console.log("Come Here For Send Email For Voice Matters");
 
           let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
 
-          console.info("Get User Details:----->", getUserDetails);
+          if (getUserDetails[0].isUserUpgraded) {
+            console.log("User Already Upgraded", getUserDetails[0].uid);
+            let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+            createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
+          } else {
+            let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+            createBatch.update(ackIdDocRefs, { sendEmailForUserUpgrade: getAckIds[docRef].sendEmailForUserUpgrade });
 
-          sendEmail(
-            getUserDetails[0].email,
-            "Don't Miss Out on Your PAX Tokens – Upgrade Your Account Today!",
-            sendEmailForUserUpgradeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
-          );
+            console.info("Get User Details:----->", getUserDetails);
+
+            sendEmail(
+              getUserDetails[0].email,
+              "Don't Miss Out on Your PAX Tokens – Upgrade Your Account Today!",
+              sendEmailForUserUpgradeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
+            );
+          }
         }
 
         createBatch.commit().then(function () {
@@ -292,14 +301,16 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForAddressNotUpdatedInLast72Hours---->", getDataOfUserAsk.sendEmailForAddressNotUpdated);
-        if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false) {
+        if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForAddressNotUpdated: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForAddressNotUpdated", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForAddressNotUpdatedInLast72Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForAddressNotUpdatedInLast72Hours", userAckDoc.id)
         }
       });
 
@@ -369,14 +380,16 @@ export const sendEmailForLifetimePassiveIncomeInLast92Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForLifetimePassiveIncome---->", getDataOfUserAsk.sendEmailForLifetimePassiveIncome);
-        if (getDataOfUserAsk.sendEmailForLifetimePassiveIncome === false) {
+        if (getDataOfUserAsk.sendEmailForLifetimePassiveIncome === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForLifetimePassiveIncome: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForLifetimePassiveIncome", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForLifetimePassiveIncomeInLast92Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForLifetimePassiveIncomeInLast92Hours", userAckDoc.id)
         }
       });
 
@@ -445,14 +458,16 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForEarnRewardsByPaxTokensInLast168Hours---->", getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens);
-        if (getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens === false) {
+        if (getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForEarnRewardsByPaxTokens: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForEarnRewardsByPaxTokens", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForEarnRewardsByPaxTokensInLast168Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForEarnRewardsByPaxTokensInLast168Hours", userAckDoc.id)
         }
       });
 
@@ -521,14 +536,16 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForUnloackRewardsInLast192Hours---->", getDataOfUserAsk.sendEmailForUnloackRewards);
-        if (getDataOfUserAsk.sendEmailForUnloackRewards === false) {
+        if (getDataOfUserAsk.sendEmailForUnloackRewards === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForUnloackRewards: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForUnloackRewards", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForUnloackRewardsInLast192Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForUnloackRewardsInLast192Hours", userAckDoc.id)
         }
       });
 
@@ -594,14 +611,16 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForSVIUpdate---->", getDataOfUserAsk.sendEmailForSVIUpdate);
-        if (getDataOfUserAsk.sendEmailForSVIUpdate === false) {
+        if (getDataOfUserAsk.sendEmailForSVIUpdate === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForSVIUpdate: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForSVIUpdate", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForSVIUpdateInLast216Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForSVIUpdateInLast216Hours", userAckDoc.id)
         }
       });
 
@@ -667,14 +686,16 @@ export const sendEmailForProgressWithFriendInLast240Hours = async () => {
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForProgressWithFriend---->", getDataOfUserAsk.sendEmailForProgressWithFriend);
-        if (getDataOfUserAsk.sendEmailForProgressWithFriend === false) {
+        if (getDataOfUserAsk.sendEmailForProgressWithFriend === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFriend: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForSVIUpdate", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForProgressWithFriendInLast240Hours", userAckDoc.id)
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForProgressWithFriendInLast240Hours", userAckDoc.id)
         }
       });
 
@@ -732,18 +753,19 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
         console.log('No users created in the last 264 hours for Top Influencer.');
         return;
       }
-
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
         console.log("Get sendEmailForTopInfluencer---->", getDataOfUserAsk.sendEmailForTopInfluencer);
-        if (getDataOfUserAsk.sendEmailForTopInfluencer === false) {
+        if (getDataOfUserAsk.sendEmailForTopInfluencer === false && getDataOfUserAsk.isUserLogin) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
             getAckIds.push({ ackId: userAckDoc.id, sendEmailForTopInfluencer: true, userId: getDataOfUserAsk.userId });
             console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
           } else {
-            console.log("No user email found for send notification sendEmailForTopInfluencerInLast264Hours", userAckDoc.id)
+            console.log("No user email found for send notification sendEmailForTopInfluencerInLast264Hours", userAckDoc.id);
           }
+        } else {
+          console.log("No user logged in or already email sent in sendEmailForTopInfluencerInLast264Hours", userAckDoc.id)
         }
       });
 
