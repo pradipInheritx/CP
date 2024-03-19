@@ -90,7 +90,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFreindInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -518,8 +518,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData, { merge: true });
 
-      // Create user statistics data
-      await createUserStatistics(userData, user.uid);
+    // Create user statistics data
+    await createUserStatistics(userData, user.uid);
 
     const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
@@ -527,7 +527,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     console.log("new user email  : ", getUser.email);
 
     // Return if user isVoteToEarn is true
-    console.log("get userData",getUser)
+    console.log("get userData", getUser)
     console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
     if (getUser.isVoteToEarn === true) {
       return newUser;
@@ -547,24 +547,24 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
 
 async function createUserStatistics(userData: any, userId: any) {
   try {
-      const userStatisticsData = {
-        userId: userData.uid,
-        name: userData?.userName || "",
-        email: userData?.email || "",
-        totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
-        accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
-        signUpTime: userData?.createdAt || "",
-        numbersOfDaysVoted: 0,
-        averageVotePerDay: 0,
-        extraVotePurchased: false,
-      };
+    const userStatisticsData = {
+      userId: userData.uid,
+      name: userData?.userName || "",
+      email: userData?.email || "",
+      totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
+      accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
+      signUpTime: userData?.createdAt || "",
+      numbersOfDaysVoted: 0,
+      averageVotePerDay: 0,
+      extraVotePurchased: false,
+    };
 
-      await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
-      
-      console.log("User statistics data added successfully for user:", userId);
+    await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
+
+    console.log("User statistics data added successfully for user:", userId);
   } catch (error) {
-      console.error("Error adding user statistics data for user:", userId, error);
-      throw error; 
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
   }
 }
 
@@ -1888,8 +1888,6 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 2 minutes")
   .onRun(async () => {
 
-
-
     await sendEmailForVoiceMatterInLast24Hours();
 
     await sendEmailForUserUpgradeInLast48Hours();
@@ -1904,7 +1902,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
     await sendEmailForSVIUpdateInLast216Hours();
 
-    await sendEmailForProgressWithFreindInLast240Hours();
+    await sendEmailForProgressWithFriendInLast240Hours();
 
     await sendEmailForTopInfluencerInLast264Hours();
 

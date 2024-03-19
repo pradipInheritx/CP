@@ -7,6 +7,11 @@ import { sendEmailForUserUpgradeTemplate } from "../emailTemplates/sendEmailForU
 import { sendEmailForAddressNotUpdatedTemplate } from "../emailTemplates/sendEmailForAddressNotUpdated";
 import { sendEmailForLifetimePassiveIncomeTemplate } from "../emailTemplates/sendEmailForLifetimePassiveIncomeTemplate";
 import { sendEmailForEarnRewardsByPaxTokensTemplate } from "../emailTemplates/sendEmailForEarnRewardsByPaxTokensTemplate";
+import { sendEmailForUnloackRewardsTemplate } from "../emailTemplates/sendEmailForUnloackRewardsTemplate"
+import { sendEmailForSVIUpdateTemplate } from "../emailTemplates/sendEmailForSVIUpdateTemplate"
+import { sendEmailForProgressWithFriendTemplate } from "../emailTemplates/sendEmailForProgressWithFriendTemplate"
+import { sendEmailForTopInfluencerTemplate } from "../emailTemplates/sendEmailForTopInfluencerTemplate"
+import { sendEmailForAfterUpgradeTemplate } from "../emailTemplates/sendEmailForAfterUpgradeTemplate"
 
 import env from "./../../env/env.json";
 
@@ -92,7 +97,7 @@ export const sendEmailAcknowledgementStatus = async (userObj: any) => {
     sendEmailForEarnRewardsByPaxTokens: false,
     sendEmailForUnloackRewards: false,
     sendEmailForSVIUpdate: false,
-    sendEmailForProgressWithFreind: false,
+    sendEmailForProgressWithFriend: false,
     sendEmailForTopInfluencer: false,
     sendEmailForAfterUpgrade: false,
     timestamp: Timestamp.now()
@@ -503,42 +508,67 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 192 hours for Unlock Exclusive Rewards.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
+
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForUnloackRewards);
         if (getDataOfUserAsk.sendEmailForUnloackRewards === false) {
-          // To Do Send Email To User
-
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForUnloackRewards: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForUnloackRewards: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForUnloackRewards", userAckDoc.id)
+          }
         }
-
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
       });
 
       let createBatch: any = firestore().batch();
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForUnloackRewards: getAckIds[docRef].sendEmailForUnloackRewards });
+      if (userIds && userIds.length) {
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForUnloackRewards: getAckIds[docRef].sendEmailForUnloackRewards });
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Expand Your Card Collection and Unlock Exclusive Rewards on Coin Parliament",
+            sendEmailForUnloackRewardsTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
+          );
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Ack For Unlock Exclusive Rewards Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Unlock Exclusive Rewards Email Send  :", error);
+        });
+      } else {
+        console.log("No User Found To Send Email Of sendEmailForUnloackRewardsInLast192Hours");
       }
-
-      createBatch.commit().then(function () {
-        console.log("Ack For Unlock Exclusive Rewards Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Unlock Exclusive Rewards Email Send  :", error);
-      });
     })
     .catch(err => {
-      console.error('Error while getting users Ack:', err);
+      console.error('Error while getting users Ack: sendEmailForUnloackRewardsInLast192Hours', err);
     });
 }
 
@@ -551,46 +581,71 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 192 hours for Unlock Exclusive Rewards.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
+
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForSVIUpdate---->", getDataOfUserAsk.sendEmailForSVIUpdate);
         if (getDataOfUserAsk.sendEmailForSVIUpdate === false) {
-          // To Do Send Email To User
-
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForSVIUpdate: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForSVIUpdate: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForSVIUpdate", userAckDoc.id)
+          }
         }
-
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
       });
 
       let createBatch: any = firestore().batch();
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForSVIUpdate: getAckIds[docRef].sendEmailForSVIUpdate });
+      if (userIds && userIds.length) {
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForSVIUpdate: getAckIds[docRef].sendEmailForSVIUpdate });
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Stay Informed with Bitcoin SVI Updates on Coin Parliament",
+            sendEmailForSVIUpdateTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
+          );
+        }
+
+        createBatch.commit().then(function () {
+          console.log("Ack For Unlock Exclusive Rewards Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Unlock Exclusive Rewards Email Send  :", error);
+        });
+      } else {
+        console.log("No User Found To Send Email Of sendEmailForSVIUpdateInLast216Hours");
       }
-
-      createBatch.commit().then(function () {
-        console.log("Ack For Unlock Exclusive Rewards Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Unlock Exclusive Rewards Email Send  :", error);
-      });
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
     });
 }
 
-export const sendEmailForProgressWithFreindInLast240Hours = async () => {
+export const sendEmailForProgressWithFriendInLast240Hours = async () => {
   const currentTime = Timestamp.now();
   const twoHundredFourtyHoursAgo = new Date(currentTime.toMillis() - 240 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -599,39 +654,60 @@ export const sendEmailForProgressWithFreindInLast240Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 240 hours for Coin Mining Progress with Your Friends Support.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
-        if (getDataOfUserAsk.sendEmailForProgressWithFreind === false) {
-          // To Do Send Email To User
 
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFreind: true })
-
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForProgressWithFriend---->", getDataOfUserAsk.sendEmailForProgressWithFriend);
+        if (getDataOfUserAsk.sendEmailForProgressWithFriend === false) {
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFriend: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForSVIUpdate", userAckDoc.id)
+          }
         }
-
-
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
       });
 
       let createBatch: any = firestore().batch();
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
 
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForProgressWithFreind: getAckIds[docRef].sendEmailForProgressWithFreind });
+      if (userIds && userIds.length) {
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForProgressWithFriend: getAckIds[docRef].sendEmailForProgressWithFriend });
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Accelerate Your Coin Mining Progress with Your Friends' Support!",
+            sendEmailForProgressWithFriendTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
+          );
+        }
+        createBatch.commit().then(function () {
+          console.log("Ack For Coin Mining Progress with Your Friends Support Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Coin Mining Progress with Your Friends Support Email Send  :", error);
+        });
+      } else {
+        console.log("No User Found To Send Email Of sendEmailForProgressWithFriendInLast240Hours");
       }
-
-      createBatch.commit().then(function () {
-        console.log("Ack For Coin Mining Progress with Your Friends Support Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Coin Mining Progress with Your Friends Support Email Send  :", error);
-      });
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
@@ -647,39 +723,68 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No users created in the last 264 hours for Top Influencer.');
         return;
       }
-      userSnapshot.forEach((userAckDoc: any) => {
-        let getDataOfUserAsk = userAckDoc.data();
-        if (getDataOfUserAsk.sendEmailForTopInfluencer === false) {
-          // To Do Send Email To User
 
-          getAckIds.push({ ackId: userAckDoc.id, sendEmailForTopInfluencer: true })
+      userSnapshot.forEach(async (userAckDoc: any) => {
+        let getDataOfUserAsk: any = userAckDoc.data();
+        console.log("Get sendEmailForProgressWithFriend---->", getDataOfUserAsk.sendEmailForProgressWithFriend);
+        if (getDataOfUserAsk.sendEmailForProgressWithFriend === false) {
+          console.log("Get User ID--->", getDataOfUserAsk.userId);
+          if (getDataOfUserAsk.userId) {
+            getAckIds.push({ ackId: userAckDoc.id, sendEmailForProgressWithFriend: true, userId: getDataOfUserAsk.userId });
+            console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+          } else {
+            console.log("No user email found for send notification sendEmailForTopInfluencerInLast264Hours", userAckDoc.id)
+          }
+        }
+      });
 
-          console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
+      const userIds: string[] = getAckIds.map((ack: any) => ack.userId);
+
+      if (userIds && userIds.length) {
+
+        let createBatch: any = firestore().batch();
+
+        const getUserDocs: any = (
+          await firestore().collection("users").where("uid", "in", userIds).get()
+        ).docs.map(doc => doc.data());
+
+        console.log("getUserDocs------>", getUserDocs)
+
+        console.log("UserIds Fetch --->", userIds);
+
+        console.log("getAckIds-------->", getAckIds)
+
+        for (let docRef = 0; docRef < getAckIds.length; docRef++) {
+          let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
+          createBatch.update(ackIdDocRefs, { sendEmailForTopInfluencer: getAckIds[docRef].sendEmailForTopInfluencer });
+
+          let getUserDetails = await getUserDocs.filter((user: any) => user.uid === getAckIds[docRef].userId);
+
+          console.info("Get User Details:----->", getUserDetails);
+
+          sendEmail(
+            getUserDetails[0].email,
+            "Explore the Top Influencers on Coin Parliament!",
+            sendEmailForTopInfluencerTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
+          );
         }
 
+        createBatch.commit().then(function () {
+          console.log("Ack For Top Influencer Email Send Successfully");
+        }).catch(function (error: any) {
+          console.error("Error While Ack For Top Influencer Email Send  :", error);
+        });
 
-        console.log('User Ack:', userAckDoc.id, '=>', userAckDoc.data());
-
-        // To Do Send Email To User
-      });
-
-      let createBatch: any = firestore().batch();
-
-      for (let docRef = 0; docRef < getAckIds.length; docRef++) {
-        let ackIdDocRefs: any = firestore().collection('userEmailAcknowledgement').doc(getAckIds[docRef].ackId);
-        createBatch.update(ackIdDocRefs, { sendEmailForTopInfluencer: getAckIds[docRef].sendEmailForTopInfluencer });
+      } else {
+        console.log("No User Found To Send Email Of sendEmailForProgressWithFriendInLast240Hours");
       }
 
-      createBatch.commit().then(function () {
-        console.log("Ack For Top Influencer Email Send Successfully");
-      }).catch(function (error: any) {
-        console.error("Error While Ack For Top Influencer Email Send  :", error);
-      });
+
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
@@ -687,15 +792,12 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 }
 
 export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
-
-  console.info("userDetails--->", userDetails);
-
   const usersRef = await firestore().collection('userEmailAcknowledgement');
   const query = usersRef.where('uid', '==', userDetails.uid);
   const getAckIds: any = [];
 
   await query.get()
-    .then((userSnapshot: any) => {
+    .then(async (userSnapshot: any) => {
       if (userSnapshot.empty) {
         console.log('No user is for user upgraded.');
         return;
@@ -725,6 +827,14 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
       }).catch(function (error: any) {
         console.error("Error While Ack For Account Upgrade Email Send  :", error);
       });
+
+      console.info("userDetails--->", userDetails);
+
+      await sendEmail(
+        userDetails.email,
+        "Congratulations on Upgrading Your Coin Parliament Account!",
+        sendEmailForAfterUpgradeTemplate(`${userDetails.userName ? userDetails.userName : 'User'}`, env.BASE_SITE_URL) // To Do For Change the template
+      );
     })
     .catch(err => {
       console.error('Error while getting users Ack:', err);
