@@ -287,7 +287,7 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
-        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForAddressNotUpdated);
+        console.log("Get sendEmailForAddressNotUpdatedInLast72Hours---->", getDataOfUserAsk.sendEmailForAddressNotUpdated);
         if (getDataOfUserAsk.sendEmailForAddressNotUpdated === false) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
@@ -440,7 +440,7 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
 
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
-        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens);
+        console.log("Get sendEmailForEarnRewardsByPaxTokensInLast168Hours---->", getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens);
         if (getDataOfUserAsk.sendEmailForEarnRewardsByPaxTokens === false) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {
@@ -516,7 +516,7 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
 
       userSnapshot.forEach(async (userAckDoc: any) => {
         let getDataOfUserAsk: any = userAckDoc.data();
-        console.log("Get sendEmailForUserUpgrade---->", getDataOfUserAsk.sendEmailForUnloackRewards);
+        console.log("Get sendEmailForUnloackRewardsInLast192Hours---->", getDataOfUserAsk.sendEmailForUnloackRewards);
         if (getDataOfUserAsk.sendEmailForUnloackRewards === false) {
           console.log("Get User ID--->", getDataOfUserAsk.userId);
           if (getDataOfUserAsk.userId) {

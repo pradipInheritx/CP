@@ -175,7 +175,6 @@ export const sendEmailForAfterUpgradeTemplate = (userName: any, appLink: any) =>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:12px;line-height: 20px;text-align: left;font-weight:400;padding-bottom: 15px;padding-top: 10px;">
                               Best regards,<br />
-                              <strong>[Your Name]</strong><br />
                               <span style="font-weight: 600;">Coin Parliament Support Team</span>
                            </td>
                         </tr>
