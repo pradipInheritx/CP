@@ -977,19 +977,64 @@ exports.onVote = functions.firestore
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
+
     //await sendToTokens(vote);
 
-    await admin
-      .firestore()
-      .collection("users")
-      .doc(vote.userId)
-      .update({
-        "voteStatistics.total": admin.firestore.FieldValue.increment(1),
-      });
+    // await admin
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(vote.userId)
+    //   .update({
+    //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+    //   });
+
+    const userRef = admin.firestore().collection("users").doc(vote.userId);
+
+    // Perform the update operation and fetch the updated document in a single call
+    let updatedUserDoc = await userRef.update({
+      "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+    }).then(() => userRef.get());
+
+    // Extract the data from the updated document
+    const updatedUserData = updatedUserDoc.data();
+
+    let voteStatistics = updatedUserData?.voteStatistics?.total;
+
+     // Create user statistics data
+     await updateUserStatistics(vote.userId, voteStatistics);
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
     await addVoteResultForCPVI(data); // add cpvi here
   });
+
+const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+  try {
+    let userVoteList: any[] = [];
+    let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
+
+    userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+
+    const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
+    console.log("voteTimes>>>>>>>", voteTimes);
+
+    const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
+    let numberOfDaysVoted = uniqueDates.length;
+
+    let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+
+    await admin
+      .firestore()
+      .collection("userStatistics")
+      .doc(userId)
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
+
+    console.log("User statistics data updated successfully for user:", userId);
+  } catch (error) {
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
+  }
+
+}
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
