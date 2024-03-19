@@ -119,7 +119,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     dollarAmount : dollarAmount || 0
   });
 
-  await updateExtraVotePurchasedValue(userId)
+  //await updateExtraVotePurchasedValue(userId)
 
   console.log("start parent payment");
 
@@ -242,7 +242,7 @@ export const addIsUpgradedValue = async (userId: string) => {
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
 
-    await updateIsUpgradedValue(userId);
+    //await updateIsUpgradedValue(userId);
 
   await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
 
