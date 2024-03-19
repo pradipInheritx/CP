@@ -90,7 +90,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFreindInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1933,8 +1933,6 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 2 minutes")
   .onRun(async () => {
 
-
-
     await sendEmailForVoiceMatterInLast24Hours();
 
     await sendEmailForUserUpgradeInLast48Hours();
@@ -1949,7 +1947,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
     await sendEmailForSVIUpdateInLast216Hours();
 
-    await sendEmailForProgressWithFreindInLast240Hours();
+    await sendEmailForProgressWithFriendInLast240Hours();
 
     await sendEmailForTopInfluencerInLast264Hours();
 
