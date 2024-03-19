@@ -2182,6 +2182,7 @@ exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
     console.error("scriptToUpdateAllUsers ERROR: " + error);
   }
 });
+
 exports.appendUserName = functions.https.onCall(async (data) => {
   const { users } = data;
   let updatedUsers = [];
@@ -2199,6 +2200,37 @@ exports.appendUserName = functions.https.onCall(async (data) => {
       status: true,
       message: "User Created Successfully",
       data: updatedUsers,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null,
+    };
+  }
+});
+
+exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  try {
+    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", userId).get();
+
+    const userAckBatch = admin.firestore().batch();
+    userEmailAcknowledgementRef.docs.forEach(doc => {
+      if (doc.data().isUserLogin === false) {
+        userAckBatch.update(doc.ref, {
+          isUserLogin: true,
+          isUserFirstLoginTime: admin.firestore.Timestamp.now()
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
+    return {
+      status: true,
+      message: "User first time login time set Successfully",
+      data: { userId },
     };
   } catch (error) {
     return {
