@@ -116,7 +116,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
-    dollarAmount : dollarAmount || 0
+    dollarAmount: dollarAmount || 0
   });
 
   await updateExtraVotePurchasedValue(userId)
@@ -158,7 +158,7 @@ export const updateExtraVotePurchasedValue = async (userId: string) => {
   } else {
     console.error("Error adding user statistics data for user:", userId, Error);
     throw Error;
-    
+
   }
 };
 
@@ -229,6 +229,9 @@ export const addIsUpgradedValue = async (userId: string) => {
     await firestore().collection("users").doc(userId).get()
   ).data();
 
+
+  await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
+
   const rewardStatistics: any = getUserDetails.rewardStatistics;
   rewardStatistics.extraVote =
     parentConst.UPGRADE_USER_VOTE + rewardStatistics.extraVote;
@@ -242,9 +245,9 @@ export const addIsUpgradedValue = async (userId: string) => {
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
 
-    await updateIsUpgradedValue(userId);
+  await updateIsUpgradedValue(userId);
 
-  await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
+
 
   const rewardData = {
     winData: {
@@ -290,7 +293,7 @@ export const updateIsUpgradedValue = async (userId: string) => {
   } else {
     console.error("Error adding user statistics data for user:", userId, Error);
     throw Error;
-    
+
   }
 };
 
