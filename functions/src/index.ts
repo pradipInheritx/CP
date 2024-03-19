@@ -988,6 +988,23 @@ exports.onVote = functions.firestore
     //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
     //   });
 
+
+
+    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", vote.userId).get();
+
+    const userAckBatch = admin.firestore().batch(); // Initialize a batch write operation
+
+    userEmailAcknowledgementRef.docs.forEach(doc => {
+      if (doc.data().isUserFirstVoted === false) {
+        userAckBatch.update(doc.ref, {
+          isUserFirstVoted: true,
+          firstTimeUserVoteTime: admin.firestore.Timestamp.now()
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
     const userRef = admin.firestore().collection("users").doc(vote.userId);
 
     // Perform the update operation and fetch the updated document in a single call
@@ -1000,8 +1017,8 @@ exports.onVote = functions.firestore
 
     let voteStatistics = updatedUserData?.voteStatistics?.total;
 
-     // Create user statistics data
-     await updateUserStatistics(vote.userId, voteStatistics);
+    // Create user statistics data
+    await updateUserStatistics(vote.userId, voteStatistics);
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
     await addVoteResultForCPVI(data); // add cpvi here
