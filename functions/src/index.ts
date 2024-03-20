@@ -947,6 +947,18 @@ exports.onUpdateUser = functions.firestore
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
+    // Check if username has been updated
+    if (before.userName !== after.userName) {
+      const userId = snapshot.after.id;
+      const updatedUsername = after.userName;
+
+      // Update name field in userStatistics collection
+      await admin.firestore().collection("userStatistics").doc(userId).set(
+        { name: updatedUsername },
+        { merge: true }
+      );
+    }
+
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
