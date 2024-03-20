@@ -774,17 +774,11 @@ function WalletInfo() {
                             }}>
                             {saveCardAddress ? <span className="loading">ADD..</span> : 'ADD'}
                         </RemoveButton>}
-                        </div>
                         
-                        
-
-                        
-                        
-
                         {!editCardAddress &&<RemoveButton type='button'
                             disabled={!CardDetails?.address || saveCardAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
@@ -793,6 +787,7 @@ function WalletInfo() {
                             }}>
                             {<span className="">Edit</span>}
                         </RemoveButton>}
+                        </div>
                     </div>
 
                     {CardErrorValue?.coinError && <Errorsapn>{CardErrorValue?.coinError}</Errorsapn>}
