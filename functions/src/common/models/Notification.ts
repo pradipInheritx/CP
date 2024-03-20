@@ -847,6 +847,23 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
 }
 
 export const sendEmailForUserFollowersCountInAWeek = async () => {
+  const currentTime = Timestamp.now();
+  const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
+  const usersRef = await firestore().collection('users');
+  const query = usersRef.where('lastTimeSubscribedUser', '>=', oneSixtyEightHoursAgo);
+  console.info("Come here");
 
-  console.info("Come here")
+  await query.get()
+    .then(async (userSnapshot: any) => {
+      if (userSnapshot.empty) {
+        console.log('No users created in the last 168 hours for Followers Count.');
+        return;
+      }
+      userSnapshot.forEach(async (user: any) => {
+        console.log("Get User From Snap Shot", user);
+      });
+    })
+    .catch(err => {
+      console.error('Error while getting users data:', err);
+    });
 }
