@@ -12,6 +12,7 @@ import { sendEmailForSVIUpdateTemplate } from "../emailTemplates/sendEmailForSVI
 import { sendEmailForProgressWithFriendTemplate } from "../emailTemplates/sendEmailForProgressWithFriendTemplate"
 import { sendEmailForTopInfluencerTemplate } from "../emailTemplates/sendEmailForTopInfluencerTemplate"
 import { sendEmailForAfterUpgradeTemplate } from "../emailTemplates/sendEmailForAfterUpgradeTemplate"
+import { sendEmailForFollowerCountTemplate } from "../emailTemplates/sendEmailForFollowerCountTemplate"
 
 import env from "./../../env/env.json";
 
@@ -846,12 +847,12 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
   });
 }
 
-export const sendEmailForUserFollowersCountInAWeek = async () => {
+export const sendEmailForUserFollowersCountInWeek = async () => {
   const currentTime = Timestamp.now();
   const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('users');
   const query = usersRef.where('lastTimeSubscribedUser', '>=', oneSixtyEightHoursAgo);
-  console.info("Come here");
+  const allUsersEmailAndSubscriberCount: any = [];
 
   await query.get()
     .then(async (userSnapshot: any) => {
@@ -860,8 +861,19 @@ export const sendEmailForUserFollowersCountInAWeek = async () => {
         return;
       }
       userSnapshot.forEach(async (user: any) => {
-        console.log("Get User From Snap Shot", user);
+        allUsersEmailAndSubscriberCount.push({ userId: user.uid, userName: user.userName, email: user.email, subscribersCurrentTotalCount: user.subscribersCurrentTotalCount })
       });
+
+      if (allUsersEmailAndSubscriberCount && allUsersEmailAndSubscriberCount.length) {
+        for (let user = 0; user < allUsersEmailAndSubscriberCount.length; user++) {
+          await sendEmail(
+            allUsersEmailAndSubscriberCount[user].email,
+            "🌟  New Followers Alert! 🌟",
+            sendEmailForFollowerCountTemplate(`${allUsersEmailAndSubscriberCount[user].userName ? allUsersEmailAndSubscriberCount[user].userName : 'User'}`, allUsersEmailAndSubscriberCount[user].subscribersCurrentTotalCount, env.BASE_SITE_URL) // To Do For Change the template
+          );
+        }
+      }
+
     })
     .catch(err => {
       console.error('Error while getting users data:', err);

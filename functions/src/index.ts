@@ -90,7 +90,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInAWeek } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInWeek } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -482,7 +482,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     displayName: user.displayName,
     userName: "",
     phone: user.phoneNumber,
-    subscribersPreviousTotalCount: 0,
     subscribersCurrentTotalCount: 0,
     lastTimeSubscribedUser: null,
     subscribers: [],
@@ -1991,10 +1990,10 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
 
 exports.sendEmailForUserFollowerCount = functions.pubsub
-  .schedule("every 1 minutes")
+  .schedule('0 */168 * * *')
   .onRun(async () => {
 
-    await sendEmailForUserFollowersCountInAWeek();
+    await sendEmailForUserFollowersCountInWeek();
 
     console.log("Come to Email For User Follower Counts", new Date())
   });

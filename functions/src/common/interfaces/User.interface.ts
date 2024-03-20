@@ -37,7 +37,6 @@ export type UserProps = {
   voteStatistics?: VoteStatistics;
   leader?: string[];
   subscribers?: string[];
-  subscribersPreviousTotalCount?: number;
   subscribersCurrentTotalCount?: number;
   lastTimeSubscribedUser?: any;
   favorites: string[];
