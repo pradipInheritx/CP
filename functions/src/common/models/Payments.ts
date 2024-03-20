@@ -119,7 +119,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     dollarAmount: dollarAmount || 0
   });
 
-  //await updateExtraVotePurchasedValue(userId)
+  await updateExtraVotePurchasedValue(userId)
 
   console.log("start parent payment");
 
@@ -144,20 +144,21 @@ export const updateExtraVotePurchasedValue = async (userId: string) => {
     .get();
 
   if (!paymentSnapshot.empty) {
-    paymentSnapshot.forEach(async (doc) => {
-      // If isUserUpgraded is true, update accountUpgrade in the userStatistics collection
+    const updatePromises = paymentSnapshot.docs.map(async (doc) => {
+      // Update accountUpgrade in the userStatistics collection
       await firestore().collection("userStatistics").doc(userId).set(
         { extraVotePurchased: true },
         { merge: true }
       );
     });
+
+    // Wait for all update promises to complete
+    await Promise.all(updatePromises);
   } else {
-    console.error("Error adding user statistics data for user:", userId, Error);
+    console.error("Error adding user statistics data for user:", userId);
     throw new Error("No payment documents found for user: " + userId);
   }
 };
-
-
 
 
 export const storeInDBOfPayment = async (metaData: any) => {
@@ -241,6 +242,12 @@ export const addIsUpgradedValue = async (userId: string) => {
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
 
+  // Update accountUpgrade in the userStatistics collection
+  await firestore().collection("userStatistics").doc(userId).set(
+    { accountUpgrade: true },
+    { merge: true }
+  );
+
   //await updateIsUpgradedValue(userId);
 
 
@@ -273,25 +280,26 @@ export const updateIsUpgradedValue = async (userId: string) => {
   const userSnapshot = await firestore().collection("users").where("userId", "==", userId).get();
 
   if (!userSnapshot.empty) {
-    userSnapshot.forEach(async (doc) => {
+    const updatePromises = userSnapshot.docs.map(async (doc) => {
       const userData = doc.data();
 
       const isUserUpgraded = userData?.isUserUpgraded || false;
 
-      // If isUserUpgraded is true, update accountUpgrade in the userStatistics collection
-      if (isUserUpgraded) {
-        await firestore().collection("userStatistics").doc(userId).set(
-          { accountUpgrade: true },
-          { merge: true }
-        );
-      }
+      // Update accountUpgrade in the userStatistics collection
+      await firestore().collection("userStatistics").doc(userId).set(
+        { accountUpgrade: isUserUpgraded },
+        { merge: true }
+      );
     });
-  } else {
-    console.error("Error adding user statistics data for user:", userId, Error);
-    throw Error;
 
+    // Wait for all update promises to complete
+    await Promise.all(updatePromises);
+  } else {
+    console.error("Error adding user statistics data for user:", userId);
+    throw new Error("No user documents found for user: " + userId);
   }
 };
+
 
 
 //get user payment information by userId
