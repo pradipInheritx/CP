@@ -845,3 +845,5 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
     }
   });
 }
+
+export const sendEmailForUserFollowersCountInAWeek = async () => { }
