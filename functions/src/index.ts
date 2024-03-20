@@ -1990,7 +1990,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
 
 exports.sendEmailForUserFollowerCount = functions.pubsub
-  .schedule('0 */168 * * *')
+  .schedule('every 168 hours')
   .onRun(async () => {
 
     await sendEmailForUserFollowersCountInWeek();
