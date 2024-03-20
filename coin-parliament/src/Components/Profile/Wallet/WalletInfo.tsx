@@ -329,9 +329,9 @@ function WalletInfo() {
 
     const updatePaxAddress = async () => {
         if (!paxDetails.coin) {
-            setPaxErrorValue({ ...PaxErrorValue, coinError: "Please select coin" })
+            setPaxErrorValue({ ...PaxErrorValue, coinError: "select coin" })
         } else if (!paxDetails.address) {
-            setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Pax Address" })
+            setPaxErrorValue({ ...PaxErrorValue, walletError: "Enter Pax Address" })
         }
         else if (paxDetails.address) {
             setSavePaxAddress(true);
@@ -339,7 +339,7 @@ function WalletInfo() {
             if (validate) {
                 setSavePaxAddress(false);
             } else {
-                setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Valid Pax Address " })
+                setPaxErrorValue({ ...PaxErrorValue, walletError: "Enter Valid Pax Address " })
                 setSavePaxAddress(false);
             }
         }
@@ -347,9 +347,9 @@ function WalletInfo() {
 
     const updateCardAddress = async () => {
         if (!CardDetails.coin) {
-            setCardErrorValue({ ...CardErrorValue, coinError: "Please select coin" })
+            setCardErrorValue({ ...CardErrorValue, coinError: "select coin" })
         } else if (!CardDetails.address) {
-            setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Card Address" })
+            setCardErrorValue({ ...CardErrorValue, walletError: "Enter Card Address" })
         }
         else if (CardDetails.address) {
             setSaveCardAddress(true);
@@ -357,7 +357,7 @@ function WalletInfo() {
             if (validate) {
                 setSaveCardAddress(false);
             } else {
-                setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Valid Card Address " })
+                setCardErrorValue({ ...CardErrorValue, walletError: "Enter Valid Card Address " })
                 setSaveCardAddress(false);
             }
         }
@@ -737,7 +737,8 @@ function WalletInfo() {
                             style={{
                                 padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom: "5px",
                             }}
                             disabled={!editCardAddress}
                             name="address"
@@ -748,6 +749,9 @@ function WalletInfo() {
                                 handleChangeValue(e, "CardDetails")
                             }}
                         />
+                        <div style={{whiteSpace:"nowrap"}}>
+                        {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>}
+                        </div>
                             </div>
 
                             {editCardAddress && <RemoveButton type='button'
@@ -792,7 +796,7 @@ function WalletInfo() {
                     </div>
 
                     {CardErrorValue?.coinError && <Errorsapn>{CardErrorValue?.coinError}</Errorsapn>}
-                    {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>}
+                    {/* {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>} */}
 
                 </SelectTextfield>}
 
@@ -882,7 +886,8 @@ function WalletInfo() {
                             style={{
                                 padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom: "5px",
                             }}
                             disabled={!editPaxAddress}
                             name="address"
@@ -893,8 +898,10 @@ function WalletInfo() {
                                 handleChangeValue(e, "paxDetails")
                             }}
                         />
+                        <div style={{whiteSpace:"nowrap"}}>
+                            {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+                        </div>
                             </div>
-
                             {editPaxAddress && <RemoveButton type='button'
                             disabled={!paxDetails?.address || savePaxAddress}
                             style={{
@@ -933,7 +940,7 @@ function WalletInfo() {
                     </div>
 
                     {PaxErrorValue?.coinError && <Errorsapn>{PaxErrorValue?.coinError}</Errorsapn>}
-                    {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+                    {/* {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>} */}
 
                 </SelectTextfield>}
 
@@ -989,8 +996,8 @@ function WalletInfo() {
                             key={index}
                         >
 
-<div className='col-field'>
-<input                                
+                        <div className='col-field'>
+                            <input                                
                             name="coin"
                             id="coin"
                             style={{
@@ -1003,12 +1010,11 @@ function WalletInfo() {
                             // onChange={(e) => {
                             //     handleChangeValue(e, "")
                             // }}
-                        />   
-</div>
+                            />   
+                        </div>
 
-<div className='col-field'>
-<input
-                                
+                            <div className='col-field'>
+                               <input
                                 style={{
                                     padding: "10px 0px 10px 10px",
                                     fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
@@ -1023,9 +1029,9 @@ function WalletInfo() {
                                     handleChangeValue(e, "walletDetails")
                                 }}
                                 />
-</div>
+                              </div>
 
-<RemoveButton
+                               <RemoveButton
                                 style={{
                                     marginLeft: "0px",
                                     borderRadius: "5px",
@@ -1034,11 +1040,6 @@ function WalletInfo() {
                                 onClick={() => {
                                     handleRemoveBox(index)
                                 }}>-</RemoveButton>
-
-                                                     
-                        
-                            
-                            
                         </div> 
                         
                     </>
@@ -1116,7 +1117,8 @@ function WalletInfo() {
                                 width: "100%",
                                 padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom:"5px",
                             }}
                             name="address"
                             type="address"
