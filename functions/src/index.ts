@@ -90,7 +90,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInAWeek } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -482,6 +482,9 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     displayName: user.displayName,
     userName: "",
     phone: user.phoneNumber,
+    subscribersPreviousTotalCount: 0,
+    subscribersCurrentTotalCount: 0,
+    lastTimeSubscribedUser: null,
     subscribers: [],
     children: [],
     voteStatistics: {
@@ -903,13 +906,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
     .doc(leader.userId)
     .withConverter(userConverter);
 
-  const userProps = await userRef.get();
+  const userProps: any = await userRef.get();
+  const getAllSubscriber: any = userProps.data()?.subscribers;
   const token = userProps.data()?.token;
 
   if (add) {
     const subscribers = union(userProps.data()?.subscribers, [userId]);
     await userRef.set(
       {
+        lastTimeSubscribedUser: admin.firestore.Timestamp.now(),
+        subscribersCurrentTotalCount: getAllSubscriber?.length + 1,
         subscribers,
       },
       { merge: true }
@@ -1981,6 +1987,16 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
     await sendEmailForTopInfluencerInLast264Hours();
 
     console.log("Come to email Acknowledge", new Date())
+  });
+
+
+exports.sendEmailForUserFollowerCount = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+
+    await sendEmailForUserFollowersCountInAWeek();
+
+    console.log("Come to Email For User Follower Counts", new Date())
   });
 
 // -------- pax distribution -----------
