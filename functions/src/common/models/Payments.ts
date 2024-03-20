@@ -141,6 +141,7 @@ export const updateExtraVotePurchasedValue = async (userId: string) => {
   const paymentSnapshot = await firestore().collection("payments")
     .where("userId", "==", userId)
     .where("transactionType", "==", "EXTRAVOTES")
+    .where("transactionType","==","UPGRADE")
     .get();
 
   if (!paymentSnapshot.empty) {
@@ -155,8 +156,7 @@ export const updateExtraVotePurchasedValue = async (userId: string) => {
     // Wait for all update promises to complete
     await Promise.all(updatePromises);
   } else {
-    console.error("Error adding user statistics data for user:", userId);
-    throw new Error("No payment documents found for user: " + userId);
+    console.log("No payment documents found for user:", userId);
   }
 };
 
