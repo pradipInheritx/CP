@@ -420,6 +420,7 @@ function App() {
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
+  const isFirstTimeLoginSetTimestamp = httpsCallable(functions, "isFirstTimeLoginSetTimestamp");
   // const [localID, setLocalID] = useState<any>(
 
   // )  
@@ -540,6 +541,16 @@ function App() {
     // @ts-ignore
 
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
+      if (userInfo?.firstTimeLogin == true && userInfo?.uid) {
+        const sendObj = {          
+            userId: userInfo?.uid          
+        }
+        isFirstTimeLoginSetTimestamp(sendObj).then((result) => {
+          console.log(result, "isFirstTimeLoginSetTimestamp")
+        }).catch((err) => {
+          console.log(err, "isFirstTimeLoginSetTimestamp")
+        });
+      }
       setFirstTimeLogin(true);
       setShowMenuBar(true)
     }

@@ -682,9 +682,10 @@ const VotingPaymentCopy: React.FC<{
         .catch((error) => {
           // setPaymentStatus({ type: 'error', message: '' });
           console.log(error, "response.data")
-          // setShowForWait(true)
-          // setApiCalling(false)
-          // setPayButton(false)
+          setIsLoading(false)
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. Please ensure that you have a stable internet connection and try again." })
+          setShowText(false)
+          setPayButton(false);
         })
     }
     async function sendTransaction() {    
@@ -954,7 +955,7 @@ const VotingPaymentCopy: React.FC<{
               >
                 {/* @ts-ignore */}
                 {userInfo?.isUserUpgraded ?
-                  <div className="w-50"
+                  <div className={`${window.screen.width > 767 ? "w-50" :"w-100"}`}
                     style={{
                       lineHeight: 5,
                     }}
