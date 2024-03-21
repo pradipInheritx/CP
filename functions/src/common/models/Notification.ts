@@ -203,9 +203,13 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
 export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const currentTime = Timestamp.now();
+  const twentyFourHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
   const fourtyEightHoursAgo = new Date(currentTime.toMillis() - 48 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('firstTimeUserVoteTime', '>=', fourtyEightHoursAgo);
+  const query = usersRef
+    .where('firstTimeUserVoteTime', '>=', twentyFourHoursAgo)
+    .where('firstTimeUserVoteTime', '<=', fourtyEightHoursAgo);
 
   const getAckIds: any = [];
 
