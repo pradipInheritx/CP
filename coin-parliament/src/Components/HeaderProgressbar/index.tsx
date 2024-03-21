@@ -79,7 +79,7 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
             setAnimateBox(true);
             setTimeout(() => {
                 setAnimateBox(false);
-            }, 10000)
+            }, 5000)
         }
         setCalledCount((prev) => prev + 1)
     }, [percentage])
