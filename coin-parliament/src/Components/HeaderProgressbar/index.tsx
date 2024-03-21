@@ -31,21 +31,34 @@ export const TotalCmpDiv = styled.div`
   top:9px;
   z-index:1000;
 `;
+export const AnimationTotalCmpDiv = styled.div`
+background: red;
+color: white;
+border-radius:50%;
+width:14px;  
+height:14px;  
+font-size:8px;
+position:absolute;
+right:-4px;
+line-height: 15px;
+top:-5px;
+z-index:1000;
+`;
 const HeaderProgressbar = ({ percentage, remainingReward }) => {
     const { width: w = 0 } = useWindowSize();
     const [progressBarValue, setProgressBarValue] = useState(0);
     const [startValue, setStartValue] = useState(false);
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
-    const setCurrentCMP = useContext(CurrentCMPDispatchContext);    
+    const setCurrentCMP = useContext(CurrentCMPDispatchContext);
     // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');    
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue != '0' && newScore != '0') {
-            let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100           
+            let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
             // console.log(progressBarValue, prevScore,"allCmp1234")
             // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
-            
+
             setStartValue((prevScore <= 0 || percentage == 100 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
@@ -59,15 +72,25 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
             setProgressBarValue(percentage);
         }, [800]);
     }, [percentage]);
-    
+    const [animateBox, setAnimateBox] = useState(false);
+    const [calledCount, setCalledCount] = useState(0);
+    useEffect(() => {
+        if (calledCount) {
+            setAnimateBox(true);
+            setTimeout(() => {
+                setAnimateBox(false);
+            }, 10000)
+        }
+        setCalledCount((prev) => prev + 1)
+    }, [percentage])
     // currentScore=localStorage.getItem('')
     return (
         <div style={{
             width: w > 767 ? "55px" : "45px", height: w > 767 ? "55px" : "45px",
-        }}        
+        }}
         >
-           
-                {/* {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
+
+            {/* {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
                     <AnimatedProgressProvider
                         valueStart={startValue}
                         valueEnd={progressBarValue}
@@ -99,36 +122,49 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
                             );
                         }}
                 </AnimatedProgressProvider>
-                : */}            
-                <div                        
-                    >
-                        <CircularProgressbarWithChildren
-                        value={(percentage) < 0 ? 0 : (percentage)}                            
-                            background={true}                            
-                            strokeWidth={8}
-                            styles={buildStyles({
-                                pathColor: "#6352e8",
-                                pathTransition: "none",
-                                strokeLinecap: "butt",
-                                trailColor: ('white'),
-                                backgroundColor: "white",
-                            })}
-                >  
+                : */}
+            <div
+            >
+                <CircularProgressbarWithChildren
+                    value={(percentage) < 0 ? 0 : (percentage)}
+                    background={true}
+                    strokeWidth={8}
+                    styles={buildStyles({
+                        pathColor: "#6352e8",
+                        pathTransition: "none",
+                        strokeLinecap: "butt",
+                        trailColor: ('white'),
+                        backgroundColor: "white",
+                    })}
+                >
                     <div
                         style={{
                             width: w > 767 ? "47px" : "38px", height: w > 767 ? "47px" : "38px",
                             border: "1px solid #160133",
-                            borderRadius:"50%",
-                        }}  
+                            borderRadius: "50%",
+                        }}
                     >
-                        {remainingReward  > 0 && <TotalCmpDiv>
-                            <span>{remainingReward}</span>
-                        </TotalCmpDiv>}
-                        <img src={giftIcon} alt='' className="gift-icon" width="20px" />                                            
+                        {
+                            !animateBox ?
+                                <>
+                                    {remainingReward > 0 && <TotalCmpDiv>
+                                        <span>{remainingReward}</span>
+                                    </TotalCmpDiv>}
+                                    <img src={giftIcon} alt='' className="gift-icon" width="20px" />
+                                </>
+                                :
+                                <>
+                                    {remainingReward > 0 && <div className="gift_animation-css"><AnimationTotalCmpDiv>
+                                        <span>{remainingReward}</span>
+                                    </AnimationTotalCmpDiv>
+                                        <img src={giftIcon} alt='' className="gift-icon-css " width="20px" />
+                                    </div>}
+                                </>
+                        }
                     </div>
-                        </CircularProgressbarWithChildren>
-                    </div>
-                {/* } */}
+                </CircularProgressbarWithChildren>
+            </div>
+            {/* } */}
             {/* </CircularProgressbarWithChildren> */}
         </div >
     );
