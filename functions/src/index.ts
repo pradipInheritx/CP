@@ -416,8 +416,8 @@ async function createUserStatistics(userData: any, userId: any) {
 
     console.log("User statistics data added successfully for user:", userId);
   } catch (error) {
-    console.error("Error adding user statistics data for user:", userId, error);
-    throw error;
+    console.log("Error adding user statistics data for user:", userId, error);
+    
   }
 }
 
@@ -911,40 +911,88 @@ exports.onVote = functions.firestore
     // Create user statistics data
     await updateUserStatistics(vote.userId, voteStatistics);
 
-
-
-
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
+
+  // const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+  //   try {
+  //     let userVoteList: any[] = [];
+  //     let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
+  
+  //     userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+  
+  //     const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
+  //     console.log("voteTimes>>>>>>>", voteTimes);
+  
+  //     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
+  //     let numberOfDaysVoted = uniqueDates.length;
+  
+  //     let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+  
+  //     await admin
+  //       .firestore()
+  //       .collection("userStatistics")
+  //       .doc(userId)
+  //       .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
+  
+  //     console.log("User statistics data updated successfully for user:", userId);
+  //   } catch (error) {
+  //     console.log("Error adding user statistics data for user:", userId, error);
+  //   }
+  
+  // }
 
   const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     try {
       let userVoteList: any[] = [];
       let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
   
-      userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+      // Check if there are votes data for the user
+      if (!userVoteQuerySnapshot.empty) {
+        userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+
+        // Assuming you have a millisecond timestamp
+        // const timestamp = 1641936000000; // Example timestamp
+
+        
   
-      const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
-      console.log("voteTimes>>>>>>>", voteTimes);
+        const voteTimes = userVoteList.map((doc) => {
+          // Create a new Date object using the timestamp
+          const date = new Date(doc.voteTime);
+
+          // Extract the date components
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since it's zero-based
+          const day = String(date.getDate()).padStart(2, '0');
+
+          // Construct the date string in the desired format (e.g., YYYY-MM-DD)
+          const formattedDate = `${year}-${month}-${day}`;
+          console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
+          return formattedDate;
+        });
+        console.log("voteTimes>>>>>>>", voteTimes);
   
-      const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
-      let numberOfDaysVoted = uniqueDates.length;
+        const uniqueDates = [...new Set(voteTimes)];
+        let numberOfDaysVoted = uniqueDates.length;
   
-      let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+        let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
   
-      await admin
-        .firestore()
-        .collection("userStatistics")
-        .doc(userId)
-        .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
+        // Update user statistics only if there are vote data for the user
+        await admin
+          .firestore()
+          .collection("userStatistics")
+          .doc(userId)
+          .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
   
-      console.log("User statistics data updated successfully for user:", userId);
+        console.log("User statistics data updated successfully for user:", userId);
+      } else {
+        console.log("No vote data found for user:", userId);
+      }
     } catch (error) {
-      console.error("Error adding user statistics data for user:", userId, error);
-      throw error;
+      console.log("Error adding user statistics data for user:", userId, error);
     }
-  
   }
+  
   
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
