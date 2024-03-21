@@ -45,7 +45,7 @@ function PaymentHistory() {
   const [reciveRowData, setReciveRowData] = useState<any>([]);  
   const [pageIndex, setPageIndex] = useState(1);
   const [showChild, setShowChild] = useState<any>("");
-  const [selectTab, setSelectTab] = useState("Payment History");
+  const [selectTab, setSelectTab] = useState("Purchase History");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -95,25 +95,7 @@ function PaymentHistory() {
   const childTable = (item:any) => {
     return (
       <div className='p-3'>
-        {/* <div className='d-flex justify-content-around w-100 py-3 px-2'
-          style={{
-            background: "#7456ff"
-          }}
-        >
-          {
-            IntableHeader?.map((item: string, index: number) => {
-              return (<div className=''
-                key={index}
-                style={{
-                  width: `30%`,
-                  fontSize: `${window.screen.width > 767 ? "12px" : "10px"}`,
-                }}
-              >
-                <strong>{item}</strong>
-              </div>)
-            })
-          }
-        </div> */}
+        
         <div className='d-flex justify-content-around w-100 border p-2'>
           <div
             style={{
@@ -166,13 +148,13 @@ function PaymentHistory() {
         onSelect={(k?: number) => {
           setIndex((k || 0))
           console.log(k,"what is this ")
-          setSelectTab(selectTab == "Payment History" ? "Receive Payment" : "Payment History")
+          setSelectTab(selectTab == "Purchase History" ? "Receive Payment" : "Purchase History")
           setHistoryTab("")
         }}
         tabs={[
           {
-            eventKey: "Payment History",
-            title: "Payment History",
+            eventKey: "Purchase History",
+            title: "Purchase History",
             pane: (
               <div
                 style={{
@@ -199,7 +181,7 @@ function PaymentHistory() {
                         key={index}
                         style={{
                           width: `33%`,
-                          fontSize:`${window.screen.width >767? "12px":"10px"}`,
+                          // fontSize:`${window.screen.width >767? "12px":"10px"}`,
                         }}
                       >
                         <strong>{item}</strong>
