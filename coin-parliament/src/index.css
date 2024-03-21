@@ -1707,3 +1707,28 @@ border-top-left-radius: 0px !important;
     text-align: right;}
 
 }
+
+.form-inline-flex {
+    display: flex;
+    margin: 0px -10px !important;
+}
+
+.form-inline-flex .col-field {
+    flex: 0 0 42%;
+    max-width: 42%;
+    padding: 0px 10px;
+}
+
+.form-inline-flex .col-field>input,.form-inline-flex .col-field>select {
+    display: block;
+    width: 100%;
+}
+
+.flex-auto {
+    flex: auto;
+}
+
+.form-inline-flex select {
+    color: #160133 !important;
+    height: 44px;
+}
