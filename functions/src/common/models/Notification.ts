@@ -126,8 +126,8 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
     const usersRef = await firestore().collection('userEmailAcknowledgement');
     const query = usersRef
-      .where('firstTimeUserVoteTime', '>=', twentyThreeHoursAgo)
-      .where('firstTimeUserVoteTime', '<=', TwentyFiveHoursAgo);
+      .where('isUserFirstLoginTime', '>=', twentyThreeHoursAgo)
+      .where('isUserFirstLoginTime', '<=', TwentyFiveHoursAgo);
 
     const getAckIds: any = [];
 
