@@ -51,6 +51,7 @@ export type UserTypeProps = {
     foundationData?: any;
     isUserUpgraded?: any;
     isVoteToEarn?: boolean;
+    createdAt: string;
   };
 
   export type Totals = {

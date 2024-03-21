@@ -162,6 +162,9 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     numberOfVotes,
     paymentDetails,
   });
+
+  await updateExtraVotePurchasedValue(userId)
+
   console.log("start parent payment");
   // const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
   //   req.body
@@ -175,6 +178,32 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     data: req.body,
   });
 };
+
+export const updateExtraVotePurchasedValue = async (userId: string) => {
+  const paymentSnapshot = await firestore().collection("payments")
+    .where("userId", "==", userId)
+    .get();
+
+  if (!paymentSnapshot.empty) {
+    paymentSnapshot.forEach(async (doc) => {
+      const paymentData = doc.data();
+
+      // Check if the transactionType is either "EXTRAVOTES" or "UPGRADE"
+      // const extraVotePurchased = ;
+
+      // If extraVotePurchased is true, update extraVotePurchased in the userStatistics collection
+      if (paymentData.transactionType === "EXTRAVOTES" || paymentData.transactionType === "UPGRADE") {
+        await firestore().collection("userStatistics").doc(userId).set(
+          { extraVotePurchased: true },
+          { merge: true }
+        );
+      }
+    });
+  } else {
+    console.log("No payment documents found for user:", userId);
+  }
+};
+
 
 export const makePayment = async (req: any, res: any) => {
   const {
@@ -310,6 +339,13 @@ export const addIsUpgradedValue = async (userId: string) => {
     .collection("users")
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
+
+    // Update accountUpgrade in the userStatistics collection
+  await firestore().collection("userStatistics").doc(userId).set(
+    { accountUpgrade: true },
+    { merge: true }
+  );
+
 
   const rewardData = {
     winData: {

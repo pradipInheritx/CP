@@ -320,8 +320,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     share: 0,
     color: Colors.PLATINUM,
   };
+  const createdAt = new Date().toUTCString()
   const userData: UserProps = {
     uid: user.uid,
+    createdAt:createdAt,
     address: "",
     avatar: "",
     bio: "",
@@ -370,6 +372,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData, { merge: true });
 
+      // Create user statistics data
+    await createUserStatistics(userData, user.uid);
+
+
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
@@ -385,21 +391,36 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     await sendEmailVerificationLink(getUserEmail.email);
     return newUser;
 
-    // //Send Welcome Mail To User
-    // if (userData.isVoteToEarn === false) {
-    //   await sendEmail(
-    //     userData.email,
-    //     "Welcome To Coin Parliament!",
-    //     userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    //   );
-    //   await sendEmailVerificationLink(getUserEmail.email);
-    // }
 
   } catch (e) {
     console.log("create user Error....", e);
     return false;
   }
 });
+
+async function createUserStatistics(userData: any, userId: any) {
+  try {
+    const userStatisticsData = {
+      userId: userData.uid,
+      name: userData?.userName || "",
+      email: userData?.email || "",
+      totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
+      accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
+      signUpTime: userData?.createdAt || "",
+      noOfVotesDays: 0,
+      averageVotes: 0,
+      extraVotePurchased: false,
+    };
+
+    await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
+
+    console.log("User statistics data added successfully for user:", userId);
+  } catch (error) {
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
+  }
+}
+
 
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
@@ -825,6 +846,18 @@ exports.onUpdateUser = functions.firestore
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
+    // Check if username has been updated
+    if (before.userName !== after.userName) {
+      const userId = snapshot.after.id;
+      const updatedUsername = after.userName;
+
+      // Update name field in userStatistics collection
+      await admin.firestore().collection("userStatistics").doc(userId).set(
+        { name: updatedUsername },
+        { merge: true }
+      );
+    }
+
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -856,16 +889,63 @@ exports.onVote = functions.firestore
     await snapshot.ref.update(vote);
     //await sendToTokens(vote);
 
-    await admin
-      .firestore()
-      .collection("users")
-      .doc(vote.userId)
-      .update({
-        "voteStatistics.total": admin.firestore.FieldValue.increment(1),
-      });
+    // await admin
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(vote.userId)
+    //   .update({
+    //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+    //   });
+    const userRef = admin.firestore().collection("users").doc(vote.userId);
+
+    // Perform the update operation and fetch the updated document in a single call
+    let updatedUserDoc = await userRef.update({
+      "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+    }).then(() => userRef.get());
+
+    // Extract the data from the updated document
+    const updatedUserData = updatedUserDoc.data();
+
+    let voteStatistics = updatedUserData?.voteStatistics?.total;
+
+    // Create user statistics data
+    await updateUserStatistics(vote.userId, voteStatistics);
+
+
+
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
+
+  const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+    try {
+      let userVoteList: any[] = [];
+      let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
+  
+      userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+  
+      const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
+      console.log("voteTimes>>>>>>>", voteTimes);
+  
+      const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
+      let numberOfDaysVoted = uniqueDates.length;
+  
+      let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+  
+      await admin
+        .firestore()
+        .collection("userStatistics")
+        .doc(userId)
+        .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
+  
+      console.log("User statistics data updated successfully for user:", userId);
+    } catch (error) {
+      console.error("Error adding user statistics data for user:", userId, error);
+      throw error;
+    }
+  
+  }
+  
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
