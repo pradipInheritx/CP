@@ -124,6 +124,9 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
     const twentyThreeHoursAgo = new Date(currentTime.toMillis() - 23 * 60 * 60 * 1000);
     const TwentyFiveHoursAgo = new Date(currentTime.toMillis() - 25 * 60 * 60 * 1000);
 
+    console.info("twentyThreeHoursAgo--->", twentyThreeHoursAgo)
+    console.info("TwentyFiveHoursAgo--->", TwentyFiveHoursAgo)
+
     const usersRef = await firestore().collection('userEmailAcknowledgement');
     const query = usersRef
       .where('isUserFirstLoginTime', '>=', twentyThreeHoursAgo)
