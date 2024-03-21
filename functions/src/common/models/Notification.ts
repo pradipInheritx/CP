@@ -121,9 +121,17 @@ export const sendEmailAcknowledgementStatus = async (userObj: any) => {
 export const sendEmailForVoiceMatterInLast24Hours = async () => {
   try {
     const currentTime = Timestamp.now();
-    const twentyFourHoursHoursAgo = new Date(currentTime.toMillis() - 24 * 60 * 60 * 1000);
+    const twentyThreeHoursAgo = new Date(currentTime.toMillis() - 23 * 60 * 60 * 1000);
+    const TwentyFiveHoursAgo = new Date(currentTime.toMillis() - 25 * 60 * 60 * 1000);
+
+
+    console.info("twentyThreeHoursAgo--->", twentyThreeHoursAgo)
+    console.info("TwentyFiveHoursAgo--->", TwentyFiveHoursAgo)
+
     const usersRef = await firestore().collection('userEmailAcknowledgement');
-    const query = usersRef.where('isUserFirstLoginTime', '>=', twentyFourHoursHoursAgo);
+    const query = usersRef
+      .where('isUserFirstLoginTime', '>=', TwentyFiveHoursAgo)
+      .where('isUserFirstLoginTime', '<=', twentyThreeHoursAgo);
 
     const getAckIds: any = [];
 
@@ -203,9 +211,13 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
 export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const currentTime = Timestamp.now();
-  const fourtyEightHoursAgo = new Date(currentTime.toMillis() - 48 * 60 * 60 * 1000);
+  const fourtySevenHourAgo = new Date(currentTime.toMillis() - 47 * 60 * 60 * 1000);
+  const fourtyNineHoursAgo = new Date(currentTime.toMillis() - 49 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', fourtyEightHoursAgo);
+  const query = usersRef
+    .where('firstTimeUserVoteTime', '>=', fourtyNineHoursAgo)
+    .where('firstTimeUserVoteTime', '<=', fourtySevenHourAgo);
 
   const getAckIds: any = [];
 
@@ -286,9 +298,17 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
 
 export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
   const currentTime = Timestamp.now();
-  const SeventyTwoHoursAgo = new Date(currentTime.toMillis() - 72 * 60 * 60 * 1000);
+  const seventyOneHourAgo = new Date(currentTime.toMillis() - 71 * 60 * 60 * 1000);
+  const seventyThreeHoursAgo = new Date(currentTime.toMillis() - 73 * 60 * 60 * 1000);
+
+
+  console.info("seventyOneHourAgo--->", seventyOneHourAgo)
+  console.info("seventyThreeHoursAgo--->", seventyThreeHoursAgo)
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', SeventyTwoHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', seventyThreeHoursAgo)
+    .where('isUserFirstLoginTime', '<=', seventyOneHourAgo);
 
   const getAckIds: any = [];
 
@@ -363,11 +383,15 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
     });
 }
 
-export const sendEmailForLifetimePassiveIncomeInLast92Hours = async () => {
+export const sendEmailForLifetimePassiveIncomeInLast96Hours = async () => {
   const currentTime = Timestamp.now();
-  const NinetySixHoursAgo = new Date(currentTime.toMillis() - 96 * 60 * 60 * 1000);
+  const ninetyFiveHourAgo = new Date(currentTime.toMillis() - 95 * 60 * 60 * 1000);
+  const ninetySevenHoursAgo = new Date(currentTime.toMillis() - 97 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', NinetySixHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', ninetySevenHoursAgo)
+    .where('isUserFirstLoginTime', '<=', ninetyFiveHourAgo);
 
   const getAckIds: any = [];
 
@@ -443,9 +467,13 @@ export const sendEmailForLifetimePassiveIncomeInLast92Hours = async () => {
 
 export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
   const currentTime = Timestamp.now();
-  const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
+  const oneSixtySevenHourAgo = new Date(currentTime.toMillis() - 167 * 60 * 60 * 1000);
+  const oneSixtyNineHoursAgo = new Date(currentTime.toMillis() - 169 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', oneSixtyEightHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', oneSixtyNineHoursAgo)
+    .where('isUserFirstLoginTime', '<=', oneSixtySevenHourAgo);
 
   const getAckIds: any = [];
 
@@ -521,9 +549,13 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
 
 export const sendEmailForUnloackRewardsInLast192Hours = async () => {
   const currentTime = Timestamp.now();
-  const oneNinetyTwoHoursAgo = new Date(currentTime.toMillis() - 192 * 60 * 60 * 1000);
+  const oneNinetyOneHoursAgo = new Date(currentTime.toMillis() - 191 * 60 * 60 * 1000);
+  const oneNinetyThreeHoursAgo = new Date(currentTime.toMillis() - 193 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', oneNinetyTwoHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', oneNinetyThreeHoursAgo)
+    .where('isUserFirstLoginTime', '<=', oneNinetyOneHoursAgo);
 
   const getAckIds: any = [];
 
@@ -596,9 +628,13 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
 
 export const sendEmailForSVIUpdateInLast216Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredSixteenHoursAgo = new Date(currentTime.toMillis() - 216 * 60 * 60 * 1000);
+  const twoHundredFifteenHourAgo = new Date(currentTime.toMillis() - 215 * 60 * 60 * 1000);
+  const twoHundredSeventeenHourAgo = new Date(currentTime.toMillis() - 217 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', twoHundredSixteenHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', twoHundredSeventeenHourAgo)
+    .where('isUserFirstLoginTime', '<=', twoHundredFifteenHourAgo);
 
   const getAckIds: any = [];
 
@@ -671,9 +707,13 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
 
 export const sendEmailForProgressWithFriendInLast240Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredFourtyHoursAgo = new Date(currentTime.toMillis() - 240 * 60 * 60 * 1000);
+  const twoHundredThirtyNineHourAgo = new Date(currentTime.toMillis() - 239 * 60 * 60 * 1000);
+  const twoHundredFourtyOneHourAgo = new Date(currentTime.toMillis() - 241 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', twoHundredFourtyHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', twoHundredFourtyOneHourAgo)
+    .where('isUserFirstLoginTime', '<=', twoHundredThirtyNineHourAgo);
 
   const getAckIds: any = [];
 
@@ -742,9 +782,13 @@ export const sendEmailForProgressWithFriendInLast240Hours = async () => {
 
 export const sendEmailForTopInfluencerInLast264Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredSixtyFourHoursAgo = new Date(currentTime.toMillis() - 264 * 60 * 60 * 1000);
+  const twoHundredSixtyThreeHourAgo = new Date(currentTime.toMillis() - 263 * 60 * 60 * 1000);
+  const twoHundredSixtyFiveHourAgo = new Date(currentTime.toMillis() - 265 * 60 * 60 * 1000);
+
   const usersRef = await firestore().collection('userEmailAcknowledgement');
-  const query = usersRef.where('isUserFirstLoginTime', '>=', twoHundredSixtyFourHoursAgo);
+  const query = usersRef
+    .where('isUserFirstLoginTime', '>=', twoHundredSixtyFiveHourAgo)
+    .where('isUserFirstLoginTime', '<=', twoHundredSixtyThreeHourAgo);
 
   const getAckIds: any = [];
 
@@ -852,6 +896,10 @@ export const sendEmailForUserFollowersCountInWeek = async () => {
   const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('users');
   const query = usersRef.where('lastTimeSubscribedUser', '>=', oneSixtyEightHoursAgo);
+
+  console.info("oneSixtyEightHoursAgo--->", oneSixtyEightHoursAgo)
+
+
   const allUsersEmailAndSubscriberCount: any = [];
 
   await query.get()
@@ -860,9 +908,14 @@ export const sendEmailForUserFollowersCountInWeek = async () => {
         console.log('No users created in the last 168 hours for Followers Count.');
         return;
       }
-      userSnapshot.forEach(async (user: any) => {
+      userSnapshot.forEach(async (userObj: any) => {
+        let user: any = userObj.data();
+        console.info("user.....", user);
+
         allUsersEmailAndSubscriberCount.push({ userId: user.uid, userName: user.userName, email: user.email, subscribersCurrentTotalCount: user.subscribersCurrentTotalCount })
       });
+
+      console.info("allUsersEmailAndSubscriberCount--->", allUsersEmailAndSubscriberCount);
 
       if (allUsersEmailAndSubscriberCount && allUsersEmailAndSubscriberCount.length) {
         for (let user = 0; user < allUsersEmailAndSubscriberCount.length; user++) {

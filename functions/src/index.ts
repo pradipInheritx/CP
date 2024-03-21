@@ -90,7 +90,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast92Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInWeek } from "./common/models/Notification";
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInWeek } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1973,7 +1973,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
     await sendEmailForAddressNotUpdatedInLast72Hours();
 
-    await sendEmailForLifetimePassiveIncomeInLast92Hours();
+    await sendEmailForLifetimePassiveIncomeInLast96Hours();
 
     await sendEmailForEarnRewardsByPaxTokensInLast168Hours();
 
@@ -1990,7 +1990,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
 
 exports.sendEmailForUserFollowerCount = functions.pubsub
-  .schedule('every 168 hours')
+  .schedule('every 2 minutes')
   .onRun(async () => {
 
     await sendEmailForUserFollowersCountInWeek();
