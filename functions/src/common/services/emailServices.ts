@@ -51,8 +51,8 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   auth: {
-      user: 'feni.p@inheritx.com',
-      pass: 'cLN9yIzhY!ifhLz'
+      user: 'madhvichande.30@gmail.com',
+      pass: 'iahubihewdejnaxp'
   }
 });
 
@@ -60,7 +60,7 @@ const transporter = nodemailer.createTransport({
 export async function sendEmail(to:any, subject:any, htmlCode:any) {
   // send mail with defined transport object
   console.log("email>>>>>>", {
-    from: "feni.p@inheritx.com", // sender address
+    from: "madhvichande.30@gmail.com", // sender address
     to, // "bar@example.com, baz@example.com", // list of receivers
     subject, // Subject line
     html: htmlCode
