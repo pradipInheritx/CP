@@ -154,11 +154,13 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
                                 </>
                                 :
                                 <>
-                                    {remainingReward > 0 && <div className="gift_animation-css"><AnimationTotalCmpDiv>
+                                    
+                                     <div className="gift_animation-css">
+                                     {remainingReward > 0 &&<AnimationTotalCmpDiv>
                                         <span>{remainingReward}</span>
-                                    </AnimationTotalCmpDiv>
+                                    </AnimationTotalCmpDiv>}
                                         <img src={giftIcon} alt='' className="gift-icon-css " width="20px" />
-                                    </div>}
+                                    </div>
                                 </>
                         }
                     </div>
