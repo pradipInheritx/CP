@@ -159,7 +159,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
           emailValue={email}
           signup={signup}
           callback={{
-            successFunc: async (params) => {
+            successFunc: async (params:any) => {
               console.log('params', params.uid)
               if (preantId) await assign({ parent: preantId, child: params.uid });
               setSignup(false)
@@ -167,7 +167,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
               setSignupLoading(false)
             },
 
-            errorFunc: (e) => {
+            errorFunc: (e:any) => {
               let message = e.message == 'Firebase: Error (auth/email-already-in-use).' ? 'Email already in use' : e.message
 
               showToast(message, ToastType.ERROR)

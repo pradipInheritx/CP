@@ -110,7 +110,7 @@ const Signup = () => {
           setSignupLoading={setSignupLoading}
           // signup={signup}
           callback={{
-            successFunc: async (params) => {
+            successFunc: async (params:any) => {
               console.log(params, "we are not get")
               // if (refer && params?.uid) await assign({ parent: refer, child: params.uid });
               // setLogin(true);
@@ -118,7 +118,7 @@ const Signup = () => {
               setUser();
               navigate('/');
             },
-            errorFunc: (e) => {
+            errorFunc: (e:any) => {
               showToast(e.message, ToastType.ERROR)
               setSignupLoading(false);
             },

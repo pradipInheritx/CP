@@ -127,14 +127,14 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
-            successFunc: (params) => {
+            successFunc: (params:any) => {
               console.log('user successFunc');
               
               setUser(params);
               setLogin(false);
               navigate('/');
             },
-            errorFunc: (e) => showToast(e.message, ToastType.ERROR),
+            errorFunc: (e:any) => showToast(e.message, ToastType.ERROR),
           }}
           login={login}
         />

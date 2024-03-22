@@ -258,16 +258,17 @@ export const LoginRegular = async (
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
         console.log(isFirstLogin, 'firsttimelogin success')
 
-        setTimeout(() => {
+        setTimeout(() => {          
           callback.successFunc(userCredential.user)
         }, 100);
       } else {
         console.log('user callback');
-        
+      // @ts-ignore
         callback.successFunc(userCredential.user)
       }
     } else {
       Logout();
+      // @ts-ignore
       callback.errorFunc({ message: 'Please verify your email address.' } as Error)
     };
   } catch (err) {
@@ -278,17 +279,19 @@ export const LoginRegular = async (
     // @ts-ignore
     switch (err.code) {
       case 'auth/wrong-password':
-
+// @ts-ignore
         callback.errorFunc({ message: 'Your password is invalid.' } as Error);
         break;
       case 'auth/user-not-found':
-
+        // @ts-ignore
         callback.errorFunc({ message: 'This user not found' } as Error);
         break;
       case 'auth/too-many-requests':
+        // @ts-ignore
         callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .' } as Error);
         break;
       case 'auth/invalid-email':
+        // @ts-ignore
         callback.errorFunc({ message: 'This Email is not Valid.' } as Error);
         break;
       // @ts-ignore      
@@ -299,6 +302,7 @@ export const LoginRegular = async (
     const matches = err.code.replace("auth/", "");
     const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
     if (showErroe) {
+      // @ts-ignore
       callback.errorFunc({ message: lastmatches } as Error);
       showErroe = false
     }

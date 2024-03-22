@@ -25,11 +25,11 @@ const Refer = () => {
     <SignupForm
     emailValue=''
       callback={{
-        successFunc: async (params) => {
+        successFunc: async (params:any) => {
           await assignReferrer(params);
           setUser(params);
         },
-        errorFunc: (e) => showToast(e.message, ToastType.ERROR),
+        errorFunc: (e:any) => showToast(e.message, ToastType.ERROR),
       }}
       signup={SignupRegular}
     />
