@@ -39,7 +39,8 @@ const Avatars = ({
   width = 160,
   style,
 }: AvatarsProps) => {
-  const src = importFile(`./The${type || "Founder"}`).default ;
+  const src = importFile(`./The${type || "Founder"}`).default;
+  
   return <Image width={width} roundedCircle={true} src={src} style={style} />;
 };
 
