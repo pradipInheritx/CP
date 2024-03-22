@@ -204,7 +204,6 @@ app.get("/user/verified", async (req: any, res: any) => {
             userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
           );
           res.send(successTemplate);
-
         }
       })
   }
