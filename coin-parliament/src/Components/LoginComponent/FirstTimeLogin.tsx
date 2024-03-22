@@ -84,6 +84,7 @@ const FirstTimeLogin = ({ generate, saveUsername ,setFirstTimeAvatarSelection}: 
 
   useEffect(() => {
     setDisplayValue(userInfo?.displayName || '');
+    setUsername(userInfo?.isVoteName || '');
   }, [JSON.stringify(userInfo?.displayName)]);
 
 
