@@ -48,11 +48,11 @@ import nodemailer from "nodemailer"
 // });
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
+  host: "smtp.gmail.com",
   port: 587,
   auth: {
-      user: 'enid.torphy69@ethereal.email',
-      pass: '6Vu7e88dxsBMwQqCVw'
+      user: 'feni.p@inheritx.com',
+      pass: 'cLN9yIzhY!ifhLz'
   }
 });
 
@@ -61,7 +61,7 @@ export async function sendEmail(to:any, subject:any, htmlCode:any) {
   // send mail with defined transport object
   console.log("email>>>>>>")
   const info = await transporter.sendMail({
-    from: "feni.p@inheritx.com", // sender address
+    // from: "feni.p@inheritx.com", // sender address
     to, // "bar@example.com, baz@example.com", // list of receivers
     subject, // Subject line
     html: htmlCode
