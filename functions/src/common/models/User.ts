@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import * as jwt from "jsonwebtoken";
+import { userWelcomeEmailTemplate } from "../emailTemplates/userWelcomeEmailTemplate";
 
 import { UserProps, UserTypeProps } from "../interfaces/User.interface";
 import env from "../../env/env.json";
@@ -72,7 +73,14 @@ export const sendEmailVerificationLink = async (email:string)=>{
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+
+      await sendEmail(
+        userRecord.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
+
+      return true; 
     }
 
 
