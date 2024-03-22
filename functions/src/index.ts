@@ -1963,7 +1963,7 @@ exports.prepareWeeklyCPVI = functions.pubsub
  */
 
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
-  .schedule("every 2 minutes")
+  .schedule("every 60 minutes")
   .onRun(async () => {
 
     await sendEmailForVoiceMatterInLast24Hours();
@@ -1989,7 +1989,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
 
 exports.sendEmailForUserFollowerCount = functions.pubsub
-  .schedule('every 2 minutes')
+  .schedule('every 168 hours')
   .onRun(async () => {
 
     await sendEmailForUserFollowersCountInWeek();
