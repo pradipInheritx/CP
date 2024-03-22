@@ -40,7 +40,7 @@ const MainDiv = styled.div`
 const MidDiv = styled.div`
   
     // border:1px solid red;
-    width:${window.screen.width> 767? "50%" : "100%"};
+    width:${window.screen.width> 1280? "70%" : "100%"};
     margin:auto;
     //  flex-wrap: wrap;
     display:flex;
@@ -133,7 +133,7 @@ const PairsCopy = ({
             }}></span>              
            </div>
            <ImgName>
-            <img src={items.img1} alt=""  width={"50px"}/>
+            <img src={items.img1} alt="" className="img-fluid"   style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
              <CoinText>{ items.name1}</CoinText>
           </ImgName>
            <div className="w-25 d-flex flex-column align-items-center "
@@ -155,7 +155,7 @@ const PairsCopy = ({
              <p style={{color:"#6352e8"}}>VS</p>
           </div>
            <ImgName>
-             <img src={items.img2} alt="" width={"50px"} />
+             <img src={items.img2} alt=""  className="img-fluid"  style={{objectFit:"scale-down",width: window.innerWidth >= 600 ? "134px" : "70px", height: window.innerWidth >= 600 ? "103px" : "65px"}}/>
              <CoinText>{ items.name2}</CoinText>
             </ImgName>                        
             </div>

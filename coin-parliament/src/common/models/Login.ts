@@ -98,7 +98,7 @@ export const LoginAuthProvider = async (
 
       const firstTimeLogin: Boolean = true
 
-      await setDoc(userRef, { firstTimeLogin }, { merge: true });
+      await setDoc(userRef, { firstTimeLogin ,isVoteToEarn: false }, { merge: true });
       console.log('firsttimelogin success')
 
       setTimeout(() => {
@@ -277,7 +277,7 @@ export const SignupRegular = async (
     // @ts-ignore
 
     const userRef = doc(db, "users", auth?.currentUser?.uid);
-    await setDoc(userRef, { firstTimeLogin }, { merge: true })
+    await setDoc(userRef, { firstTimeLogin ,isVoteToEarn: false}, { merge: true })
     console.log('firsttimelogin success')
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid, '', '')
