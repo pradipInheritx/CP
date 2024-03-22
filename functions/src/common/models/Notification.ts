@@ -184,7 +184,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
             console.info("Get User Details:----->", getUserDetails);
 
-            sendEmail(
+            await sendEmail(
               getUserDetails[0].email,
               "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
               sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -274,7 +274,7 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
 
             console.info("Get User Details:----->", getUserDetails);
 
-            sendEmail(
+            await sendEmail(
               getUserDetails[0].email,
               "Don't Miss Out on Your PAX Tokens – Upgrade Your Account Today!",
               sendEmailForUserUpgradeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -361,7 +361,7 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Important: Update Your Wallet Address for Seamless Rewards on Coin Parliament",
             sendEmailForAddressNotUpdatedTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -444,7 +444,7 @@ export const sendEmailForLifetimePassiveIncomeInLast96Hours = async () => {
 
           console.info("Get User Details:----->Passive Income", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "🌟 Your social media can make you Lifetime Passive Income! 🚀",
             sendEmailForLifetimePassiveIncomeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -526,7 +526,7 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Earn Rewards by Voting and Minting Your PAX Tokens on Coin Parliament",
             sendEmailForEarnRewardsByPaxTokensTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -605,7 +605,7 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Expand Your Card Collection and Unlock Exclusive Rewards on Coin Parliament",
             sendEmailForUnloackRewardsTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -684,7 +684,7 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Stay Informed with Bitcoin SVI Updates on Coin Parliament",
             sendEmailForSVIUpdateTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -760,7 +760,7 @@ export const sendEmailForProgressWithFriendInLast240Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Accelerate Your Coin Mining Progress with Your Friends' Support!",
             sendEmailForProgressWithFriendTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -838,7 +838,7 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          sendEmail(
+          await sendEmail(
             getUserDetails[0].email,
             "Explore the Top Influencers on Coin Parliament!",
             sendEmailForTopInfluencerTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
