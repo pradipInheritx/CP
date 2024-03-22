@@ -1593,6 +1593,27 @@ border-top-left-radius: 0px !important;
     transform: translateY(-50%);
 }
 
+.custom-circle-progress .gift-icon-css {
+    position: relative;
+    top: initial;
+    left: initial;
+    width: initial;
+    z-index: 2;
+    transform: initial;
+}
+
+.custom-circle-progress  .gift_animation-css{
+    position: absolute;
+    top: 15px;
+    left: 12px;
+    width: 30px;
+    z-index: 2;
+}
+
+.gift_animation-css {
+    animation:bull_shake_left 2s ease 2s infinite;
+}
+
 .custom-circle-progress .progress-cs {
     width: 60px;
     height: 60px;
@@ -1675,6 +1696,17 @@ border-top-left-radius: 0px !important;
         z-index: 2;
         transform: translateY(-50%);
     }
+    .custom-circle-progress .gift_animation-css {
+        position: absolute;
+        top: 15px;
+        left: 6px;
+        width: 30px;
+        z-index: 2;
+    }
+    .mobileHeader .custom-circle-progress .gift-icon-css {
+        width: 22px
+    }
+    
     .mobileHeader .custom-circle-progress .progress-cs .left, .mobileHeader .custom-circle-progress .progress-cs .right {
         border-width: 3px;
         border-radius: 100px 0px 0px 100px;
@@ -1706,4 +1738,29 @@ border-top-left-radius: 0px !important;
     max-width: 50px;
     text-align: right;}
 
+}
+
+.form-inline-flex {
+    display: flex;
+    margin: 0px -10px !important;
+}
+
+.form-inline-flex .col-field {
+    flex: 0 0 42%;
+    max-width: 42%;
+    padding: 0px 10px;
+}
+
+.form-inline-flex .col-field>input,.form-inline-flex .col-field>select {
+    display: block;
+    width: 100%;
+}
+
+.flex-auto {
+    flex: auto;
+}
+
+.form-inline-flex select {
+    color: #160133 !important;
+    height: 44px;
 }
