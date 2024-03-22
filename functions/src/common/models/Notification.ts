@@ -121,7 +121,7 @@ export const sendEmailAcknowledgementStatus = async (userObj: any) => {
 export const sendEmailForVoiceMatterInLast24Hours = async () => {
   try {
     const currentTime = Timestamp.now();
-    const twentyThreeHoursAgo = new Date(currentTime.toMillis() - 60 * 1000);
+    const twentyThreeHoursAgo = new Date(currentTime.toMillis() - 23 * 60 * 60 * 1000);
     const TwentyFiveHoursAgo = new Date(currentTime.toMillis() - 25 * 60 * 60 * 1000);
 
 
@@ -184,7 +184,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
             console.info("Get User Details:----->", getUserDetails);
 
-            await sendEmail(
+            sendEmail(
               getUserDetails[0].email,
               "Your Voice Matters! Cast Your Votes Today on Coin Parliament",
               sendEmailForVoiceMatterTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -211,7 +211,7 @@ export const sendEmailForVoiceMatterInLast24Hours = async () => {
 
 export const sendEmailForUserUpgradeInLast48Hours = async () => {
   const currentTime = Timestamp.now();
-  const fourtySevenHourAgo = new Date(currentTime.toMillis() - 120 * 1000);
+  const fourtySevenHourAgo = new Date(currentTime.toMillis() - 47 * 60 * 60 * 1000);
   const fourtyNineHoursAgo = new Date(currentTime.toMillis() - 49 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -274,7 +274,7 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
 
             console.info("Get User Details:----->", getUserDetails);
 
-            await sendEmail(
+            sendEmail(
               getUserDetails[0].email,
               "Don't Miss Out on Your PAX Tokens – Upgrade Your Account Today!",
               sendEmailForUserUpgradeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -298,7 +298,7 @@ export const sendEmailForUserUpgradeInLast48Hours = async () => {
 
 export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
   const currentTime = Timestamp.now();
-  const seventyOneHourAgo = new Date(currentTime.toMillis() - 180 * 1000);
+  const seventyOneHourAgo = new Date(currentTime.toMillis() - 71 * 60 * 60 * 1000);
   const seventyThreeHoursAgo = new Date(currentTime.toMillis() - 73 * 60 * 60 * 1000);
 
 
@@ -361,7 +361,7 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Important: Update Your Wallet Address for Seamless Rewards on Coin Parliament",
             sendEmailForAddressNotUpdatedTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -385,7 +385,7 @@ export const sendEmailForAddressNotUpdatedInLast72Hours = async () => {
 
 export const sendEmailForLifetimePassiveIncomeInLast96Hours = async () => {
   const currentTime = Timestamp.now();
-  const ninetyFiveHourAgo = new Date(currentTime.toMillis() - 240 * 1000);
+  const ninetyFiveHourAgo = new Date(currentTime.toMillis() - 95 * 60 * 60 * 1000);
   const ninetySevenHoursAgo = new Date(currentTime.toMillis() - 97 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -444,7 +444,7 @@ export const sendEmailForLifetimePassiveIncomeInLast96Hours = async () => {
 
           console.info("Get User Details:----->Passive Income", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "🌟 Your social media can make you Lifetime Passive Income! 🚀",
             sendEmailForLifetimePassiveIncomeTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -467,7 +467,7 @@ export const sendEmailForLifetimePassiveIncomeInLast96Hours = async () => {
 
 export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
   const currentTime = Timestamp.now();
-  const oneSixtySevenHourAgo = new Date(currentTime.toMillis() - 300 * 1000);
+  const oneSixtySevenHourAgo = new Date(currentTime.toMillis() - 167 * 60 * 60 * 1000);
   const oneSixtyNineHoursAgo = new Date(currentTime.toMillis() - 169 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -526,7 +526,7 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Earn Rewards by Voting and Minting Your PAX Tokens on Coin Parliament",
             sendEmailForEarnRewardsByPaxTokensTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL)
@@ -549,7 +549,7 @@ export const sendEmailForEarnRewardsByPaxTokensInLast168Hours = async () => {
 
 export const sendEmailForUnloackRewardsInLast192Hours = async () => {
   const currentTime = Timestamp.now();
-  const oneNinetyOneHoursAgo = new Date(currentTime.toMillis() - 360 * 1000);
+  const oneNinetyOneHoursAgo = new Date(currentTime.toMillis() - 191 * 60 * 60 * 1000);
   const oneNinetyThreeHoursAgo = new Date(currentTime.toMillis() - 193 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -605,7 +605,7 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Expand Your Card Collection and Unlock Exclusive Rewards on Coin Parliament",
             sendEmailForUnloackRewardsTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -628,7 +628,7 @@ export const sendEmailForUnloackRewardsInLast192Hours = async () => {
 
 export const sendEmailForSVIUpdateInLast216Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredFifteenHourAgo = new Date(currentTime.toMillis() - 420 * 1000);
+  const twoHundredFifteenHourAgo = new Date(currentTime.toMillis() - 215 * 60 * 60 * 1000);
   const twoHundredSeventeenHourAgo = new Date(currentTime.toMillis() - 217 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -684,7 +684,7 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Stay Informed with Bitcoin SVI Updates on Coin Parliament",
             sendEmailForSVIUpdateTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -707,7 +707,7 @@ export const sendEmailForSVIUpdateInLast216Hours = async () => {
 
 export const sendEmailForProgressWithFriendInLast240Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredThirtyNineHourAgo = new Date(currentTime.toMillis() - 480 * 1000);
+  const twoHundredThirtyNineHourAgo = new Date(currentTime.toMillis() - 239 * 60 * 60 * 1000);
   const twoHundredFourtyOneHourAgo = new Date(currentTime.toMillis() - 241 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -760,7 +760,7 @@ export const sendEmailForProgressWithFriendInLast240Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Accelerate Your Coin Mining Progress with Your Friends' Support!",
             sendEmailForProgressWithFriendTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -782,7 +782,7 @@ export const sendEmailForProgressWithFriendInLast240Hours = async () => {
 
 export const sendEmailForTopInfluencerInLast264Hours = async () => {
   const currentTime = Timestamp.now();
-  const twoHundredSixtyThreeHourAgo = new Date(currentTime.toMillis() - 540 * 1000);
+  const twoHundredSixtyThreeHourAgo = new Date(currentTime.toMillis() - 263 * 60 * 60 * 1000);
   const twoHundredSixtyFiveHourAgo = new Date(currentTime.toMillis() - 265 * 60 * 60 * 1000);
 
   const usersRef = await firestore().collection('userEmailAcknowledgement');
@@ -838,7 +838,7 @@ export const sendEmailForTopInfluencerInLast264Hours = async () => {
 
           console.info("Get User Details:----->", getUserDetails);
 
-          await sendEmail(
+          sendEmail(
             getUserDetails[0].email,
             "Explore the Top Influencers on Coin Parliament!",
             sendEmailForTopInfluencerTemplate(`${getUserDetails[0].userName}`, env.BASE_SITE_URL) // To Do For Change the template
@@ -893,7 +893,7 @@ export const sendEmailForAfterUpgradeOnImmediate = async (userDetails: any) => {
 
 export const sendEmailForUserFollowersCountInWeek = async () => {
   const currentTime = Timestamp.now();
-  const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 600 * 1000);
+  const oneSixtyEightHoursAgo = new Date(currentTime.toMillis() - 168 * 60 * 60 * 1000);
   const usersRef = await firestore().collection('users');
   const query = usersRef.where('lastTimeSubscribedUser', '>=', oneSixtyEightHoursAgo);
 
