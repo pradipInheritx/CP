@@ -365,7 +365,7 @@ function App() {
   const [paxDistribution, setPaxDistribution] = useState(0)
   const [addPaxWalletPop, setAddPaxWalletPop] = useState(false)
   const [walletTab, setWalletTab] = useState("Balance")
-  const [historyTab, setHistoryTab] = useState("Payment History")
+  const [historyTab, setHistoryTab] = useState("Purchase History")
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -1010,7 +1010,8 @@ function App() {
       console.log('WebSocket connection closed', event);   
       reconnectWebSocket()
     };
-    ws.onerror = () => {      
+    ws.onerror = () => {  
+      setSocketConnect(false);
       console.log('WebSocket connection occurred');
       reconnectWebSocket()
     };      
@@ -1042,7 +1043,10 @@ function App() {
     //   };
 
      socket.onerror = (error:any) => {
-        console.error('WebSocket error:', error);
+       console.error('WebSocket error:', error);
+       setTimeout(() => {
+         connectWebSocket()
+       }, 10000);
         // setError(error);
       };
 

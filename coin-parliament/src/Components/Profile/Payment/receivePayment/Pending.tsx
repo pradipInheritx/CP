@@ -16,7 +16,7 @@ const RewardList = styled.p`
 `;
 
 const tableHeader = ['Order Id', "Date", 'Amount',]
-const ChildSubHeader = ['Item', 'Payment Method', 'Child Id']
+const ChildSubHeader = ['Item', 'Payment Method', 'Child']
 // const tableHeader: tableColumnType[] = [
 //     {
 //         title: 'Order Id',
@@ -127,7 +127,7 @@ const Pending: React.FC = () => {
     const ChaildExtraData = (childData: any) => {
         return (
             <>
-                <div className='d-flex border w-100'>
+                <div className='d-flex w-100'>
                     <div
                         style={{
                             width: "33%"

@@ -90,13 +90,12 @@ function PaymentHistory() {
       setIndex(historyTab)
     }
   }, [historyTab])
-  
-
+    
   const childTable = (item:any) => {
     return (
       <div className='p-3'>
         
-        <div className='d-flex justify-content-around w-100 border p-2'>
+        <div className='d-flex justify-content-around w-100 p-2'>
           <div
             style={{
               width: "32%"
@@ -138,6 +137,8 @@ function PaymentHistory() {
   )
 }
 
+  
+  console.log(selectTab,"getconsole.log(selectTab)")
 
   return (
     <>
@@ -148,7 +149,7 @@ function PaymentHistory() {
         onSelect={(k?: number) => {
           setIndex((k || 0))
           console.log(k,"what is this ")
-          setSelectTab(selectTab == "Purchase History" ? "Receive Payment" : "Purchase History")
+          setSelectTab(selectTab == "Purchase History" ? "Referral Payment" : "Purchase History")
           setHistoryTab("")
         }}
         tabs={[
@@ -302,8 +303,8 @@ function PaymentHistory() {
             ),
           },
           {
-            eventKey: "Receive Payment",
-            title: "Receive Payment",
+            eventKey: "Referral Payment",
+            title: "Referral Payment",
             pane: index ? <ReceivePayment /> : <></>,
           }
         ]}

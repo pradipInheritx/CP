@@ -19,7 +19,7 @@ type ChildTableData = {
 };
 
 function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: ChildTableData) {
-    const ChildSubHeader = ['Item', 'Payment Method', 'Child Id']
+    const ChildSubHeader = ['Item',  'Child']
     const [showSubChild, setshowSubChild] = useState("")
     const ChaildExtraData = (childData:any) => {
         return (
@@ -27,7 +27,7 @@ function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: C
                 <div className='d-flex border w-100'>
                     <div
                         style={{
-                            width: "33%"
+                            width: "48%"
                         }}
 
                     >
@@ -37,7 +37,7 @@ function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: C
                         </RewardList> 
                     </div>                   
 
-                    <div
+                    {/* <div
                         style={{
                             width: "33%"
                         }}
@@ -47,15 +47,15 @@ function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: C
                         <RewardList>
                             {childData?.token}
                         </RewardList>  
-                    </div>
+                    </div> */}
 
                     <div
                         style={{
-                            width: "33%"
+                            width: "48%"
                         }}
 
                     >
-                        <strong className="mt-2" style={{ fontSize: "10px" }}>{ChildSubHeader[2]}</strong>
+                        <strong className="mt-2" style={{ fontSize: "10px" }}>{ChildSubHeader[1]}</strong>
                         <OverlayTrigger
                             trigger={['hover', 'focus']}
                             placement="bottom"
@@ -86,7 +86,7 @@ function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: C
   return (
       <>
           <div className='p-3'>              
-              <div className='d-flex justify-content-around w-100 border p-2'>
+              <div className='d-flex justify-content-around w-100 p-2'>
                   <div
                       style={{
                           width: "48%"

@@ -39,6 +39,7 @@ export type UserProps = {
   userName?: any;
   lastVoteTime?: any;
   isUserUpgraded?: boolean;
+  isVoteName?: string;
   foundationData?: {
     id:any
     name:string

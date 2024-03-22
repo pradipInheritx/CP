@@ -181,7 +181,7 @@ const WalletBalance = () => {
             setPopupMessage("")
             setWalletPopup("")
             // setWalletTab("setting")
-            setHistoryTab("Receive Payment")
+            setHistoryTab("Referral Payment")
             navigate(`/profile/history`)
         }
     }
@@ -258,7 +258,7 @@ const WalletBalance = () => {
                                             style={{
                                                 color:"#6352E8",
                                         }}
-                                        >{pendingAmount[value]}</p>
+                                        >{pendingAmount[value] !=0 ? Number(pendingAmount[value]).toFixed(18):0}</p>
                                     </div>
                                 </>
                         }
