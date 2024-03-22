@@ -59,9 +59,14 @@ const transporter = nodemailer.createTransport({
 // async..await is not allowed in global scope, must use a wrapper
 export async function sendEmail(to:any, subject:any, htmlCode:any) {
   // send mail with defined transport object
-  console.log("email>>>>>>")
+  console.log("email>>>>>>", {
+    from: "feni.p@inheritx.com", // sender address
+    to, // "bar@example.com, baz@example.com", // list of receivers
+    subject, // Subject line
+    html: htmlCode
+  });
   const info = await transporter.sendMail({
-    // from: "feni.p@inheritx.com", // sender address
+    from: "feni.p@inheritx.com", // sender address
     to, // "bar@example.com, baz@example.com", // list of receivers
     subject, // Subject line
     html: htmlCode
@@ -72,4 +77,3 @@ export async function sendEmail(to:any, subject:any, htmlCode:any) {
 }
 
 // sendemail("none","welcome",adminsignuptemplate("olen.konopelski50@ethereal.email","pass",'title')).catch(console.error);
-
