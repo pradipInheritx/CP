@@ -343,9 +343,9 @@ export const SignupRegular = async (
       payload.password
     );
     // @ts-ignore
-    await sendEmailVerification(auth?.currentUser).then((data) => {
-      showToast("Successfully sent  verification link on your mail");
-    });
+    // await sendEmailVerification(auth?.currentUser).then((data) => {
+    //   showToast("Successfully sent  verification link on your mail");
+    // });
     const AuthUser=auth?.currentUser;
     const referUser = await getReferUser(V2EParliament.firestore(), parentEmailId);  
     await saveUserData((AuthUser?.uid || ''), db, {
@@ -356,7 +356,7 @@ export const SignupRegular = async (
       // displayName: await generateUsername()
     });
     Logout();
-     
+    showToast("Successfully sent  verification link on your mail");
     // @ts-ignore
     // const userRef = doc(db, "users", auth?.currentUser?.uid);
     // await setDoc(userRef, { firstTimeLogin :true,isVoteToEarn: false}, { merge: true })
