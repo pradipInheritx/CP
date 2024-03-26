@@ -62,6 +62,12 @@ export const saveDisplayName = async (uid: string, displayName: string, avatar: 
   await setDoc(userRef, { displayName, /* avatar */ }, { merge: true });
 };
 
+export const AddAllUserName = async (database:any, uid: any, userName: string, displayName: string,) => {    
+  const userRef = doc(database, "users", uid);  
+  await setDoc(userRef, { isVoteName: userName, displayName }, { merge: true });
+  
+};
+
 
 export const saveFoundation = async (uid: string, foundationName: string) => {
   const userRef = doc(db, "users", uid);

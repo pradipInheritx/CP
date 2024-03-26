@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getReferUser, getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
+import UserContext, { AddAllUserName, getReferUser, getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
@@ -117,8 +117,11 @@ import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import ProtectedRoutes from "routes/ProtectedRoutes";
 import PageNotFound from "Pages/PageNotFound";
 import Routes from "routes/Routes";
-import votingParliament from "firebaseVotingParliament";
 import SelectBio from "Components/LoginComponent/SelectBio";
+import votingParliament from "firebaseVotingParliament";
+import sportParliament from "firebaseSportParliament";
+import stockParliament from "firebaseStockParliament";
+import coinParliament from "firebaseCoinParliament";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -829,11 +832,20 @@ useEffect(()=>{
                                   setFirstTimeAvatarSelection
                                 }
                                 generate={generateUsername}
-
-                                saveUsername={async (username: any, DisplayName: any) => {
-                                  if (user?.uid) {
+                                
+                                saveUsername={async (username: any, DisplayName: any) => {  
+                                  // @ts-ignore
+                                  const allAppUid = JSON.parse(localStorage.getItem("userId"))
+                                  console.log(allAppUid,"allAppUid")
+                                  if (user?.uid) {                                    
                                     await saveUsername(user?.uid, username, "");
-                                    await saveDisplayName(user?.uid, DisplayName, "");
+                                    await saveDisplayName(user?.uid, DisplayName, "");                                    
+                                    
+                                    await AddAllUserName(coinParliament.firestore(), allAppUid?.coin, username, DisplayName);
+                                    await AddAllUserName(sportParliament.firestore(), allAppUid?.sport,username,DisplayName);
+                                    await AddAllUserName(votingParliament.firestore(), allAppUid?.voting,username,DisplayName);
+                                    await AddAllUserName(stockParliament.firestore(), allAppUid?.stock,username,DisplayName);
+
                                     setFirstTimeAvatarSelection(true);
                                     // setFirstTimeFoundationSelection(true);
                                     setFirstTimeLogin(false);
