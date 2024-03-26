@@ -5,6 +5,7 @@ import * as jwt from "jsonwebtoken";
 import env from "../../env/env.json";
 import { sendEmail } from "../services/emailServices";
 import { userVerifyEmailTemplate } from "../emailTemplates/userVerifyEmailTemplate";
+import { userWelcomeEmailTemplate } from "../emailTemplates/userWelcomeEmailTemplate";
 
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
 // import {DictionaryKeys} from "./Dictionary";
@@ -207,7 +208,13 @@ export const sendEmailVerificationLink = async (email: string) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      await sendEmail(
+        userRecord.email,
+        "Welcome To Vote To Earn!",
+        userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
+
+      return true; 
     }
 
     // Create a JWT token with user data
