@@ -88,7 +88,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForUserFollowersCountInWeek, sendEmailForUserUpgradeInLast48Hours, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForUserFollowersCountInWeek, sendEmailForUserUpgradeInLast48Hours, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -381,20 +381,20 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       // Create user statistics data
     await createUserStatistics(userData, user.uid);
 
-
     const getUserEmail: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
-    ).data();
-    console.log("new user email  : ", getUserEmail.email);
-
-    // Return if user isVoteToEarn is true
-    console.log("get userData",getUserEmail)
-    console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
-    if (getUserEmail.isVoteToEarn === true) {
-      return newUser;
-    }
-    // Send Email Verification Link to User
-    await sendEmailVerificationLink(getUserEmail.email);
+      ).data();
+      console.log("new user email  : ", getUserEmail.email);
+      
+      // Return if user isVoteToEarn is true
+      console.log("get userData",getUserEmail)
+      console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
+      if (getUserEmail.isVoteToEarn === true) {
+        return newUser;
+      }
+      // Send Email Verification Link to User
+      await sendEmailVerificationLink(getUserEmail.email);
+      await sendEmailAcknowledgementStatus(getUserEmail);
     return newUser;
 
 
