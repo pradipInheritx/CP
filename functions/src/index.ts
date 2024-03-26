@@ -393,7 +393,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
         return newUser;
       }
       // Send Email Verification Link to User
-      await sendEmailVerificationLink(getUserEmail.email);
+      // await sendEmailVerificationLink(getUserEmail.email);
       await sendEmailAcknowledgementStatus(getUserEmail);
     return newUser;
 
