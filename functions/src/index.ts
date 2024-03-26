@@ -269,7 +269,13 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       )
     ) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true };
+      await sendEmail(
+        userRecord.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
+
+      return true; 
     }
 
     // Create a JWT token with user data
