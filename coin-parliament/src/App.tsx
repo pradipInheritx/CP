@@ -257,10 +257,10 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-    console.log('scrollUp ');
+    // console.log('scrollUp ');
 
     if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
-      console.log("yes i am working")
+      // console.log("yes i am working")
       localStorage.removeItem("PayAmount");
     }
   }, [JSON.stringify(location.pathname)]);
@@ -293,7 +293,7 @@ function App() {
   useEffect(() => {
 
     if ('serviceWorker' in navigator) {
-      console.log("Navigator service worker is supported");
+      // console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
         console.log(message.data, "checknotification")
@@ -365,14 +365,14 @@ function App() {
   const [paxDistribution, setPaxDistribution] = useState(0)
   const [addPaxWalletPop, setAddPaxWalletPop] = useState(false)
   const [walletTab, setWalletTab] = useState("Balance")
+  const [historyTab, setHistoryTab] = useState("Purchase History")
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
-  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
-
-  const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
-  );
+  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>({});
+  // const [dbCoins, setDBCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
+  // console.log(coins,"getallcoinvalue")
+  const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [loader, setLoader] = useState(false);
@@ -389,6 +389,7 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
@@ -419,6 +420,7 @@ function App() {
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
+  const isFirstTimeLoginSetTimestamp = httpsCallable(functions, "isFirstTimeLoginSetTimestamp");
   // const [localID, setLocalID] = useState<any>(
 
   // )  
@@ -440,7 +442,7 @@ function App() {
 
   // console.log(coins, "allcoinsCheck")
 
-  const Coinkeys = Object.keys(coins && coins) || []
+  // const Coinkeys = Object.keys(coins && coins) || []
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -449,8 +451,7 @@ function App() {
       setSupportsPWA(true);
       setPromptInstall(e);
     };
-    window.addEventListener("beforeinstallprompt", handler);
-
+    window.addEventListener("beforeinstallprompt", handler);    
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
@@ -477,25 +478,27 @@ function App() {
   if (!supportsPWA) {
     console.log('not supported')
   }
-  useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined && !login) {
+  useEffect(() => {            
+    if (user?.email && userInfo?.displayName === undefined && !login) {            
+      console.log("lodding true")
       setLoader(true);
-      //   .get("444-44-4444").onsuccess = (event) => {
-      //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
-      // };
-
-      // setLoader(true);
-    } else {
-      // setTimeout(() => {
-      setLoader(false);
-      // }, 2000);
+    } else if (!Object.keys(coins).length && !socketConnect){      
+      console.log("lodding true")
+      setLoader(true);      
+    } else if (!!user?.email && !userInfo) {
+      console.log("lodding true")
+      setLoader(true);
+    } else {    
+      console.log("lodding false")
+      setLoader(false);            
     }
-  }, [user, userInfo]);
+  }, [user, userInfo, login, socketConnect, JSON.stringify(Object.keys(coins).length)]);
+
+  // console.log(Object.keys(coins).length, socketConnect, !Object.keys(coins).length && !socketConnect, !!user?.email && !userInfo, "forloader")
 
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
     const info = await getUserInfo(user);
-    console.log("i am working")
     setUserInfo(info);
     setDisplayName(info.displayName + "");   
   }, []);
@@ -510,15 +513,6 @@ function App() {
   // console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
 
   useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined && !login) {
-      setLoader(true);
-    } else {
-      setTimeout(() => {
-        setLoader(false);
-      }, 2000);
-    }
-  }, [user, userInfo]);
-  useEffect(() => {
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
       setLogin(false);
@@ -526,7 +520,7 @@ function App() {
     } else {
       const isMFAPassed = window.localStorage.getItem('mfa_passed')
       if (!user && isMFAPassed !== 'true') {
-        console.log('2faCalled3')
+        // console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
       }
@@ -547,6 +541,16 @@ function App() {
     // @ts-ignore
 
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
+      if (userInfo?.firstTimeLogin == true && userInfo?.uid) {
+        const sendObj = {          
+            userId: userInfo?.uid          
+        }
+        isFirstTimeLoginSetTimestamp(sendObj).then((result) => {
+          console.log(result, "isFirstTimeLoginSetTimestamp")
+        }).catch((err) => {
+          console.log(err, "isFirstTimeLoginSetTimestamp")
+        });
+      }
       setFirstTimeLogin(true);
       setShowMenuBar(true)
     }
@@ -598,16 +602,19 @@ function App() {
   useEffect(() => {
     getMessageToken();
   }, [userInfo]);
+
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
+    console.log(messagingResolve,"messagingResolve")
     if (messagingResolve) {
       getToken(messagingResolve, {
         vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
       }).then((token) => {
         setFcmToken(token);
-        console.log('token', token);
+        // console.log('token', token);
       }).catch((e) => {
         console.log('token', e);
+        // setLoader(false)
       });
     }
   }
@@ -648,13 +655,15 @@ function App() {
       const userDocSnapshot = await getDoc(coinData);
 
       if (userDocSnapshot.exists()) {
+        // setDBCoins(userDocSnapshot.data());
+        // console.log(userDocSnapshot.data(),"userDocSnapshot.data()")
         setCoins(userDocSnapshot.data());
       } else {
         console.log("Document does not exist");
       }
     } catch (error) {
       console.error("Error getting document:", error);
-    }
+    }    
   }
 
   useEffect(() => {
@@ -789,11 +798,12 @@ function App() {
     axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {      
         data: {}      
     }).then((res) => {
-      console.log(res.data.result, "resultdata")
+
       setPaxDistribution(res.data.result.paxDistribution)
     }).catch((err) => {
       console.log(err,"resultdata")      
     })
+    
   }, [user?.uid]);
 
   window.onbeforeunload = function () {
@@ -807,8 +817,7 @@ function App() {
     if (!firstTimeLogin) {
 
       onAuthStateChanged(auth, async (user: User | null) => {
-        setAuthStateChanged(true);
-        console.log('provider', user?.providerData[0]?.providerId)
+        setAuthStateChanged(true);        
         if (
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
@@ -837,9 +846,7 @@ function App() {
           //     setVotesLast24Hours(
           //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
           //     );
-          //   });
-
-          console.log(auth, "getauth", fcmToken)
+          //   });          
           try {
             if (fcmToken) {
               try {
@@ -862,7 +869,10 @@ function App() {
         }
       });
     }
-  }, [user, fcmToken, coins]);
+  }, [user, fcmToken]);  
+
+  // rutul sir need to ask why you add coins here
+
   // useEffect(() => {
   //   auth.signOut();
   // }, []);
@@ -895,14 +905,12 @@ function App() {
 
 //   }, [userInfo?.voteStatistics?.total])
   // console.log('usermfa', userInfo)
-  const fetchVotesLast24Hours = async () => {
-    console.log(voteNumberEnd, user?.uid, userInfo?.lastVoteTime, "userInfo?.lastVoteTime")
+  const fetchVotesLast24Hours = async () => {    
     if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime) {
       // @ts-ignore
       let remaining = (userInfo?.lastVoteTime + voteRules.timeLimit * 1000) - Date.now();
       // @ts-ignore
-      setRemainingTimer(userInfo?.lastVoteTime + voteRules.timeLimit * 1000)
-      console.log(remaining, "remaining")
+      setRemainingTimer(userInfo?.lastVoteTime + voteRules.timeLimit * 1000)      
       setTimeout(() => {        
         const userDocRef = doc(firestore, 'users', user?.uid);
         try {
@@ -996,119 +1004,108 @@ function App() {
           id: 1
         }));
       }
-    };
-    var userAgent = navigator.userAgent.toLowerCase();
-    const isInstagramAvailable = /iphone/.test(userAgent);
-    
-    console.log(userAgent,"isInstagramAvailable")
-    ws.onclose = (event: any) => {
-      if (isInstagramAvailable) {
-        console.log("reloadtrue")
-        // window.location.reload()
-        // connect()
-      }
+    };    
+    ws.onclose = async (event: any) => {
       setSocketConnect(false);
-      console.log('WebSocket connection closed', event);
-      if (event.code !== 1000) {
-        console.log('WebSocket Attempting to reconnect in 5 seconds...');
-        setTimeout(() => {
-          connect();
-        }, 5000);
-      }
+      console.log('WebSocket connection closed', event);   
+      reconnectWebSocket()
     };
-
-    ws.onerror = () => {
-      // if (!login) window.location.reload()
+    ws.onerror = () => {  
+      setSocketConnect(false);
       console.log('WebSocket connection occurred');
-    };
+      reconnectWebSocket()
+    };      
+  }    
 
-    // socket = new WebSocket('wss://stream.crypto.com/v2/market');
-    // socket.onopen = () => {
-    //   console.log('WebSocket Open');
-    //   const req = {
-    //     id: 1,
-    //     method: 'subscribe',
-    //     params: {
-    //       channels: ['ticker.CRO_USDT'],
-    //     },
-    //   };
-    //   if (ws.readyState === WebSocket.OPEN) {
-    //     socket.send(JSON.stringify(req));
-    //   }
-    // };
-    // socket.onclose = (event: any) => {
-    //   if (isInstagramAvailable) {
-    //     console.log("reloadtrue")
-    //     // window.location.reload()
-    //     // connect()
-    //   }
-    //   console.log('WebSocket connection closed crypto', event);
-    //   if (event.code !== 1000) {
-    //     console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
-    //     setTimeout(() => {
-    //       connect();
-    //     }, 5000);
-    //   }
-    // };
+  function croConnect() {
+    const connectWebSocket = () => {
+     socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-    // socket.onerror = () => {
-    //   // if (!login) window.location.reload()
-    //   console.log('WebSocket connection occurred crypto');
-    // };
-
-    // const timeout = 30000; // 30 seconds
-    // let timeoutId: any;
-    // const checkConnection = () => {
-    //   if (ws.readyState !== WebSocket.OPEN || socket.readyState !== WebSocket.OPEN) {
-    //     console.log('WebSocket connection timed out');
-    //     clearInterval(timeoutId);
-    //     connect();
-    //   }
-    // };
-    // timeoutId = setInterval(checkConnection, timeout);
-   
-    const socket = new WebSocket('wss://stream.crypto.com/v2/market');
-
-    socket.onopen = () => {
-      console.log('WebSocket connection established.');
-
-      // Subscription request
-      const req = {
-        id: 1,
-        method: 'subscribe',
-        params: {
-          channels: ['ticker.CRO_USDT'],
-        },
+     socket.onopen = () => {
+        // Subscribe to CRO/USDT pair
+       socket.send(JSON.stringify({
+          "id": 1,
+          "method": "subscribe",
+          "params": {
+            "channels": ["tickers"],
+            "instrument_name": ["CRO_USDT"]
+          }
+        }));
+        setRetryCount(0);
+        // setError(null);
       };
 
-      // Send subscription request
-      socket.send(JSON.stringify(req));
-    };
+    //  socket.onmessage = (event) => {
+    //     const data = JSON.parse(event.data);
+    //     if (data.method === "ticker") {
+    //       // setPrice(data.data[0].a); // 'a' represents the best ask price
+    //     }
+    //   };
 
-    socket.onmessage = (event) => {
-      // Handle incoming messages from the WebSocket
-      const message = JSON.parse(event.data);
-      // console.log('Received message:', message);
-      // Handle received market data here
-    };
+     socket.onerror = (error:any) => {
+       console.error('WebSocket error:', error);
+       setTimeout(() => {
+         connectWebSocket()
+       }, 10000);
+        // setError(error);
+      };
 
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    socket.onclose = (event) => {
-      console.log('WebSocket closed:', event);
-      // Reconnect to WebSocket after a delay (e.g., 5 seconds)
-      setTimeout(connect, 5000);
-    };
-
-    // Set the socket state
-    // setSocket(newSocket);  
-
+     socket.onclose = () => {
+        console.log('WebSocket closed');
+        if (retryCount < 5) {
+          // Retry connecting after a delay (exponential backoff)
+          const delay = Math.pow(2, retryCount) * 1000;
+          setTimeout(connectWebSocket, delay);
+          setRetryCount(retryCount + 1);
+        } else {
+          // setError('Max retry attempts reached');
+          console.log("Max retry attempts reached")
+        }
+      };
+    };   
   }
+
+  
+  async function reconnectWebSocket () {
+    console.log('Attempting to reconnect...');
+    // @ts-ignore
+    if (coins) {
+      // @ts-ignore
+      const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
+      const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
+      const afterErrorPrice = {}
+      try {
+        const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
+        Object.keys(response.data)?.map((symblaName) => {
+          Object.assign(afterErrorPrice,
+            {
+              [symblaName]: {
+                id: coins[symblaName]?.id,
+                name: coins[symblaName]?.name,
+                price: response.data[symblaName]?.USD,
+                symbol: symblaName,
+                trend: coins[symblaName]?.trend
+
+              }
+            }
+          )
+          setCoins(afterErrorPrice)
+          localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
+        })
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        localStorage.setItem('CoinsPrice', JSON.stringify(coins));
+      }
+    }
+    setTimeout(() => {
+      connect();
+    }, 10000); // reconnect after 3 seconds
+  }
+
   useEffect(() => {
 
     connect();
+    croConnect();
     return () => {
       console.log('close websocket connection');
 
@@ -1117,37 +1114,32 @@ function App() {
       window.localStorage.removeItem('firstTimeloading')
     };
   }, [Object.keys(coins).length]);
+
   // useEffect(() => {
-  //   window.addEventListener("focus", () => socket.connect());
-
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
   //   return () => {
-
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
   //   }
-  // }, [])
-  useEffect(() => {
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    }
-  }, []);
+  // }, []);
 
-  const handleVisibilityChange = () => {
-    const isIPhone = /iPhone/i.test(navigator.userAgent);
+  // const handleVisibilityChange = () => {
+  //   const isIPhone = /iPhone/i.test(navigator.userAgent);
 
-    if (isIPhone) {
-      console.log('This is an iPhone');
-    } else {
-      console.log('This is not an iPhone');
-    }
-    if (document.hidden) {
-      console.log("Browser window is minimized");
-      // ws.close();
-      // socket.close();
-    } else {
-      connect();
-      console.log("Browser window is not minimized");
-    }
-  }
+  //   if (isIPhone) {
+  //     // console.log('This is an iPhone');
+  //   } else {
+  //     // console.log('This is not an iPhone');
+  //   }
+  //   if (document.hidden) {
+  //     console.log("Browser window is minimized");
+  //     // ws.close();
+  //     // socket.close();
+  //   } else {
+  //     connect();
+  //     console.log("Browser window is not minimized");
+  //   }
+  // }
+  
   const checkprice = async (vote: any) => {
     console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
@@ -1162,7 +1154,7 @@ function App() {
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
       paxDistributionToUser: {
-        userId: userInfo?.uid,
+        userId: vote?.userId,
         currentPaxValue: Number(paxDistribution),
         isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
         mintForUserAddress: userInfo?.paxAddress?.address || "",
@@ -1234,7 +1226,7 @@ function App() {
             })
           }
 
-          console.log('promisearray', promiseArray, allCoinsPair)
+          // console.log('promisearray', promiseArray, allCoinsPair)
           if (!promiseArray?.length) return
           Promise.all(promiseArray)
             .then(responses => {
@@ -1276,7 +1268,10 @@ function App() {
   const currentCMP = useContext(CurrentCMPContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
-  
+  useEffect(()=>{
+    console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
+    
+  },[JSON.stringify({voteDetails,lessTimeVoteDetails,completedVotes})])
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       Swal.close();
@@ -1308,6 +1303,8 @@ function App() {
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
     }
+
+    
   }, [JSON.stringify(voteDetails?.activeVotes), pathname]);
   const voteImpact = useRef<{
     timeFrame: number,
@@ -1346,6 +1343,8 @@ function App() {
 
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
+      
+      
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1353,13 +1352,24 @@ function App() {
       let voteTime = new Date(lessTimeVote?.expiration);      
       // finding the difference in total seconds between two dates      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      console.log(lessTimeVote,latestCoinsPrice.current,'timer1');
       const timer = setTimeout(async () => {
+       try {
+        console.log(lessTimeVote,'timer2');
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-        const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,]
+        const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,]
 
-        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
+        console.log(ExpriTime,getValue,"ravi123");
+        // const ExpriTime = [
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+        //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
+        // ];
+        
+        // const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction);
+
         console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
@@ -1391,15 +1401,17 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: StatusValue,
-                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
-                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
+                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
+                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
               }
               :
               {}
           )
         }
-        console.log(lessTimeVote, "ChecklessTimeVote")
+        console.log(lessTimeVote,'timer3');
         await getResultAfterVote(request).then(async (response) => {
+          console.log(getResultAfterVote,"getvote");
+          
         
           console.log(response?.data, "response?.data?.result?")
           // @ts-ignore
@@ -1419,11 +1431,6 @@ function App() {
               console.log(error, "checkAndUpdateRewardTotal")
             })
           }).catch(() => { });
-          // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
-          //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
-          // }
-
-          // afterpaxDistributionToUser(paxDistribution)
           
           if (response?.data && Object.keys(response.data).length > 0) {
             const res: VoteResultProps = response!.data as VoteResultProps;
@@ -1442,6 +1449,10 @@ function App() {
             console.log(err.message);
           }
         });
+       } catch (error) {
+        console.log(error,'timerError');
+        
+       }
       }, (((second_diff || 0) * 1000)));
       return () => clearTimeout(timer);
       // }
@@ -1451,32 +1462,11 @@ function App() {
   
   const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 
-  useEffect(() => {
-      
-
-    if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0) && !isVirtualCall) {
-      console.log("i am calling again");
+  useEffect(() => {      
+    if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0) && !isVirtualCall) {      
       claimReward({
         uid: user?.uid,isVirtual: true}).then(() => {        
-      }).catch(() => { });
-      
-      // paxDistributionOnClaimReward({
-      //   paxDistributionToUser: {
-      //     userId: userInfo?.uid,
-      //     currentPaxValue: Number(paxDistribution),
-      //     isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-      //     mintForUserAddress: userInfo?.paxAddress?.address || "",
-      //     eligibleForMint: userInfo?.paxAddress?.address ? true : false
-      //   }      
-      // }).then((res) => { 
-      //   console.log(res?.data, "resdata")
-      //   // @ts-ignore
-      //   if (res?.data?.getResultAfterSentPaxToUser?.status) {
-      //     afterpaxDistributionToUser(paxDistribution)
-      //   }
-      //   // afterpaxDistributionToUser(paxDistribution)
-      // }).catch(() => { });
-      
+      }).catch(() => { });                  
     }
     latestUserInfo.current = userInfo;
   }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed), isVirtualCall]);
@@ -1508,15 +1498,14 @@ function App() {
   }, [searchParams]);
 
   const isIPhone = /iPhone/i.test(navigator.userAgent);
-  useEffect(() => {
-    if (isIPhone) {
-      // Show the popup for iPhones in Safari
-      setPwaPopUp('block');
-    } else {
-      // Hide the popup for other devices or browsers
-      setPwaPopUp('none');
-    }
-  }, []);
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+useEffect(() => {
+  if (isIPhone && !isPWA) {
+    setPwaPopUp('block');
+  } else {
+    setPwaPopUp('none');
+  }
+}, []);
 
 
 
@@ -1544,7 +1533,7 @@ function App() {
           <>
           Click on{" "}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24" width="24" id="upload" fill="blue"><path d="M9.71,6.71,11,5.41V17a1,1,0,0,0,2,0V5.41l1.29,1.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42l-3-3a1,1,0,0,0-1.42,0l-3,3A1,1,0,0,0,9.71,6.71ZM18,9H16a1,1,0,0,0,0,2h2a1,1,0,0,1,1,1v7a1,1,0,0,1-1,1H6a1,1,0,0,1-1-1V12a1,1,0,0,1,1-1H8A1,1,0,0,0,8,9H6a3,3,0,0,0-3,3v7a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V12A3,3,0,0,0,18,9Z"></path></svg>
-           {" "}to Add to Home Screen
+           {" "}Add to Home Screen
           </>
         )}
           {!isIPhone && texts.InstallCoinParliament}
@@ -1602,10 +1591,14 @@ function App() {
             >
               <AppContext.Provider
                   value={{
+                    loader,
+                    setLoader,
                     addPaxWalletPop,
                     setAddPaxWalletPop,
                     walletTab,
                     setWalletTab,
+                    historyTab,
+                    setHistoryTab,
                     avatarImage,
                     setAvatarImage,
                     selectBioEdit,

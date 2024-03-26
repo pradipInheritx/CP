@@ -455,11 +455,8 @@ const VotingPaymentCopy: React.FC<{
   const events = useWeb3ModalEvents()
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-
-    // useEffect(() => {
-    //   // window.scrollTo({ top: 500, behavior: 'smooth' });
-    //   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    // }, [payType, selectPayment,])
+  // @ts-ignore  
+  const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
   
   useEffect(() => {
     // window.scrollTo({ top: 500, behavior: 'smooth' });
@@ -481,7 +478,8 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo, "AllInfo")
-      setPayamount(AllInfo[0])
+      // setPayamount(AllInfo[0])
+      setPayamount(0.0001)
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])
@@ -565,11 +563,14 @@ const VotingPaymentCopy: React.FC<{
           sendTransaction()
         }      
     }
+    if (window.screen.width < 767 && events?.data?.event == "MODAL_LOADED" || events?.data?.event == "MODAL_CLOSE") {
+      
+      window.scrollTo({ top: 850, behavior: 'smooth' });
+    }
     // return () => {
     //   setTransactionInst(false)
     // }
-  }, [events])
-  
+  }, [events])  
 
   const handleClickMob = async () => {
     console.log("Mobile function ")
@@ -606,13 +607,7 @@ const VotingPaymentCopy: React.FC<{
     }
 
   const { open, close } = useWeb3Modal()
-  const {disconnect} = useDisconnect()
-  
-
-  
-  console.log(events,"allevents")
-  
-
+  const {disconnect} = useDisconnect()  
 
   useEffect(() => {
     // let CoinPay = localStorage.getItem("CoinPay")
@@ -638,9 +633,8 @@ const VotingPaymentCopy: React.FC<{
       }
       }
   }, [chainId, isConnected, localStorage.getItem("CoinPay")])
-  
-
-    console.log(address, chainId, isConnected, "address,chainId,isConnected")
+      
+    // console.log(address, chainId, isConnected, "address,chainId,isConnected")
   const payNow = (detail?: any) => {
       
       const headers = {
@@ -650,13 +644,14 @@ const VotingPaymentCopy: React.FC<{
         "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
         "content-type": "application/json"
       }
-
+    
       const data = {
 
         userId: `${user?.uid}`,
         userEmail: `${user?.email}`,
         walletType: `wallet connect`,
-        amount:Number(payamount && Number(payamount)/coins[`${coinInfo?.currency}`]?.price).toFixed(18),
+        amount: Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18),
+        dollarAmount: Number(payamount),
         // amount: 0.0001,
         // @ts-ignore
         network: `${coinInfo.chainId || ""}`,
@@ -687,9 +682,10 @@ const VotingPaymentCopy: React.FC<{
         .catch((error) => {
           // setPaymentStatus({ type: 'error', message: '' });
           console.log(error, "response.data")
-          // setShowForWait(true)
-          // setApiCalling(false)
-          // setPayButton(false)
+          setIsLoading(false)
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. Please ensure that you have a stable internet connection and try again." })
+          setShowText(false)
+          setPayButton(false);
         })
     }
     async function sendTransaction() {    
@@ -701,9 +697,8 @@ const VotingPaymentCopy: React.FC<{
         console.log("take more that 5 sec")
       }, 5000);
       let ethereum = (window as any).ethereum;      
-      
-      console.log(coins[`${coinInfo?.currency}`],"coins[`${coinInfo?.currency}`]?.price")
-      const amountInCrypto = Number(payamount && Number(payamount) / coins[`${coinInfo?.currency}`]?.price).toFixed(18)
+            
+      const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
       // console.log(coinInfo,"coinInfoUSDT ERC20")
       try {
@@ -719,11 +714,7 @@ const VotingPaymentCopy: React.FC<{
           const amountToSend = ethers.utils.parseUnits(amountInCrypto);
           console.log(amountToSend,"amountToSend")
           console.log(coinInfo?.currency, "coinInfo?.currency")
-          // const gasLimit = await usdtContract.estimateGas.transfer(
-          //   "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d",
-          //   amountToSend
-          // );
-          // console.log("Estimated Gas Limit:", gasLimit.toString());
+          
           const trax = {
             to: usdtContractAddress,
             value: ethers.utils.parseUnits(amountInCrypto),
@@ -964,7 +955,7 @@ const VotingPaymentCopy: React.FC<{
               >
                 {/* @ts-ignore */}
                 {userInfo?.isUserUpgraded ?
-                  <div className="w-50"
+                  <div className={`${window.screen.width > 767 ? "w-50" :"w-100"}`}
                     style={{
                       lineHeight: 5,
                     }}
@@ -1330,7 +1321,14 @@ const VotingPaymentCopy: React.FC<{
                           //   open({view:"Networks"})
                           // } else {
                           // }
-                          open()                                                      
+                          open().then((result) => {
+                            window.scrollTo({ top: 800, behavior: 'smooth' });    
+                            console.log("yes i am open" , events.data)
+                          }).catch((err) => {
+                            window.scrollTo({ top: 800, behavior: 'smooth' });  
+                            console.log("yes i am close", events.data)
+                          });  
+                          
                         }}
                       >
 
@@ -1365,7 +1363,7 @@ const VotingPaymentCopy: React.FC<{
                         }}
                       >
 
-                        {payButton ? "Changeing..." : 'Change network'}
+                        {payButton ? "Changing..." : 'Change network'}
                       </button>
                     </ButttonDiv>
                   </div >

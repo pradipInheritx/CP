@@ -61,14 +61,12 @@ const Footer = () => {
     axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
       data: {}
     }).then((res: any) => {
-      console.log(res.data.result, "resultdata")
+      // console.log(res.data.result, "resultdata")
       setFooterData(res.data.result)
     }).catch((err: any) => {
       console.log(err, "resultdata")
     })
   }
-
-  console.log(footerData, "footerData")
   
   const  formatNumberAbbreviated=(number:number)=> {
     if (number >= 1e9) {

@@ -7,149 +7,182 @@ import moment from 'moment';
 import Table, { tableColumnType } from "Components/table"
 import axios from 'axios';
 import UserContext from 'Contexts/User';
+import CompleteChild from './CompleteChild';
 const RewardList = styled.p`
   font-size:${window.screen.width > 767 ? "10px" : "9px"};
   color: white;
   cursor: pointer;   
-   padding:15px 11px;    
+   padding:15px 8px;    
 `;
-// const tableHeader = ["Transaction id", "Date", "Item", "Amount", "Payment method"];
+const tableHeader = ["Date", "Amount", "Payment method"];
+const preantHeader = ["Transaction id","Status"];
 
-const tableHeader: tableColumnType[] = [
-    {
-        title: 'Transaction id',
-        assessorName: 'transactionId'
-    },
-    {
-        title: 'Date',
-        assessorName: 'timestamp',
-        Row: ({ value, data }) => {
-            return (
-                <OverlayTrigger
-                    trigger={['hover', 'focus']}
-                    placement="bottom"
-                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
-                        style={{
-                            // marginTop: "-15px"
-                        }}
-                    >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
+// const tableHeader: tableColumnType[] = [
+//     {
+//         title: 'Transaction id',
+//         assessorName: 'transactionId'
+//     },
+//     {
+//         title: 'Date',
+//         assessorName: 'timestamp',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <OverlayTrigger
+//                     trigger={['hover', 'focus']}
+//                     placement="bottom"
+//                     overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+//                         style={{
+//                             // marginTop: "-15px"
+//                         }}
+//                     >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
 
-                >
-                <span className='pt-3'>
-                    {window.screen.width > 767 ?
+//                 >
+//                 <span className='pt-3'>
+//                     {window.screen.width > 767 ?
                         
-                        value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                        :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'
-                        // value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                    }
-                    </span>
-                </OverlayTrigger>
-            );
+//                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
+//                         :
+//                         // value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'
+//                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")  : '-'
+//                     }
+//                     </span>
+//                 </OverlayTrigger>
+//             );
 
-        }
-    },
-    {
-        title: 'Amount',
-        assessorName: 'amount',
-        Row: ({ value, data }) => {
-            return (
-                <span>
-                    ${value}
-                </span>
-            );
+//         }
+//     },
+//     {
+//         title: 'Amount',
+//         assessorName: 'amount',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <span>
+//                     {value}
+//                 </span>
+//             );
 
-        }
-    },
-    {
-        title: 'Payment Method ',
-        assessorName: 'token',
+//         }
+//     },
+//     {
+//         title: 'Payment Method ',
+//         assessorName: 'token',
 
-    },
-];
-const ChildTableHeader: tableColumnType[] = [
-    {
-        title: 'Order Id',
-        assessorName: 'docId'
-    },
-    {
-        title: 'Date',
-        assessorName: 'timestamp',
-        Row: ({ value, data }) => {
-            return (
-                <OverlayTrigger
-                    trigger={['hover', 'focus']}
-                    placement="bottom"
-                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
-                        style={{
-                            // marginTop: "-15px"
-                        }}
-                    >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
+//     },
+//     {
+//         title: 'Status',
+//         assessorName: 'status',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <OverlayTrigger
+//                     trigger={['hover', 'focus']}
+//                     placement="bottom"
+//                     overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+//                         style={{
+//                             // marginTop: "-15px"
+//                         }}
+//                     >{value}</Tooltip>}
 
-                >
-                <span>
-                    {window.screen.width > 767 ?                        
-                        value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                        :
-                        value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'            
-                    }
-                    </span>
-                </OverlayTrigger>
+//                 >
+//                 <span>
+//                         {/* ${value} */}
+//                         {(value.slice(0, 5) + "..." || "NA")}
+//                     </span>
+//                 </OverlayTrigger>
+//             );
+
+//         }
+//     },
+// ];
+
+
+const ChildTableHeader = ["Order Id", "Date",  'Amount',]
+
+// const ChildTableHeader: tableColumnType[] = [
+//     {
+//         title: 'Order Id',
+//         assessorName: 'docId'
+//     },
+//     {
+//         title: 'Date',
+//         assessorName: 'timestamp',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <OverlayTrigger
+//                     trigger={['hover', 'focus']}
+//                     placement="bottom"
+//                     overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+//                         style={{
+//                             // marginTop: "-15px"
+//                         }}
+//                     >{value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
+
+//                 >
+//                 <span>
+//                     {window.screen.width > 767 ?                        
+//                         value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
+//                         :
+//                             // value?._seconds ? (moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm")).slice(0,10) + "..." : '-'            
+//                             value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
+//                     }
+//                     </span>
+//                 </OverlayTrigger>
             
-            );
+//             );
 
-        }
-    },
-    {
-        title: 'Item',
-        assessorName: 'item',
-        Row: ({ value, data }) => {
-            return (
-                <OverlayTrigger
-                    trigger={['hover', 'focus']}
-                    placement="bottom"
-                    overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
-                        style={{
-                            // marginTop: "-15px"
-                        }}
-                    >{data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"}</Tooltip>}
+//         }
+//     },
+//     {
+//         title: 'Item',
+//         assessorName: 'item',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <OverlayTrigger
+//                     trigger={['hover', 'focus']}
+//                     placement="bottom"
+//                     overlay={<Tooltip id={`tooltip-name-${data?.Id}`}
+//                         style={{
+//                             // marginTop: "-15px"
+//                         }}
+//                     >{data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"}</Tooltip>}
 
-                >
-                <span>
-                    {window.screen.width > 767 ?
+//                 >
+//                 <span>
+//                     {window.screen.width > 767 ?
                         
-                        data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
-                        :
-                        // data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
-                        data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"
+//                             data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 5) + "..." : (data?.transactionType).slice(0, 5) + "..." || "-"
+//                         :
+//                         // data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 6) + "..." : (data?.transactionType).slice(0, 6) + "..." || "-"
+//                             data?.transactionType == "EXTRAVOTES" ? (data?.numberOfVotes + " " + "Extra Votes").slice(0, 5) + "..." : data?.transactionType.slice(0, 5) + "..." || "-"
 
-                    }
-                    </span>
-                </OverlayTrigger>
-            )
-        }
-    },
-    {
-        title: 'Amount',
-        assessorName: 'amount',
-        Row: ({ value, data }) => {
-            return (
-                <span>
-                    ${value}
-                </span>
-            );
+//                     }
+//                     </span>
+//                 </OverlayTrigger>
+//             )
+//         }
+//     },
+//     {
+//         title: 'Amount',
+//         assessorName: 'amount',
+//         Row: ({ value, data }) => {
+//             return (
+//                 <span>
+//                     {value}
+//                 </span>
+//             );
 
-        }
-    },
-    {
-        title: 'Payment Method ',
-        assessorName: 'token'
-    },
-    {
-        title: 'Child Id',
-        assessorName: 'childUserId'
-    },
-];
+//         }
+//     },
+//     {
+//         title: 'Payment Method',
+//         assessorName: 'token'
+//     },
+//     {
+//         title: 'Child Id',
+//         assessorName: 'childUserId'
+//     },
+// ];
+
+
 const Complete: React.FC = () => {
     const { userInfo } = useContext(UserContext)
     const [data, setData] = useState<any[]>([]);
@@ -157,6 +190,8 @@ const Complete: React.FC = () => {
     const [pageSize, setPageSize] = useState(5);
     const [totalRecord, setTotalRecord] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [showChild, setShowChild] = useState("");
+
     useEffect(() => {
         if (userInfo?.uid) {
             setLoading(true);
@@ -169,7 +204,10 @@ const Complete: React.FC = () => {
                         // console.log(prev, prev + current?.amount, 'current?.amount 1');
                         return parseFloat(prev + current?.amount);
                     }, 0);
-                    return { ...value, childPayment: [...value?.childPayment, { ...temp, amount: (temp?.amount - childAmountSum).toFixed(5) }] }
+                    return {
+                        ...value,
+                        // childPayment: [...value?.childPayment, { ...temp, amount: (temp?.amount - childAmountSum).toFixed(5) }]
+                    }
                 }))
                 setLoading(false);
             }).catch((error) => {
@@ -192,6 +230,7 @@ const Complete: React.FC = () => {
                 width: `${window.screen.width > 767 ? "730px" : "100%"}`,
                 margin: "auto",
             }}>
+            {/* Order ID | Date | Item |  Amount (fiat) | Payment method (The coin if it's cryptocurrency ) */}
 
             <div className='d-flex justify-content-around w-100 py-3'
                 style={{
@@ -199,41 +238,120 @@ const Complete: React.FC = () => {
                 }}
             >
                 {
-                    tableHeader.map((item: tableColumnType, index: number) => {
-
-
-                        return (<div style={{ width: `${index == 0 ?"23%":"19%"}`}} key={index}>
-                            <strong >{item?.title}</strong>
-
+                    tableHeader?.map((item: string, index: number) => {
+                        return (<div className=''
+                            key={index}
+                            style={{
+                                width: `33%`,
+                                // fontSize: `${window.screen.width > 767 ? "12px" : "10px"}`,
+                            }}
+                        >
+                            <strong>{item}</strong>
                         </div>)
                     })
                 }
             </div>
-            {!loading && data.map((value: any, index: number) => {
+            {data?.map((item: any, index: number) => {
                 return (
-                    <Column value={value} key={index} />
+                    <div className='d-flex justify-content-around flex-wrap'
+                        key={index}                                                
+                    >
+                        <div
+                            style={{
+                                width: "32%"
+                            }}
+                            className='d-flex align-items-center'
+                            onClick={() => {
+                                setShowChild(showChild == item?.transactionId ? "" : item?.transactionId)
+                            }}
+                        >
+                            <div
+                            >
+                                {/* <ArrowButton> */}
+                                {
+                                    showChild === (item?.transactionId)                                    
+                                    ?
+                                    <i className="bi bi-chevron-up"
+                                        style={{
+                                            color: "white",
+                                            marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                                        }}
+                                    ></i>
+                                    :
+                                    <i className="bi bi-chevron-down "
+                                        style={{
+                                            color: "white",
+                                            marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                                        }}
+                                    ></i>
+                                }
+                                {/* </ArrowButton> */}
+                            </div>
+                            <RewardList>
+                                {item?.timestamp?._seconds ? moment(new Date(item?.timestamp?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}
+                            </RewardList>
+                        </div>
+                        <div
+                            style={{
+                                width: "32%"
+                            }}
+                            onClick={() => {
+                                setShowChild(showChild == item?.transactionId ? "" : item?.transactionId)
+                            }}
+                        >
+                            <RewardList>
+                                {(Number(item?.amount)?.toFixed(4) || 0)}
+                            </RewardList>
+                        </div>
+                        <div
+                            style={{
+                                width: "32%"
+                            }}
+                            onClick={() => {
+                                setShowChild(showChild == item?.transactionId ? "" : item?.transactionId)
+                            }}
+                        >
+                            <RewardList>
+                                {(item?.token).toUpperCase() || "-"}
+                            </RewardList>
+                        </div>
+
+                        {
+                            showChild === item?.transactionId &&
+                            <div className='w-100'>
+                            {/* @ts-ignore */}                            
+                                <CompleteChild
+                                    preantHeader={preantHeader}                                
+                                    chaildHeader={ChildTableHeader}
+                                    preantData={item}
+                                    chaildData={item?.childPayment}
+                                />
+                        </div>}
+                    </div>
                 )
             })}
-            {loading &&
-                <div className='d-flex justify-content-around w-100 mt-4 mb-4'>
-                    <span className='loading'>Loading...</span>
-                </div>
-            }
-            {(!data?.length && !loading) && (
-                <div className='d-flex justify-content-around w-100 mt-4'>
-                    {
-                        tableHeader.map((val, index) => {
-                            return (
-                                <div key={index}
-                                    style={{
-                                        width: `${(100 / tableHeader.length) - 1}`,
-                                    }}
-                                >
-                                    <RewardList>-</RewardList>
-                                </div>)
-                        })
-                    }
-                </div>
+
+
+            {!data?.length && (
+                <>
+                    {" "}
+                    <div className='d-flex justify-content-around w-100 mt-4'>
+                        {
+                            tableHeader?.map((item: string, index: number) => {
+                                return (
+                                    <div className=''
+                                        key={index}
+                                        style={{
+                                            width: `${(100 / tableHeader?.length) - 1}`,
+                                        }}
+                                    >
+                                        <RewardList>-</RewardList>
+                                    </div>)
+                            })
+                        }
+                    </div>
+                    <p className='solid' style={{ margin: "28px" }}></p>
+                </>
             )}
             <ButtonGroup>
                 <Button
@@ -244,9 +362,7 @@ const Complete: React.FC = () => {
                     {texts.Prev}
                 </Button>
                 <Button
-                    disabled={
-                        pageIndex * pageSize >= totalRecord
-                    }
+                    // disabled={pageIndex * 5 >= totalData}
                     onClick={() => setPageIndex(prev => prev + 1)}
                 >
                     {texts.Next}
@@ -257,80 +373,3 @@ const Complete: React.FC = () => {
 }
 
 export default Complete;
-
-const Column: React.FC<{ value: any }> = ({ value }) => {
-    const [showChildren, setShowChildren] = useState<boolean>(false);
-    return (
-        <>
-            <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
-                {
-                    tableHeader.map((item: tableColumnType, index: number) => {
-                        return (
-                            <div style={{ width: "19%" }} key={index}>
-                                {/* <OverlayTrigger
-                                    trigger={['hover', 'focus']}
-                                    placement="bottom"
-                                    overlay={<Tooltip id={`tooltip-name-${index}`}
-                                        style={{
-                                            marginTop: "-15px"
-                                        }}
-                                    >{item?.Row ?
-                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                        : (value[item?.assessorName] || "NA")}</Tooltip>}
-
-                                >
-
-                                <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
-                                    
-                                        {window.screen.width > 767 ?
-                                            
-
-                                            item?.Row ?
-                                            <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
-                                            
-                                                :
-                                                item?.Row ?
-                                                <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                                : ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ?"...":""  )|| "NA")
-                                        }
-                                    </RewardList>
-                                    </OverlayTrigger> */}
-                                {item?.Row ?
-                                    <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
-                                        <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
-                                    </RewardList>
-                                    : <OverlayTrigger
-                                        trigger={['hover', 'focus']}
-                                        placement="bottom"
-                                        overlay={<Tooltip id={`tooltip-name-${index}`}
-                                            style={{
-                                                marginTop: "-15px"
-                                            }}
-                                        >{value[item?.assessorName] || "NA"}</Tooltip>}
-
-                                    >
-                                        <RewardList onClick={() => setShowChildren(prev => !prev)} style={{ cursor: (value?.childPayment?.length > 0 ? 'pointer' : 'none') }}>
-
-                                            {window.screen.width > 767 ?
-                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
-                                                :
-                                                ((value[item?.assessorName]).slice(0, 6) + (value[item?.assessorName].length > 10 ? "..." : "") || "NA")
-
-                                            }
-
-                                        </RewardList>
-                                    </OverlayTrigger>}
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            {(showChildren && value?.childPayment && value?.childPayment?.length > 0) &&
-                <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-                    <Table data={value?.childPayment} headers={ChildTableHeader} />
-                    <div style={{ width: '100%', height: '3px', backgroundColor: '#7456ff', margin: '0px' }} />
-                </div>}
-        </>
-    );
-}

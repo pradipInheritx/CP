@@ -172,7 +172,7 @@ function WalletInfo() {
         }
         
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
-        setSelectRadio(userInfo?.referalReceiveType?.name || '');
+        setSelectRadio(userInfo?.referalReceiveType?.name || 'ONDEMAND');
         setDefaultValue();
     }, [JSON.stringify(userInfo?.wellDAddress)]);
     const [timeError, setTimeError] = useState("")
@@ -182,7 +182,7 @@ function WalletInfo() {
     let navigate = useNavigate();
     const [coinList, setCoinsList] = useState([])
     const [coinListPax, setCoinsListPax] = useState([])
-    const [selectRadio, setSelectRadio] = useState<string>('');
+    const [selectRadio, setSelectRadio] = useState<string>('ONDEMAND');
     const [regexList, setRegexList] = useState({
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
@@ -313,7 +313,7 @@ function WalletInfo() {
         if (!walletDetails.coin) {
             setErrorValue({ ...errorValue, coinError: "Please select coin" })
         } else if (!walletDetails.address) {
-            setErrorValue({ ...errorValue, walletError: "Please Enter Wallet Address" })
+            setErrorValue({ ...errorValue, walletError: "Enter Wallet Address" })
         }
         else if (walletDetails.address) {
             setSaveAddress(true);
@@ -321,7 +321,7 @@ function WalletInfo() {
             if (validate) {
                 setSaveAddress(false);
             } else {
-                setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
+                setErrorValue({ ...errorValue, walletError: "Enter Valid Wallet Address " })
                 setSaveAddress(false);
             }
         }
@@ -329,9 +329,9 @@ function WalletInfo() {
 
     const updatePaxAddress = async () => {
         if (!paxDetails.coin) {
-            setPaxErrorValue({ ...PaxErrorValue, coinError: "Please select coin" })
+            setPaxErrorValue({ ...PaxErrorValue, coinError: "select coin" })
         } else if (!paxDetails.address) {
-            setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Pax Address" })
+            setPaxErrorValue({ ...PaxErrorValue, walletError: "Enter Pax Address" })
         }
         else if (paxDetails.address) {
             setSavePaxAddress(true);
@@ -339,7 +339,7 @@ function WalletInfo() {
             if (validate) {
                 setSavePaxAddress(false);
             } else {
-                setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Valid Pax Address " })
+                setPaxErrorValue({ ...PaxErrorValue, walletError: "Enter Valid Pax Address " })
                 setSavePaxAddress(false);
             }
         }
@@ -347,9 +347,9 @@ function WalletInfo() {
 
     const updateCardAddress = async () => {
         if (!CardDetails.coin) {
-            setCardErrorValue({ ...CardErrorValue, coinError: "Please select coin" })
+            setCardErrorValue({ ...CardErrorValue, coinError: "select coin" })
         } else if (!CardDetails.address) {
-            setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Card Address" })
+            setCardErrorValue({ ...CardErrorValue, walletError: "Enter Card Address" })
         }
         else if (CardDetails.address) {
             setSaveCardAddress(true);
@@ -357,7 +357,7 @@ function WalletInfo() {
             if (validate) {
                 setSaveCardAddress(false);
             } else {
-                setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Valid Card Address " })
+                setCardErrorValue({ ...CardErrorValue, walletError: "Enter Valid Card Address " })
                 setSaveCardAddress(false);
             }
         }
@@ -367,7 +367,7 @@ function WalletInfo() {
 
     const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
         return axios.get(
-            `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
+            `https://api.blockcypher.com/v1/${"eth"}/main/addrs/${inputAddress}`
         ).then(async (response) => {            
             const { error } = response.data;
             console.log(response,"geterror")
@@ -434,7 +434,7 @@ function WalletInfo() {
         setTimeError("");
         setAmountError("");
         let errorCount = 0;
-
+        const allwalletData = [...walletDetailsObj]
         if (selectRadio === 'LIMIT' && limitType != "") {
             if (selectRadio === 'LIMIT' && limitType == "ANY_OF_THEM"  && timeAmount.time === "" && timeAmount.amount === "") {
                 setTimeError("Please select limit.");
@@ -475,15 +475,16 @@ function WalletInfo() {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
                     await setDoc(userRef, {
+                        wellDAddress: allwalletData,
                         referalReceiveType: data
                     }, { merge: true });
-                    if (auth?.currentUser) {
-                        const allwalletData = [...walletDetailsObj]
-                        const userRef = doc(db, "users", auth?.currentUser?.uid);
-                        await setDoc(userRef, {
-                            wellDAddress: allwalletData
-                        }, { merge: true });
-                    }
+                    // if (auth?.currentUser) {
+                    //     const allwalletData = [...walletDetailsObj]
+                    //     const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    //     await setDoc(userRef, {
+                    //         wellDAddress: allwalletData
+                    //     }, { merge: true });
+                    // }
                     showToast("Update Wallet Successfully", ToastType.SUCCESS);
                 } catch (error) {   
                     // @ts-ignore
@@ -502,7 +503,8 @@ function WalletInfo() {
                 try {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
-                    await setDoc(userRef, {
+                    await setDoc(userRef, {                        
+                        wellDAddress: allwalletData,
                         referalReceiveType: {
                             days: "",
                             name: selectRadio,
@@ -526,6 +528,7 @@ function WalletInfo() {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
                     await setDoc(userRef, {
+                        wellDAddress: allwalletData,
                         referalReceiveType: {
                             days: "",
                             name: selectRadio,
@@ -713,10 +716,12 @@ function WalletInfo() {
                                 onMouseLeave={() => setTooltipShowCard(false)}
                             ></Icon3>
                         </div>
-                        <input
+
+                        <div className='form-inline-flex'>
+                            <div className='col-field'>
+                            <input
                             style={{
-                                width: "45%",
-                                padding: "11px 0px 11px 20px",
+                                padding: "12px 0px 12px 20px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
@@ -725,16 +730,15 @@ function WalletInfo() {
                             id="coin"                            
                             value={"Polygon chain".toLocaleUpperCase()}                            
                         />
-                        
-
-                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
-                        <input
+                            </div>
+                            <div className='col-field'>
+                            <input
                             className='text-uppercase'
                             style={{
-                                width: "45%",
-                                padding: "10px 0px 10px 10px",
+                                padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom: "5px",
                             }}
                             disabled={!editCardAddress}
                             name="address"
@@ -745,10 +749,15 @@ function WalletInfo() {
                                 handleChangeValue(e, "CardDetails")
                             }}
                         />
-                        {editCardAddress && <RemoveButton type='button'
+                        <div style={{whiteSpace:"nowrap"}}>
+                        {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>}
+                        </div>
+                            </div>
+
+                            {editCardAddress && <RemoveButton type='button'
                             disabled={!CardDetails?.address || saveCardAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
@@ -765,11 +774,11 @@ function WalletInfo() {
                             }}>
                             {saveCardAddress ? <span className="loading">ADD..</span> : 'ADD'}
                         </RemoveButton>}
-
+                        
                         {!editCardAddress &&<RemoveButton type='button'
                             disabled={!CardDetails?.address || saveCardAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
@@ -778,10 +787,11 @@ function WalletInfo() {
                             }}>
                             {<span className="">Edit</span>}
                         </RemoveButton>}
+                        </div>
                     </div>
 
                     {CardErrorValue?.coinError && <Errorsapn>{CardErrorValue?.coinError}</Errorsapn>}
-                    {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>}
+                    {/* {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>} */}
 
                 </SelectTextfield>}
 
@@ -850,10 +860,12 @@ function WalletInfo() {
                                 onMouseLeave={() => setTooltipShowPax(false)}
                             ></Icon2>
                         </div>
-                        <input
+
+                        <div className='form-inline-flex'>
+                            <div className='col-field'>
+                            <input
                             style={{
-                                width: "45%",
-                                padding: "11px 0px 11px 20px",
+                                padding: "12px 0px 12px 20px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
@@ -862,15 +874,15 @@ function WalletInfo() {
                             id="coin"                            
                             value={"BNB chain".toLocaleUpperCase()}                            
                         />
-
-                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
-                        <input
+                            </div>
+                            <div className='col-field'>
+                            <input
                             className='text-uppercase'
                             style={{
-                                width: "45%",
-                                padding: "10px 0px 10px 10px",
+                                padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom: "5px",
                             }}
                             disabled={!editPaxAddress}
                             name="address"
@@ -881,10 +893,14 @@ function WalletInfo() {
                                 handleChangeValue(e, "paxDetails")
                             }}
                         />
-                        {editPaxAddress && <RemoveButton type='button'
+                        <div style={{whiteSpace:"nowrap"}}>
+                            {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+                        </div>
+                            </div>
+                            {editPaxAddress && <RemoveButton type='button'
                             disabled={!paxDetails?.address || savePaxAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
@@ -904,7 +920,7 @@ function WalletInfo() {
                         {!editPaxAddress &&<RemoveButton type='button'
                             disabled={!paxDetails?.address || savePaxAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
@@ -913,10 +929,13 @@ function WalletInfo() {
                             }}>
                        <span className="">EDIT</span> 
                         </RemoveButton>}
+                        </div>
+                         
+                        
                     </div>
 
                     {PaxErrorValue?.coinError && <Errorsapn>{PaxErrorValue?.coinError}</Errorsapn>}
-                    {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+                    {/* {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>} */}
 
                 </SelectTextfield>}
 
@@ -968,15 +987,16 @@ function WalletInfo() {
                     
                 {walletDetailsObj?.map((item,index) => {                                            
                     return <>
-                        <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-3 w-100`}
+                        <div className={`${window.screen.width > 350 ? '' : ''} mt-3 form-inline-flex flex-auto`}
                             key={index}
                         >
+
+                        <div className='col-field'>
                             <input                                
                             name="coin"
                             id="coin"
                             style={{
-                                width: "45%",
-                                padding: "11px 0px 11px 20px",
+                                padding: "12px 0px 12px 20px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
@@ -985,29 +1005,30 @@ function WalletInfo() {
                             // onChange={(e) => {
                             //     handleChangeValue(e, "")
                             // }}
-                        />                            
-                        
-                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
-                            <input
-                                
-                            style={{
-                                width: "45%",
-                                padding: "10px 0px 10px 10px",
-                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
-                                }}
-                                disabled={true}
-                            name="address"
-                            type="address"
-                            placeholder="Enter address"
-                                value={item?.address || ""}
-                            onChange={(e) => {
-                                handleChangeValue(e, "walletDetails")
-                            }}
-                            />
-                            <RemoveButton
+                            />   
+                        </div>
+
+                            <div className='col-field'>
+                               <input
                                 style={{
-                                    marginLeft: "10px",
+                                    padding: "10px 0px 10px 10px",
+                                    fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
+                                    borderRadius: "5px"
+                                    }}
+                                    disabled={true}
+                                name="address"
+                                type="address"
+                                placeholder="Enter address"
+                                    value={item?.address || ""}
+                                onChange={(e) => {
+                                    handleChangeValue(e, "walletDetails")
+                                }}
+                                />
+                              </div>
+
+                               <RemoveButton
+                                style={{
+                                    marginLeft: "0px",
                                     borderRadius: "5px",
                                     fontSize: `${window.screen.width > 767 ?"":"19px"}`,
                                 }}
@@ -1059,15 +1080,17 @@ function WalletInfo() {
                         onMouseEnter={() => setTooltipShow(true)}
                         onMouseLeave={() => setTooltipShow(false)}
                     ></I> 
-                    </div>  }                 
-                    <div className={`${window.screen.width > 350 ? 'd-flex mt-2' : ''} w-100`}  >
+                    </div>  }  
+
+                    <div className={`${window.screen.width > 350 ? '' : ''} form-inline-flex flex-auto`}>
+                        <div className='col-field'>
                         <select
                             name="coin"
                                 id="coin"
                                 
                             style={{
-                                width: "45%",
-                                padding: "11px 0px 11px 10px",
+                                width: "100%",
+                                padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
@@ -1081,14 +1104,16 @@ function WalletInfo() {
                                 return <option className='text-uppercase' key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
                         </select>
-                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
+                        </div>
+                        <div className='col-field'>
                         <input
 
                             style={{
-                                width: "45%",
-                                padding: "10px 0px 10px 10px",
+                                width: "100%",
+                                padding: "12px 0px 12px 10px",
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                borderRadius: "5px"
+                                borderRadius: "5px",
+                                marginBottom:"5px",
                             }}
                             name="address"
                             type="address"
@@ -1097,13 +1122,18 @@ function WalletInfo() {
                             onChange={(e) => {
                                 handleChangeValue(e, "walletDetails")
                             }}
-                        />                       
+                        />         
+                        <div style={{whiteSpace:"nowrap"}}>
+                        {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
+                        </div>   
+                        </div>              
                         <RemoveButton type='button'
-                            disabled={!walletDetails?.address || saveAddress}
+                            disabled={(!walletDetails?.address && !walletDetails?.coin) || saveAddress}
                             style={{
-                                marginLeft: "10px",
+                                marginLeft: "0px",
                                 borderRadius: "5px",
                                 fontSize: `${window.screen.width > 767 ?"":"18px"}`,
+                                backgroundColor: `${walletDetails?.address || walletDetails?.coin ?"":"gray"}`
                             }}
                             onClick={() => {
                                 updateAddress()
@@ -1115,7 +1145,7 @@ function WalletInfo() {
                         </RemoveButton>
                     </div>
                     {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
-                    {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
+                    
 
                     </SelectTextfield>
                     
@@ -1186,6 +1216,7 @@ function WalletInfo() {
                                 type="radio"
                                 id={`immediate`}
                                 checked={selectRadio === 'IMMEDIATE'}
+                                disabled={true}
                                 onClick={(e) => {
                                     hideError();
                                     setSelectRadio('IMMEDIATE');
@@ -1202,6 +1233,7 @@ function WalletInfo() {
                                     type="radio"
                                     id={`limit`}
                                     checked={selectRadio == 'LIMIT'}
+                                    disabled={true}
                                     onClick={(e) => {
                                         setDefaultValue();
                                         setSelectRadio('LIMIT')

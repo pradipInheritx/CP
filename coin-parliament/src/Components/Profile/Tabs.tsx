@@ -11,7 +11,8 @@ type TabsProps = {
   setRunVote?: any;
   runVote?: any;
   getVotes?: any;
-  isLoading?:boolean
+  isLoading?: boolean;
+  activeKey?: string;
 };
 
 const Container = styled.div`
@@ -49,7 +50,7 @@ const Content = styled.div`
   }
 `;
 
-const Tabs = ({isLoading, defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVotes }: TabsProps) => {
+const Tabs = ({ isLoading, defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVotes, activeKey }: TabsProps) => {
 
 
 
@@ -60,6 +61,7 @@ const Tabs = ({isLoading, defaultActiveKey, id, onSelect, tabs, setRunVote, runV
           defaultActiveKey,
           id,
           onSelect,
+          activeKey,
         }}
 
       >

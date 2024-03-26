@@ -155,7 +155,7 @@ const Vote = ({
 
   }
 
-
+  
 
   const scrollAtVoteFrame = () => {
     if (pageTrue && user?.uid && !login) {
@@ -184,7 +184,9 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  handleSoundClick()
+                  if (voteNumber > 0) {
+                    handleSoundClick()
+                  }
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
@@ -194,7 +196,7 @@ const Vote = ({
                     //   .doc(user?.uid)
                     //   // @ts-ignore
                     //   .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });                    
-// @ts-ignore
+                    // @ts-ignore
                     const userDocRef = doc(firestore, 'users', user?.uid)
                     try {
                       setDoc(userDocRef, { voteValue: userInfo?.voteValue - 1 }, { merge: true });
@@ -264,7 +266,9 @@ const Vote = ({
               {...{
                 ...option1.buttonProps,
                 onClick: () => {
-                  handleSoundClick()
+                  if (voteNumber > 0) {
+                    handleSoundClick()
+                  }
                   openPopup()
                   
                   // @ts-ignore

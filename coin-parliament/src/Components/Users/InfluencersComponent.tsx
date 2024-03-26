@@ -36,7 +36,7 @@ const InfluencersComponent = ({
         <StatusNav
 
           userTypes={userTypes
-            .sort((a, b) => a.index - b.index)
+            .sort((a, b) => b.index - a.index)
             .map((u) => u.name.toUpperCase())}
           setChosen={setChosen}
           chosen={chosen}

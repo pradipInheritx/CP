@@ -347,7 +347,7 @@ const calculateWinner = (vote: VoteResultProps) =>
 
 const VotedCard = ({ vote, id, coinSocketData, callbackFun , setRunVote }: VotedCardProps) => {
 
-  console.log(vote ," all vote data")
+  
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
 

@@ -19,6 +19,8 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
+import { firestore } from "../firebase";
+import { collection, doc, getDocs, query, setDoc, where, limit } from "firebase/firestore";
 
 
 const H2 = styled.h2`
@@ -45,9 +47,43 @@ const Home = () => {
   // const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
+  // const userQuerySnapshot = await getDocs(query(usersCollectionRef, where('referalReceiveType.name', '!=', 'ONDEMAND'), limit(1)));
+
+  // const updateAllUsers = async () => {
+  //   try {
+  //     const usersCollectionRef = collection(firestore, 'users');
+  //     const userQuerySnapshot = await getDocs(query(usersCollectionRef, where('referalReceiveType.name', '!=', 'ONDEMAND')));
+
+  //     const getAllUsers = userQuerySnapshot.docs.map(user => {
+  //       const userData = user.data();
+  //       return { userId: user.id};
+  //     });
+
+  //     console.log("getAllUsers length: " + getAllUsers);
+
+  //     const updateUserList = getAllUsers.map(async (user) => {
+  //       // const getRefrealType = user.referalType;
+  //       console.log(user.userId,"user.userId")
+  //       await setDoc(doc(usersCollectionRef, user.userId), { referalReceiveType: { amount: "", days: "", limitType:"", name: "ONDEMAND" }},{ merge: true });
+  //     });
+
+  //     await Promise.all(updateUserList);
+  //     console.log('All updates completed successfully');
+  //   } catch (error) {
+  //     console.error("scriptToUpdateAllUsers ERROR: " + error);
+  //   }
+  // };
+
+
+
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
+        {/* <button type="button"
+          onClick={() => {
+            updateAllUsers()
+        }}
+        >Run Croin</button> */}
         <div style={{ background: "#160133" }}>
           <HomeContainer width={width} className='mb-4 p-0 '>
             {!(login || firstTimeLogin) && (

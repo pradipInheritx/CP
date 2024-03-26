@@ -76,7 +76,7 @@ class Vote implements VoteProps {
   }
 
   static async getVote({ userId, coin, timeFrame }: { userId: string; coin: string; timeFrame?: number; }) {
-
+    console.log("checkalldataforvote call in working")
     const db = getFirestore();
     let q = query(
       collection(db, "votes"),
@@ -94,7 +94,7 @@ class Vote implements VoteProps {
       );
 
       const data = v?.data();
-
+      console.log(data,"checkalldataforvote")
       if (!data) {
         return;
       }

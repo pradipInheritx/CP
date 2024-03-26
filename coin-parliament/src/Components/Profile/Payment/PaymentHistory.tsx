@@ -19,20 +19,33 @@ const RewardList = styled.p`
   cursor: pointer;   
    padding:15px 11px;   
 `;
+const ArrowButton = styled.button`
+  background:none;
+  border:none;
+  margin-left:10px;
+  // width :10px;
+  // height:10px;
+`;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 function PaymentHistory() {
 
-  const { setAlbumOpen } = useContext(AppContext);
+  const { setAlbumOpen, setHistoryTab, historyTab } = useContext(AppContext);
+  
   const { userInfo, user } = useContext(UserContext);
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState<number>(0);
   const [tableHeader, setTableHerder] = useState<any>([
-    "Order ID", "Date", "Item", "Amount", "Payment method" , "Status"
+    "Date","Amount", "Status"
+  ]);
+  const [IntableHeader, setInTableHerder] = useState<any>([
+    "Order ID","Item","Payment method",
   ]);
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
   const [reciveRowData, setReciveRowData] = useState<any>([]);  
   const [pageIndex, setPageIndex] = useState(1);
+  const [showChild, setShowChild] = useState<any>("");
+  const [selectTab, setSelectTab] = useState("Purchase History");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -71,16 +84,78 @@ function PaymentHistory() {
     }      
   }
 
+  useEffect(() => {
+    if (historyTab) {
+      setSelectTab(historyTab)
+      setIndex(historyTab)
+    }
+  }, [historyTab])
+    
+  const childTable = (item:any) => {
+    return (
+      <div className='p-3'>
+        
+        <div className='d-flex justify-content-around w-100 p-2'>
+          <div
+            style={{
+              width: "32%"
+            }}
+
+          >
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[0]}</strong>}
+            <RewardList
+            >
+
+              {window.screen.width > 767 && <strong>{IntableHeader[0] + " -" }</strong>} {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id?.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2?.slice(-4) : "NA")}
+            </RewardList>
+
+          </div>
+          <div
+            style={{
+              width: "32%"
+            }}
+
+          >
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[1]}</strong>}
+            <RewardList>
+              {window.screen.width > 767 && <strong>{IntableHeader[1] + " -"}</strong>} {item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}
+            </RewardList>
+          </div>
+          <div
+            style={{
+              width: "32%"
+            }}
+
+          >
+            {window.screen.width < 767 && <strong className="mt-2" style={{fontSize:"10px"}}>{IntableHeader[2]}</strong>}
+            <RewardList>
+              {window.screen.width > 767 && <strong>{IntableHeader[2] + " -"}</strong>} {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
+            </RewardList>
+          </div>
+        </div>
+      </div>
+  )
+}
+
+  
+  console.log(selectTab,"getconsole.log(selectTab)")
+
   return (
     <>
       <Tabs
-        defaultActiveKey="Payment History"
+        defaultActiveKey={selectTab}
+        activeKey={selectTab}
         id="Payment"
-        onSelect={(k?: number) => setIndex((k || 0))}
+        onSelect={(k?: number) => {
+          setIndex((k || 0))
+          console.log(k,"what is this ")
+          setSelectTab(selectTab == "Purchase History" ? "Referral Payment" : "Purchase History")
+          setHistoryTab("")
+        }}
         tabs={[
           {
-            eventKey: "Payment History",
-            title: "Payment History",
+            eventKey: "Purchase History",
+            title: "Purchase History",
             pane: (
               <div
                 style={{
@@ -106,8 +181,8 @@ function PaymentHistory() {
                       return (<div className=''
                         key={index}
                         style={{
-                          width: `19%`,
-                          fontSize:`${window.screen.width >767? "12px":"10px"}`,
+                          width: `33%`,
+                          // fontSize:`${window.screen.width >767? "12px":"10px"}`,
                         }}
                       >
                         <strong>{item}</strong>
@@ -117,175 +192,72 @@ function PaymentHistory() {
                 </div>
                 {rowData?.map((item: any, index: number) => {
                   return (
-                    <div className='d-flex justify-content-around'
+                    <div className='d-flex justify-content-around flex-wrap'
                       key={index}
                       style={{
                         textAlign: "center",
 
                       }}
+                      onClick={() => {
+                        setShowChild(showChild == (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id) ? "" : (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id))
+                      }}
                     >
                       <div
                         style={{
-                          width: "19%"
+                          width: "33%"
                         }}
-                        
+                        className='d-flex align-items-center'
                       >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                            id={`tooltip-name-${index}`}>{item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")}</Tooltip>}
-                        
-                        >                          
-                          <RewardList                            
-                          >
-                          {/* {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA"} */}
-                            {/* {item?.paymentDetails?.transaction_id || "NA"} */}
-                            {
-                              window.screen.width > 767 ?
-                                item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")
-                                : item?.paymentDetails?.orderId && item?.paymentDetails?.orderId.slice(0,3) + "..."  || (item?.paymentDetails?.transaction_id ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4)).slice(0, 3) + "..." : item?.paymentDetails?.p2 ? ("VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4)).slice(0, 2) + "..." : "NA")
+                        <div                          
+                        >
+                        {/* <ArrowButton> */}
+                            {showChild === (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id)
+                              ?                           
+                            <i className="bi bi-chevron-up"
+                              style={{
+                                color: "white",
+                                marginLeft: `${window.screen.width < 767 ? "10px" : "15px"}`
+                              }}
+                            ></i>  
+                              :                                                      
+                            <i className="bi bi-chevron-down "
+                                style={{
+                                  color: "white",
+                                  marginLeft:`${window.screen.width < 767 ?"10px":"15px"}`
+                              }}
+                              ></i>
                             }
-                          {/* {item?.paymentDetails?.orderId || (item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA")} */}
-                        </RewardList>
-                        </OverlayTrigger>
+                          {/* </ArrowButton> */}
+                        </div>
+                        <RewardList>                       
+                            {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}                       
+                          </RewardList>                        
                       </div>
                       <div
                         style={{
-                          width: "19%"
+                          width: "32%"
                         }}
                         
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                            id={`tooltip-name-${index}`}
-                          > 
-                          {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}</Tooltip>}
-                        
-                        >
-                        <RewardList>
-                          {/* {item?.transaction_time?._seconds} */}
-                            {/* {item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'} */}
-                            {window.screen.width > 767
-                              ?
-                              item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'
-                              : item?.transaction_time?._seconds ? moment(new Date(item?.transaction_time?._seconds * 1000)).format("DD/MM/YYYY HH:mm").slice(0, 10) + "..." : '-'
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
+                      >                        
+                        <RewardList>                          
+                          {(Number(item?.amount)?.toFixed(4) || 0)}
+                          </RewardList>                       
                       </div>
                       <div
                         style={{
-                          width: "19%"
+                          width: "32%"
                         }}
                         
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`} 
-                            style={{
-                              marginTop: "-15px"
-                            }}  
-                          >{item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            {
-                              window.screen.width > 767 ?
-                                
-                              item?.transactionType == "EXTRAVOTES" ? item?.numberOfVotes + " " + "Extra Votes" : item?.transactionType || "-"
-                            :
-                                item?.transactionType == "EXTRAVOTES" ? (item?.numberOfVotes + " " + "Extra Votes").slice(0, 4) + "..." : (item?.transactionType).slice(0, 4) + "..." || "-"
-                              
-                            }
-                          
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip
-                            style={{
-                              marginTop: "-15px"
-                            }}
-                            id={`tooltip-name-${index}`}
-                          >${item?.amount}</Tooltip>}
-                        
-                        >
-                        <RewardList>
-                          
-                          ${item?.amount}
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                         placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`}
-                            style={{
-                              marginTop: "-15px"
-                            }}
-                          >{item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            {window.screen.width > 767 ?
-                            
-                              item?.token ? (item?.token).slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType).slice(0, 5) + (item?.walletType?.length > 10 ? "..." : "") : "-"
-                            :
-                              item?.token ? (item?.token).slice(0, 5) + (item?.token?.length > 10 ? "..." : "") : item?.walletType ? (item?.walletType.slice(0, 5) + "...") + (item?.walletType?.length > 10 ? "..." : "") : "-"                                                         
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
-                      <div
-                        style={{
-                          width: "19%"
-                        }}
-                        
-                      >
-                        <OverlayTrigger
-                         trigger={['hover', 'focus']}
-                          placement="bottom"
-                          overlay={<Tooltip id={`tooltip-name-${index}`}
-                            style={{
-                            marginTop:"-15px"
-                          }}
-                          >{(item?.event).toUpperCase() || "-"}</Tooltip>}
-                        
-                        >
-                          <RewardList>
-                            
-                            {window.screen.width > 767 ?
-                              (item?.event).toUpperCase() || "-"
-                              :
-                              ((item?.event).toUpperCase()) || "-"
-                            }
-                          </RewardList>
-                        </OverlayTrigger>
-                      </div>
+                      >                        
+                          <RewardList>                            
+                           {(item?.event).toUpperCase() || "-"}                        
+                          </RewardList>                        
+                      </div>  
+                      
+                      {showChild === (item?.paymentDetails?.orderId || item?.paymentDetails?.transaction_id) && <div className='w-100'>
+                        {/* @ts-ignore */}
+                        {childTable(item)} 
+                      </div>}
                     </div>
                   )
                 })}
@@ -301,7 +273,7 @@ function PaymentHistory() {
                             <div className=''
                               key={index}
                               style={{
-                                width: `${(100 / tableHeader.length) - 1}`,
+                                width: `${(100 / tableHeader?.length) - 1}`,
                               }}
                             >
                               <RewardList>-</RewardList>
@@ -331,8 +303,8 @@ function PaymentHistory() {
             ),
           },
           {
-            eventKey: "Receive Payment",
-            title: "Receive Payment",
+            eventKey: "Referral Payment",
+            title: "Referral Payment",
             pane: index ? <ReceivePayment /> : <></>,
           }
         ]}

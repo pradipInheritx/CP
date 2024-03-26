@@ -327,7 +327,7 @@ const Minting = ({
   // }, [paxDistribution]);
 
 
-  console.log(pendingPax,"pendingPax")
+  // console.log(pendingPax,"pendingPax")
 
   useEffect(() => {
     if (CmpPopupShow) {
@@ -392,12 +392,12 @@ const Minting = ({
   // const tooltip = (props:any) => {
 
   // };
-  console.log(claim, "setAnimateButton")
+  // console.log(claim, "setAnimateButton")
 
-  console.log(inOutReward, "inOutReward")
+  // console.log(inOutReward, "inOutReward")
   const updateState = () => {
     setShowReward(1);
-    console.log(inOutReward, "inOutReward2")
+    // console.log(inOutReward, "inOutReward2")
     setInOutReward(1);
 
     setCountShow(true)
@@ -662,13 +662,15 @@ const Minting = ({
           <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               style={{
-                width:"180px"
+                width:"180px",
+                background: "#ff9700", 
+                color: "black"
               }}
               onClick={async () => {
                 handleUpgraeClose();
                 navigate("/upgrade")
               }}
-            >🚀 &nbsp; Let’s do it</Buttons.Primary>
+            > Let’s do it</Buttons.Primary>
 
             <Buttons.Primary className="mx-2 mt-3"
               style={{
@@ -678,7 +680,7 @@ const Minting = ({
                 handleUpgraeClose();                
                 claimRewardHandler();
               }}
-            >❌  &nbsp; I give up the benefits</Buttons.Primary>
+            > I give up the benefits</Buttons.Primary>
           </div>
         </Modal>
       </div>
