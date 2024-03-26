@@ -88,7 +88,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForUserFollowersCountInWeek, sendEmailForUserUpgradeInLast48Hours, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -1901,3 +1901,69 @@ exports.getAllUserOnlyTotalAndScore = functions.https.onCall(async (data: any) =
     return error
   }
 })
+
+exports.sendEmailOnTimeForAcknowledge = functions.pubsub
+  .schedule("every 60 minutes")
+  .onRun(async () => {
+
+    await sendEmailForVoiceMatterInLast24Hours();
+
+    await sendEmailForUserUpgradeInLast48Hours();
+
+    await sendEmailForAddressNotUpdatedInLast72Hours();
+
+    await sendEmailForLifetimePassiveIncomeInLast96Hours();
+
+    await sendEmailForEarnRewardsByPaxTokensInLast168Hours();
+
+    await sendEmailForUnloackRewardsInLast192Hours();
+
+    await sendEmailForSVIUpdateInLast216Hours();
+
+    await sendEmailForProgressWithFriendInLast240Hours();
+
+    await sendEmailForTopInfluencerInLast264Hours();
+
+    console.log("Come to email Acknowledge", new Date())
+  });
+
+
+exports.sendEmailForUserFollowerCount = functions.pubsub
+  .schedule('every 168 hours')
+  .onRun(async () => {
+
+    await sendEmailForUserFollowersCountInWeek();
+
+    console.log("Come to Email For User Follower Counts", new Date())
+  });
+
+exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  try {
+    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", userId).get();
+
+    const userAckBatch = admin.firestore().batch();
+    userEmailAcknowledgementRef.docs.forEach(doc => {
+      if (doc.data().isUserLogin === false) {
+        userAckBatch.update(doc.ref, {
+          isUserLogin: true,
+          isUserFirstLoginTime: admin.firestore.Timestamp.now()
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
+    return {
+      status: true,
+      message: "User first time login time set Successfully",
+      data: { userId },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null,
+    };
+  }
+});
