@@ -24,7 +24,7 @@ function CompleteChild({ preantHeader, chaildHeader, preantData, chaildData }: C
     const ChaildExtraData = (childData:any) => {
         return (
             <>
-                <div className='d-flex border w-100'>
+                <div className='d-flex w-100'>
                     <div
                         style={{
                             width: "48%"
