@@ -1065,6 +1065,7 @@ function App() {
     };   
   }
 
+  
   async function reconnectWebSocket () {
     console.log('Attempting to reconnect...');
     // @ts-ignore
