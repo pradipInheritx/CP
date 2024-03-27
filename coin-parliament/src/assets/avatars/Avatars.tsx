@@ -34,12 +34,19 @@ export const importFile = (name: string, ext: string = "png") => {
   return src;
 };
 
+export const defaultAvatar = AvatarType.Founder;
+const avatarArray = ["Angel",
+  "Founder",
+  "Hodler",
+  "Investor",
+  "Trader",]
+
 const Avatars = ({
   type = AvatarType.Angel,
   width = 160,
   style,
 }: AvatarsProps) => {
-  const src = importFile(`./The${type}`).default ;
+  const src = (type && !type.includes('http')) ? importFile(`./The${type && avatarArray?.includes(type) ? type : defaultAvatar}`).default : type;
 // console.log(type,"imgtype")
   return <Image width={width} roundedCircle={true} src={src} style={style} />;
 };
