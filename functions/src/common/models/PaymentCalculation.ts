@@ -158,6 +158,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const parentPaymentData = {
             parentUserId,
             childUserId: parentUserDetails.uid,
+            childUserName: parentUserDetails.userName,
             halfReferralAmount: halfAmount.toFixed(6),
             type: parentConst.PAYMENT_TYPE_REFERAL,
             transactionType,
