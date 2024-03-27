@@ -372,12 +372,16 @@ function WalletInfo() {
             const { error } = response.data;
             console.log(response,"geterror")
             
-            if (!error &&checktype == "forWallet") {                
+            if (!error &&checktype == "forWallet") {
                 setWalletDetails({ coin: "", address: "" })
                 setWalletDetailsObj([...walletDetailsObj, {
                         address: inputAddress,
                         coin: type,
-                }])
+                }])         
+                // @ts-ignore
+                const coinsLists = coinList.filter(item => item?.symbol !== type)                
+                setCoinsList(coinsLists);
+                // @ts-ignore
                 // if (auth?.currentUser) {
                 //     const allwalletData = [...walletDetailsObj, {
                 //         address: inputAddress,
@@ -987,8 +991,8 @@ function WalletInfo() {
                     
                 {walletDetailsObj?.map((item,index) => {                                            
                     return <>
-                        <div className={`${window.screen.width > 350 ? '' : ''} mt-3 form-inline-flex flex-auto`}
-                            key={index}
+                        <div className={`${window.screen.width > 350 ? '' : ''} mt-3 form-inline-flex flex-auto py-2`}
+                            key={index}                        
                         >
 
                         <div className='col-field'>
@@ -1041,7 +1045,7 @@ function WalletInfo() {
                 })}
                 </SelectTextfield>}
                 
-                <SelectTextfield
+                {coinList.length > 0 && <SelectTextfield
                     label={`${walletDetailsObj.length < 1 ? ("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"):""}`}
                     name={`${walletDetailsObj.length < 1 &&  "ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"}`}
                 
@@ -1147,7 +1151,7 @@ function WalletInfo() {
                     {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                     
 
-                    </SelectTextfield>
+                    </SelectTextfield>}
                     
                 
                 

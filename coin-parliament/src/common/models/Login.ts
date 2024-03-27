@@ -33,6 +33,7 @@ import { toast } from "react-toastify";
 import { showToast } from "App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 const sendEmail = httpsCallable(functions, "sendEmail");
+const sendEmailVerificationLink = httpsCallable(functions, "sendEmailVerificationLink");
 
 export enum LoginModes {
   LOGIN,
@@ -99,7 +100,9 @@ export const LoginAuthProvider = async (
       // console.log('callback called for refeer',user)
       callback({ parent: refer, child: user.uid })
     }
-
+    await sendEmailVerificationLink({
+      email: user.email,
+    })
     if (isFirstLogin?.isNewUser) {
       // saveUsername(user.uid, '', '')
 
@@ -299,6 +302,11 @@ export const SignupRegular = async (
     // await sendEmailVerification(auth?.currentUser).then((data) => {
     //   showToast("Successfully sent  verification link on your mail");
     // });
+
+
+    await sendEmailVerificationLink({
+      email: payload.email,
+    })
     const firstTimeLogin: Boolean = true
     // @ts-ignore
 
