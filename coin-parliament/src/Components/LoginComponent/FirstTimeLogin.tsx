@@ -19,6 +19,7 @@ import UserContext from "../../Contexts/User";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userInfo } from "os";
+import axios from "axios";
 const Generate = styled(Button)`
   width: auto;
   min-width: auto;
@@ -47,7 +48,7 @@ const Container = styled.div`
 
 export type FirstTimeLoginProps = {
   generate: () => string;
-  saveUsername: (username: string, DisplayName: string) => Promise<void>;
+  saveUsername: (username: string, DisplayName: string, country:string) => Promise<void>;
   setFirstTimeAvatarSelection: any;
 };
 
@@ -90,11 +91,21 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
   const triggerSaveUsername = async () => {
     try {
       // setFirstTimeAvatarSelection(true)
+      let country="";
+      
+      await axios.get("https://ipapi.co/json/")
+        .then((response:any) => {
+          country = response?.data?.country_name;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       const firstTimeLogin: Boolean = false
       // @ts-ignore
       const userRef = doc(db, "users", user?.uid);
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
-      await saveUsername(username , displayValue);
+      await saveUsername(username, displayValue, country);
       setFirstTimeLogin(false);
 
     } catch (e) {

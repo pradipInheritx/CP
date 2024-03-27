@@ -242,7 +242,7 @@ function App() {
 
   // document.body.style.zIndex = "400";
   const location = useLocation();
-  const search = location.search;
+  const search = location.search;  
   const pathname = location.pathname;
   const langDetector = useRef(null);
   let navigate = useNavigate();
@@ -417,6 +417,7 @@ function App() {
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [isVirtualCall, setIsVirtualCall] = useState<any>(false)
   const [avatarImage, setAvatarImage] = useState<any>(null)
+  const [connectCall, setConnectCall] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
@@ -1008,12 +1009,12 @@ function App() {
     ws.onclose = async (event: any) => {
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);   
-      reconnectWebSocket()
+      throttleReconnectWebSocket()
     };
     ws.onerror = () => {  
-      setSocketConnect(false);
+      setSocketConnect(false);      
       console.log('WebSocket connection occurred');
-      reconnectWebSocket()
+      throttleReconnectWebSocket()      
     };      
   }    
 
@@ -1069,26 +1070,28 @@ function App() {
   async function reconnectWebSocket () {
     console.log('Attempting to reconnect...');
     // @ts-ignore
-    if (coins) {
+    if (Object.keys(coins)?.length) {
       // @ts-ignore
-      const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
+      // const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
       const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
       const afterErrorPrice = {}
       try {
         const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
         Object.keys(response.data)?.map((symblaName) => {
-          Object.assign(afterErrorPrice,
-            {
-              [symblaName]: {
-                id: coins[symblaName]?.id,
-                name: coins[symblaName]?.name,
-                price: response.data[symblaName]?.USD,
-                symbol: symblaName,
-                trend: coins[symblaName]?.trend
-
+          if (coinTikerList.includes(symblaName)) {            
+            Object.assign(afterErrorPrice,
+              {
+                [symblaName]: {
+                  id: coins[symblaName]?.id,
+                  name: coins[symblaName]?.name,
+                  price: response.data[symblaName]?.USD,
+                  symbol: symblaName,
+                  trend: coins[symblaName]?.trend
+  
+                }
               }
-            }
-          )
+            )
+          }
           setCoins(afterErrorPrice)
           localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
         })
@@ -1097,15 +1100,42 @@ function App() {
         localStorage.setItem('CoinsPrice', JSON.stringify(coins));
       }
     }
-    setTimeout(() => {
-      connect();
-    }, 10000); // reconnect after 3 seconds
+    
+    
+    connect();
+      // setTimeout(() => {
+      //   console.log("i am calling again and again ")
+      // }, 10000); // reconnect after 3 seconds                
   }
 
-  useEffect(() => {
+  let reconnectTimeout:any;
+  async function throttleReconnectWebSocket() {
+    // If there's already a reconnect attempt scheduled, do nothing
+    if (reconnectTimeout) {
+      return;
+    }
 
-    connect();
-    croConnect();
+    console.log('Attempting to reconnect...');
+
+    // Your reconnection logic goes here
+
+    reconnectWebSocket()
+
+    // Schedule the next reconnect attempt after a delay
+    reconnectTimeout = setTimeout(() => {
+      reconnectTimeout = null; // Reset the timeout after it's executed
+      throttleReconnectWebSocket(); // Trigger another reconnect attempt
+    }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
+  }
+
+
+  useEffect(() => {
+    if (Object.keys(coins).length) {      
+      connect();
+      croConnect();
+    }
+
+console.log("check this is call again")
     return () => {
       console.log('close websocket connection');
 
@@ -1855,10 +1885,10 @@ useEffect(() => {
                                   }
                                   generate={generateUsername}
                                   
-                                  saveUsername={async (username:any, DisplayName:any) => {
+                                  saveUsername={async (username: any, DisplayName: any, country:any) => {
                                     if (user?.uid) {
                                       await saveUsername(user?.uid, username, "");
-                                      await saveDisplayName(user?.uid, DisplayName, "");
+                                      await saveDisplayName(user?.uid, DisplayName, country, "");
                                       setFirstTimeAvatarSelection(true);
                                       // setFirstTimeFoundationSelection(true);
                                       setFirstTimeLogin(false);

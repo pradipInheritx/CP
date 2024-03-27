@@ -437,7 +437,6 @@ const SingleCoin = () => {
       }
     })
   }, [allActiveVotes]);
-  console.log(voteDetails,"allsetVoteDetails")
   useEffect(() => {
     setVoteDetails((prev) => {
       return {
