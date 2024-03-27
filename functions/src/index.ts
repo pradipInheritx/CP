@@ -43,8 +43,6 @@ import {
   voteConverter,
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
-  //addVoteResultForCPVI,
-  checkAndUpdateRewardTotal,
   addVoteResultForCPVI,
 } from "./common/models/Vote";
 import {
@@ -123,7 +121,7 @@ import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 // initialize express server
@@ -1046,6 +1044,8 @@ exports.onVote = functions.firestore
     await updateUserStatistics(vote.userId, voteStatistics);
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+
+    await addVoteResultForCPVI(data);
   });
 
 
