@@ -10,6 +10,7 @@ import {AvatarType, importFile} from "../../assets/avatars/Avatars";
 export type UserProps = {
   paid?: boolean;
   displayName?: string;
+  isVoteName?: string;
   address?: string;
   firstName?: string;
   lastName?: string;
