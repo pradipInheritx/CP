@@ -564,6 +564,7 @@ async function createUserStatistics(userData: any, userId: any) {
       noOfVotesDays: 0,
       averageVotes: 0,
       extraVotePurchased: false,
+      userLastLoginTime: admin.firestore.Timestamp.now()
     };
 
     await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
@@ -575,6 +576,26 @@ async function createUserStatistics(userData: any, userId: any) {
   }
 }
 
+exports.updateUserLastLoginTime = functions.https.onCall(async (data) => {
+  try {
+    const { userId } = data as { userId: string };
+    await admin.firestore().collection("userStatistics").doc(userId).set(
+      { userLastLoginTime: admin.firestore.Timestamp.now() },
+      { merge: true }
+    );
+    return {
+      status: true,
+      message: "Last login updated successfully",
+      data: []
+    }
+  } catch (error: any) {
+    return {
+      status: false,
+      message: "Something went wrong in while update user last login time",
+      data: error
+    }
+  }
+});
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -1087,7 +1108,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
       // Assuming you have a millisecond timestamp
       // const timestamp = 1641936000000; // Example timestamp
 
-      
+
 
       const voteTimes = userVoteList.map((doc) => {
         // Create a new Date object using the timestamp
@@ -1871,11 +1892,11 @@ export const pendingPaymentSettlement = functions.pubsub
         // const paymentRef = transaction.ref;
         // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus: any = await checkTransactionStatus({...transaction?.paymentDetails, network : transaction.network});
+        const transactionStatus: any = await checkTransactionStatus({ ...transaction?.paymentDetails, network: transaction.network });
         console.log("TransactionStatus : ", transactionStatus)
         if (transactionStatus.data.status) {
           console.log("transactionStatus : ", transactionStatus.message)
-          await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' },{merge: true});
+          await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' }, { merge: true });
         } else {
           console.error("transactionStatus : ", transactionStatus)
         }
