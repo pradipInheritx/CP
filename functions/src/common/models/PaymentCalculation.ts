@@ -158,7 +158,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const parentPaymentData = {
             parentUserId,
             childUserId: parentUserDetails.uid,
-            childUserName: parentUserDetails.userName,
+            childUserName: parentUserDetails.userName ? parentUserDetails.userName : "",
             halfReferralAmount: halfAmount.toFixed(6),
             type: parentConst.PAYMENT_TYPE_REFERAL,
             transactionType,
@@ -204,7 +204,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
             .add({
                 parentUserId: parentPaymentData.parentUserId,
                 childUserId: parentPaymentData.childUserId,
-                childUserName: parentPaymentData.userName,
+                childUserName: parentPaymentData.childUserName,
                 amount: parentPaymentData.halfReferralAmount,
                 status: parentConst.PAYMENT_STATUS_PENDING,
                 numberOfVotes: parentPaymentData.numberOfVotes,
