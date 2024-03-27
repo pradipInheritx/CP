@@ -251,9 +251,6 @@ export const addIsUpgradedValue = async (userId: string) => {
     { merge: true }
   );
 
-  //await updateIsUpgradedValue(userId);
-
-
 
   const rewardData = {
     winData: {
@@ -278,32 +275,6 @@ export const addIsUpgradedValue = async (userId: string) => {
     console.log("rewardData is not added")
   }
 };
-
-export const updateIsUpgradedValue = async (userId: string) => {
-  const userSnapshot = await firestore().collection("users").where("userId", "==", userId).get();
-
-  if (!userSnapshot.empty) {
-    const updatePromises = userSnapshot.docs.map(async (doc) => {
-      const userData = doc.data();
-
-      const isUserUpgraded = userData?.isUserUpgraded || false;
-
-      // Update accountUpgrade in the userStatistics collection
-      await firestore().collection("userStatistics").doc(userId).set(
-        { accountUpgrade: isUserUpgraded },
-        { merge: true }
-      );
-    });
-
-    // Wait for all update promises to complete
-    await Promise.all(updatePromises);
-  } else {
-    console.error("Error adding user statistics data for user:", userId);
-    throw new Error("No user documents found for user: " + userId);
-  }
-};
-
-
 
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
