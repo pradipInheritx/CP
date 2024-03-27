@@ -27,7 +27,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink,
+  // sendEmailVerificationLink,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -387,7 +387,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
@@ -534,7 +534,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       return newUser;
     }
     // Send Email Verification Link to User
-    await sendEmailVerificationLink(getUser.email);
+    // await sendEmailVerificationLink(getUser.email);
 
     await sendEmailAcknowledgementStatus(getUser);
 
