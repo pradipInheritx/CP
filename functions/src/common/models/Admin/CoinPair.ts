@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 type CoinPair = {
   id: string;
@@ -317,10 +318,3 @@ export const getCoinPairPagination = async (req: any, res: any) => {
   }
 };
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};

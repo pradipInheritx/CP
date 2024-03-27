@@ -9,6 +9,9 @@ import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
+
+import multer from "multer";
+
 //import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -25,7 +28,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  // sendEmailVerificationLink
+  // sendEmailVerificationLink,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
@@ -42,6 +45,7 @@ import {
   getResultAfterVote,
   //addVoteResultForCPVI,
   checkAndUpdateRewardTotal,
+  addVoteResultForCPVI,
 } from "./common/models/Vote";
 import {
   getAllCoins,
@@ -85,10 +89,11 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
+  poolMiningNotification,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForUserFollowersCountInWeek, sendEmailForUserUpgradeInLast48Hours, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForUserFollowersCountInWeek, sendEmailForUserUpgradeInLast48Hours, sendEmailForVoiceMatterInLast24Hours } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -101,23 +106,24 @@ import { auth } from "./common/middleware/authentication";
 // import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
-// import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
+// import sendGrid Email function and templates
+import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
-
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
+import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
 import { checkTransactionStatus } from "./common/models/Payments";
+import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
+import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 // initialize express server
@@ -155,6 +161,7 @@ app.use("/admin/FollowTable", Routers.FollowTableRouter);
 app.use("/admin/payments", Routers.adminPaymentRouter);
 app.use("/admin/foundation", Routers.foundationRouter);
 app.use("/payment", Routers.paymentRouter);
+app.patch("/updateReferScore", correctReferScoreToAllUsers);
 
 // global routers
 app.post(
@@ -211,6 +218,67 @@ app.get("/user/verified", async (req: any, res: any) => {
   }
 });
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
+app.post("/authBulk", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+    const users: any = [];
+    req.file.buffer
+      .toString()
+      .split("\n")
+      .forEach((line) => {
+        // Parse each CSV line and push to users array
+        const [firstName, lastName, email] = line.split(",");
+        !firstName && !lastName && !email
+          ? null
+          : users.push({ firstName, lastName, email });
+      });
+    users.shift();
+    await Promise.all(
+      users.map((user: any) => {
+        let password = generateRandomPassword(8);
+
+        console.log(" user : ", { email: user.email, password });
+        admin
+          .auth()
+          .createUser({
+            email: user.email.trim(),
+            password,
+          })
+          .then(() => console.log("Created user: ", user.email));
+        sendBulkEmail(
+          user.email.trim(),
+          "Vote to Earn",
+          adminSignupTemplate(
+            user.email.trim(),
+            password,
+            "Welcome to Vote to earn"
+          )
+        );
+      })
+    );
+    return res.status(200).send("Users imported from CSV successfully.");
+  } catch (error) {
+    console.error("Error importing users from CSV:", error);
+    return res.status(500).send("Error importing users from CSV.");
+  }
+});
+function generateRandomPassword(length: number) {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
+
+
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
 });
@@ -221,7 +289,51 @@ app.get("/calculatePairCPVI", async (req, res) => {
 
 exports.api = functions.https.onRequest(main);
 
+async function correctReferScoreToAllUsers() {
+  try {
+    const getAllUser = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("children", "!=", [])
+        .get()
+    ).docs.map((user) => user.data());
+    const filterTheUser = getAllUser.filter((user) =>
+      user.children?.length > 0
+        ? { id: user.uid, children: user.children }
+        : null
+    );
+    console.log("filter the user length : ", filterTheUser.length);
+    for (let index = 0; index < filterTheUser.length; index++) {
+      const user = filterTheUser[index];
+      console.log("user : ", user, index);
+      let commission = 0;
+      for (let child = 0; child < user.children; child++) {
+        admin
+          .firestore()
+          .collection("users")
+          .doc(user.children[child])
+          .get()
+          .then((snapshot) => {
+            let userData = snapshot.data();
+            commission = commission + parseFloat(userData?.refereeScrore);
+          });
+      }
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.id)
+        .set({ commission }, { merge: true })
+        .then(() => {
+          console.log("userid : ", user.id, "update commission ", commission);
+        });
+    }
 
+    return { status: true, message: "All user Refer score", result: true };
+  } catch (error) {
+    return { status: false, message: "something went wrong", error };
+  }
+}
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -275,7 +387,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
         userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
       );
 
-      return true; 
+      return true;
     }
 
     // Create a JWT token with user data
@@ -308,15 +420,52 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
   }
 });
 
+exports.callBackURLFromServerToServer = functions.https.onCall(async (data) => {
+  try {
+    const {
+      userId,
+      payloadKey,
+      uniqueId,
+      childUserEmail,
+      notificationType,
+      amount,
+      currency,
+      commission,
+    } = data;
 
+    console.info("data--->", data);
+    const getResponseAfterInsert = await admin
+      .firestore()
+      .collection("userServerPushNotification")
+      .add({
+        userId,
+        payloadKey,
+        uniqueId,
+        childUserEmail,
+        notificationType,
+        amount,
+        currency,
+        commission,
+      });
+    return {
+      status: true,
+      message: "Push Notification Server Data Added Successfully ",
+      result: getResponseAfterInsert.id,
+    };
+  } catch (error) {
+    console.info("catch", error);
+    return error;
+  }
+});
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
-  await createPushNotificationOnCallbackURL(data);
-  return { data }
-})
+  const getReponse = await createPushNotificationOnCallbackURL(data);
+  console.info("getReponse--->", getReponse);
+  return getReponse;
+});
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user");
+  console.log("create user : ", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -329,7 +478,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   const createdAt = new Date().toUTCString()
   const userData: UserProps = {
     uid: user.uid,
-    createdAt:createdAt,
+    createdAt: createdAt,
     address: "",
     avatar: "",
     bio: "",
@@ -342,6 +491,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     displayName: user.displayName,
     userName: "",
     phone: user.phoneNumber,
+    subscribersCurrentTotalCount: 0,
+    lastTimeSubscribedUser: null,
     subscribers: [],
     children: [],
     voteStatistics: {
@@ -361,7 +512,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    //isVoteToEarn: user.isVoteToEarn || false,
+    // isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -378,25 +529,26 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .doc(user.uid)
       .set(userData, { merge: true });
 
-      // Create user statistics data
+    // Create user statistics data
     await createUserStatistics(userData, user.uid);
 
-    const getUserEmail: any = (
+    const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
-      ).data();
-      console.log("new user email  : ", getUserEmail.email);
-      
-      // Return if user isVoteToEarn is true
-      console.log("get userData",getUserEmail)
-      console.log("getUser.isVoteToEarn : ", getUserEmail.isVoteToEarn)
-      if (getUserEmail.isVoteToEarn === true) {
-        return newUser;
-      }
-      // Send Email Verification Link to User
-      // await sendEmailVerificationLink(getUserEmail.email);
-      await sendEmailAcknowledgementStatus(getUserEmail);
-    return newUser;
+    ).data();
+    console.log("new user email  : ", getUser.email);
 
+    // Return if user isVoteToEarn is true
+    console.log("get userData", getUser)
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn === true) {
+      return newUser;
+    }
+    // Send Email Verification Link to User
+    // await sendEmailVerificationLink(getUser.email);
+
+    await sendEmailAcknowledgementStatus(getUser);
+
+    return newUser;
 
   } catch (e) {
     console.log("create user Error....", e);
@@ -422,58 +574,11 @@ async function createUserStatistics(userData: any, userId: any) {
 
     console.log("User statistics data added successfully for user:", userId);
   } catch (error) {
-    console.log("Error adding user statistics data for user:", userId, error);
-    
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
   }
 }
 
-
-exports.addNewKeysInCollection = functions.https.onCall(async () => {
-  try {
-    const getAllUsers = (
-      await admin.firestore().collection("users").get()
-    ).docs.map((user: any) => user.data());
-    console.log("getAllUsers length : ", getAllUsers.length);
-    if (!getAllUsers) return { message: "No users found" };
-    const getStatusQuery: any = (
-      await admin.firestore().collection("settings").doc("userTypes").get()
-    ).data();
-    const getStatusList = getStatusQuery.userTypes;
-    for (let index = 0; index < getAllUsers.length; index++) {
-      if (typeof getAllUsers[index].status == "string") {
-        let status = getStatusList.filter(
-          (level: any) =>
-            level?.name.toLowerCase() ==
-            getAllUsers[index]?.status?.toLowerCase()
-        );
-        console.log("status : ", status);
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(getAllUsers[index].uid)
-          .set({ status: status[0] }, { merge: true });
-        console.log(`${getAllUsers[index].uid} is updated successfully`);
-      } else if (Array.isArray(getAllUsers[index].status)) {
-        let status = getStatusList.filter(
-          (level: any) =>
-            level?.name.toLowerCase() ==
-            getAllUsers[index]?.status[0].name.toLowerCase()
-        );
-        console.log("status : ", status);
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(getAllUsers[index].uid)
-          .set({ status: status[0] }, { merge: true });
-        console.log(`${getAllUsers[index].uid} is updated successfully`);
-      }
-    }
-    return { message: "update operation complete" };
-  } catch (error) {
-    console.log("addNewKeysInCollection : error", error);
-    return { message: "something went wrong : ", error };
-  }
-});
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -780,8 +885,6 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-
-
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
   const { auth } = context;
@@ -811,13 +914,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
     .doc(leader.userId)
     .withConverter(userConverter);
 
-  const userProps = await userRef.get();
+  const userProps: any = await userRef.get();
+  const getAllSubscriber: any = userProps.data()?.subscribers;
   const token = userProps.data()?.token;
 
   if (add) {
     const subscribers = union(userProps.data()?.subscribers, [userId]);
     await userRef.set(
       {
+        lastTimeSubscribedUser: admin.firestore.Timestamp.now(),
+        subscribersCurrentTotalCount: getAllSubscriber?.length + 1,
         subscribers,
       },
       { merge: true }
@@ -846,8 +952,11 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    console.info("after", after)
-    console.info("Send Email Successfully")
+    // console.info("after", after)
+    // const beforeTotal: number = before.rewardStatistics?.total || 0;
+    // const afterTotal: number = after.rewardStatistics?.total || 0;
+    // console.log("afterTotal  beforeTotal", afterTotal, beforeTotal)
+    // console.log("snapshot.after.id : ",snapshot.after.id)
 
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
@@ -893,6 +1002,7 @@ exports.onVote = functions.firestore
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
+
     //await sendToTokens(vote);
 
     // await admin
@@ -902,6 +1012,24 @@ exports.onVote = functions.firestore
     //   .update({
     //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
     //   });
+
+
+
+    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", vote.userId).get();
+
+    const userAckBatch = admin.firestore().batch(); // Initialize a batch write operation
+
+    userEmailAcknowledgementRef.docs.forEach(doc => {
+      if (doc.data().isUserFirstVoted === false) {
+        userAckBatch.update(doc.ref, {
+          isUserFirstVoted: true,
+          firstTimeUserVoteTime: admin.firestore.Timestamp.now()
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
     const userRef = admin.firestore().collection("users").doc(vote.userId);
 
     // Perform the update operation and fetch the updated document in a single call
@@ -920,86 +1048,58 @@ exports.onVote = functions.firestore
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
 
-  // const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
-  //   try {
-  //     let userVoteList: any[] = [];
-  //     let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
-  
-  //     userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
-  
-  //     const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
-  //     console.log("voteTimes>>>>>>>", voteTimes);
-  
-  //     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
-  //     let numberOfDaysVoted = uniqueDates.length;
-  
-  //     let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
-  
-  //     await admin
-  //       .firestore()
-  //       .collection("userStatistics")
-  //       .doc(userId)
-  //       .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
-  
-  //     console.log("User statistics data updated successfully for user:", userId);
-  //   } catch (error) {
-  //     console.log("Error adding user statistics data for user:", userId, error);
-  //   }
-  
-  // }
 
-  const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
-    try {
-      let userVoteList: any[] = [];
-      let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
-  
-      // Check if there are votes data for the user
-      if (!userVoteQuerySnapshot.empty) {
-        userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+  try {
+    let userVoteList: any[] = [];
+    let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
 
-        // Assuming you have a millisecond timestamp
-        // const timestamp = 1641936000000; // Example timestamp
+    // Check if there are votes data for the user
+    if (!userVoteQuerySnapshot.empty) {
+      userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
 
-        
-  
-        const voteTimes = userVoteList.map((doc) => {
-          // Create a new Date object using the timestamp
-          const date = new Date(doc.voteTime);
+      // Assuming you have a millisecond timestamp
+      // const timestamp = 1641936000000; // Example timestamp
 
-          // Extract the date components
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since it's zero-based
-          const day = String(date.getDate()).padStart(2, '0');
 
-          // Construct the date string in the desired format (e.g., YYYY-MM-DD)
-          const formattedDate = `${year}-${month}-${day}`;
-          console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
-          return formattedDate;
-        });
-        console.log("voteTimes>>>>>>>", voteTimes);
-  
-        const uniqueDates = [...new Set(voteTimes)];
-        let numberOfDaysVoted = uniqueDates.length;
-  
-        let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
-  
-        // Update user statistics only if there are vote data for the user
-        await admin
-          .firestore()
-          .collection("userStatistics")
-          .doc(userId)
-          .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
-  
-        console.log("User statistics data updated successfully for user:", userId);
-      } else {
-        console.log("No vote data found for user:", userId);
-      }
-    } catch (error) {
-      console.log("Error adding user statistics data for user:", userId, error);
+
+      const voteTimes = userVoteList.map((doc) => {
+        // Create a new Date object using the timestamp
+        const date = new Date(doc.voteTime);
+
+        // Extract the date components
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since it's zero-based
+        const day = String(date.getDate()).padStart(2, '0');
+
+        // Construct the date string in the desired format (e.g., YYYY-MM-DD)
+        const formattedDate = `${year}-${month}-${day}`;
+        console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
+        return formattedDate;
+      });
+      console.log("voteTimes>>>>>>>", voteTimes);
+
+      const uniqueDates = [...new Set(voteTimes)];
+      let numberOfDaysVoted = uniqueDates.length;
+
+      let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+
+      // Update user statistics only if there are vote data for the user
+      await admin
+        .firestore()
+        .collection("userStatistics")
+        .doc(userId)
+        .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
+
+      console.log("User statistics data updated successfully for user:", userId);
+    } else {
+      console.log("No vote data found for user:", userId);
     }
+  } catch (error) {
+    console.log("Error adding user statistics data for user:", userId, error);
   }
-  
-  
+}
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -1011,8 +1111,6 @@ exports.assignReferrer = functions.https.onCall(async (data) => {
   }
 });
 
-
-
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
 
@@ -1022,6 +1120,7 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     .withConverter(voteConverter)
     .where("coin", "==", symbol)
     .get();
+
 
   const users = uniq(votes.docs.map((v) => v.data().userId)) as string[];
 
@@ -1145,9 +1244,9 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
       .collection("votes")
       .doc(data?.voteId);
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
-    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
+    // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
 
     return {
       voteId: getAfterUpdatedVoteInstance.id,
@@ -1156,12 +1255,10 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   }
 );
 
-exports.checkAndUpdateRewardTotal = functions.https.onCall(
-  async (data) => {
-    const { userId } = data;
-    return await checkAndUpdateRewardTotal(userId);
-  });
-
+exports.checkAndUpdateRewardTotal = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  return await checkAndUpdateRewardTotal(userId);
+});
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -1309,6 +1406,77 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
   return await getLeaderUsersByIds(userIds);
 });
 
+exports.setParentCommission = functions.https.onCall(async (data: any) => {
+  const { childId, voteScore } = data;
+  const db = admin.firestore().collection("users");
+  try {
+    const getSettings: any = (
+      await admin.firestore().collection("settings").doc("settings").get()
+    ).data();
+    const { pctReferralActivity } = getSettings.CPMSettings;
+
+    const getChild = (await db.doc(childId).get()).data();
+    if (!getChild) {
+      return {
+        status: false,
+        message: "child do not have parent",
+      };
+    }
+    const getParent = (await db.doc(getChild.parent).get()).data();
+    const parentVoteStatistics = getParent?.voteStatistics;
+    const getCommissionNumber = (
+      Number(voteScore * pctReferralActivity) / 100
+    ).toFixed(4);
+    const commission: number = Number(getCommissionNumber);
+    const newScore = (
+      Number(parentVoteStatistics?.score || 0) + commission
+    ).toFixed(4);
+    const newCommission = (
+      Number(parentVoteStatistics?.commission || 0) + commission
+    ).toFixed(4);
+    console.log("Score ", voteScore);
+    console.log("parentVoteStatistics : ", parentVoteStatistics);
+    console.log("parent get commission :", commission);
+    console.log("new Score ", newScore);
+    console.log("newCommission :", newCommission);
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4);
+    // child refer score
+    await db
+      .doc(childId)
+      .set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
+    // parent commission
+    await db.doc(getChild.parent).set(
+      {
+        voteStatistics: {
+          ...getParent?.voteStatistics,
+          commission: Number(newCommission),
+          score: Number(newScore),
+        },
+      },
+      { merge: true }
+    );
+    console.log(
+      "pool mining Notification is calling: -- ",
+      getChild.parent,
+      getChild.displayName || "",
+      getChild.refereeScrore
+    );
+    console.log("commission : ", commission);
+    console.log("score -- ", voteScore);
+    await poolMiningNotification(
+      getChild.parent,
+      getChild.displayName || "",
+      commission
+    );
+    return {
+      status: true,
+      message: "parent commission and child refer score added successfully",
+    };
+  } catch (error) {
+    return errorLogging("setParentCommission", "Error: ", error);
+  }
+});
+
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
   sgMail.setApiKey(env.sendgrid_api_key);
@@ -1415,187 +1583,6 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// // Function to get payment details
-// async function getPaymentDetailsForUser() {
-//   try {
-//     const getAllPaymentsQuery = await admin.firestore().collection('payments').get();
-//     const paymentDetails: any = [];
-
-//     await Promise.all(getAllPaymentsQuery.docs.map((payment: any) => {
-//       let paymentData = payment.data();
-//       let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
-//       // let userId = paymentData.userId;
-
-//       if (extraVotePurchased) {
-//         let obj = { userId: paymentData.userId, extraVotePurchased: "yes" }
-//         paymentDetails.push(obj)
-//       } else {
-//         let obj = { userId: paymentData.userId, extraVotePurchased: "no" }
-//         paymentDetails.push(obj)
-//       }
-//     }))
-    
-
-//     return paymentDetails;
-//   } catch (error) {
-//     console.error("Error fetching payment details:", error);
-//     return false;
-//   }
-// }
-
-// // Function to get user details
-// async function getUsersDetails() {
-//   try {
-//     const getAllUserData = (await admin.firestore().collection("users").get()).docs.map((user: any) => {
-//       let userData = user.data()
-//       return {
-//         userId: user.id,
-//         name: userData?.userName || "",
-//         email: userData?.email || "",
-//         totalVotes: userData?.voteStatistics?.total || 0,
-//         accountUpgrade: userData?.isUserUpgraded || false
-//       }
-//     });
-
-//     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
-
-//     const getAuthUserSignUpTime: any = [];
-//     const allUsers = await admin.auth().listUsers();
-//     for (let userRecord of allUsers.users) {
-//       //console.log("User signupDate added:", userRecord.uid);
-
-//       getAuthUserSignUpTime.push({
-//         userId: userRecord.uid,
-//         signUpTime: userRecord.metadata.creationTime
-//       });
-//     }
-
-//     //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
-
-//     const userDetailsWithSignUpDate = await Promise.all(getAllUserData.map((userData: any) => {
-//       const signUpData = getAuthUserSignUpTime.find((data: any) => data.userId === userData.userId);
-//       if (signUpData) {
-//         userData.signUpTime = signUpData.signUpTime;
-//       }
-//       return userData;
-//     }));
-
-//     return {
-//       status: true,
-//       message: "Users fetched successfully",
-//       data: userDetailsWithSignUpDate
-//     };
-
-//   } catch (error) {
-//     console.error("Error while fetching user data:", error);
-//     return {
-//       status: false,
-//       message: "Error while fetching user data",
-//       data: {}
-//     };
-//   }
-// }
-
-
-// async function getVoteList() {
-//   try {
-//     let voteDetails = (await admin.firestore().collection("votes")
-//       .where('voteTime', '>=', Date.now() - (60 * 24 * 60 * 60 * 1000))
-//       .get()).docs.map((vote: any) => {
-//         let voteData = vote.data()
-//         return {
-//           userId: voteData.userId,
-//           voteTime: voteData.voteTime,
-//         }
-//       });
-
-//     console.log("Votes fetched successfully", voteDetails)
-//     return voteDetails;
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return null
-//   }
-// }
-
-// async function getCombinedDetails() {
-//   try {
-//     // Fetch payment details
-//     const paymentDetails = await getPaymentDetailsForUser();
-
-//     console.log("paymentDetails", paymentDetails)
-
-//     // Fetch user details
-//     let userDetails = await getUsersDetails();
-
-//     let userData: any = userDetails.data;
-
-//     for (let element of userData) {
-//       let userId = element.userId;
-//       // Key and value to filter
-//       // const keyToFilter = ;
-//       // const valueToFilter = userId;
-
-//       // Filtering the array based on the key and value
-//       const filteredObj = paymentDetails.find((obj: any) => obj["userId"] === userId);
-//       //console.log(filteredObj);
-
-//       if (filteredObj !== undefined) {
-//         element.extraVotePurchased = filteredObj.extraVotePurchased;
-//       } else {
-//         element.extraVotePurchased = "no";
-//       }
-//     }
-
-//     return userDetails;
-
-
-//   } catch (error) {
-//     console.error("Error fetching combined details:", error);
-//     return false;
-//   }
-// }
-
-// export const getCoinParliamentAllUsersDeatils = async () => {
-//   try {
-//     // Fetch payment details
-//     const voteList: any = await getVoteList();
-
-//     console.log("voteList", voteList)
-
-//     // Fetch user details
-//     let userList: any = await getCombinedDetails();
-
-//     //console.log("userList", userList)
-
-//     userList = userList.data;
-
-//     await Promise.all(userList.map((user: any) => {
-//       let userVote = voteList.filter((vote: any) => vote.userId === user.userId);
-//       console.log("UserVote : ", userVote);
-
-//       const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
-//       console.log("voteTimes>>>>>>>", voteTimes);
-
-//       const uniqueDates = [...new Set(voteTimes.map((date: Date) => date.toDateString()))];
-//       // let numberOfDaysVoted = ;
-
-//       user['noOfVotesDays'] = uniqueDates.length;
-
-//       let averageVotes = uniqueDates.length !== 0 ? userVote.length / uniqueDates.length : 0;
-
-//       user['averageVotes'] = averageVotes;
-//     }))
-
-//     return userList
-
-//   } catch (error) {
-//     console.error("Error fetching combined details:", error);
-//     return false;
-//   }
-
-// }
-
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
 // exports.pendingPaymentSettlement = functions.pubsub
@@ -1666,11 +1653,11 @@ export const pendingPaymentSettlement = functions.pubsub
         // const paymentRef = transaction.ref;
         // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus: any = await checkTransactionStatus({...transaction?.paymentDetails, network : transaction.network});
+        const transactionStatus: any = await checkTransactionStatus({ ...transaction?.paymentDetails, network: transaction.network });
         console.log("TransactionStatus : ", transactionStatus)
         if (transactionStatus.data.status) {
           console.log("transactionStatus : ", transactionStatus.message)
-          await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' },{merge: true});
+          await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' }, { merge: true });
         } else {
           console.error("transactionStatus : ", transactionStatus)
         }
@@ -1680,36 +1667,6 @@ export const pendingPaymentSettlement = functions.pubsub
       console.error('Error updating payments:', error);
     }
   });
-
-  // exports.storeCPUsersDetailsIntoDB = functions.pubsub
-  // .schedule("*/10 * * * *")
-  // .onRun(async () => {
-  //   console.log("storeCPUsersDetailsIntoDB Cron starting---------------------")
-  //   try {
-  //     console.log("Starting")
-  //     const userList = await getCoinParliamentAllUsersDeatils();
-  //     console.log("function is executing correctly-----")
-  //     console.log("userList", userList)
-
-  //     const usersRef = admin.firestore().collection('userStatistics');
-  //     console.log("usersRef: created")
-
-  //     await Promise.all(userList.map(async(user: any) =>{
-  //       try {
-  //         await usersRef.doc(user.userId).set(user);
-  //         console.log(`User data stored successfully for user ${user.userId}`);
-  //       } catch (error) {
-  //         console.error(`Error storing user data for user ${user.userId}:`, error);
-  //       }
-  //     }))
-
-  //     console.log('User data stored successfully in users collection.');
-  //     return true;
-  //   } catch (error) {
-  //     console.error('Error storing user data in users collection:', error);
-  //     return false;
-  //   }
-  // });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -1797,110 +1754,11 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 //----------END CPVI scheduler-------------
 
 
-// --------pax distribution-----------
-//   ------24 hours--------
-exports.paxDistribution = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
-      console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
-      if (getIsVirtualTransaction.length == 0) {
-        return {
-          status: true,
-          message: "pax transaction is updated successfully",
-          result: getIsVirtualTransaction
-        }
-      }
-      for (let index = 0; index < getIsVirtualTransaction.length; index++) {
-        let pax = getIsVirtualTransaction[index];
-        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-          isVirtual: admin.firestore.FieldValue.delete()
-        }, { merge: true });
-      }
-      return {
-        status: true,
-        message: "pax transaction is updated successfully",
-        result: null
-      }
-    } catch (error: any) {
-      errorLogging("paxDistribution", "ERROR", error)
-      return {
-        status: false,
-        message: "Something went wrong",
-        result: null
-      }
-    }
-  });
 
-exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
-  try {
-    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-    const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
-    console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
-    if (getIsVirtualTransaction.length == 0) {
-      return {
-        status: true,
-        message: "pax transaction is updated successfully",
-        result: getIsVirtualTransaction
-      }
-    }
-    for (let index = 0; index < getIsVirtualTransaction.length; index++) {
-      let pax = getIsVirtualTransaction[index];
-      await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-        isVirtual: admin.firestore.FieldValue.delete()
-      }, { merge: true });
-    }
-    return {
-      status: true,
-      message: "pax transaction is updated successfully",
-      result: null
-    }
-  } catch (error: any) {
-    errorLogging("paxDistribution", "ERROR", error)
-    return {
-      status: false,
-      message: "Something went wrong",
-      result: null
-    }
-  }
-});
-
-// exports.getPAXPendingAndCompletePax = functions.pubsub
-//   .schedule("*/5 * * * *")
-//   .onRun(async () => {
-//     const getPendingPax = await getPendingPaxTransaction();
-//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
-//     console.log("getUserIds", getUserIds);
-//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
-//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
-//     // call payment method here
-//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
-//     return null
-//   });
-
-// ******************* END CRON JOBS ****************
-
-// only testing purposes
-exports.getAllUserOnlyTotalAndScore = functions.https.onCall(async (data: any) => {
-  try {
-    const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
-    const getTotalAndScore: any = getAllUser.map((user) => {
-      return {
-        id: user?.uid,
-        name: user?.displayName,
-        score: user?.voteStatistics?.score,
-        total: user?.rewardStatistics?.total,
-        email: user?.email
-      }
-    })
-    console.log("user only total : ", getTotalAndScore);
-    return getTotalAndScore
-  } catch (error) {
-    return error
-  }
-})
+/**
+ * @author Mukut Prasad
+ * @description Prepare all emails on time based
+ */
 
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 60 minutes")
@@ -1936,6 +1794,245 @@ exports.sendEmailForUserFollowerCount = functions.pubsub
 
     console.log("Come to Email For User Follower Counts", new Date())
   });
+
+// -------- pax distribution -----------
+// ------ 24 hours --------
+exports.paxDistribution = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    try {
+      const getPaxTransactionList = (
+        await admin.firestore().collection("paxTransaction").get()
+      ).docs.map((pax: any) => {
+        return { ...pax.data(), id: pax.id };
+      });
+      const getIsVirtualTransaction = getPaxTransactionList.filter(
+        (pax: any) => pax.isVirtual == true
+      );
+      console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+      if (getIsVirtualTransaction.length == 0) {
+        return {
+          status: true,
+          message: "pax transaction is updated successfully",
+          result: getIsVirtualTransaction,
+        };
+      }
+      for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+        let pax = getIsVirtualTransaction[index];
+        await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+          {
+            isVirtual: admin.firestore.FieldValue.delete(),
+          },
+          { merge: true }
+        );
+      }
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: null,
+      };
+    } catch (error: any) {
+      errorLogging("paxDistribution", "ERROR", error);
+      return {
+        status: false,
+        message: "Something went wrong",
+        result: null,
+      };
+    }
+  });
+
+exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
+  try {
+    const getPaxTransactionList = (
+      await admin.firestore().collection("paxTransaction").get()
+    ).docs.map((pax: any) => {
+      return { ...pax.data(), id: pax.id };
+    });
+    const getIsVirtualTransaction = getPaxTransactionList.filter(
+      (pax: any) => pax.isVirtual == true
+    );
+    console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+    if (getIsVirtualTransaction.length == 0) {
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: getIsVirtualTransaction,
+      };
+    }
+    for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+      let pax = getIsVirtualTransaction[index];
+      await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+        {
+          isVirtual: admin.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
+    }
+    return {
+      status: true,
+      message: "pax transaction is updated successfully",
+      result: null,
+    };
+  } catch (error: any) {
+    errorLogging("paxDistribution", "ERROR", error);
+    return {
+      status: false,
+      message: "Something went wrong",
+      result: null,
+    };
+  }
+});
+
+// exports.getPAXPendingAndCompletePax = functions.pubsub
+//   .schedule("*/5 * * * *")
+//   .onRun(async () => {
+//     const getPendingPax = await getPendingPaxTransaction();
+//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
+//     console.log("getUserIds", getUserIds);
+//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
+//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
+//     // call payment method here
+//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
+//     return null
+//   });
+
+// ******************* END CRON JOBS ****************
+exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const getCommissionUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("voteStatistics.commission", ">", 0)
+        .get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
+      return {
+        parentId: user.id,
+        parentVoteStatistics: userData.voteStatistics,
+        childIds: userData.children,
+      };
+    });
+    console.log("getCommissionUsers ", getCommissionUsers.length);
+
+    return {
+      status: true,
+      message: "success to get users",
+      result: getCommissionUsers,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error,
+    };
+  }
+});
+
+exports.correctCommission = functions.https.onCall(async (data: any) => {
+  const { user } = data;
+
+  try {
+    let commission = 0;
+    for (let index = 0; index < user.children.length; index++) {
+      const element = user.children[index];
+      commission += await admin
+        .firestore()
+        .collection("users")
+        .doc(element)
+        .get()
+        .then((child) => {
+          let childData = child.data();
+          return childData?.refereeScrore || 0;
+        });
+    }
+    console.log("commission : ", commission);
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(user.parentId)
+      .set(
+        {
+          voteStatistics: { ...user.parentVoteStatistics, commission },
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("success to update users", user.parentId);
+      });
+    return {
+      status: true,
+      message: "success to update users",
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error,
+    };
+  }
+});
+
+exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
+  try {
+    const getAllUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("referalReceiveType.name", "!=", "ONDEMAND")
+        .limit(50)
+        .get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
+      return { userId: user.id, referalType: userData.referalReceiveType };
+    });
+    console.log("getAllUsers length: " + getAllUsers.length);
+    const updateUserList = getAllUsers.map(async (user) => {
+      let getRefrealType = user.referalType;
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.userId)
+        .set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } });
+    });
+    Promise.all(updateUserList)
+      .then(() => {
+        console.log("All updates completed successfully");
+      })
+      .catch((error) => {
+        console.error("Error performing updates:", error);
+      });
+  } catch (error) {
+    console.error("scriptToUpdateAllUsers ERROR: " + error);
+  }
+});
+
+exports.appendUserName = functions.https.onCall(async (data) => {
+  const { users } = data;
+  let updatedUsers = [];
+  try {
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName =
+          users[user].email.split("@")[0] ||
+          "cpUser" + date.toString().slice(-4);
+        updatedUsers.push({ ...users[user], userName });
+      }
+    }
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: updatedUsers,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null,
+    };
+  }
+});
 
 exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
   const { userId } = data;

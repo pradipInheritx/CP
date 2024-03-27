@@ -63,7 +63,7 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-export const sendEmailVerificationLink = async (email:string)=>{
+export const sendEmailVerificationLink = async (email: string) => {
   try {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
@@ -80,8 +80,7 @@ export const sendEmailVerificationLink = async (email:string)=>{
         userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
       );
 
-      return true; 
-
+      return true;
     }
 
 

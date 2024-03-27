@@ -1,7 +1,8 @@
-import {firestore} from "firebase-admin";
-import {userConverter} from "./User";
-import {UserProps} from "../interfaces/User.interface"
+import { firestore } from "firebase-admin";
+import { userConverter } from "./User";
+import { UserProps } from "../interfaces/User.interface"
 import FieldValue = firestore.FieldValue;
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export type VoteRules = {
   maxVotes: number;
@@ -29,14 +30,14 @@ class Refer {
     this.parent = parent;
     this.child = child;
     this.parentRef = firestore()
-        .collection("users")
-        .withConverter(userConverter)
-        .doc(parent);
+      .collection("users")
+      .withConverter(userConverter)
+      .doc(parent);
     if (child) {
       this.childRef = firestore()
-          .collection("users")
-          .withConverter(userConverter)
-          .doc(child);
+        .collection("users")
+        .withConverter(userConverter)
+        .doc(child);
     }
   }
 
@@ -49,26 +50,26 @@ class Refer {
       !Object.values(Refer.voteRules).length
     ) {
       const settings = await firestore()
-          .collection("settings")
-          .doc("settings")
-          .get();
+        .collection("settings")
+        .doc("settings")
+        .get();
 
-      const {voteRules, CPMSettings} =
+      const { voteRules, CPMSettings } =
         (settings.data() as {
           voteRules: VoteRules;
           CPMSettings: CPMSettings;
         }) || {};
       Refer.voteRules = voteRules;
       Refer.CPMSettings = CPMSettings;
-      return {voteRules, CPMSettings};
+      return { voteRules, CPMSettings };
     }
 
-    const {voteRules, CPMSettings} = Refer;
-    return {voteRules, CPMSettings};
+    const { voteRules, CPMSettings } = Refer;
+    return { voteRules, CPMSettings };
   }
 
   async returnValue(success = false): Promise<number> {
-    const {voteRules} = await Refer.getSettings();
+    const { voteRules } = await Refer.getSettings();
     return (
       (Number(voteRules?.givenCPM) || 1) *
       (success ?
@@ -78,8 +79,8 @@ class Refer {
   }
 
   async assignReferral(): Promise<void> {
-    const {CPMSettings} = await Refer.getSettings();
-    const {parent, child} = this;
+    const { CPMSettings } = await Refer.getSettings();
+    const { parent, child } = this;
     const signupReferral = Number(CPMSettings?.signupReferral);
     const refer = new Refer(parent, child);
     await refer.payParent(signupReferral);
@@ -96,12 +97,21 @@ class Refer {
   }
 
   async payParent(score: number): Promise<void> {
-    const {CPMSettings} = await Refer.getSettings();
+    const { CPMSettings } = await Refer.getSettings();
     const parent = await this.parentRef.get();
-    const {pctReferralActivity} = CPMSettings;
+    const { pctReferralActivity } = CPMSettings;
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
-    const commission = Number(score * pctReferralActivity) / 100;
+    const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
+    const commission = Number(getCommissionNumber)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
+    const newCommission = (Number(parentVoteStatistics?.commission || 0) + commission).toFixed(4)
+    console.log("Score ", score)
+    console.log("parentVoteStatistics : ", parentVoteStatistics)
+    console.log("parent get commission :", commission)
+    console.log("new Score ", newScore)
+    console.log("newCommission :", newCommission)
+
     if (parentData?.parent) {
       const refer = new Refer(parentData.parent, parent.id);
       await refer.payParent(commission);
@@ -111,9 +121,15 @@ class Refer {
         successful: Number(parentVoteStatistics?.successful || 0),
         rank: Number(parentVoteStatistics?.rank || 0),
         total: Number(parentVoteStatistics?.total || 0),
-        score: Number(parentVoteStatistics?.score || 0) + commission,
-        commission: Number(parentVoteStatistics?.commission || 0) + commission,
+        score: Number(newScore),
+        commission: Number(newCommission),
       },
+    }).then(() => {
+      console.log("parent commission updated successfully : ", parentData?.uid)
+    }).catch((error) => {
+      errorLogging("payParent", "Error", `commission not updated : ${error}`)
+    }).finally(() => {
+      console.log("parentCommission calling ", parentData?.uid, commission);
     });
   }
 }

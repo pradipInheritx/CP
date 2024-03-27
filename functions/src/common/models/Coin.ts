@@ -13,6 +13,7 @@ import {
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
 import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
 import {Coin,IWazirXSnapshotMetaData,IWazirXSnapshotTickers,CoinsWithKey,CoinsWithFixedDecimalValue} from "../interfaces/Coin.interface"
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export const filterCoins: (
   input: { [p: string]: Coin },
@@ -587,13 +588,4 @@ export const prepareCPVI = async (hours: number, table: string) => {
     }
   }
   // });
-};
-
-
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.log(funcName, type, error); // We will modify later
 };

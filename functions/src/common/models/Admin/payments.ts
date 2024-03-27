@@ -1,6 +1,8 @@
 import { firestore } from "firebase-admin";
 
 import * as parentConst from "../../consts/payment.const.json";
+//import { Timestamp } from 'firebase-admin/firestore';
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getAdminPayment = async (req: any, res: any) => {
   try {
@@ -146,8 +148,8 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
     getAllPendingPayment.forEach((payment: any) => {
-      if (payment.token && payment.amount) {
-        coinObject[payment.token] += parseFloat(payment.amount);
+      if (payment.originCurrency && payment.amount) {
+        coinObject[payment.originCurrency] += parseFloat(payment.amount);
       }
     })
 
@@ -304,10 +306,30 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
   }
 }
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+export const updateParentReferralPayment = async (req: any, res: any) => {
+  try {
+    const { paymentId } = req.params;
+    console.info("parentUserId...", paymentId)
+    const updateParentPaymentRef = await firestore().collection("payments").doc(paymentId);
+
+    await updateParentPaymentRef.update({ status: "SUCCESS" });
+
+    // const getPaymentUpdatedData = (await firestore().collection("payments").doc(paymentId).get()).data();
+
+    // console.info("updateParentPaymentData", updateParentPaymentRef)
+
+    res.status(200).send({
+      status: true,
+      message: "Parent Referral Payment Updated Successfully",
+      result: updateParentPaymentRef,
+    });
+  } catch (error) {
+    console.error("Error While Updating Parent Referral Payment:", error);
+    res.status(500).send({
+      status: false,
+      message: "Error While Updating Parent Referral Payment",
+      result: error,
+    });
+  }
+
+}

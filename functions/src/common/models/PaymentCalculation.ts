@@ -2,10 +2,11 @@
 import { firestore } from "firebase-admin";
 import Web3 from "web3";
 import { log } from "firebase-functions/logger";
+import { Timestamp } from 'firebase-admin/firestore';
 import * as parentConst from "../consts/payment.const.json";
 
 import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
-import { sendRefferalNotification } from "./SendCustomNotification";
+//import { sendRefferalNotification } from "./SendCustomNotification";
 
 // import { log } from "firebase-functions/logger";
 
@@ -143,49 +144,97 @@ export const isGasPriceCalculationOnCoin = async (coin: any): Promise<any> => {
 
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
-        const { userId, amount, transactionType, numberOfVotes, token } = userData;
+        const { userId, amount, transactionType, numberOfVotes, token, origincurrency } = userData;
+        console.info("userId....>>>", userId)
         const parentUserDetails: any = (await firestore().collection("users").doc(userId).get()).data();
-        // const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
-        //     let data = snapshot.data();
-        //     return { childId: data.uid, parentId: data.parent }
-        // });
 
-        console.info("parentUserDetails", parentUserDetails);
-        // if (!parentUserDetails.parent) {
-        //     console.log("Parent Not Found: ", "Parent user data is not exist");
-        //     // return null;
-        //     //TODO If user's parent not exists then give the half amount to admin
+        console.info("parentUserDetails--->>>>", parentUserDetails);
 
-        // }
-        const parentUserId = parentUserDetails.parent ? parentUserDetails.parent : parentConst.ADMIN_UID;
+        const parentUserId = parentUserDetails && parentUserDetails.parent ? parentUserDetails.parent : parentConst.ADMIN_UID;
         console.log("Parent Id: ", parentUserId);
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
             parentUserId,
             childUserId: parentUserDetails.uid,
-            amount: halfAmount,
+            childUserName: parentUserDetails.userName ? parentUserDetails.userName : "",
+            halfReferralAmount: halfAmount.toFixed(6),
             type: parentConst.PAYMENT_TYPE_REFERAL,
             transactionType,
             numberOfVotes,
             token,
+            origincurrency,
+            wellDAddress: parentUserDetails.wellDAddress
         };
+        const getParentPaymentData: any = await storeParentReferralAmount({ ...parentPaymentData, ...userData });
+        console.info("getParentPaymentData", getParentPaymentData)
 
         console.log("parentPaymentData : ", parentPaymentData);
-        await sendRefferalNotification([
-            { id: parentPaymentData.parentUserId, amount: parentPaymentData.amount, isParent: true },
-            { id: parentPaymentData.childUserId, amount, isParent: false },
-        ])
+        // await sendRefferalNotification([
+        //     { id: parentPaymentData.parentUserId, amount: parentPaymentData.amount, isParent: true },
+        //     { id: parentPaymentData.childUserId, amount, isParent: false },
+        // ])
 
-        // set payment schedule accroding parent settings
-        await setPaymentSchedulingDate({ ...userData, ...parentPaymentData });
+        // // set payment schedule accroding parent settings
+        // await setPaymentSchedulingDate({ ...userData, ...parentPaymentData });
     } catch (error) {
+
+        console.info("Error---->>>", (error))
         return {
             status: false,
             message: "Something went wrong while getting the parent referal",
         };
     }
 };
+
+export const storeParentReferralAmount = async (parentPaymentData: any) => {
+    console.info("parentPaymentData in Function", parentPaymentData)
+    try {
+        let getCoinAddress: any = null;
+
+        if (parentPaymentData && parentPaymentData.wellDAddress && parentPaymentData.wellDAddress.length) {
+            let coinOfPayment = parentPaymentData.token.toUpperCase();
+            let getCoinWellDAddress = parentPaymentData.wellDAddress.find((address: any) => address.coin === coinOfPayment);
+            getCoinAddress = getCoinWellDAddress && getCoinWellDAddress.address ? getCoinWellDAddress.address : null;
+        }
+
+        const getResponseFromPendingReferralAmount = await firestore()
+            .collection("parentPayment")
+            .add({
+                parentUserId: parentPaymentData.parentUserId,
+                childUserId: parentPaymentData.childUserId,
+                childUserName: parentPaymentData.childUserName,
+                amount: parentPaymentData.halfReferralAmount,
+                status: parentConst.PAYMENT_STATUS_PENDING,
+                numberOfVotes: parentPaymentData.numberOfVotes,
+                parentPendingPaymentId: null,
+                receiveType: parentConst.PARENT_REFFERAL_PAYMENT_REFERRAL_TYPE_MANUAL,
+                originCurrency: parentPaymentData.origincurrency.toUpperCase(),
+                token: parentPaymentData.token.toUpperCase(),
+                transactionhash: "",
+                transactionType: parentPaymentData.transactionType,
+                type: parentPaymentData.type,
+                address: getCoinAddress ? getCoinAddress : parentConst.PARENT_REFFERAL_PAYMENT_ADDRESS_NO_ADDRESS,
+                timestamp: Timestamp.now(),
+                walletType: parentPaymentData.walletType,
+                paymentDetails: { ...parentPaymentData.paymentDetails }
+            });
+        console.info("Parent Referral Payment Doc Added Successfully", getResponseFromPendingReferralAmount);
+
+        return {
+            status: true,
+            message: "Parent Referral Payment Stored Successfully",
+            result: getResponseFromPendingReferralAmount
+        };
+    } catch (error) {
+        return {
+            status: false,
+            message: "Something went wrong",
+            result: error,
+        }
+    }
+}
+
 
 export const setPaymentSchedulingDate = async (parentData: any) => {
     console.info("parentData", parentData);

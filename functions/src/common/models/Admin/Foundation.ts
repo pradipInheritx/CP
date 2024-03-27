@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 
-import { sendPaxToFoundation } from "../Reward"
+// import { sendPaxToFoundation } from "../Reward"
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 const foundationConst: any = {}
 
@@ -194,14 +195,14 @@ export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
         const foundationCPM = (cpm *foundationCommission ) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
         console.info("commission", commission)
-        if ((commission / 100) >= 1) {
-            // foundation Payment method here sendPaxToFoundation
-            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-            console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
-        } else {
-            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-            console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
-        }
+        // if ((commission / 100) >= 1) {
+        //     // foundation Payment method here sendPaxToFoundation
+        //     const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
+        //     console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
+        // } else {
+        //     const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
+        //     console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
+        // }
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
         await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
         return {
@@ -240,12 +241,3 @@ export const sendCPMToUserFoundation = async (req: any, res: any) => {
         });
     }
 }
-
-
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};

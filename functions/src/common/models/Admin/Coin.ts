@@ -12,6 +12,7 @@ import {
 } from "../../consts/config";
 import { sendNotification } from "../Notification";
 import { messaging } from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 type Coin = {
   id: any;
@@ -460,10 +461,4 @@ export const getCoinPagination = async (req: any, res: any) => {
   }
 };
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+

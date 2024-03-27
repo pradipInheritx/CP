@@ -1,6 +1,7 @@
 import { firestore, messaging } from "firebase-admin";
 import { sendNotification } from "../Notification";
 import env from '../../../env/env.json'
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 
 export const userPurchaseNotification = async (userId: string) => {
@@ -42,11 +43,3 @@ export const userPurchaseNotification = async (userId: string) => {
     }
 }
 
-//  Error Function
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};

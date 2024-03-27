@@ -20,11 +20,16 @@
     "MESSAGE_PENDING_PAX_VALUE" : "Get All Pending Pax Data Successfully",
     "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY" :"Temp Payment Transaction Deleted Successfully",
     "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED" :"Temp Payment Trasaction Is Not Deleted",
+    "MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY" :"You have claimed your referral amount successfully",
+    "MESSAGE_PARENT_USER_ALL_COIN_ADDRESS_NOT_UPDATED":"Please ensure that all coin addresses are updated. Make sure that the address you wish to claim is included in the list.",
+    "MESSAGE_PARENT_USER_COIN_ADDRESS_NOT_FOUND":"No address found of wellDApp. Please update the wellDApp Address for claimed the referral amount.",
     "PAYMENT_SETTING_NAME_LIMIT" : "LIMIT",
     "PAYMENT_SETTING_NAME_MANUAL": "MANUAL",
     "PAYMENT_SETTING_NAME_IMMEDIATE" : "IMMEDIATE",
     "PAYMENT_STATUS_PENDING" :"PENDING",
     "PAYMENT_STATUS_SUCCESS" : "SUCCESS",
+    "PAYMENT_RECEIVE_TYPE_MANUAL" :"MANUAL",
+    "PAYMENT_STATUS_SELF" : "SELF",
     "PAYMENT_SETTING_DAYS_1DAY" : "1 DAY",
     "PAYMENT_SETTING_DAYS_1WEEK": "1 WEEK",
     "PAYMENT_SETTING_DAYS_1MONTH": "1 MONTH",
@@ -110,6 +115,6 @@
     "PAYMENT_STATUS_APPROVED" : "Approved",
     "PAYMENT_STATUS_CONFIRMED" :"Confirmed",
     "PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED": "CLAIMED",
-    "PAYMENT_RECEIVE_TYPE_MANUAL" :"MANUAL",
-    "MESSAGE_PARENT_PAYMENT_CLAIMED_SUCCESSFULLY" :"You have claimed your referral amount successfully"
+    "PARENT_REFFERAL_PAYMENT_REFERRAL_TYPE_MANUAL": "MANUAL",
+    "PARENT_REFFERAL_PAYMENT_ADDRESS_NO_ADDRESS": "NO_ADDRESS"
 }

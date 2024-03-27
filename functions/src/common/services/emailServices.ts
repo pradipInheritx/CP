@@ -1,3 +1,4 @@
+
 import env from "../../env/env.json";
 import sgMail from "@sendgrid/mail";
 
@@ -6,6 +7,7 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
     console.log("email>>>>>>>>");
 
     sgMail.setApiKey(env.sendgrid_api_key);
+    console.log("API Key IS", env.sendgrid_api_key)
     const msg = {
       to,
       from: "support@coinparliament.com",
@@ -22,7 +24,7 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
       status: true,
       message: "Email sent successfully",
     };
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error sending email:", error.message);
     return {
       status: false,
@@ -31,4 +33,3 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
     };
   }
 }
-

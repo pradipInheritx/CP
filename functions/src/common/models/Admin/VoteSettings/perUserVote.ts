@@ -1,4 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
+import { errorLogging } from "../../../helpers/commonFunction.helper";
 
 export type perUserVoteProps = {
   quantity: string;
@@ -232,12 +233,4 @@ export const deletePerUserVoteById = async (req: any, res: any, next: any) => {
     errorLogging("deletePerUserVoteById", "ERROR", error);
     res.status(500).send(error);
   }
-};
-
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
 };

@@ -1,17 +1,19 @@
 import { firestore, messaging } from "firebase-admin";
 import { sendEmail } from "../services/emailServices";
-import { sendEmailForFollowerCountTemplate } from "../emailTemplates/sendEmailForFollowerCountTemplate";
-import { sendEmailForAfterUpgradeTemplate } from "../emailTemplates/sendEmailForAfterUpgradeTemplate";
-import { sendEmailForTopInfluencerTemplate } from "../emailTemplates/sendEmailForTopInfluencerTemplate";
-import { sendEmailForProgressWithFriendTemplate } from "../emailTemplates/sendEmailForProgressWithFriendTemplate";
-import { sendEmailForSVIUpdateTemplate } from "../emailTemplates/sendEmailForSVIUpdateTemplate";
-import { sendEmailForUnloackRewardsTemplate } from "../emailTemplates/sendEmailForUnloackRewardsTemplate";
-import { sendEmailForEarnRewardsByPaxTokensTemplate } from "../emailTemplates/sendEmailForEarnRewardsByPaxTokensTemplate";
-import { sendEmailForLifetimePassiveIncomeTemplate } from "../emailTemplates/sendEmailForLifetimePassiveIncomeTemplate";
-import { sendEmailForAddressNotUpdatedTemplate } from "../emailTemplates/sendEmailForAddressNotUpdated";
-import { sendEmailForUserUpgradeTemplate } from "../emailTemplates/sendEmailForUserUpgradeTemplate";
 import { sendEmailForVoiceMatterTemplate } from "../emailTemplates/sendEmailForVoiceMatterTemplate";
+import { sendEmailForUserUpgradeTemplate } from "../emailTemplates/sendEmailForUserUpgradeTemplate";
+import { sendEmailForAddressNotUpdatedTemplate } from "../emailTemplates/sendEmailForAddressNotUpdated";
+import { sendEmailForLifetimePassiveIncomeTemplate } from "../emailTemplates/sendEmailForLifetimePassiveIncomeTemplate";
+import { sendEmailForEarnRewardsByPaxTokensTemplate } from "../emailTemplates/sendEmailForEarnRewardsByPaxTokensTemplate";
+import { sendEmailForUnloackRewardsTemplate } from "../emailTemplates/sendEmailForUnloackRewardsTemplate"
+import { sendEmailForSVIUpdateTemplate } from "../emailTemplates/sendEmailForSVIUpdateTemplate"
+import { sendEmailForProgressWithFriendTemplate } from "../emailTemplates/sendEmailForProgressWithFriendTemplate"
+import { sendEmailForTopInfluencerTemplate } from "../emailTemplates/sendEmailForTopInfluencerTemplate"
+import { sendEmailForAfterUpgradeTemplate } from "../emailTemplates/sendEmailForAfterUpgradeTemplate"
+import { sendEmailForFollowerCountTemplate } from "../emailTemplates/sendEmailForFollowerCountTemplate"
+
 import env from "./../../env/env.json";
+
 export const sendNotification = async ({
   token,
   id,
@@ -23,11 +25,11 @@ export const sendNotification = async ({
   id: string;
   title: string;
   body:
-    | string
-    | {
-        body: string;
-        requireInteraction: boolean;
-      };
+  | string
+  | {
+    body: string;
+    requireInteraction: boolean;
+  };
   message: messaging.Message;
 }) => {
   try {
@@ -76,12 +78,10 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
       result: error,
     };
   }
-};
+}
 
 export const sendEmailAcknowledgementStatus = async (userObj: any) => {
-  const userEmailAcknowledgementRef = await firestore().collection(
-    "userEmailAcknowledgement"
-  );
+  const userEmailAcknowledgementRef = await firestore().collection('userEmailAcknowledgement');
 
   const acknowledgementEmailSettings = {
     userId: userObj.uid,
@@ -1343,10 +1343,9 @@ export const sendEmailForUserFollowersCountInWeek = async () => {
             allUsersEmailAndSubscriberCount[user].email,
             "🌟  New Followers Alert! 🌟",
             sendEmailForFollowerCountTemplate(
-              `${
-                allUsersEmailAndSubscriberCount[user].userName
-                  ? allUsersEmailAndSubscriberCount[user].userName
-                  : "User"
+              `${allUsersEmailAndSubscriberCount[user].userName
+                ? allUsersEmailAndSubscriberCount[user].userName
+                : "User"
               }`,
               allUsersEmailAndSubscriberCount[user]
                 .subscribersCurrentTotalCount,

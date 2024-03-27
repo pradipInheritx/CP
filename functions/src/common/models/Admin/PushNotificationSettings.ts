@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const updatePushNotificationSetting = async (req: any, res: any) => {
     try {
@@ -56,10 +57,3 @@ export const getAllPushNotificationSetting
         }
     };
 
-export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
-) => {
-    console.info(funcName, type, error);
-};
