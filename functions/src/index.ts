@@ -2160,7 +2160,7 @@ exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
       return {
         parentId: user.id,
         parentVoteStatistics: userData.voteStatistics,
-        childIds: userData.children,
+        children: userData.children,
       };
     });
     console.log("getCommissionUsers ", getCommissionUsers.length);
@@ -2184,18 +2184,17 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
 
   try {
     let commission = 0;
-    for (let index = 0; index < user.children.length; index++) {
-      const element = user.children[index];
-      commission += await admin
-        .firestore()
-        .collection("users")
-        .doc(element)
-        .get()
-        .then((child) => {
-          let childData = child.data();
-          return childData?.refereeScrore || 0;
-        });
-    }
+
+    const getChildAllUsers = await admin
+      .firestore()
+      .collection("users")
+      .where("uid", "in", user.children)
+      .get();
+
+    await getChildAllUsers.docs.map((user: any) => {
+      commission += user.refereeScrore;
+    });
+
     console.log("commission : ", commission);
     await admin
       .firestore()
