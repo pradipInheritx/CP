@@ -89,7 +89,7 @@ const CarouselWrapper = styled.div`
     display: none;
   }
   .react-multi-carousel-dot-list {
-    bottom: ${window.screen.width>767? "-20px" :"-30px"};
+    bottom: ${window.screen.width>767? "-20px" :"-25px"};
     margin: 0 auto;
 
     & .react-multi-carousel-dot--active.react-multi-carousel-dot button {
@@ -177,7 +177,7 @@ const PairsCopy = ({
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1.5,
-      slidesToSlide: 1.5 // optional, default to 1.
+      slidesToSlide: 1.1 // optional, default to 1.
     }
   };
   const centerMode = window.screen.width >767 ? true : false
