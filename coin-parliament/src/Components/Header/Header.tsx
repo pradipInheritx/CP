@@ -25,7 +25,7 @@ const HamburgerBut = styled.button`
 
 const Header = (setMfaLogin?:any) => {
   const { userInfo, setUserInfo, setUser,user } = useContext(UserContext); 
-  const { menuOpen, setMenuOpen, login, firstTimeLogin,showMenubar,setLogin,setShowMenuBar } =
+  const { menuOpen, setMenuOpen, login, firstTimeLogin,showMenubar,setLogin,setShowMenuBar,selectBioEdit,firstTimeAvatarSlection} =
     useContext(AppContext);
   const navigate = useNavigate();
   const logOutHandler = async () => {
@@ -103,7 +103,7 @@ const Header = (setMfaLogin?:any) => {
                   {userInfo?.email && userInfo?.email?.length >= 0 ? userInfo?.email[0].toUpperCase() : ""}
               </div>
               }
-              {(userInfo?.uid) ?
+              {(userInfo?.uid && !firstTimeLogin && !firstTimeAvatarSlection && !selectBioEdit) ?
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
                 id="basic-nav-dropdown"
                 className={`${window.screen.width > 767 ? "BigDiv" : "SmallDiv"} justify-content-start textWhite`}
