@@ -1220,6 +1220,33 @@ console.log("check this is call again")
       }
     })
   }
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia('(display-mode: standalone)');
+    
+    const handleChange = (event:any) => {
+      // @ts-ignore
+      if (event.matches && (!userInfo?.isPWAinstalled || userInfo?.isPWAinstalled == undefined)) {        
+        // @ts-ignore
+        const userRef = doc(db, "users", userInfo?.uid);
+        setDoc(userRef, { isPWAinstalled: true }, { merge: true }); 
+      }
+    };
+
+    // Initially check if the PWA is already open
+    if (userInfo?.uid) {      
+      handleChange(mediaQueryList);
+    }
+
+    // Listen for changes in display mode
+    mediaQueryList.addListener(handleChange);
+
+    // Clean up the listener
+    return () => {
+      mediaQueryList.removeListener(handleChange);
+    };
+  }, [userInfo?.uid]);
+
   const getVotes = useCallback(
     async () => {
       if (user?.uid) {
