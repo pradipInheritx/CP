@@ -595,6 +595,22 @@ async function createUserStatistics(userData: any, userId: any) {
   }
 }
 
+//function which triggers whenever any user sign in 
+exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: any) => {
+  const uid = change.after.uid;
+  const lastSignInTime = change.after.metadata.lastSignInTime; 
+
+  try {
+    await admin.firestore().collection('userStatistics').doc(uid).update({
+      lastLoginDay: lastSignInTime
+    });
+    console.log(`Last login time updated for user ${uid}`);
+  } catch (error) {
+    console.log('Error updating last login time:', error);
+  }
+});
+
+
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
   return password === "CPVI2022!";
