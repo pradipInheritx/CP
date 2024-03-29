@@ -1363,6 +1363,19 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.log("getAfterVoteUpdatedData------", getAfterVoteUpdatedData);
 
+    // Extract userId and score from getAfterVoteUpdatedData
+    const userId = getAfterVoteUpdatedData?.userId;
+    const score = getAfterVoteUpdatedData?.score;
+
+    // Check if userId and score exist before proceeding
+    if (userId && score) {
+      // Update the score in the userStatistics table
+      const userStatisticsRef = admin.firestore().collection("userStatistics").doc(userId);
+      await userStatisticsRef.set({ TotalCPM: score }, { merge: true });
+    } else {
+      console.error("userId or score is undefined.");
+    }
+
     return {
       voteId: getAfterUpdatedVoteInstance.id,
       ...getAfterVoteUpdatedData,
