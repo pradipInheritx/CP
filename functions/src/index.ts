@@ -16,7 +16,7 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
-  sendEmailVerificationLink
+  // sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/votetoearn.json";
 import { getPrice } from "./common/models/Rate";
@@ -281,7 +281,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       return newUser;
     }
     // Send Email Verification Link to User
-    await sendEmailVerificationLink(getUser.email);
+    // await sendEmailVerificationLink(getUser.email);
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
