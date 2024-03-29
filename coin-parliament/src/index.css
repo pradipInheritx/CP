@@ -1597,7 +1597,7 @@ border-top-left-radius: 0px !important;
     position: relative;
     top: initial;
     left: initial;
-    width: initial;
+    width: 30px;
     z-index: 2;
     transform: initial;
 }

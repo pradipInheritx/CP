@@ -440,6 +440,7 @@ function App() {
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+  const [animateBox, setAnimateBox] = useState(false);
 
   // console.log(coins, "allcoinsCheck")
 
@@ -1696,6 +1697,8 @@ useEffect(() => {
                   fcmToken,
                   setFcmToken,
                   lang,
+                  animateBox,
+                  setAnimateBox,
                   setLang,
                   rtl,
                   setRtl,
