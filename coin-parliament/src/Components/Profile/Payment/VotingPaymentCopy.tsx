@@ -43,7 +43,14 @@ import { texts } from "Components/LoginComponent/texts";
 import { collection, onSnapshot } from "firebase/firestore";
 import SmallBackArrow from '../../../Components/icons/SmallBackArrow';
 import CoinsContext from "Contexts/CoinsContext";
-
+import './PaymentStyle.css';
+import ETHsvg from '../../../assets/CoinSVG/ETH.svg';
+import BNBsvg from '../../../assets/CoinSVG/bnb.svg';
+import MATICSVG from '../../../assets/CoinSVG/polygon.svg';
+import ETHColor from '../../../assets/CoinSVG/ETHColor.svg';
+import bnbColor from '../../../assets/CoinSVG/bnbColor.svg';
+import polygonColor from '../../../assets/CoinSVG/polygonColor.svg';
+import CardsLogo from '../../../assets/CoinSVG/CardsLogo.svg';
 
 const H2 = styled.h2`
 width: 100%;
@@ -264,33 +271,44 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 767 ? "40%" : "99%"};
+  width:${window.screen.width > 767 ? "48%" : "99%"};
   border-radius:10px;
-  background-color:#1e0243;
+  // opacity:0.8;
+  background-color:#281764fa;
   padding :30px;
   display:flex;  
   flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}
 `;
 
-const Opctiondiv = styled.div`
+const FirstBoxdiv = styled.div`
+  width:${window.screen.width > 767 ? "48%" : "99%"};
+  border-radius:10px;
+  // opacity:0.8;
+  // background-color:#1e0243;
+  // padding :20px;
+  display:flex;  
+  flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}
+`;
 
+const Opctiondiv = styled.div`
+  width:100%;
   // border:1px solid white;
-  // border-radius:10px;
+  border-radius:10px;
   overflow:hidden;
   display:flex;
-  justify-content: space-around; 
+  justify-content: space-around;   
   flex-wrap:wrap; 
-  width:${window.screen.width > 767 ? "98%" : "98%"};
+  // width:${window.screen.width > 767 ? "98%" : "98%"};
   margin:${window.screen.width > 767 ? "" : "auto"};
   
   font-size:15px;
   & div{
-    border:1px solid white;
-    margin-top:${window.screen.width > 767 ? "" : "20px"};
-  border-radius:10px;
-    padding:25px 15px;
-    display:flex;    
-    width:${window.screen.width > 767 ? "244px" : "250px"};
+    // border:1px solid white;
+  //   margin-top:${window.screen.width > 767 ? "" : "20px"};
+  // border-radius:10px;
+  //   padding:25px 15px;
+  //   display:flex;    
+  //   width:${window.screen.width > 767 ? "244px" : "250px"};
   }
 `;
 
@@ -397,7 +415,7 @@ const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
   paymentStatus: { type: string, message: string },
-  coinInfo: { [key: string]: any },
+  coinInfo: any,
   setCoinInfo: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   payButton: boolean,
   setPayButton: React.Dispatch<React.SetStateAction<boolean>>,
@@ -455,6 +473,16 @@ const VotingPaymentCopy: React.FC<{
   const events = useWeb3ModalEvents()
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
+  const coinImage:any = {
+    ETH:ETHsvg,
+    BNB:BNBsvg,
+    MATIC:MATICSVG,
+  }
+  const SelectCoinImage:any = {
+    ETH:ETHColor,
+    BNB: bnbColor,
+    MATIC: polygonColor,
+  }
   // @ts-ignore  
   const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
   
@@ -1018,6 +1046,14 @@ const VotingPaymentCopy: React.FC<{
             </>
           }
         </div>
+
+        {selectPayment == 0 && <p className="text-center mb-4"
+        
+          style={{
+          fontSize:"25px"
+        }}
+        >PAYMENT OPTION</p>}
+
         {!paymentStatus?.type &&
           <div
             style={{
@@ -1025,34 +1061,69 @@ const VotingPaymentCopy: React.FC<{
             }}
             className="d-flex justify-content-center flex-column align-items-center"
           >
-            <Boxdiv className={`${window.screen.width > 767 ? "" : ""}`}
+            <FirstBoxdiv className={`${window.screen.width > 767 ? "" : ""}`}
               style={{
-                justifyContent: `${selectPayment == 0 ? "" : ""}`
+                justifyContent: `${selectPayment == 0 ? "" : ""}`,                
               }}
             >
               {showPayButoom == false ? <Opctiondiv className="">
-                <div className="justify-content-center align-items-center d-flex"
-                  style={{
+                <div className="justify-content-between d-flex flex-wrap"
+                  style={{                    
+                    border: "1px solid",
+                    borderRadius:"10px",
+                    width:`${window.screen.width>767 ?"46%" :"98%"}`,
                     cursor: "pointer",
                     marginBottom: '10px',
                     // borderBottom: "1px solid white",
-                    background: `${selectPayment == 1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
-                    padding:`${window.screen.width < 767 ? "45px 10px" :""}`
+                    background: `${"#281764fa"}`,
+                    padding: `${window.screen.width < 767 ? "30px 65px" : "30px 40px"}`,
+                    position: "relative",
                   }}
-                  onClick={() => {
-                    setSelectPayment(1)
-                    setShowPayButoom(true)
+                  onClick={() => {                    
                     // setComingSoon(true)                        
                   }}
                 >
-                  <i className="bi bi-coin"></i>
-                  <p className="mx-2">Cryptocurrency</p>
+                  {/* <i className="bi bi-coin"></i>
+                  <p className="mx-2">Cryptocurrency</p> */}
+                  <div className="justify-content-between d-flex flex-wrap"
+                    style={{   
+                      width: `${window.screen.width > 767 ? "75%" : "100%"}`,
+
+                      // @ts-ignore
+                      position:`${window.screen.width > 767 ?"absolute": "" }`                 
+                  }}
+                  >
+                  {coinsList.map((item:any , index) => {
+                    return <div className={`${item.chainId == chainId ? "selectCoinBox" :"CoinBox"} my-2`}
+                      onClick={() => {
+                        setSelectPayment(1)
+                        setShowPayButoom(true)
+                        setSelectCoin(item.currency)
+                        setCoinInfo(item)                                                
+                        setShowOptionList(false)
+                        localStorage.setItem("CoinPay", item.name) 
+                    }}
+                    >
+                      <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
+                        style={{
+                        marginRight:"10px"
+                      }}
+                      />
+                      <span className="ml-2">
+                            {item.currency}
+                      </span>
+                    </div>
+                  })}
+                  </div>
                 </div>
-                {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center"
+                {!!(payamount > 0) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
+                  
                   style={{
+                    borderRadius:"10px",
+                    width: `${window.screen.width > 767 ? "46%" : "98%"}`,
                     cursor: "pointer",
                     marginBottom: "10px",
-                    background: `${selectPayment == 2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                    background: `${"#281764fa"}`,
                   }}
                   onClick={() => {
                     if (payamount > 0) {
@@ -1069,19 +1140,28 @@ const VotingPaymentCopy: React.FC<{
                     }
                   }}
                 >
-                  <span className="d-flex align-items-center justify-content-center">
-                    <i className="bi bi-credit-card-fill me-2"></i> No Crypto? No problem.
+                  <span className="d-flex align-items-center justify-content-center mb-2"
+                    style={{
+                    fontSize:"18px"
+                  }}
+                  >
+                    <i className="bi bi-credit-card-fill me-2"></i> No Crypto? <strong>&nbsp; No problem.</strong>
                   </span>
                   <span className="circleBtn mt-2">
                     <span className="inn_btn">Buy Crypto</span>
                   </span>
-
-
-
-                </div>}
+                  <img src={CardsLogo} alt="" width={"97%"}  className="mt-4"/>
+                </div>                
+                }                
               </Opctiondiv>
                 :
-                <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column">
+                <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column"                  
+                  style={{
+                    background: "#281764fa",
+                    padding: "20px",
+                    borderRadius:"10px"
+                  }}
+                >
                   <div>
                   <SmallBackArrow />
                   <span className="                  
@@ -1093,33 +1173,29 @@ const VotingPaymentCopy: React.FC<{
                       marginLeft:"4px",
                       borderRadius:"5px"
                       
-                  }}
+                    }}
+                      
                     onClick={() => {
                     setShowPayButoom(false)
                       setSelectPayment(0)
                       // setSelectCoin("none")
                     }}>Back</span>
                   </div>   
-                  {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
+                  {/* {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
 
-                    <div className={`pay-custom-select-container mb-3`} style={{
+                    <div className={`pay-custom-select-container mb-3`} style={{                      
                       width: '23em',
                       zIndex: 10,
                     }} >                     
-                      <div
-                        // className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
+                      <div                        
                         className="pay-selected-text text-center"
                         onClick={() => {
                           if (payButton) {
                             return
-                          }
-                          // open({ view: 'Networks' })
+                          }                       
                           setShowOptionList(prev => !prev)
-                        }
-
-                        }
-                      >
-                        {/* {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"} */}
+                        }}
+                      >                        
                         Change Coin
                       </div>
                       {showOptionList && (
@@ -1144,21 +1220,11 @@ const VotingPaymentCopy: React.FC<{
                                   className="pay-custom-select-option"
                                   data-name={option.name}
                                   key={index}
-                                  onClick={async () => {
-                                    // if (chainId == option.chainId || window.screen.width > 768) {
+                                  onClick={async () => {                                    
                                     setSelectCoin(option.currency)
-                                      setCoinInfo(option)
-                                      // setChainNetworkTest(false)
-                                    // } 
+                                      setCoinInfo(option)                                    
                                     setShowOptionList(!showOptionList)
-                                    localStorage.setItem("CoinPay", option.name)                                     
-                                    // else {                            
-                                    //   open({view:"Networks"})
-                                    //   setShowOptionList(!showOptionList)
-                                    //   setChainNetworkTest(true)
-                                    //   localStorage.setItem("CoinPay", option.name)                                     
-                                    // }
-                                    // switchNetwork(option.chainId)
+                                    localStorage.setItem("CoinPay", option.name)                                                                         
                                   }}
                                 >
                                   {option.currency}
@@ -1171,10 +1237,10 @@ const VotingPaymentCopy: React.FC<{
                         </ul>
                       )}
                     </div>
-                  </Sidediv>}
+                  </Sidediv>} */}
                 </div>
             }
-            </Boxdiv>
+            </FirstBoxdiv>
 
             {selectPayment == 1 &&
               <Boxdiv className="mt-4 mb-4"

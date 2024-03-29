@@ -32,6 +32,7 @@ import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
+import axios from "axios";
 const sendEmail = httpsCallable(functions, "sendEmail");
 const sendEmailVerificationLink = httpsCallable(functions, "sendEmailVerificationLink");
 
@@ -127,6 +128,19 @@ export const LoginAuthProvider = async (
       // setUser(user);
 
     }
+
+    console.log("login with google")
+    if (user.uid) {      
+      let country = "";
+      await axios.get("https://ipapi.co/json/")
+        .then((response: any) => {
+          country = response?.data?.country_name;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      await setDoc(userRef, { country }, { merge: true });
+    }
   } catch (e) {
     console.log(e, "check this error 2")
     // @ts-ignore
@@ -214,7 +228,19 @@ export const LoginRegular = async (
       localStorage.setItem('mfa_passed', 'false');
     }
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-    // console.log('firsttimelogin',isFirstLogin)    
+    // console.log('firsttimelogin',isFirstLogin)   
+    let country = "";
+    await axios.get("https://ipapi.co/json/")
+      .then((response: any) => {
+        country = response?.data?.country_name;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    const userRef = doc(db, "users", userCredential?.user?.uid);
+    await setDoc(userRef, { country }, { merge: true });
+    
+    
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid, '', '')

@@ -12,6 +12,8 @@ import { Modal } from 'react-bootstrap';
 import VotingPaymentCopy from './VotingPaymentCopy';
 import CoinsContext from 'Contexts/CoinsContext';
 import Button, { Buttons } from 'Components/Atoms/Button/Button';
+import VBG from '../../../assets/images/VBG.png';
+import VBGM from '../../../assets/images/VBGM.png';
 
 export type paymentProps = {
   type: any;
@@ -295,7 +297,14 @@ function PaymentFun({ isVotingPayment }: any) {
 }
 
   return (
-    <>
+    <div className=''
+      style={{
+        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
+        backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
+        backgroundPosition: "0 0",
+        backgroundSize: "100%",
+      }}
+    >
       <VotingPaymentCopy
         checkAndPay={checkAndPay}
         paymentStatus={paymentStatus}
@@ -379,7 +388,7 @@ function PaymentFun({ isVotingPayment }: any) {
           </div>
         </Modal.Body>
       </Modal>}
-    </>
+    </div>
   )
 }
 

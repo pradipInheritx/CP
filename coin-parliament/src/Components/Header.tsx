@@ -572,6 +572,7 @@ const Header = ({
 												transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 												transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
 												transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+												left: `${window.screen.width < 575  && followerPage && followerInfo != "" ? "0px" :""}`
 												// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
 
 											}}
@@ -717,7 +718,7 @@ const Header = ({
 													className='text-center'
 													style={{ marginLeft: "35px", marginTop: "3px" }}
 												>												
-													<div className="custom-circle-progress"
+													{followerPage && followerInfo != "" ? "" : <div className="custom-circle-progress"
 														style={{
 															cursor: "pointer"	,
 															borderRadius: "50%",
@@ -728,9 +729,9 @@ const Header = ({
 														}}
 													>															
 														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />														
-													</div>
+													</div>}
 
-													<div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
+													{followerPage && followerInfo != "" ? "" : <div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
 														<button className="btn-shaped me-1"
 															onClick={() => {
 																navigate("/coins")
@@ -742,7 +743,7 @@ const Header = ({
 																navigate("/pairs")
 															}}
 														>PAIRS VOTE</button>
-													</div>
+													</div>}
 													<div className="d-none">
 														{
 															(followerPage && followerInfo != "") ?
@@ -1040,7 +1041,7 @@ const Header = ({
 																</div>
 
 															}
-															<div className="custom-circle-progress"
+															{followerPage && followerInfo != ""  ? "" :<div className="custom-circle-progress"
 																style={{
 																	cursor: "pointer",
 																	borderRadius: "50%",
@@ -1049,48 +1050,17 @@ const Header = ({
 																onClick={() => {
 																	navigate("/profile/mine")
 															}}
-															>
-																{/* <div
-																	style={{
-																		width: 55, height: 55,																		
-																	}}
-																>
-
-																	<CircularProgressbarWithChildren
-																		background={true}
-																	value={85}
-																	strokeWidth={8}
-																	styles={buildStyles({
-																		pathColor: "#6352e8",
-																		pathTransition: "none",																		
-																		strokeLinecap: "butt",
-																		trailColor: ('white'),																	
-																		backgroundColor: "white",
-																	})}
-																>
-
-																		<img src={giftIcon} alt='' className="gift-icon" width="20px" />
-
-																</CircularProgressbarWithChildren>
-																</div> */}
+															>																
 																<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />
-															</div>
+															</div>}
 														</HeaderCenter>
 														{
 															// !(followerPage && followerInfo != "") &&
 															<div
 																className=''
 																style={{ width: "170px", marginLeft: "138px", marginTop: "5px", textAlign: "center", fontWeight: "100px", }}
-															>
-																{/* {userInfo?.displayName &&
-														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-															{userInfo?.displayName && userInfo?.displayName}
-														</span>
-													}													 */}
-
-
-
-																<div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
+															>													
+																{ followerPage && followerInfo != "" ? "" : <div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
 																	<button className="btn-shaped me-1"
 																		onClick={() => {
 																			navigate("/coins")
@@ -1101,7 +1071,7 @@ const Header = ({
 																			navigate("/pairs")
 																		}}
 																	>PAIRS VOTE</button>
-																</div>
+																</div>}
 
 																<div className="d-none">
 																	{
@@ -1124,9 +1094,9 @@ const Header = ({
 																	</span>
 																</div>
 
-																{!!followerInfo && <div className="d-flex"
+																{!!followerInfo && <div className="d-flex "
 																>
-																	{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+																	{(!!followerInfo?.status?.name && followerPage) && <MemberText className="mt-1 ml-1">{followerInfo?.status?.name}</MemberText>}
 																	{
 																		(!!followerInfo?.bio && followerPage) && <>
 																			<div className='mx-2 '>
