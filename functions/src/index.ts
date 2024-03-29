@@ -1363,32 +1363,13 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.log("getAfterVoteUpdatedData------", getAfterVoteUpdatedData);
 
-    const userVotes = await admin
-      .firestore()
-      .collection("votes")
-      .doc(data?.userId);
-    const userVotesInstance = await userVotes.get();
-    const userVotesData : any= userVotesInstance.data();
-
-    let userCPMScoreObj : any = {};
-    userVotesData.map((item:any) => {
-      if (item.userId in userCPMScoreObj) {
-        userCPMScoreObj[item.userId] += item.score;
-      } else {
-        userCPMScoreObj[item.userId] = item.score;
-      }
-    })
-    const newScore = userCPMScoreObj[data?.userId];
-
-    const userStatisticsRef = admin.firestore().collection("userStatistics").doc(data?.userId);
-    await userStatisticsRef.set({ TotalCPM: newScore }, { merge: true });
-
     return {
       voteId: getAfterUpdatedVoteInstance.id,
       ...getAfterVoteUpdatedData,
     };
   }
 );
+
 
 exports.checkAndUpdateRewardTotal = functions.https.onCall(async (data) => {
   const { userId } = data;
