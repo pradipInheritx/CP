@@ -597,32 +597,18 @@ async function createUserStatistics(userData: any, userId: any) {
 
 //function which triggers whenever any user sign in 
 exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: any) => {
-  const uid = change.after.uid;
-  const lastSignInTime = change.after.metadata.lastSignInTime; 
+  const uid = change.after.uid; // Get the UID of the user
+  const lastSignInTime = change.after.metadata.lastSignInTime; // Get the updated lastSignInTime
 
   try {
-    const userStatsRef = admin.firestore().collection('userStatistics').doc(uid);
-
-    const userStatsSnapshot = await userStatsRef.get();
-
-    if (userStatsSnapshot.exists) {
-      // Check if lastLoginTime field exists in the document
-      const userData = userStatsSnapshot.data();
-      if (userData && userData.hasOwnProperty('lastLoginTime')) {
-        // Update existing lastLoginTime field
-        await userStatsRef.update({ lastLoginTime: lastSignInTime });
-      } else {
-        // Add lastLoginTime field to the existing document
-        await userStatsRef.set({ lastLoginTime: lastSignInTime }, { merge: true });
-      }
-      console.log(`Last login time updated for user ${uid}`);
-    } else {
-      console.log(`User statistics not available for user ${uid}`);
-    }
+    // Update the lastLoginTime in your userStatistics table
+    await admin.firestore().collection('userStatistics').doc(uid).update({
+      lastLoginTime: lastSignInTime
+    });
+    console.log(`Last login time updated for user ${uid}`);
   } catch (error) {
-    console.error('Error updating last login time:', error);
+    console.log('Error updating last login time:', error);
   }
-
 });
 
 
