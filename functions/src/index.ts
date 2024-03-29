@@ -608,12 +608,12 @@ exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: 
     if (userStatsSnapshot.exists) {
       // Check if lastLoginTime field exists in the document
       const userData = userStatsSnapshot.data();
-      if (userData && userData.hasOwnProperty('lastLoginTime')) {
+      if (userData && 'lastLoginDay' in userData) {
         // Update existing lastLoginTime field
-        await userStatsRef.update({ lastLoginTime: lastSignInTime });
+        await userStatsRef.update({ lastLoginDay: lastSignInTime });
       } else {
         // Add lastLoginTime field to the existing document
-        await userStatsRef.set({ lastLoginTime: lastSignInTime }, { merge: true });
+        await userStatsRef.set({ lastLoginDay: lastSignInTime }, { merge: true });
       }
       console.log(`Last login time updated for user ${uid}`);
     } else {
@@ -622,8 +622,8 @@ exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: 
   } catch (error) {
     console.error('Error updating last login time:', error);
   }
-
 });
+
 
 
 exports.sendPassword = functions.https.onCall(async (data) => {
