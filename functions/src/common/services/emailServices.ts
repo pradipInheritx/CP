@@ -10,7 +10,11 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
     console.log("API Key IS", env.sendgrid_api_key)
     const msg = {
       to,
-      from: "support@coinparliament.com",
+      from: {
+        email: "support@coinparliament.com",
+        name: "Coin Parliament | V2E"
+    },
+      // from: "support@coinparliament.com",
       subject,
       html: body,
     };
