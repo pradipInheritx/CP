@@ -601,13 +601,28 @@ exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: 
   const lastSignInTime = change.after.metadata.lastSignInTime; 
 
   try {
-    await admin.firestore().collection('userStatistics').doc(uid).update({
-      lastLoginDay: lastSignInTime
-    });
-    console.log(`Last login time updated for user ${uid}`);
+    const userStatsRef = admin.firestore().collection('userStatistics').doc(uid);
+
+    const userStatsSnapshot = await userStatsRef.get();
+
+    if (userStatsSnapshot.exists) {
+      // Check if lastLoginTime field exists in the document
+      const userData = userStatsSnapshot.data();
+      if (userData && userData.hasOwnProperty('lastLoginTime')) {
+        // Update existing lastLoginTime field
+        await userStatsRef.update({ lastLoginTime: lastSignInTime });
+      } else {
+        // Add lastLoginTime field to the existing document
+        await userStatsRef.set({ lastLoginTime: lastSignInTime }, { merge: true });
+      }
+      console.log(`Last login time updated for user ${uid}`);
+    } else {
+      console.log(`User statistics not available for user ${uid}`);
+    }
   } catch (error) {
-    console.log('Error updating last login time:', error);
+    console.error('Error updating last login time:', error);
   }
+
 });
 
 
