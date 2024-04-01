@@ -16,7 +16,7 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
-  sendEmailVerificationLink
+  // sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/stockparliament.json";
 import { getPrice } from "./common/models/Rate";
@@ -84,7 +84,7 @@ import sgMail from "@sendgrid/mail";
 // import sendGrid Email function and templates 
 import { sendEmail } from "./common/services/emailServices"
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
-import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+// import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
@@ -299,14 +299,14 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     ).data();
     console.log("new user email  : ", getUser.email);
     if (getUser.isVoteToEarn == false) {
-      //Send Welcome Mail To User
-      await sendEmail(
-        userData.email,
-        "Welcome To Stock Parliament!",
-        userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-      );
+      // //Send Welcome Mail To User
+      // await sendEmail(
+      //   userData.email,
+      //   "Welcome To Stock Parliament!",
+      //   userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+      // );
 
-      await sendEmailVerificationLink(getUser.email);
+      // await sendEmailVerificationLink(getUser.email);
     }
 
     return updatedUser;
