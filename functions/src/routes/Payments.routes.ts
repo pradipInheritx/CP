@@ -30,7 +30,4 @@ paymentRouter.post("/parent/collectPendingParentPayment", collectPendingParentPa
 paymentRouter.get("/updateParentReferralPayment/:paymentId", updateParentReferralPayment);
 paymentRouter.post("/getAllPendingPaxByUserId", getAllPendingPaxByUser);
 
-paymentRouter.post("/parent/collectPendingParentPayment", collectPendingParentPayment);
-
-
 export default paymentRouter;

@@ -379,6 +379,9 @@ class Calculation {
         },
         { merge: true }
       );
+      console.log("total score updation starting>>>")
+      await updateTotalCMP(userId);
+
       console.log("user.parent -----", user.parent);
       if (user.parent) {
         const refer = new Refer(user.parent, "");
@@ -402,6 +405,7 @@ class Calculation {
       errorLogging("giveAway", "ERROR", error);
     }
   }
+
 
   async setTotals(): Promise<FirebaseFirestore.WriteResult> {
     const { coin } = this.voteResult;
@@ -428,6 +432,29 @@ class Calculation {
       .set(totals, { merge: true });
   }
 } // end the calculation class
+
+//function which updates total CPM into userStatistics
+export const updateTotalCMP = async (userId: string) => {
+  const userSnapshot = await firestore().collection("users")
+    .where("uid", "==", userId)
+    .get();
+
+  if (!userSnapshot.empty) {
+    userSnapshot.forEach(async (doc) => {
+      const userData = doc.data();
+
+      await firestore().collection("userStatistics").doc(userId).set(
+        { TotalCPM: userData?.voteStatistics?.score },
+        { merge: true }
+      );
+      console.log("Updated user statistics with", userData?.voteStatistics?.score)
+    });
+  } else {
+    console.log("No user documents found for user:", userId);
+  }
+};
+
+
 
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
@@ -573,6 +600,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         console.info("eachUser.total", eachUser.total)
         if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
           console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
+          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
             console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
             eachUser.status = "Speaker";
@@ -590,6 +618,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          // Call updateGametitleOfUser function
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
 
@@ -611,6 +642,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
+          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
             eachUser.status = "Council";
             eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -626,6 +658,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfCouncil);
@@ -650,6 +684,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
             eachUser.status = "Ambassador";
             eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -665,6 +700,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfAmbassador);
@@ -683,6 +720,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
             eachUser.status = "Minister";
             eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -698,6 +736,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfMinister);
@@ -717,6 +757,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
             eachUser.status = "Chairman";
             eachUser['influencersScore'] = influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -732,6 +773,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfChairman);
@@ -751,6 +794,28 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       .doc("leaders")
       .set({ leaders: leaderStatus }, { merge: true });
   };
+
+//function which updates status/level/gametitle into userStatistics
+export const updateGametitleOfUser = async (userId: string) => {
+  const userSnapshot = await firestore().collection("users")
+    .where("uid", "==", userId)
+    .get();
+
+  if (!userSnapshot.empty) {
+    userSnapshot.forEach(async (doc) => {
+      const userData = doc.data();
+
+      await firestore().collection("userStatistics").doc(userId).set(
+        { GameTitle: userData?.status?.name },
+        { merge: true }
+      );
+      console.log("Updated user statistics with", userData?.status?.name)
+    });
+  } else {
+    console.log("No user documents found for user:", userId);
+  }
+};
+
 
 
 export const calculateStatus: (

@@ -170,6 +170,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         console.info("getParentPaymentData", getParentPaymentData)
 
         console.log("parentPaymentData : ", parentPaymentData);
+
+        await updateTransactionRewardValue(parentUserId)
         // await sendRefferalNotification([
         //     { id: parentPaymentData.parentUserId, amount: parentPaymentData.amount, isParent: true },
         //     { id: parentPaymentData.childUserId, amount, isParent: false },
@@ -186,6 +188,50 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         };
     }
 };
+
+export const updateTransactionRewardValue = async (parentUserId: string) => {
+    try {
+        const parentPaymentSnapshot = await firestore().collection("parentPayment")
+            .where("parentUserId", "==", parentUserId)
+            .get();
+
+        if (!parentPaymentSnapshot.empty) {
+            const parentAmounts: any = {};
+
+            // Calculate total amount for each parent
+            parentPaymentSnapshot.forEach((doc) => {
+                const parentPaymentData = doc.data();
+                parentPaymentData.forEach((payment: any) => {
+                    if (payment && typeof payment.parentUserId !== 'undefined' && typeof payment.amount !== 'undefined') {
+                        const userId = payment.parentUserId;
+                        const amount = parseFloat(payment.amount);
+
+                        if (userId in parentAmounts) {
+                            parentAmounts[userId] += amount;
+                        } else {
+                            parentAmounts[userId] = amount;
+                        }
+                    } else {
+                        console.error('userId or amount is undefined in payment object:', payment);
+                    }
+                });
+            });
+            console.log("parentPayment amount: ", parentAmounts)
+            // Update userStatistics for each parent
+            for (const [userId, amount] of Object.entries(parentAmounts)) {
+                const userStatisticsRef = firestore().collection("userStatistics").doc(userId);
+                await userStatisticsRef.set({ TotalAmbassadorRewards: amount }, { merge: true });
+            }
+        } else {
+            console.log("No payment documents found for user:", parentUserId);
+        }
+    } catch (error) {
+        console.log("An error occurred:", error);
+    }
+};
+
+
+
 
 export const storeParentReferralAmount = async (parentPaymentData: any) => {
     console.info("parentPaymentData in Function", parentPaymentData)
