@@ -59,11 +59,10 @@ function Speed(props: SpeedProps) {
         .SvgCss{          
           width:70%;
           height:auto;
-
         }
         .textbox {
           position: absolute;
-           
+           font-size:13px;
           height: 100%;
           width: 100%;
           // left: 0;
@@ -84,13 +83,13 @@ function Speed(props: SpeedProps) {
         }
         .mid {
           // left: 51%;
-          top: 0%;
+          top: 1%;
           transform: translateX(-50%);
         }
         .high {
           // top:51%;          
           // right: 13.5%;          
-          transform: rotate(84deg);
+          transform: rotate(85deg);
         }
         .select {
           color: #5dff6d;
@@ -109,7 +108,7 @@ function Speed(props: SpeedProps) {
           <span className={value < 40 ? "span low select" : "span low"}
             style={{
               top: window.screen.width > 767 ? "50%" : "43%",
-              left: window.screen.width > 767 ? "15.5%" : "15.5%"
+              left: window.screen.width > 767 ? "13.5%" : "15.5%"
             }}
           >low</span>
           <span className={value >= 40 && value <= 60 ? "span mid select" : "span mid"}
@@ -121,7 +120,7 @@ function Speed(props: SpeedProps) {
           <span className={value > 60 ? "span high select" : "span high"}
             style={{
               top: window.screen.width > 767 ? "51%" : "43%",
-              right: window.screen.width > 767 ? "15.5%" : "15.5%",
+              right: window.screen.width > 767 ? "13%" : "15.5%",
 
 
             }}

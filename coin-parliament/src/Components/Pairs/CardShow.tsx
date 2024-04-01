@@ -5,6 +5,7 @@ import RangeSilder from '../Users/RangeSilder';
 import ModalForResult from '../../Pages/ModalForResult';
 import Countdown from 'react-countdown';
 import CountDown from './CountDown';
+import CPLogo from '../../assets/images/CPLogo.png';
 
 const Price = styled.div`
   min-width: 56px;
@@ -24,39 +25,40 @@ const MainDiv = styled.div`
 const CoinsShow = styled.div`  
 border-radius:0px 0px 120px 0px;
   // border:1px solid red;
-  padding:0px;
+  padding:15px;
   margin:0;
   align-items:center;
-  height:270px;
+  // height:270px;
 `;
 
 
 const ChildDiv = styled.div`
 // background-color:white;
   // border:1px solid green;
-  border-radius:10px;
-  margin-top:7rem;
-  width:${window.screen.width>767? "8%" :"20%"};
-  display:flex;
-  justify-content: space-between;
-  &:hover{
-    animation: zoom-in-zoom-out 1s ease;
-    @keyframes zoom-in-zoom-out {
-  0% {
-    transform: scale(1, 1);
-  }
-  50% {
-    transform: scale(1.1, 1.1);
-  }
-  100% {
-    transform: scale(1, 1);
-  }
-}
+  // border-radius:10px;
+  // margin-top:7rem;
+  // width:${window.screen.width>767? "8%" :"20%"};
+  // display:flex;
+  // justify-content: space-between;
+//   &:hover{
+//     animation: zoom-in-zoom-out 1s ease;
+//     @keyframes zoom-in-zoom-out {
+//   0% {
+//     transform: scale(1, 1);
+//   }
+//   50% {
+//     transform: scale(1.1, 1.1);
+//   }
+//   100% {
+//     transform: scale(1, 1);
+//   }
+// }
   }
 `;
 const CoinText = styled.p`
 color:white;
-font-size:15px;
+// font-size:15px;
+font-size:0.80em;
 font-weight:bold;
 text-align:center;
 `;
@@ -74,27 +76,30 @@ const ImgName = styled.div`
 `;
 
 const ButtonDiv = styled.div`
-padding:50px 0px;
+padding:5px 0px;
 display:flex;
 justify-content: center;
 `;
 
 const TimeButton = styled.div`
-width: 71px;
-height: 70px;
+width:100%;
+height:100%;
+
 box-shadow: 0 3px 6px #00000029;
-border-radius: 45px;
+
+border-radius: 50%;
 opacity: 1;
-margin:0px 15px;
+// padding:20px;
 align-items: center;
 display:flex;
 justify-content: center;
 cursor:pointer;
+font-size:0.75em;
 `;
 
 
 const VoteButton = styled.div`
-padding: ${window.screen.width > 767 ? "30px 0px" :"30px 15px"} ;
+padding: ${window.screen.width > 767 ? "10px 0px" :"10px 15px"} ;
 // border:1px solid red;
 width:100%;
 cursor:pointer;
@@ -122,7 +127,8 @@ const VoteDiv = styled.div`
     display:flex;
   flex-direction: column;
   justify-content: center;
-    max-width: 200px;
+    max-width: 180px;
+    width:2%;
   height: 76px;
     color:#6352e8;
   flex-direction: column;
@@ -191,8 +197,7 @@ function CardShow({coins}: any) {
     }
     setCurrentPrice(coins)
   }
-
-  console.log(coins,"SportParliamentFE")
+  
 
   const ChangeStatus = (active:any, index:number ) => {
     const alldata = [...allBUtton]
@@ -229,12 +234,18 @@ useEffect(() => {
       <MainDiv className=''
       >
         <CoinsShow
-          className='d-flex justify-content-center '
+          className='d-flex justify-content-between'
           style={{
           backgroundColor:"#160133",
         }}
         >
-          <div className='d-flex justify-content-center  w-75'>
+          <div className=''
+            style={{
+              marginLeft: "20px",
+              opacity: 0,
+            }}
+          ><img src={CPLogo} alt="" width={"70px"} /></div>
+          <div className='d-flex justify-content-center'>
             <ChildDiv
       
             onClick={() => {
@@ -244,37 +255,40 @@ useEffect(() => {
           >
            
            <ImgName>
-            <img src={cardData.img1} alt=""  width={"80px"} />
+            <img src={cardData.img1} alt=""  width={"70px"} />
              <CoinText style={{marginBottom:"0rem"}}>{"Bitcoin"}</CoinText>
              <CoinText style={{marginBottom:"0rem"}}>{"BTC"}</CoinText>
              <CoinPrice style={{marginBottom:"0rem",color: `${changeColor}` }}> {coins !== null ? "$"+parseFloat(coins).toFixed(2) : "Loading..."}</CoinPrice>
           </ImgName>
-
-              {/* <div className='' style={{
-            position: "relative"            
-            }}>
-            <span className="bi bi-heart" style={{
-              color: "#6352e8",
-              // padding: "20px",
-                position: "absolute",                              
-                  top: "-14px",
-                  left:"14px",
-                fontSize: "18px"
-            }}></span>              
-           </div> */}
+              
         </ChildDiv>
-          </div>          
+          </div> 
+          <div className=''
+            style={{
+            marginRight:"20px"
+          }}
+          ><img src={CPLogo} alt="" width={"70px"} /></div>
         </CoinsShow>
       
         {ShowSpdometer == false ?(
         <>
         <ButtonDiv className=''>
           {allBUtton.map((item:any,index:number) => {
-            return (<TimeButton
+            return (
+              <div
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  margin: `${window.screen.width > 767 ? "0px 1%" :"0px 5px"}`
+                }}
+                key={item.time + index}
+              >
+              <TimeButton
               style={{
               background:`${item.Active==true ? "#6352e8" :"white"}`
               
               }}
+              
               onClick={(e) => {
                 ChangeStatus(item.Active ,index)
               }}
@@ -284,7 +298,9 @@ useEffect(() => {
               color:`${item.Active==true ? "white" :"#6352e8"}`,marginBottom:"0rem"
             }}
               >{item.time}</p>
-            </TimeButton>)
+                </TimeButton>
+              </div>
+                )
           })}
         </ButtonDiv>
         </>
@@ -293,24 +309,29 @@ useEffect(() => {
         {ShowSpdometer == false ? 
           <>
             
-            <div className='text-center mt-2'>
-              <p
-                style={{ color:"#6352e8"}}
+            <div className='text-center mt-1'>
+              <span
+                style={{
+                  color: "#6352e8",
+                  fontSize:"0.80em",
+                }}
+                
               >
                 Who gets your vote?
-              </p>
+              </span>
             </div>
-            <VoteButton className='mt-3'>
+            <VoteButton className=''>
               {/* @ts-ignore */}
               <VoteDiv              
                 className={`${clickedOption1 ? "animate" : ""} confetti-button svg-button`}
               style={{
                borderRadius:"60px 0px 60px 60px"
               }}
-                onClick={() => {                  
+                onClick={() => {  
                   setClickedOption1(true);
                   console.log(coins,"786 firstvalue")
                   setTimeout(() => {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
                     setVoteDirection(1)  
                     setShowSpdometer(true)
                     setClickedOption1(false)
@@ -343,10 +364,11 @@ useEffect(() => {
                   animation: "bull_shake_right 2s ease 2s 3 alternate forwards",
                  borderRadius:"0px 60px 60px 60px"
               }}
-                 onClick={() => {    
+                onClick={() => {  
                   setVoteDirection(2)                
                    setClickedOption0(true);
-                   setTimeout(() => {
+                  setTimeout(() => {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
                      setClickedOption0(false)
                      setShowSpdometer(true)
                    }, 600
@@ -364,7 +386,7 @@ useEffect(() => {
             </VoteButton>
           </> :
           <div
-            className='d-flex justify-content-center ml-3 mt-5'
+            className='d-flex justify-content-center ml-3 mt-3'
             style={{
             
           }}
@@ -380,7 +402,7 @@ useEffect(() => {
               }}> 
               <div
                 style={{
-                marginTop:"20px"
+                // marginTop:"20px"
               }}
               >
                 <p className='text-center'
