@@ -90,7 +90,20 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL, sendEmailAcknowledgementStatus, sendEmailForVoiceMatterInLast24Hours, sendEmailForUserUpgradeInLast48Hours, sendEmailForAddressNotUpdatedInLast72Hours, sendEmailForLifetimePassiveIncomeInLast96Hours, sendEmailForEarnRewardsByPaxTokensInLast168Hours, sendEmailForUnloackRewardsInLast192Hours, sendEmailForSVIUpdateInLast216Hours, sendEmailForProgressWithFriendInLast240Hours, sendEmailForTopInfluencerInLast264Hours, sendEmailForUserFollowersCountInWeek } from "./common/models/Notification";
+import {
+  createPushNotificationOnCallbackURL,
+  sendEmailAcknowledgementStatus,
+  sendEmailForVoiceMatterInLast24Hours,
+  sendEmailForUserUpgradeInLast48Hours,
+  sendEmailForAddressNotUpdatedInLast72Hours,
+  sendEmailForLifetimePassiveIncomeInLast96Hours,
+  sendEmailForEarnRewardsByPaxTokensInLast168Hours,
+  sendEmailForUnloackRewardsInLast192Hours,
+  sendEmailForSVIUpdateInLast216Hours,
+  sendEmailForProgressWithFriendInLast240Hours,
+  sendEmailForTopInfluencerInLast264Hours,
+  sendEmailForUserFollowersCountInWeek,
+} from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -189,25 +202,27 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid)
+    console.log("decodedToken.uid : ", decodedToken.uid);
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then(async (userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
-        let userData: any = userRecord.toJSON()
+        let userData: any = userRecord.toJSON();
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
 
           await sendEmail(
             userData.email,
             "Welcome To Coin Parliament!",
-            userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+            userWelcomeEmailTemplate(
+              `${userData.userName ? userData.userName : "user"}`,
+              env.BASE_SITE_URL
+            )
           );
           res.send(successTemplate);
         }
-      })
-  }
-  catch (error: any) {
+      });
+  } catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
     return res.status(400).send(failureTemplate);
@@ -273,7 +288,6 @@ function generateRandomPassword(length: number) {
   }
   return password;
 }
-
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -380,7 +394,10 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       await sendEmail(
         userRecord.email,
         "Welcome To Coin Parliament!",
-        userWelcomeEmailTemplate(`${userRecord.displayName ? userRecord.displayName : 'user'}`, env.BASE_SITE_URL)
+        userWelcomeEmailTemplate(
+          `${userRecord.displayName ? userRecord.displayName : "user"}`,
+          env.BASE_SITE_URL
+        )
       );
 
       return true;
@@ -471,7 +488,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     share: 0,
     color: Colors.PLATINUM,
   };
-  const createdAt = new Date().toUTCString()
+  const createdAt = new Date().toUTCString();
   const userData: UserProps = {
     uid: user.uid,
     createdAt: createdAt,
@@ -534,8 +551,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     console.log("new user email  : ", getUser.email);
 
     // Return if user isVoteToEarn is true
-    console.log("get userData", getUser)
-    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    console.log("get userData", getUser);
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn);
     if (getUser.isVoteToEarn === true) {
       return newUser;
     }
@@ -545,7 +562,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     await sendEmailAcknowledgementStatus(getUser);
 
     return newUser;
-
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -556,18 +572,27 @@ async function createUserStatistics(userData: any, userId: any) {
   try {
     const userStatisticsData = {
       userId: userData.uid,
-      name: userData?.userName || "",
+      userName: userData?.userName || "",
       email: userData?.email || "",
-      totalVotes: userData?.voteStatistics?.total || 0,    //needs to be updated  for the old users
-      accountUpgrade: userData?.isUserUpgraded || false,   //needs to be updated for the old users
+      Country: userData?.country || " ",
       signUpTime: userData?.createdAt || "",
-      noOfVotesDays: 0,
+      totalVotes: userData?.voteStatistics?.total || 0, //needs to be updated  for the old users
       averageVotes: 0,
+      accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
       extraVotePurchased: false,
-      userLastLoginTime: admin.firestore.Timestamp.now()
+      noOfVotesDays: 0,
+      lastVoteDay: "",
+      source: userData.parent ? "Referral" : "Self",
+      GameTitle: userData?.status?.name || "",
+      TotalCPM: userData?.voteStatistics?.score || "",
+      TotalAmbassadorRewards: 0
     };
 
-    await admin.firestore().collection("userStatistics").doc(userId).set(userStatisticsData);
+    await admin
+      .firestore()
+      .collection("userStatistics")
+      .doc(userId)
+      .set(userStatisticsData);
 
     console.log("User statistics data added successfully for user:", userId);
   } catch (error) {
@@ -576,26 +601,39 @@ async function createUserStatistics(userData: any, userId: any) {
   }
 }
 
-exports.updateUserLastLoginTime = functions.https.onCall(async (data) => {
+//function which triggers whenever any user sign in 
+exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: any) => {
+  const uid = change.after.uid;
+  console.log("userId >>>", uid);
+  const lastSignInTime = change.after.metadata.lastSignInTime;
+  console.log("lastSignInTime >>>", lastSignInTime);
+
   try {
-    const { userId } = data as { userId: string };
-    await admin.firestore().collection("userStatistics").doc(userId).set(
-      { userLastLoginTime: admin.firestore.Timestamp.now() },
-      { merge: true }
-    );
-    return {
-      status: true,
-      message: "Last login updated successfully",
-      data: []
+    const userStatsRef = admin.firestore().collection('userStatistics').doc(uid);
+
+    const userStatsSnapshot = await userStatsRef.get();
+
+    if (userStatsSnapshot.exists) {
+      // Check if lastLoginDay field exists in the document
+      const userData = userStatsSnapshot.data();
+      if (userData && 'lastLoginDay' in userData) {
+        // Update existing lastLoginDay field
+        await userStatsRef.set({ lastLoginDay: lastSignInTime }, { merge: true });
+      } else {
+        // Add lastLoginDay field to the existing document
+        await userStatsRef.set({ lastLoginDay: lastSignInTime }, { merge: true });
+      }
+      console.log(`Last login day updated for user ${uid}`);
+    } else {
+      console.log(`User statistics not available for user ${uid}`);
     }
-  } catch (error: any) {
-    return {
-      status: false,
-      message: "Something went wrong in while update user last login time",
-      data: error
-    }
+  } catch (error) {
+    console.error('Error updating last login day:', error);
   }
 });
+
+
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -979,15 +1017,23 @@ exports.onUpdateUser = functions.firestore
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
     // Check if username has been updated
-    if (before.userName !== after.userName) {
+    if (before.userName !== after.userName || before.country !== after.country) {
       const userId = snapshot.after.id;
       const updatedUsername = after.userName;
+      const updatedCountry = after.country;
+
+      // Update name and country fields in userStatistics collection
+      const updateData = {
+        name: updatedUsername,
+        Country: updatedCountry // Assuming the field name in userStatistics is also 'country'
+      };
 
       // Update name field in userStatistics collection
-      await admin.firestore().collection("userStatistics").doc(userId).set(
-        { name: updatedUsername },
-        { merge: true }
-      );
+      await admin
+        .firestore()
+        .collection("userStatistics")
+        .doc(userId)
+        .set(updateData, { merge: true });
     }
 
     const [should, amount] = shouldHaveTransaction(before, after);
@@ -1031,17 +1077,19 @@ exports.onVote = functions.firestore
     //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
     //   });
 
-
-
-    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", vote.userId).get();
+    const userEmailAcknowledgementRef = await admin
+      .firestore()
+      .collection("userEmailAcknowledgement")
+      .where("userId", "==", vote.userId)
+      .get();
 
     const userAckBatch = admin.firestore().batch(); // Initialize a batch write operation
 
-    userEmailAcknowledgementRef.docs.forEach(doc => {
+    userEmailAcknowledgementRef.docs.forEach((doc) => {
       if (doc.data().isUserFirstVoted === false) {
         userAckBatch.update(doc.ref, {
           isUserFirstVoted: true,
-          firstTimeUserVoteTime: admin.firestore.Timestamp.now()
+          firstTimeUserVoteTime: admin.firestore.Timestamp.now(),
         });
       }
     });
@@ -1051,9 +1099,11 @@ exports.onVote = functions.firestore
     const userRef = admin.firestore().collection("users").doc(vote.userId);
 
     // Perform the update operation and fetch the updated document in a single call
-    let updatedUserDoc = await userRef.update({
-      "voteStatistics.total": admin.firestore.FieldValue.increment(1),
-    }).then(() => userRef.get());
+    let updatedUserDoc = await userRef
+      .update({
+        "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+      })
+      .then(() => userRef.get());
 
     // Extract the data from the updated document
     const updatedUserData = updatedUserDoc.data();
@@ -1067,86 +1117,105 @@ exports.onVote = functions.firestore
     await addVoteResultForCPVI(data); // add cpvi here
   });
 
-// const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
-//   try {
-//     let userVoteList: any[] = [];
-//     let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
-
-//     userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
-
-//     const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
-//     console.log("voteTimes>>>>>>>", voteTimes);
-
-//     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
-//     let numberOfDaysVoted = uniqueDates.length;
-
-//     let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
-
-//     await admin
-//       .firestore()
-//       .collection("userStatistics")
-//       .doc(userId)
-//       .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
-
-//     console.log("User statistics data updated successfully for user:", userId);
-//   } catch (error) {
-//     console.error("Error adding user statistics data for user:", userId, error);
-//     throw error;
-//   }
-
-// }
-
 const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
   try {
     let userVoteList: any[] = [];
     let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
 
-    // Check if there are votes data for the user
-    if (!userVoteQuerySnapshot.empty) {
-      userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+    userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
 
-      // Assuming you have a millisecond timestamp
-      // const timestamp = 1641936000000; // Example timestamp
+    const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
+    console.log("voteTimes>>>>>>>", voteTimes);
 
+    const voteTimeDates = voteTimes.map(time => new Date(time));
 
+    // Sort voteTimeDates in descending order
+    voteTimeDates.sort((a, b) => b.getTime() - a.getTime());
 
-      const voteTimes = userVoteList.map((doc) => {
-        // Create a new Date object using the timestamp
-        const date = new Date(doc.voteTime);
+    // Get the latest vote time
+    const latestVoteTime = voteTimeDates[0];
+    const latestVoteDate = latestVoteTime?.toISOString().split('T')[0];
 
-        // Extract the date components
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since it's zero-based
-        const day = String(date.getDate()).padStart(2, '0');
+    let lastVoteDay = latestVoteDate ? latestVoteDate : '';
 
-        // Construct the date string in the desired format (e.g., YYYY-MM-DD)
-        const formattedDate = `${year}-${month}-${day}`;
-        console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
-        return formattedDate;
-      });
-      console.log("voteTimes>>>>>>>", voteTimes);
+    const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
+    let numberOfDaysVoted = uniqueDates.length;
 
-      const uniqueDates = [...new Set(voteTimes)];
-      let numberOfDaysVoted = uniqueDates.length;
+    let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
 
-      let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+    await admin
+      .firestore()
+      .collection("userStatistics")
+      .doc(userId)
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
 
-      // Update user statistics only if there are vote data for the user
-      await admin
-        .firestore()
-        .collection("userStatistics")
-        .doc(userId)
-        .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics }, { merge: true });
-
-      console.log("User statistics data updated successfully for user:", userId);
-    } else {
-      console.log("No vote data found for user:", userId);
-    }
+    console.log("User statistics data updated successfully for user:", userId);
   } catch (error) {
-    console.log("Error adding user statistics data for user:", userId, error);
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
   }
+
 }
 
+// const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+//   try {
+//     let userVoteList: any[] = [];
+//     let userVoteQuerySnapshot = await admin
+//       .firestore()
+//       .collection("votes")
+//       .where("userId", "==", userId)
+//       .get();
+
+//     // Check if there are votes data for the user
+//     if (!userVoteQuerySnapshot.empty) {
+//       userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+
+//       const voteTimes = userVoteList.map((doc) => {
+//         // Create a new Date object using the timestamp
+//         const date = new Date(doc.voteTime);
+
+//         // Extract the date components
+//         const year = date.getFullYear();
+//         const month = String(date.getMonth() + 1).padStart(2, "0"); 
+//         const day = String(date.getDate()).padStart(2, "0");
+
+//         // Construct the date string in the desired format (e.g., YYYY-MM-DD)
+//         const formattedDate = `${year}-${month}-${day}`;
+//         console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
+//         return formattedDate;
+//       });
+
+//       const uniqueDates = [...new Set(voteTimes)];
+//       let numberOfDaysVoted = uniqueDates.length;
+
+//       let averageVotes =
+//         numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+
+//       // Update user statistics only if there are vote data for the user
+//       await admin
+//         .firestore()
+//         .collection("userStatistics")
+//         .doc(userId)
+//         .set(
+//           {
+//             noOfVotesDays: numberOfDaysVoted,
+//             averageVotes: averageVotes,
+//             totalVotes: voteStatistics,
+//           },
+//           { merge: true }
+//         );
+
+//       console.log(
+//         "User statistics data updated successfully for user:",
+//         userId
+//       );
+//     } else {
+//       console.log("No vote data found for user:", userId);
+//     }
+//   } catch (error) {
+//     console.log("Error adding user statistics data for user:", userId, error);
+//   }
+// };
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -1167,7 +1236,6 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     .withConverter(voteConverter)
     .where("coin", "==", symbol)
     .get();
-
 
   const users = uniq(votes.docs.map((v) => v.data().userId)) as string[];
 
@@ -1293,7 +1361,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
     // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    console.log("getAfterVoteUpdatedData------", getAfterVoteUpdatedData);
 
     return {
       voteId: getAfterUpdatedVoteInstance.id,
@@ -1301,6 +1369,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     };
   }
 );
+
 
 exports.checkAndUpdateRewardTotal = functions.https.onCall(async (data) => {
   const { userId } = data;
@@ -1863,12 +1932,15 @@ export const pendingPaymentSettlement = functions.pubsub
 
     // Get the current timestamp
     const currentTimeStamp = new Date();
-    const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
-
+    const twentyFourHoursAgo = new Date(
+      currentTimeStamp.getTime() - 24 * 60 * 60 * 1000
+    );
 
     try {
       // Query payments collection for payments within the last 24 hours
-      const paymentsSnapshot = await admin.firestore().collection('payments')
+      const paymentsSnapshot = await admin
+        .firestore()
+        .collection("payments")
         .where("timestamp", ">=", twentyFourHoursAgo)
         .get();
 
@@ -1878,32 +1950,46 @@ export const pendingPaymentSettlement = functions.pubsub
       // });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
-        const paymentData = snapshot.data();
-        console.log("paymentData >>>> ", paymentData)
-        console.log("paymentData.event === 'Approved' >>>>", paymentData.event === 'Approved')
-        return paymentData.event === 'Approved' ? { ...paymentData, transactionId: snapshot.id } : null;
-      });
+      const approvedPayments: any = paymentsSnapshot.docs.filter(
+        (snapshot: any) => {
+          const paymentData = snapshot.data();
+          console.log("paymentData >>>> ", paymentData);
+          console.log(
+            "paymentData.event === 'Approved' >>>>",
+            paymentData.event === "Approved"
+          );
+          return paymentData.event === "Approved"
+            ? { ...paymentData, transactionId: snapshot.id }
+            : null;
+        }
+      );
       console.log("approvedPayments >>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const transaction of approvedPayments) {
-        console.log("transaction>>>>", transaction)
+        console.log("transaction>>>>", transaction);
         // const paymentRef = transaction.ref;
         // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus: any = await checkTransactionStatus({ ...transaction?.paymentDetails, network: transaction.network });
-        console.log("TransactionStatus : ", transactionStatus)
+        const transactionStatus: any = await checkTransactionStatus({
+          ...transaction?.paymentDetails,
+          network: transaction.network,
+        });
+        console.log("TransactionStatus : ", transactionStatus);
         if (transactionStatus.data.status) {
-          console.log("transactionStatus : ", transactionStatus.message)
-          await admin.firestore().collection('payments').doc(transaction.transactionId).set({ event: 'Confirmed' }, { merge: true });
+          console.log("transactionStatus : ", transactionStatus.message);
+          await admin
+            .firestore()
+            .collection("payments")
+            .doc(transaction.transactionId)
+            .set({ event: "Confirmed" }, { merge: true });
         } else {
-          console.error("transactionStatus : ", transactionStatus)
+          console.error("transactionStatus : ", transactionStatus);
         }
       }
-      console.log('Payments updated successfully.');
+      console.log("Payments updated successfully.");
     } catch (error) {
-      console.error('Error updating payments:', error);
+      console.error("Error updating payments:", error);
     }
   });
 
@@ -2024,8 +2110,6 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 //----------END CPVI scheduler-------------
 
-
-
 /**
  * @author Mukut Prasad
  * @description Prepare all emails on time based
@@ -2034,7 +2118,6 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 60 minutes")
   .onRun(async () => {
-
     await sendEmailForVoiceMatterInLast24Hours();
 
     await sendEmailForUserUpgradeInLast48Hours();
@@ -2053,17 +2136,15 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
 
     await sendEmailForTopInfluencerInLast264Hours();
 
-    console.log("Come to email Acknowledge", new Date())
+    console.log("Come to email Acknowledge", new Date());
   });
 
-
 exports.sendEmailForUserFollowerCount = functions.pubsub
-  .schedule('every 168 hours')
+  .schedule("every 168 hours")
   .onRun(async () => {
-
     await sendEmailForUserFollowersCountInWeek();
 
-    console.log("Come to Email For User Follower Counts", new Date())
+    console.log("Come to Email For User Follower Counts", new Date());
   });
 
 // -------- pax distribution -----------
@@ -2181,7 +2262,7 @@ exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
       return {
         parentId: user.id,
         parentVoteStatistics: userData.voteStatistics,
-        childIds: userData.children,
+        children: userData.children,
       };
     });
     console.log("getCommissionUsers ", getCommissionUsers.length);
@@ -2205,18 +2286,17 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
 
   try {
     let commission = 0;
-    for (let index = 0; index < user.children.length; index++) {
-      const element = user.children[index];
-      commission += await admin
-        .firestore()
-        .collection("users")
-        .doc(element)
-        .get()
-        .then((child) => {
-          let childData = child.data();
-          return childData?.refereeScrore || 0;
-        });
-    }
+
+    const getChildAllUsers = await admin
+      .firestore()
+      .collection("users")
+      .where("uid", "in", user.children)
+      .get();
+
+    await getChildAllUsers.docs.map((user: any) => {
+      commission += user.refereeScrore;
+    });
+
     console.log("commission : ", commission);
     await admin
       .firestore()
@@ -2308,14 +2388,18 @@ exports.appendUserName = functions.https.onCall(async (data) => {
 exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
   const { userId } = data;
   try {
-    const userEmailAcknowledgementRef = await admin.firestore().collection('userEmailAcknowledgement').where("userId", "==", userId).get();
+    const userEmailAcknowledgementRef = await admin
+      .firestore()
+      .collection("userEmailAcknowledgement")
+      .where("userId", "==", userId)
+      .get();
 
     const userAckBatch = admin.firestore().batch();
-    userEmailAcknowledgementRef.docs.forEach(doc => {
+    userEmailAcknowledgementRef.docs.forEach((doc) => {
       if (doc.data().isUserLogin === false) {
         userAckBatch.update(doc.ref, {
           isUserLogin: true,
-          isUserFirstLoginTime: admin.firestore.Timestamp.now()
+          isUserFirstLoginTime: admin.firestore.Timestamp.now(),
         });
       }
     });
