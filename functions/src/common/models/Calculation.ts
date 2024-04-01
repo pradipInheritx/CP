@@ -379,6 +379,9 @@ class Calculation {
         },
         { merge: true }
       );
+      console.log("total score updation starting>>>")
+      await updateTotalCMP(userId);
+
       console.log("user.parent -----", user.parent);
       if (user.parent) {
         const refer = new Refer(user.parent, "");
@@ -403,6 +406,7 @@ class Calculation {
     }
   }
 
+  
   async setTotals(): Promise<FirebaseFirestore.WriteResult> {
     const { coin } = this.voteResult;
     const snapshotVotes = await firestore()
@@ -428,6 +432,29 @@ class Calculation {
       .set(totals, { merge: true });
   }
 } // end the calculation class
+
+//function which updates total CPM into userStatistics
+export const updateTotalCMP= async (userId: string) => {
+  const userSnapshot = await firestore().collection("users")
+    .where("userId", "==", userId)
+    .get();
+
+  if (!userSnapshot.empty) {
+    userSnapshot.forEach(async (doc) => {
+      const userData = doc.data();
+
+      await firestore().collection("userStatistics").doc(userId).set(
+        { TotalCPM: userData?.voteStatistics?.score },
+        { merge: true }
+      );
+      console.log("Updated user statistics with",userData?.voteStatistics?.score)
+    });
+  } else {
+    console.log("No user documents found for user:", userId);
+  }
+};
+
+
 
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
