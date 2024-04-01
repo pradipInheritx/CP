@@ -408,6 +408,7 @@ function WalletInfo() {
                         paxAddress: allwalletData
                     }, { merge: true });
                 }
+                setEditPaxAddress(false)
                 showToast("PAX Adderss Add Successfully", ToastType.SUCCESS);
             }
 
@@ -422,6 +423,7 @@ function WalletInfo() {
                         cardAddress: allwalletData
                     }, { merge: true });
                 }
+                setSaveCardAddress(false)
                 showToast("Card Adderss Add Successfully", ToastType.SUCCESS);
             }
             if (error) {
