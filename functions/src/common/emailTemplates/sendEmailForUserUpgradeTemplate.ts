@@ -98,29 +98,28 @@ export const sendEmailForUserUpgradeTemplate = (userName: any, appLink: any) => 
                         </tr>
 
                         <tr>
+                           <td align="center" valign="top" style="padding-bottom: 20px;">
+                              <table width="150" align="center" border="0" cellspacing="0" cellpadding="0"
+                                 style="background: #6352e8;">
+                                 <tr>
+                                    <td height="38" valign="middle" class="red"
+                                       style="color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size:14px; text-align: center; text-transform:uppercase;">
+                                       <a href="${appLink}/upgrade" target="_blank"
+                                          style="text-decoration:none;color: #ffffff;display: block;line-height: 38px;">Upgrade
+                                          Now!</a>
+                                    </td>
+                                 </tr>
+                              </table>
+                           </td>
+                        </tr>
+
+                        <tr>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 15px;">
                               But here's the thing – if your account isn't fully upgraded to a mining account, you won't
                               be able to collect those shiny PAX tokens when you hit 100 CMP (Coin Mining Progress). And
                               once you hit that milestone, there's no turning back – you gotta make a decision to claim
                               your tokens or miss out forever.
-                           </td>
-                        </tr>
-
-                        <tr>
-                           <td align="center" valign="top" style="padding-bottom: 20px;">
-                              <table width="150" align="center" border="0" cellspacing="0" cellpadding="0"
-                                 style="background: #6352e8;">
-
-                                 <tr>
-                                    <td height="38" valign="middle" class="red"
-                                       style="color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size:14px; text-align: center; text-transform:uppercase;">
-                                       <a href="${appLink}" target="_blank"
-                                          style="text-decoration:none;color: #ffffff;display: block;line-height: 38px;">Upgrade
-                                          Now!</a>
-                                    </td>
-                                 </tr>
-                              </table>
                            </td>
                         </tr>
 

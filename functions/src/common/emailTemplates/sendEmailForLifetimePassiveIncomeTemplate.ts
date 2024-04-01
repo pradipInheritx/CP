@@ -1,6 +1,6 @@
 
 export const sendEmailForLifetimePassiveIncomeTemplate = (userName: any, appLink: any) => {
-    return `<!DOCTYPE html
+   return `<!DOCTYPE html
    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
    xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -50,7 +50,7 @@ export const sendEmailForLifetimePassiveIncomeTemplate = (userName: any, appLink
                      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#2b186d">
                         <tr>
                            <td align="center" valign="bottom" style="padding: 0px 0px 0px 0px;">
-                              <a href="${appLink}" target="_blank"
+                              <a href="${appLink}/Ambassador" target="_blank"
                                  style="color:#000;text-decoration:none; display:inline-block;">
                                  <img src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Fambassador.png?alt=media&token=9741364e-990d-41a5-9652-f43a50dfc725" alt="Coin Parliament Vote To Earn" class="inx_img"
                                     width="600" height="246" border="0"
