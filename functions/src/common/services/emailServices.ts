@@ -1,14 +1,21 @@
 import env from "../../env/env.json";
 import sgMail from "@sendgrid/mail";
 
-export async function sendEmail(to: any, subject: any, body: any): Promise<{ status: boolean; message: string; result?: any }> {
+export async function sendEmail(
+  to: any,
+  subject: any,
+  body: any
+): Promise<{ status: boolean; message: string; result?: any }> {
   try {
     console.log("email>>>>>>>>");
 
     sgMail.setApiKey(env.sendgrid_api_key);
     const msg = {
       to,
-      from: "support@votingparliament.com",
+      from: {
+        email: "support@votingparliament.com",
+        name: "Voting Parliament | V2E",
+      },
       subject,
       html: body,
     };
@@ -22,12 +29,12 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
       status: true,
       message: "Email sent successfully",
     };
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error sending email:", error.message);
     return {
       status: false,
       message: error.message,
-      result: null
+      result: null,
     };
   }
 }
