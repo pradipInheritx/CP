@@ -581,11 +581,11 @@ async function createUserStatistics(userData: any, userId: any) {
       accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
       extraVotePurchased: false,
       noOfVotesDays: 0,
-      lastVoteDay:"",
+      lastVoteDay: "",
       source: userData.parent ? "Referral" : "Self",
       GameTitle: userData?.status?.name || "",
       TotalCPM: userData?.voteStatistics?.score || "",
-      TotalAmbassadorRewards:0 
+      TotalAmbassadorRewards: 0
     };
 
     await admin
@@ -605,7 +605,7 @@ async function createUserStatistics(userData: any, userId: any) {
 exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: any) => {
   const uid = change.after.uid;
   console.log("userId >>>", uid);
-  const lastSignInTime = change.after.metadata.lastSignInTime; 
+  const lastSignInTime = change.after.metadata.lastSignInTime;
   console.log("lastSignInTime >>>", lastSignInTime);
 
   try {
@@ -1033,7 +1033,7 @@ exports.onUpdateUser = functions.firestore
         .firestore()
         .collection("userStatistics")
         .doc(userId)
-        .set(updateData,{ merge: true });
+        .set(updateData, { merge: true });
     }
 
     const [should, amount] = shouldHaveTransaction(before, after);
@@ -1147,7 +1147,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
       .firestore()
       .collection("userStatistics")
       .doc(userId)
-      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay:lastVoteDay }, { merge: true });
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
 
     console.log("User statistics data updated successfully for user:", userId);
   } catch (error) {
@@ -1184,7 +1184,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
 //         console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
 //         return formattedDate;
 //       });
-      
+
 //       const uniqueDates = [...new Set(voteTimes)];
 //       let numberOfDaysVoted = uniqueDates.length;
 
