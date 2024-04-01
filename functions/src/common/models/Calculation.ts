@@ -436,7 +436,7 @@ class Calculation {
 //function which updates total CPM into userStatistics
 export const updateTotalCMP= async (userId: string) => {
   const userSnapshot = await firestore().collection("users")
-    .where("userId", "==", userId)
+    .where("uid", "==", userId)
     .get();
 
   if (!userSnapshot.empty) {
