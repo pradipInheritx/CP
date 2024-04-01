@@ -194,14 +194,14 @@ export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
         const foundationCommission = foundation?.commissionPercentage || 10
         const foundationCPM = (cpm * foundationCommission) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
-        console.info("commission", commission)
+        console.log("commission--->", commission)
         if ((commission / 100) >= 1) {
-            // foundation Payment method here sendPaxToFoundation
-            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-            console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
+            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id); // Update Pax To Foundation 
+            console.log("getResultAfterPaxTransferToFoundation--->", getResultAfterPaxTransferToFoundation);
         } else {
             await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
         }
+        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ totalCommissionEarned: commission }, { merge: true });
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
         return {
             status: true,
