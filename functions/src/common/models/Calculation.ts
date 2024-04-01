@@ -617,6 +617,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+          // Call updateGametitleOfUser function
+        await updateGametitleOfUser(eachUser.userId);
         }
       }
 
@@ -653,6 +656,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+            
+          await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfCouncil);
@@ -692,6 +697,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+            await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfAmbassador);
@@ -725,6 +732,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+            await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfMinister);
@@ -759,6 +768,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .collection("users")
             .doc(eachUser.userId)
             .set({ "status": status[0] }, { merge: true });
+
+            await updateGametitleOfUser(eachUser.userId);
         }
       }
       leaders.splice(0, getTotalNumberOfChairman);
@@ -778,6 +789,28 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       .doc("leaders")
       .set({ leaders: leaderStatus }, { merge: true });
   };
+
+  //function which updates status/level/gametitle into userStatistics
+export const updateGametitleOfUser= async (userId: string) => {
+  const userSnapshot = await firestore().collection("users")
+    .where("uid", "==", userId)
+    .get();
+
+  if (!userSnapshot.empty) {
+    userSnapshot.forEach(async (doc) => {
+      const userData = doc.data();
+
+      await firestore().collection("userStatistics").doc(userId).set(
+        { GameTitle: userData?.status?.name },
+        { merge: true }
+      );
+      console.log("Updated user statistics with",userData?.status?.name )
+    });
+  } else {
+    console.log("No user documents found for user:", userId);
+  }
+};
+
 
 
 export const calculateStatus: (
