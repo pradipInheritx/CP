@@ -1,5 +1,5 @@
 import env from "../../env/env.json";
-import requestPromise from "request-promise";
+import axios from "axios";
 import {VoteResultProps} from "./Vote";
 import {messaging} from "firebase-admin";
 import {
@@ -11,16 +11,16 @@ import {
 export const rest = restClient(env.polygon_api_key).crypto;
 export const ws = websocketClient(env.polygon_api_key).crypto();
 
-export function ajax_<T>(path: string): requestPromise.RequestPromise<T> {
+export function ajax_<T>(path: string): Promise<T> {
   const url = env.coinmarketcap_base + path;
-  return requestPromise({
-    method: "GET",
-    uri: url,
+  return axios.get(url, {
     headers: {
       "X-CMC_PRO_API_KEY": env.coinmarketcap_api_key,
     },
-    json: true,
-    gzip: true,
+  })
+  .then(response => response.data)
+  .catch(error => {
+    throw error.response ? error.response.data : error.message;
   });
 }
 
@@ -29,9 +29,9 @@ export function snapshotAllTickers<T>(): Promise<ICryptoSnapshotTickers> {
 }
 
 export function fcm<T>(
-    vote: VoteResultProps,
-    token: string
-): requestPromise.RequestPromise<T> {
+  vote: VoteResultProps,
+  token: string
+): Promise<T> {
   const url = `https://fcm.googleapis.com/v1/projects/${env.react_app_firebase_project_id}/messages:send`;
   const topic = vote.userId;
 
@@ -60,12 +60,12 @@ export function fcm<T>(
     },
   };
 
-  return requestPromise({
-    method: "POST",
-    uri: url,
+  return axios.post(url, message, {
     headers,
-    body: message,
-    json: true,
-    gzip: true,
+  })
+  .then(response => response.data)
+  .catch(error => {
+    throw error.response ? error.response.data : error.message;
   });
 }
+

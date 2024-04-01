@@ -1,7 +1,6 @@
-import {firestore} from "firebase-admin";
+import admin ,{firestore} from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
 // import {DictionaryKeys} from "./Dictionary";
-import admin from "firebase-admin";
 import * as jwt from "jsonwebtoken";
 import env from "../../env/env.json";
 import { sendEmail } from "../services/emailServices";
