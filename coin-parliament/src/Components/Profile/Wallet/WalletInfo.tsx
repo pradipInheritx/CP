@@ -791,7 +791,7 @@ function WalletInfo() {
                             onClick={() => {                                
                                 setEditCardAddress(true)
                             }}>
-                            {<span className="">Edit</span>}
+                            {<span className="">EDIT</span>}
                         </RemoveButton>}
                         </div>
                     </div>
@@ -1110,6 +1110,7 @@ function WalletInfo() {
                                 return <option className='text-uppercase' key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
                         </select>
+                        {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                         </div>
                         <div className='col-field'>
                         <input
@@ -1150,7 +1151,6 @@ function WalletInfo() {
                             {saveAddress ? <span className="loading">+</span> : '+'}
                         </RemoveButton>
                     </div>
-                    {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                     
 
                     </SelectTextfield>}
