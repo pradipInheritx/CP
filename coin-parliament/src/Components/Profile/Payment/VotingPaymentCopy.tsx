@@ -51,6 +51,17 @@ import ETHColor from '../../../assets/CoinSVG/ETHColor.svg';
 import bnbColor from '../../../assets/CoinSVG/bnbColor.svg';
 import polygonColor from '../../../assets/CoinSVG/polygonColor.svg';
 import CardsLogo from '../../../assets/CoinSVG/CardsLogo.svg';
+import USDT from '../../../assets/CoinSVG/USDT.svg';
+import pax1 from '../../../assets/CoinSVG/pax1.svg';
+import pax56 from '../../../assets/CoinSVG/pax56.svg';
+import usdc from '../../../assets/CoinSVG/usdc.svg';
+import btc from '../../../assets/CoinSVG/btc.svg';
+import btcColor from '../../../assets/CoinSVG/btcColor.svg';
+import pax1Color from '../../../assets/CoinSVG/pax1Color.svg';
+import usdcColor from '../../../assets/CoinSVG/usdcColor.svg';
+import USDTColor from '../../../assets/CoinSVG/USDTColor.svg';
+import pax56Color from '../../../assets/CoinSVG/pax56Color.svg';
+
 
 const H2 = styled.h2`
 width: 100%;
@@ -449,6 +460,45 @@ const VotingPaymentCopy: React.FC<{
     const { width } = useWindowSize();
     const [isLoading, setIsLoading] = useState(false)
   const [coinsList, setCoinsList] = useState(mainnet)
+  const [extraCoinsList, setExtraCoinsList] = useState([
+    {
+      chainId: 8086,
+      name: '',
+      currency: 'BTC',
+      Img: btc,
+      ColorImg: btcColor,
+    },
+    {
+      chainId: "USDT",
+      name: 'ERC20',
+      currency: 'USDT',      
+      Img: USDT,      
+      ColorImg: USDTColor,      
+    },
+    {
+      chainId: "USDC",
+      name: '',
+      currency: 'USDC',      
+      Img: usdc,      
+      ColorImg: usdcColor,      
+    },
+    
+    {
+      chainId: "PAX1",
+      name: 'ERC20',
+      currency: 'PAX',      
+      Img: pax1,      
+      ColorImg: pax1Color,      
+    },
+    {
+      chainId: "PAX56",
+      name: 'BEP20',
+      currency: 'PAX',  
+      Img: pax56,  
+      ColorImg: pax56Color,  
+    },
+  ])
+
     const [selectPayment, setSelectPayment] = useState(0);
   const [showChangeCoin, setShowChangeCoin] = useState(false);
 
@@ -464,6 +514,7 @@ const VotingPaymentCopy: React.FC<{
     const [transactionInst, setTransactionInst] = useState(false);
   const [showPayButoom, setShowPayButoom] = useState(false);
     const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
+  const [addHoverCss, setAddHoverCss] = useState<any>("");
 
     // const 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
@@ -1072,12 +1123,12 @@ const VotingPaymentCopy: React.FC<{
                     border: "1px solid",
                     borderRadius:"10px",
                     width:`${window.screen.width>767 ?"46%" :"98%"}`,
-                    cursor: "pointer",
+                    // cursor: "pointer",
                     marginBottom: '10px',
                     // borderBottom: "1px solid white",
                     background: `${"#281764fa"}`,
                     padding: `${window.screen.width < 767 ? "30px 65px" : "30px 40px"}`,
-                    position: "relative",
+                    // position: "relative",
                   }}
                   onClick={() => {                    
                     // setComingSoon(true)                        
@@ -1087,14 +1138,13 @@ const VotingPaymentCopy: React.FC<{
                   <p className="mx-2">Cryptocurrency</p> */}
                   <div className="justify-content-between d-flex flex-wrap"
                     style={{   
-                      width: `${window.screen.width > 767 ? "75%" : "100%"}`,
-
-                      // @ts-ignore
-                      position:`${window.screen.width > 767 ?"absolute": "" }`                 
                   }}
                   >
                   {coinsList.map((item:any , index) => {
-                    return <div className={`${item.chainId == chainId ? "selectCoinBox" :"CoinBox"} my-2`}
+                    return <div className={`${item.chainId == chainId ? "selectCoinBox" : addHoverCss == item.chainId ? "selectCoinBox" : "CoinBox"} my-2`}
+                      style={{
+                        cursor: "pointer",
+                      }}
                       onClick={() => {
                         setSelectPayment(1)
                         setShowPayButoom(true)
@@ -1102,18 +1152,70 @@ const VotingPaymentCopy: React.FC<{
                         setCoinInfo(item)                                                
                         setShowOptionList(false)
                         localStorage.setItem("CoinPay", item.name) 
-                    }}
+                        setAddHoverCss("")
+                      }}
+                      onMouseDown={(e) => {
+                        setAddHoverCss("")
+                      }}
+                      onMouseUp={(e) => {
+                        setAddHoverCss(item.chainId)
+                      }}
+                      onMouseEnter={() => setAddHoverCss(item.chainId)}
+                      onMouseLeave={() => setAddHoverCss("")}
                     >
-                      <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
+                      <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : addHoverCss == item.chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
                         style={{
                         marginRight:"10px"
                       }}
                       />
+                      <div className="d-flex flex-wrap">
                       <span className="ml-2">
                             {item.currency}
                       </span>
+                        {item.currency == "MATIC" && <span className="ml-2"
+                          style={{
+                            fontSize: "8px",
+                            fontWeight: 100,
+                          }}
+                        >
+                        {("Polygon").toUpperCase()}
+                      </span>}
+                      </div>
                     </div>
                   })}
+                    {extraCoinsList.map((item: any, index) => {
+                      return <div className={`${item.chainId == chainId ? "selectCoinBox" : addHoverCss == item.chainId ? "selectCoinBox" : "CoinBox"} my-2`}
+                        
+                        style={{
+                          cursor: "not-allowed",
+                          opacity: 0.6,
+                          filter: "grayscale(80%)",
+                        }}
+                        onClick={() => {
+                        }}                        
+                      >
+                        <img src={item.chainId == chainId ? item.Img : addHoverCss == item.chainId ? item.Img : item.ColorImg} alt="" width={"20px"}
+                          style={{
+                            marginRight: "10px"
+                          }}
+                        />
+                        <div className="d-flex flex-wrap">
+                        <span className="ml-2"
+                          style={{
+                            cursor: "not-allowed"
+                          }}
+                        >
+                          {item.currency}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "9px",
+                              fontWeight:200,
+                          }}
+                          >{item.name}</span>
+                        </div>
+                      </div>
+                    })}
                   </div>
                 </div>
                 {!!(payamount > 0) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
