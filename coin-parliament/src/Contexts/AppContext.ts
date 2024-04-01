@@ -118,6 +118,8 @@ export type AppContextProps = {
   setAppStats: (s: AppStats) => void;
   paxData: PaxData;
   setPaxData: (s: PaxData) => void;
+  animateBox?:any;
+  setAnimateBox?:any;
   setLoginRedirectMessage: (s: string) => void;
   loginRedirectMessage: string;
   isWLDPEventRegistered: boolean,
