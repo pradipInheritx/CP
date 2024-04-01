@@ -199,13 +199,10 @@ export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
             // foundation Payment method here sendPaxToFoundation
             const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
             console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
+        } else {
+            await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
         }
-        // } else {
-        //     const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-        //     console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
-        // }
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
-        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
         return {
             status: true,
             message: "Added PAX To Foundation"
