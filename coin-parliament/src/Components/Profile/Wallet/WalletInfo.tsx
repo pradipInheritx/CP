@@ -423,7 +423,7 @@ function WalletInfo() {
                         cardAddress: allwalletData
                     }, { merge: true });
                 }
-                setSaveCardAddress(false)
+                setEditCardAddress(false)
                 showToast("Card Adderss Add Successfully", ToastType.SUCCESS);
             }
             if (error) {

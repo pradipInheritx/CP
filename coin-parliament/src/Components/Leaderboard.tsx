@@ -47,13 +47,18 @@ const Leaderboard = ({
   const pathname = location.pathname;
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
+  
+  // @ts-ignore
+  const myUserIndex = userInfo?.uid && leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore)).findIndex(obj => obj.userId === userInfo?.uid) || 0;
+  console.log(myUserIndex, leaders, "myUserIndex")
+  const EndIndex = 10;
   // @ts-ignore
   // console.log(leaders, "leaderscheck")
   return (
     <div>
       <LeadersContainer>
 {/* @ts-ignore */}
-        {leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
+        {leaders?.slice(0, EndIndex).sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
           ?.map((leader ,index) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
@@ -84,7 +89,36 @@ const Leaderboard = ({
               />
             </LeaderItem>
           );
-        })}
+          })}
+        {userInfo?.uid && myUserIndex > EndIndex && <>
+          <LeaderItem
+            style={{
+              width:
+                window.screen.width < 979 &&
+                  pathname?.includes("/influencers")
+                  ? "321px"
+                  : "100%",
+              padding: "0 0 12px 0",
+            }}            
+          >
+            <UserCard
+              expanded={expanded}
+              leader={leaders[myUserIndex]}
+              checked={false}
+              setChecked={() => {
+                if (!user) {
+                  setLoginRedirectMessage('follow influencer');
+                  setLogin(true);
+                } else {
+                  setChecked(leaders[myUserIndex].userId, false);
+                }
+              }}
+              viewAllLink={viewAllLink}
+            />
+          </LeaderItem>
+          
+        </>}
+
       </LeadersContainer>
     </div>
   );

@@ -558,7 +558,7 @@ const VotingPaymentCopy: React.FC<{
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo, "AllInfo")
       // setPayamount(AllInfo[0])
-      setPayamount(0.0001)
+      setPayamount(AllInfo[0] > 24 ? AllInfo[0] : 0.0001)
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])
@@ -835,6 +835,9 @@ const VotingPaymentCopy: React.FC<{
 
         if (errorCodeGet == -32603) {          
           setPaymentStatus({ type: "error", message: error.data.error})
+        }
+        else if (errorCodeGet == "NETWORK_ERROR") {          
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This some network error please try again."})
         }
         else {          
           setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
@@ -1127,7 +1130,7 @@ const VotingPaymentCopy: React.FC<{
                     marginBottom: '10px',
                     // borderBottom: "1px solid white",
                     background: `${"#281764fa"}`,
-                    padding: `${window.screen.width < 767 ? "30px 65px" : "30px 40px"}`,
+                    padding: `${window.screen.width < 767 ? "30px 55px" : "30px 40px"}`,
                     // position: "relative",
                   }}
                   onClick={() => {                    
@@ -1165,7 +1168,7 @@ const VotingPaymentCopy: React.FC<{
                     >
                       <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : addHoverCss == item.chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
                         style={{
-                        marginRight:"10px"
+                        marginRight:"8px"
                       }}
                       />
                       <div className="d-flex flex-wrap">
@@ -1196,7 +1199,7 @@ const VotingPaymentCopy: React.FC<{
                       >
                         <img src={item.chainId == chainId ? item.Img : addHoverCss == item.chainId ? item.Img : item.ColorImg} alt="" width={"20px"}
                           style={{
-                            marginRight: "10px"
+                            marginRight: "8px"
                           }}
                         />
                         <div className="d-flex flex-wrap">
@@ -1218,7 +1221,7 @@ const VotingPaymentCopy: React.FC<{
                     })}
                   </div>
                 </div>
-                {!!(payamount > 0) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
+                {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
                   
                   style={{
                     borderRadius:"10px",
@@ -1244,7 +1247,7 @@ const VotingPaymentCopy: React.FC<{
                 >
                   <span className="d-flex align-items-center justify-content-center mb-2"
                     style={{
-                    fontSize:"18px"
+                      fontSize:"16px"
                   }}
                   >
                     <i className="bi bi-credit-card-fill me-2"></i> No Crypto? <strong>&nbsp; No problem.</strong>

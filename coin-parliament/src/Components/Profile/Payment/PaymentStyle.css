@@ -1,14 +1,15 @@
 .CoinBox{
   border: 1.5px solid #DAA636;
   color: #DAA636;
-  width: 110px;
+  width: 47%;
+  max-width: 130px;
   text-align: center;
   border-radius:20px;
   display: flex;
   justify-content: start;
   align-items: center;
   line-height: 13px;
-  padding: 0px 20px;
+  padding: 0px 10px;
   height: 35px;
 }
 .selectCoinBox{
@@ -21,13 +22,14 @@
   border-radius: 20px;
   display: inline-block;
   /* margin: 75px 0; */
-  width: 110px;
+  width: 47%;
+  max-width: 130px;
   text-align: center;
   display: flex;
   justify-content: start;
   align-items: center;
   line-height: 13px;
-  padding: 0px 20px;
+  padding: 0px 10px;
   height: 35px;
 
 }
