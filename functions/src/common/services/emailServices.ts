@@ -8,7 +8,7 @@ export async function sendEmail(to: any, subject: any, body: any) {
   const msg = {
     to,
     from: {
-      email: "support@coinparliament.com",
+      email: "support@sportparliament.com",
       name: "Sport Parliament | V2E"
   },
     subject,
