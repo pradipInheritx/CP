@@ -615,6 +615,10 @@ export const sendPaxToFoundation = async (foundationId: any) => {
         paxEarned,
         commission
       }, { merge: true });
+
+      const getFoundationData = (await firestore().collection("foundations").doc(foundation?.id).get()).data();
+      console.log("getFoundationData--->", getFoundationData)
+
     }
 
     return { status: true, result: transaction.data };
