@@ -191,8 +191,8 @@ class Calculation {
     const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
 
     if (typeof this.price === "number") {
-      const startValue = voteResult.valueVotingTime;
-      const endValue = voteResult?.valueExpirationTime;
+      const startValue :any= voteResult.valueVotingTime;
+      const endValue :any= voteResult?.valueExpirationTime;
       const upRange =
         Number(startValue) +
         (Number(startValue) * CPMReturnRangePercentage) / 100;
