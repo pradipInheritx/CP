@@ -166,6 +166,8 @@ import { afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ethers } from "ethers";
+import InfluencersList from "Components/InfluencersList";
+import NewUrlFram from "Components/NewUrlFram";
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
@@ -2027,6 +2029,10 @@ useEffect(() => {
                                               element={<NFTGallery />}
                                             />
                                             <Route
+                                            path='iframeUrl'
+                                              element={<NewUrlFram />}
+                                            />
+                                            <Route
                                               path='nftAlbum/:type'
                                               element={<NFTGalleryType />}
                                             />
@@ -2189,6 +2195,10 @@ useEffect(() => {
                                             <Route
                                               path='influencers'
                                               element={<Influencers />}
+                                            />
+                                            <Route
+                                              path='influencers/:type'
+                                            element={<InfluencersList />}
                                             />
 
                                             {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
