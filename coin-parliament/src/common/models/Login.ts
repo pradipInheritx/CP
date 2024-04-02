@@ -140,6 +140,9 @@ export const LoginAuthProvider = async (
           console.log(error);
         });
       await setDoc(userRef, { country }, { merge: true });
+      const lastLoginDay = new Date();
+      const userRefUpdate = doc(db, "userStatistics", user.uid);
+      await setDoc(userRefUpdate, { lastLoginDay }, { merge: true });
     }
   } catch (e) {
     console.log(e, "check this error 2")
@@ -236,10 +239,7 @@ export const LoginRegular = async (
       })
       .catch((error) => {
         console.log(error);
-      });
-    const userRef = doc(db, "users", userCredential?.user?.uid);
-    await setDoc(userRef, { country }, { merge: true });
-    
+      });    
     
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
@@ -256,6 +256,12 @@ export const LoginRegular = async (
       } else {
         callback.successFunc(userCredential.user)
       }
+      const userRef = doc(db, "users", userCredential?.user?.uid);
+      await setDoc(userRef, { country }, { merge: true });
+
+      const lastLoginDay = new Date();
+      const userRefUpdate = doc(db, "userStatistics", userCredential?.user?.uid);
+      await setDoc(userRefUpdate, { lastLoginDay }, { merge: true });
     }
     else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
   } catch (err) {

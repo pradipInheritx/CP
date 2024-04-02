@@ -1012,9 +1012,9 @@ function App() {
       console.log('WebSocket connection closed', event);   
       throttleReconnectWebSocket()
     };
-    ws.onerror = () => {  
+    ws.onerror = (event: any) => {  
       setSocketConnect(false);      
-      console.log('WebSocket connection occurred');
+      console.log('WebSocket connection occurred',event);
       throttleReconnectWebSocket()      
     };      
   }    

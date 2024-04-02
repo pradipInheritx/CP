@@ -42,6 +42,9 @@ const InfluencersComponent = ({
           chosen={chosen}
         />
       </div>
+      <div className="text-center mb-2">
+      <p>TOP 25 {chosen}</p>
+      </div>
       <Leaderboard
         {...{
           expanded: true,
