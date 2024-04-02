@@ -83,6 +83,11 @@ const Group4092 = styled(StatusContainer)`
   height: 13px;
   background-color: var(--blue-violet);
 `;
+const RankValue = styled.span`
+  font-size:10px;
+  margin-left : 5px;
+  color:#6352e8;
+`;
 
 const Minister = styled.div`
   ${PoppinsMediumWhite7px};
@@ -157,6 +162,7 @@ export type UserCardProps = {
   setChecked: (c: boolean) => void;
   viewAllLink?: string;
   expanded?: boolean;
+  Rank?:number
 };
 
 const UserCard = ({
@@ -165,6 +171,7 @@ const UserCard = ({
   checked,
   viewAllLink,
   expanded,
+  Rank,
 }: UserCardProps) => {
   const translate = useTranslation();
   const location = useLocation();
@@ -219,10 +226,16 @@ const UserCard = ({
         </ElementsAvatarAImage1>
         <FlexCol>
           <UsernameUnique className="pb-1">{leader.displayName}</UsernameUnique>
-          {leader?.status && <Group4092>
+          {leader?.status &&
+            <div className="d-flex">            
+            <Group4092>
             <Minister>{translate(leader?.status || "")}</Minister>
             {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
-          </Group4092>}
+              </Group4092>
+              <RankValue>#{Rank}</RankValue>
+            </div>
+          }
+          
           <Address>
             <span className='mx-1'>
               {leader.subscribers} {translate("Followers")}

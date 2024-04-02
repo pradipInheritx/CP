@@ -537,17 +537,16 @@ const VotingPaymentCopy: React.FC<{
   // @ts-ignore  
   const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
   
-  useEffect(() => {
-    // window.scrollTo({ top: 500, behavior: 'smooth' });
-    if (coinInfo) {
-      if (window.screen.width > 767) {
-        window.scrollTo({ top: 650, behavior: 'smooth' });
-      }
-      else {
-        window.scrollTo({ top: 630, behavior: 'smooth' });
-      }
-    }
-  }, [coinInfo, chainId, selectPayment])
+  // useEffect(() => {    
+  //   if (coinInfo) {
+  //     if (window.screen.width > 767) {
+  //       window.scrollTo({ top: 650, behavior: 'smooth' });
+  //     }
+  //     else {
+  //       window.scrollTo({ top: 630, behavior: 'smooth' });
+  //     }
+  //   }
+  // }, [coinInfo, chainId, selectPayment])
 
 
     useEffect(() => {
@@ -644,7 +643,7 @@ const VotingPaymentCopy: React.FC<{
     }
     if (window.screen.width < 767 && events?.data?.event == "MODAL_LOADED" || events?.data?.event == "MODAL_CLOSE") {
       
-      window.scrollTo({ top: 850, behavior: 'smooth' });
+      // window.scrollTo({ top: 850, behavior: 'smooth' });
     }
     // return () => {
     //   setTransactionInst(false)
@@ -897,12 +896,12 @@ const VotingPaymentCopy: React.FC<{
               console.log(doc.data()?.data, "livepaymentdata")
               if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {
                 setIsLoading(false)
-                window.scrollTo({ top: 650, behavior: 'smooth' });
+                // window.scrollTo({ top: 650, behavior: 'smooth' });
                 setPaymentStatus({ type: "success", message: '' });
               }
               if (doc.data()?.data?.order_status == "Declined") {
                 console.log(doc.data()?.data, "DeclinedData")
-                window.scrollTo({ top: 650, behavior: 'smooth' });
+                // window.scrollTo({ top: 650, behavior: 'smooth' });
                 setIsLoading(false)
                 setPaymentStatus({ type: "error", message: '' });
               }
@@ -946,7 +945,6 @@ const VotingPaymentCopy: React.FC<{
           console.log(error)
         })
     }
-
   
     return (
       <>
@@ -972,32 +970,29 @@ const VotingPaymentCopy: React.FC<{
           }}>
             {texts.waitForIt}
           </span>
-        </div>}
-        
-        {/* <button onClick={addEthereumNetwork}>Switch to Ethereum Mainnet</button> */}
-        {/* <button onClick={() => {getGessFee()}}>Open network</button> */}
+        </div>}                
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
             marginTop: "35px",
             fontSize: "1.25rem",
           }}
-        >
-          {/* @ts-ignore */}
+        >   
+          {/* @ts-ignore */}  
           {translate("Boost your voting power").toUpperCase()}
         </H2>}
         {/* @ts-ignore */}
-        {payType !== "EXTRAVOTES" && userInfo?.isUserUpgraded == false && <H2
+        {payType !== "EXTRAVOTES" && (userInfo?.isUserUpgraded == false || userInfo?.isUserUpgraded == undefined ) && <H2
           style={{
             zIndex: 1,
             marginTop: "35px",
             fontSize: "1.25rem",
           }}
-        >
-          {/* @ts-ignore */}
+        >      
+          {/* @ts-ignore */}  
           {translate("Upgrade your account").toUpperCase()}
         </H2>}
-        <div className="pt-5 pb-5 d-flex justify-content-center"
+        {/* <div className="pt-5 pb-5 d-flex justify-content-center"
           style={{
             flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
             overflow: "hidden",
@@ -1011,15 +1006,13 @@ const VotingPaymentCopy: React.FC<{
             }}
           >
             {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" className=""
-              onLoad={() => {
-                // console.log("image load Done")
+              onLoad={() => {                
                 window.scrollTo({ top: 750, behavior: 'smooth' });
             }}
             />
 
               : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
-                onLoad={() => {
-                  // console.log("image load Done")
+                onLoad={() => {                  
                   window.scrollTo({ top: 750, behavior: 'smooth' });
                 }}
               />}
@@ -1034,8 +1027,7 @@ const VotingPaymentCopy: React.FC<{
                 style={{
                   width: `${window.screen.width > 767 ? "49%" : "100%"}`
                 }}
-              >
-                {/* @ts-ignore */}
+              >                
                 {userInfo?.isUserUpgraded ?
                   <div className={`${window.screen.width > 767 ? "w-50" :"w-100"}`}
                     style={{
@@ -1048,8 +1040,7 @@ const VotingPaymentCopy: React.FC<{
                         marginTop: "0px",
                         paddingTop: "30px",
                         fontWeight: "bold",
-                        textTransform: 'uppercase',
-                        // textAlign: "left"
+                        textTransform: 'uppercase',                        
 
                       }}
                     >
@@ -1061,8 +1052,7 @@ const VotingPaymentCopy: React.FC<{
                         marginTop: "0px",
                         paddingTop: "30px",
                         fontWeight: "bold",
-                        textTransform: 'uppercase',
-                        // textAlign: "left"
+                        textTransform: 'uppercase',                        
                       }}
                     >
                       {translate("YOU'RE NOW A MINER")}
@@ -1070,8 +1060,7 @@ const VotingPaymentCopy: React.FC<{
                     <P
                       style={{
                         fontSize: "15px", fontWeight: "100", marginTop: "10px",
-                        lineHeight: "2"
-                        // textAlign: "left"
+                        lineHeight: "2"                        // textAlign: "left"
                       }}
                       className="px-3 pt-4  pb-3"
                     >
@@ -1086,8 +1075,7 @@ const VotingPaymentCopy: React.FC<{
                   >
                     <p
                       style={{
-                        fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2,
-                        // textAlign:"",
+                        fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2,                        
                         width: `${window.screen.width > 767 ? "50%" : "75%"}`,
                       }}
                       className="px-3 pt-4  pb-3"
@@ -1099,14 +1087,14 @@ const VotingPaymentCopy: React.FC<{
               </div>
             </>
           }
-        </div>
+        </div> */}
 
-        {selectPayment == 0 && <p className="text-center mb-4"
+        {/* {selectPayment == 0 && <p className="text-center mb-4"
         
           style={{
           fontSize:"25px"
         }}
-        >PAYMENT OPTION</p>}
+        >PAYMENT OPTION</p>} */}
 
         {!paymentStatus?.type &&
           <div
@@ -1234,7 +1222,7 @@ const VotingPaymentCopy: React.FC<{
                     if (payamount > 0) {
                       // setSelectPayment(2)
 
-                      window.scrollTo({ top: 100, behavior: 'smooth' });
+                      // window.scrollTo({ top: 100, behavior: 'smooth' });
                       setIsLoading(true)
                       getPayment()
                       // setPaymentCurruntTime(new Date().getTime())
@@ -1493,11 +1481,11 @@ const VotingPaymentCopy: React.FC<{
                           // } else {
                           // }
                           open().then((result) => {
-                            window.scrollTo({ top: 800, behavior: 'smooth' });    
-                            console.log("yes i am open" , events.data)
+                            // window.scrollTo({ top: 800, behavior: 'smooth' });    
+                            // console.log("yes i am open" , events.data)
                           }).catch((err) => {
-                            window.scrollTo({ top: 800, behavior: 'smooth' });  
-                            console.log("yes i am close", events.data)
+                            // window.scrollTo({ top: 800, behavior: 'smooth' });  
+                            // console.log("yes i am close", events.data)
                           });  
                           
                         }}

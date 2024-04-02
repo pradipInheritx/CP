@@ -303,6 +303,7 @@ function PaymentFun({ isVotingPayment }: any) {
         backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
         backgroundPosition: "0 0",
         backgroundSize: "100%",
+        height:"80vh"
       }}
     >
       <VotingPaymentCopy
