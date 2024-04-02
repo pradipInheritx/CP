@@ -600,7 +600,6 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         console.info("eachUser.total", eachUser.total)
         if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
           console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
-          eachUser['rank'] = leaders.length - leader; // Added Rank
           if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
             console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
             eachUser.status = "Speaker";
@@ -629,8 +628,11 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       // console.info("leaders In Speaker", leaders)
     }
 
+
+    leaderStatusForSpeaker.sort((speakerOne: any, speakerTwo: any) => speakerTwo.influencersScore - speakerOne.influencersScore);
+
     for (let speaker = 0; speaker < leaderStatusForSpeaker.length; speaker++) {
-      leaderStatus.push(leaderStatusForSpeaker[speaker]);
+      leaderStatus.push({ ...leaderStatusForSpeaker[speaker], rank: leaderStatusForSpeaker.length - speaker });
     }
 
     // console.info("After Spliced Only leaders", leaders)
@@ -668,9 +670,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
 
     console.log("Council Data Only", leaderStatusForCouncil)
     console.log("after Council ,Leader list ", leaders, leaders.length)
-
+    leaderStatusForCouncil.sort((councilOne: any, councilTwo: any) => councilTwo.influencersScore - councilOne.influencersScore);
     for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
-      leaderStatus.push(leaderStatusForCouncil[speaker]);
+      leaderStatus.push({ ...leaderStatusForCouncil[speaker], rank: leaderStatusForCouncil.length - 1 });
     }
 
     // console.info("After Spliced Council", leaderStatus)
@@ -708,8 +710,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       console.log("Ambassador List : ", leaderStatusForAmbassador);
       console.log("after Ambassador ,Leader list ", leaders, leaders.length)
     }
+    leaderStatusForAmbassador.sort((ambassadorOne: any, ambassadorTwo: any) => ambassadorTwo.influencersScore - ambassadorOne.influencersScore);
     for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
-      leaderStatus.push(leaderStatusForAmbassador[speaker]);
+      leaderStatus.push({ ...leaderStatusForAmbassador[speaker], rank: leaderStatusForAmbassador.length - 1 });
     }
 
     let leaderStatusForMinister: Leader[] = [];
@@ -744,9 +747,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       console.log("Minister List : ", leaderStatusForMinister);
       console.log("after Minister ,Leader list ", leaders, leaders.length)
     }
-
+    leaderStatusForMinister.sort((ministerOne: any, ministerTwo: any) => ministerTwo.influencersScore - ministerOne.influencersScore);
     for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
-      leaderStatus.push(leaderStatusForMinister[speaker]);
+      leaderStatus.push({ ...leaderStatusForMinister[speaker], rank: leaderStatusForMinister.length - 1 });
     }
 
     let leaderStatusForChairman: Leader[] = [];
@@ -780,8 +783,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       leaders.splice(0, getTotalNumberOfChairman);
       console.log("Chairman List : ", leaderStatusForChairman);
     }
+    leaderStatusForChairman.sort((chairmanOne: any, chairmanTwo: any) => chairmanTwo.influencersScore - chairmanOne.influencersScore);
     for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
-      leaderStatus.push(leaderStatusForChairman[speaker]);
+      leaderStatus.push({ ...leaderStatusForChairman[speaker], rank: leaderStatusForChairman.length - 1 });
     }
     console.info("leaders", leaders)
     console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
