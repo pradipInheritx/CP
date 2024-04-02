@@ -166,7 +166,12 @@ const ResponsiveContainer = styled.div`
 
   @media (max-width: 767px) {
     width: 250px;
-    height: 380px;
+    height: 360px;
+  }
+
+  @media (max-width: 767px) {
+    width: 250px;
+    height: 360px;
   }
 `;
 
@@ -415,7 +420,7 @@ useEffect(() => {
             </VoteButton>
           </> :
           <div
-            className='d-flex justify-content-center ml-3 mt-3'
+            className='d-flex justify-content-center ml-3 mt-3 cpCardGraph'
             style={{
             
           }}
