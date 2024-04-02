@@ -8,10 +8,11 @@ import { VoteResultProps } from "../../common/models/Vote";
 
 interface SpeedProps {
   value: number;
+  setImpactValue: any
 }
 
 function Speed(props: SpeedProps) {
-  const { value } = props;
+  const { value, setImpactValue } = props;
 
   const gauge = useGauge({
     domain: [0, 100],
@@ -37,6 +38,19 @@ function Speed(props: SpeedProps) {
   //-12,1.4695761589768238e-15 -2.000000000000037,-200 1.9999999999999634,-200 12,0
   // -11.992689924229149,-0.4187939604300108 4.981117686462064,-199.94796439722415 8.978680994538447,-199.80836641041412 11.992689924229149,0.4187939604300116
 
+  useEffect(()=>{
+    if(value < 40){
+
+      setImpactValue('Low')
+    }else if( value >=40 && value <=60){
+      setImpactValue('Mid')
+    }else{
+      setImpactValue('High')
+    }
+  },[value])
+
+
+  
 
   return (
     <>
@@ -100,29 +114,39 @@ function Speed(props: SpeedProps) {
           stroke-opacity: 1;
           filter: drop-shadow(0px 0px 4px #aeaeff);
         }
-        
+        .black{
+          color:black;
+          text-shadow: 1px 1px 2px white, 0 0 1em blue, 0 0 0.2em white;
+          font-weight: 600;
+        }
+        .red{
+          color:red;
+          text-shadow: -1px 1px 25px rgba(255, 57, 57, 1);
+          font-weight: 600;
+        }
       `}
       </style>
       <div className="BigDiv">
         <div className="textbox">
-          <span className={value < 40 ? "span low select" : "span low"}
+          <span className={value < 40 ? "span low red" : "span low"}
             style={{
               top: window.screen.width > 767 ? "50%" : "43%",
-              left: window.screen.width > 767 ? "13.5%" : "15.5%"
+              left: window.screen.width > 767 ? "14%" : "17%",
+              fontSize: window.screen.width> 767 ? "none": '13px',
             }}
           >low</span>
-          <span className={value >= 40 && value <= 60 ? "span mid select" : "span mid"}
+          <span className={value >= 40 && value <= 60 ? "span mid black" : "span mid"}
             style={{
-              top: window.screen.width > 767 ? "10%" : "9.5%",
-              left: window.screen.width > 767 ? "51%" : "51%"
+              top: window.screen.width > 767 ? "2%" : "18%",
+              left: window.screen.width > 767 ? "51%" : "51%",
+              fontSize: window.screen.width> 767 ? "none": '13px',
             }}
           >mid</span>
           <span className={value > 60 ? "span high select" : "span high"}
             style={{
               top: window.screen.width > 767 ? "51%" : "43%",
-              right: window.screen.width > 767 ? "13%" : "15.5%",
-
-
+              right: window.screen.width > 767 ? "13.8%" : "17%",
+              fontSize: window.screen.width> 767 ? "none": '13px',
             }}
           >high</span>
         </div>
@@ -224,6 +248,7 @@ export default function SpeedTest(
     symbol1,
     symbol2,
     voteDirection,
+    setImpactValue
   }: {
     // lastTenSec?: any
     vote?: VoteResultProps;
@@ -232,6 +257,7 @@ export default function SpeedTest(
     symbol1?: string;
       symbol2?: string;
       voteDirection?: any;
+      setImpactValue?: any
   }
 ) {
   // const { value } = useSpeedTest();
@@ -308,7 +334,7 @@ export default function SpeedTest(
 
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
-      <Speed value={value} />{/* // low<mid 40-60>high */}
+      <Speed value={value} setImpactValue={setImpactValue} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );
 }

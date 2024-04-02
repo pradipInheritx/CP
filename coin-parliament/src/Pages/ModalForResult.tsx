@@ -1,21 +1,16 @@
-import React, { SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { SetStateAction, useContext, useEffect, useRef, useState } from 'react'
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap'
-import { Logo } from '../Components/Pairs/Card';
+
 import styled from "styled-components";
-import Trend from '../Components/Atoms/utils/Trend';
-import CoinsContext from '../Contexts/CoinsContext';
-import { formatCurrency } from '../common/models/Coin';
-import moment from "moment";
-import Line from '../Components/icons/line';
+
 import { Buttons, timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Other } from './SingleCoin';
-import AppContext from '../Contexts/AppContext';
-import { Prev } from 'react-bootstrap/esm/PageItem';
+
 import { listData } from '../Components/Pairs/utils';
 import UserContext from '../Contexts/User';
 import { VoteButton } from '../common/utils/SoundClick';
 // const silent = require("../assets/sounds/silent.mp3").default;
+
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
     props.winner ? "#6352E8" : "transparent"};
@@ -45,28 +40,40 @@ const PairsVoteVs = styled.span`
   color: #6352e8;
 `;
 
+
+
 interface ChildComponentProps {
   showPopUp?: any;
   setShowPopUp?: any;
   voteDirection?: number;
-  coins?: number;
+  coins?: any;
   voteLastPrice?:any
+  startprice?:any
+  activeTime?:any;
+  impactValue?:any
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice }) => {
-// function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
-  // const { user } = useContext(UserContext);
-  // const { setLogin, } = useContext(AppContext);
-  // const navigate = useNavigate();
-//   const setVoteDetails = useContext(VoteDispatchContext);
-//   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
-  console.log(voteLastPrice,"786")
-useEffect(() => {
+
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice,voteDirection,startprice,activeTime,impactValue }) => {
+const [lastPrice, setLastPrice] = useState<any>(coins)
+
+const twoDigitLastPrice = lastPrice && parseFloat(lastPrice)?.toFixed(2)
+const twoDigitStartPrice = startprice && parseFloat(startprice)?.toFixed(2)
+
+
+
+  useEffect(() => {
     if (showPopUp) {
       handleShow();    
     }
   VoteButton(true)
 }, [showPopUp])
+
+const [voteImpact, setVoteImpact] = useState('')
+
+
+// console.log('4567', voteImpact);
+
 
   const [show, setShow] = useState(false);
   // const setVoteDetails = useContext(VoteDispatchContext);
@@ -78,8 +85,22 @@ useEffect(() => {
   };
   let params = useParams();
   const {id} = params;
+  // console.log(params,"params")
+  // console.log(window.location,"loaction")
 // @ts-ignore
-  const cardData = { ...listData[id] }
+  const cardData = { ...listData[0] }
+
+  var currentUrl = window.location.search;
+
+// Use the URLSearchParams API to parse the URL and get the value of the "username" parameter
+var urlParams = new URLSearchParams(currentUrl);
+
+if (urlParams.has('username')) {
+  var username = urlParams.get('username');
+  // console.log(username,"usernam 11");
+} else {
+  console.log('Username parameter not found in the URL. 11');
+}
   return (
     <div>      
       <Modal show={show} onHide={handleClose}
@@ -97,7 +118,6 @@ useEffect(() => {
             fontWeight: "300",
             marginLeft: `${window.screen.width < 767 ? "10%" : ""}`
           }}>
-            {/* {type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""} */}
           </div>
           {/* <div className="d-flex justify-content-end" > */}
             <button className="btn-close " aria-label="Close" 
@@ -120,99 +140,25 @@ useEffect(() => {
                   className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
 
                 >
-                  {/* <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
-                <CoinContainer
-                  winner={true}>
-                      <div className=" ">
-                        <div className='p-2'>
-                          <img src={cardData.img1} alt="" width="50px" />
-                        </div>
-                        <div className="" style={{ lineHeight: '20px' }}>
-                      <div                        
-                      >             
-                            <strong>{cardData.name1}</strong>
-                      </div>  
-                      <div>
-                          </div>
-                        </div>
-                      </div>
-                    </CoinContainer>
-                  </div> */}
-
-
-                  {/* <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
-                    <Col className="">
-                      <div className="">
-                        <LineImg>
-                          <Line />
-                        </LineImg>
-                      </div>                      
-                      <div className="">
-                        <div className='d-flex  justify-content-center'>                      
-                        </div>
-                        <div style={{ minHeight: "100%" }}>
-                          <PairsVoteVs>                            
-
-                          </PairsVoteVs>
-                        </div>
-
-                      </div>
-                    </Col>
-                  </div> */}
-
-                  {/* <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
-                <CoinContainer
-                  winner={false}                    
-                >
-                      <div className="">
-                        <div className='p-2'>                          
-                            <img src={cardData.img2} alt="" width="50px" />
-                        </div>
-                        <div className="" style={{ lineHeight: '20px' }}>
-                          <div>
-                            <strong>{cardData.name2}</strong>
-                          </div>
-                          <div>
-                          </div>
-                        </div>
-                      </div>
-                    </CoinContainer>
-                  </div> */}
+             
             </div>    
             <div style={{ minHeight: "100%" }} className=" text-center">
-              
+              {/* {console.log("difference :: ",startprice,voteLastPrice,voteDirection)} */}
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
-                    <p>VOTE RESULT</p>
-                    <p>
-                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
-                    </p>
-                    <p>Vote impact : HIGH </p>
+                    <img src={cardData.img1} alt=""  width={"80px"} style={{height:"50px"}} />
+                    <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"20px"}}>{"Bitcoin"}</p>
+                    <p style={{marginBottom:"0rem",fontSize:"17px"}}>{"BTC"}</p>
+                    <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"20px"}}>{Math.floor(activeTime / 1000) + "Sec"}</p>
+                    <p style={{fontSize:"20px"}}>{voteDirection === 1 ? "Bull " : "Bear "}{'$'+twoDigitStartPrice}</p>
+                    <p  style={{marginBottom:"0rem",fontSize:"20px",color:"#6352e8"}}>{"Vote Result"}</p>
+                    <p style={{fontSize:"20px",color:`${twoDigitLastPrice >= twoDigitStartPrice ? "green" : "red"}`}}>{voteDirection === 1 && twoDigitLastPrice >= twoDigitStartPrice ? "Bull " : "Bear "}{'$'+twoDigitLastPrice}</p>
+                    <p style={{fontSize:"17px"}}>{"Vote impact :"} {impactValue.toUpperCase()}</p>
                   </div>
-                  <CoinVoteTimer>
-                    {/* {vote?.valueExpirationTime && vote?.score && ( */}
-                      <>
-                        {/* <strong>You progressed - {2.5}</strong> <span>CMP</span> */}
-                      </>
-
-                    {/* )} */}
-                  </CoinVoteTimer>
                 </div>
 
-            {/* <Col className="text-center">                  
-                  <span className="sm_txt">
-                    {"123213498ASKDJ"} {' '}
-                    {window.screen.width < 768 && <br />}
-                    {`
-                    - ${moment(
-                      new Date()
-                    ).format("DD/MM/YYYY")}`}{' '} {`
-                     ${moment(
-                      new Date()
-                    ).format("HH:mm")}`}</span>
-                </Col> */}
+            
 
             
           </div>  
@@ -220,7 +166,8 @@ useEffect(() => {
             <Buttons.Primary
               onClick={() => {
                 // setLogin(true)
-            }}
+                window.open(`https://coinparliament.com/?refer=${username}`, "_blank");
+              }}
             >
             Join The Parliament
           </Buttons.Primary>
@@ -229,28 +176,7 @@ useEffect(() => {
       </Modal>
     </div>
 
-    // <div>
-    // <Modal
-    //     show={show}
-    //     onHide={handleClose}
-    //     backdrop="static"
-    //     keyboard={false}
-    //   >
-    //     <Modal.Header closeButton>
-    //       <Modal.Title>Modal title</Modal.Title>
-    //     </Modal.Header>
-    //     <Modal.Body>
-    //       I will not close if you click outside me. Don not even try to press
-    //       escape key.
-    //     </Modal.Body>
-    //     <Modal.Footer>
-    //       <Button variant="secondary" onClick={handleClose}>
-    //         Close
-    //       </Button>
-    //       <Button variant="primary">Understood</Button>
-    //     </Modal.Footer>
-    //   </Modal>
-    // </div>
+    
   )
 }
 

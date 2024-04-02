@@ -55,7 +55,7 @@ const ChildDiv = styled.div`
 // }
   }
 `;
-const CoinText = styled.p`
+export const CoinText = styled.p`
 color:white;
 // font-size:15px;
 font-size:0.80em;
@@ -94,7 +94,9 @@ align-items: center;
 display:flex;
 justify-content: center;
 cursor:pointer;
-font-size:0.75em;
+@media (max-width: 767px) {
+  margin:0px 4px /* Adjust the styles for smaller screens */
+}
 `;
 
 
@@ -148,13 +150,30 @@ top: 2px;
   background:#6352E8;
   color:white;
  box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+  }
+ @media (max-width: 767px) {
+  max-width: 150px; /* Adjust the styles for smaller screens */
+}
 `;
 
+const ResponsiveContainer = styled.div`
+  width: 350px;
+  height: 400px;
+  border: 1px solid #6352e8;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px #00000029;
+
+  @media (max-width: 767px) {
+    width: 250px;
+    height: 380px;
+  }
+`;
 
 
 function CardShow({coins}: any) {
 // @ts-ignore
   const cardData = { ...listData[0] }
+  const [impactValue, setImpactValue] = useState()
   const [ShowSpdometer, setShowSpdometer] = useState(false) 
   const [showPopUp, setShowPopUp] = useState<any>(false) 
   const [clickedOption1, setClickedOption1] = useState(false);
@@ -165,6 +184,7 @@ function CardShow({coins}: any) {
   const [voteLastPrice, setVoteLastPrice] = useState(0);
   const prevCountRef = useRef(currentPrice)
   const [lastvalue,setLastValue] = useState()
+  const[startprice,setStartPrice]=useState(0)
 
   const [allBUtton, setAllBUtton] = useState<any>([
     {
@@ -225,9 +245,16 @@ useEffect(() => {
 }, [coins,activeTime,allBUtton])
   
   const getLastPrice = () => {
-    // console.log("yes i am calling")
+    console.log("yes i am calling")
     setVoteLastPrice(coins)
   }
+
+  const getstartprice = () =>{
+    setStartPrice(coins)
+  }
+  // console.log(startprice,"startprice444")
+
+  // console.log(voteLastPrice,"lastprice444")
   
 // @ts-ignore
     return (
@@ -329,7 +356,8 @@ useEffect(() => {
               }}
                 onClick={() => {  
                   setClickedOption1(true);
-                  console.log(coins,"786 firstvalue")
+                  getstartprice()
+                  // console.log(coins,"786 firstvalue")
                   setTimeout(() => {
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
                     setVoteDirection(1)  
@@ -391,20 +419,16 @@ useEffect(() => {
             
           }}
           >          
-            <div
-              className=''
-              style={{
-              width: "300px",
-              height: "250px",
-              border: "1px solid #6352e8",
-              borderRadius: "10px",
-              boxShadow: "0 3px 6px #00000029"
-              }}> 
+            <ResponsiveContainer             > 
               <div
                 style={{
-                // marginTop:"20px"
+                marginTop:"10px",display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center"
               }}
               >
+                 <img src={cardData.img1} alt=""  width={"30px"} style={{height:"50px"}} />
+                 <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"13px"}}>{"Bitcoin"}</p>
+                 <p style={{marginBottom:"0rem",fontSize:"13px"}}>{"BTC"}</p>
+                 <p style={{marginBottom:"0rem",fontWeight:"500",fontSize:"14px"}}>{Math.floor(activeTime / 1000) + " Sec Vote"}</p>
                 <p className='text-center'
                   style={{
                   color:"black"
@@ -416,6 +440,7 @@ useEffect(() => {
                 coins={coins}
                 activeTime={activeTime}
                 voteDirection={voteDirection}  
+                setImpactValue={setImpactValue}
               />
               <div
                 style={{
@@ -425,7 +450,7 @@ useEffect(() => {
 
             <CountDown activeTime={activeTime} setLastValue={setLastValue}/>
             </div>
-            </div>
+            </ResponsiveContainer>
             </div>
         }
         {
@@ -438,6 +463,9 @@ useEffect(() => {
                 setShowPopUp={setShowPopUp}
                 coins={coins}
                 voteLastPrice={voteLastPrice}
+                startprice={startprice}
+                activeTime={activeTime}
+                impactValue={impactValue}
               />
             </>
             : ""
