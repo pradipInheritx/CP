@@ -6,6 +6,7 @@ import ModalForResult from '../../Pages/ModalForResult';
 import Countdown from 'react-countdown';
 import CountDown from './CountDown';
 import CPLogo from '../../assets/images/CPLogo.png';
+import "../cp_widget.css";
 
 const Price = styled.div`
   min-width: 56px;
@@ -258,10 +259,10 @@ useEffect(() => {
   
 // @ts-ignore
     return (
-      <MainDiv className=''
+      <MainDiv className='frameCoinshow'
       >
         <CoinsShow
-          className='d-flex justify-content-between'
+          className='d-flex justify-content-between frameCoinHeader'
           style={{
           backgroundColor:"#160133",
         }}
@@ -272,7 +273,7 @@ useEffect(() => {
               opacity: 0,
             }}
           ><img src={CPLogo} alt="" width={"70px"} /></div>
-          <div className='d-flex justify-content-center'>
+          <div className='d-flex justify-content-center frameheadLogo'>
             <ChildDiv
       
             onClick={() => {
@@ -290,7 +291,7 @@ useEffect(() => {
               
         </ChildDiv>
           </div> 
-          <div className=''
+          <div className='frameHeadcpLogo'
             style={{
             marginRight:"20px"
           }}
@@ -299,10 +300,10 @@ useEffect(() => {
       
         {ShowSpdometer == false ?(
         <>
-        <ButtonDiv className=''>
+        <ButtonDiv className='timeSlotes'>
           {allBUtton.map((item:any,index:number) => {
             return (
-              <div
+              <div className='timeBlocks'
                 style={{
                   width: "70px",
                   height: "70px",
@@ -320,7 +321,7 @@ useEffect(() => {
                 ChangeStatus(item.Active ,index)
               }}
             >            
-              <p
+              <p 
                 style={{
               color:`${item.Active==true ? "white" :"#6352e8"}`,marginBottom:"0rem"
             }}
@@ -373,7 +374,7 @@ useEffect(() => {
                 }
                 }
               >
-                <p>{cardData.name1}</p>
+                <p className='mb-0'>{cardData.name1}</p>
                 </VoteDiv>
               <div>  
                 {/* <div
@@ -409,7 +410,7 @@ useEffect(() => {
                 }
                 }
               >
-                <p>{cardData.name2}</p>
+                <p className='mb-0'>{cardData.name2}</p>
                 </VoteDiv>
             </VoteButton>
           </> :

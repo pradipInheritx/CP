@@ -1,0 +1,68 @@
+@media only screen and (max-width: 767px) {
+    .frameCoinHeader {
+        border-radius: 0px 0px 90px 0px !important;
+        padding: 10px 15px !important;
+    }
+
+    .frameCoinshow .confetti-button {
+        max-width: 130px;
+        height: 55px;
+    }
+
+    .frameCoinshow .frameCoinHeader .frameheadLogo>div {
+        text-align: center;
+    }
+
+    .frameCoinshow .frameCoinHeader .frameheadLogo img {
+        max-width: 50px;
+        margin: 0px auto;
+    }
+
+    .frameCoinshow .frameHeadcpLogo img {
+        max-width: 50px;
+    }
+
+    .timeSlotes .timeBlocks {
+        width: 60px !important;
+        height: 60px !important;
+        flex: 0 0 60px;
+    }
+
+    .timeSlotes .timeBlocks>div {
+        margin: 0px;
+    }
+
+    .timeSlotes .timeBlocks p {
+        font-size: 12px;
+    }
+    .coinCardshopModal .modal-content{
+        border-radius: 50px 0px 50px 50px !important;
+    }
+    .coinCardshopModal .modal-content .modal-body {
+        padding: 10px 5px;
+    }
+    .coinCardshopModal .modal-content .modal-body p {
+        font-size: 14px !important;
+        margin-bottom: 5px;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .frameCoinshow .frameCoinHeader .frameheadLogo img {
+        max-width: 40px;
+    }
+
+    .frameCoinshow .frameHeadcpLogo img {
+        max-width: 50px;
+    }
+
+    .timeSlotes .timeBlocks {
+        width: 55px !important;
+        height: 55px !important;
+        flex: 0 0 55px;
+    }
+
+    .timeSlotes .timeBlocks p {
+        font-size: 12px;
+    }
+}

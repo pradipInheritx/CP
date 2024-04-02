@@ -10,6 +10,7 @@ import { listData } from '../Components/Pairs/utils';
 import UserContext from '../Contexts/User';
 import { VoteButton } from '../common/utils/SoundClick';
 // const silent = require("../assets/sounds/silent.mp3").default;
+import "../Components/cp_widget.css";
 
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -102,7 +103,7 @@ if (urlParams.has('username')) {
   console.log('Username parameter not found in the URL. 11');
 }
   return (
-    <div>      
+    <div className=''>      
       <Modal show={show} onHide={handleClose}
         backdrop="static"
         size="lg"
@@ -110,6 +111,7 @@ if (urlParams.has('username')) {
         centered
         style={{ zIndex: 1060 }}
         animation={false}
+        className='coinCardshopModal'
       >
         <div className='d-flex justify-content-between'>
           {/* <div></div> */}
