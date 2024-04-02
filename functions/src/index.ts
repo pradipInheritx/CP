@@ -601,40 +601,6 @@ async function createUserStatistics(userData: any, userId: any) {
   }
 }
 
-//function which triggers whenever any user sign in 
-exports.updateLastLoginTime = functions.auth.user().beforeSignIn(async (change: any) => {
-  const uid = change.after.uid;
-  console.log("userId >>>", uid);
-  const lastSignInTime = change.after.metadata.lastSignInTime;
-  console.log("lastSignInTime >>>", lastSignInTime);
-
-  try {
-    const userStatsRef = admin.firestore().collection('userStatistics').doc(uid);
-
-    const userStatsSnapshot = await userStatsRef.get();
-
-    if (userStatsSnapshot.exists) {
-      // Check if lastLoginDay field exists in the document
-      const userData = userStatsSnapshot.data();
-      if (userData && 'lastLoginDay' in userData) {
-        // Update existing lastLoginDay field
-        await userStatsRef.set({ lastLoginDay: lastSignInTime }, { merge: true });
-      } else {
-        // Add lastLoginDay field to the existing document
-        await userStatsRef.set({ lastLoginDay: lastSignInTime }, { merge: true });
-      }
-      console.log(`Last login day updated for user ${uid}`);
-    } else {
-      console.log(`User statistics not available for user ${uid}`);
-    }
-  } catch (error) {
-    console.error('Error updating last login day:', error);
-  }
-});
-
-
-
-
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
   return password === "CPVI2022!";
