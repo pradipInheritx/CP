@@ -73,4 +73,5 @@ export type Leader = {
   status?: string;
   total?: number;
   isUserUpgraded?: any;
+  rank?: any;
 };
