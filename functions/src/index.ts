@@ -582,7 +582,7 @@ async function createUserStatistics(userData: any, userId: any) {
       extraVotePurchased: false,
       noOfVotesDays: 0,
       lastVoteDay: "",
-      source: userData.parent ? "Referral" : "Self",
+      source: userData?.parent ? "Referral" : "Self",
       GameTitle: userData?.status?.name || "",
       TotalCPM: userData?.voteStatistics?.score || "",
       TotalAmbassadorRewards: 0
@@ -990,7 +990,7 @@ exports.onUpdateUser = functions.firestore
 
       // Update name and country fields in userStatistics collection
       const updateData = {
-        name: updatedUsername,
+        userName: updatedUsername,
         Country: updatedCountry // Assuming the field name in userStatistics is also 'country'
       };
 
