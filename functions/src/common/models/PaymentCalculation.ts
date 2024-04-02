@@ -238,7 +238,8 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
     console.info("parentPaymentData in Function", parentPaymentData)
     try {
         let getCoinAddress: any = null;
-
+        const currentTimestamp = Date.now();
+        const currentEpochTimestamp = Math.floor(currentTimestamp / 1000);
         if (parentPaymentData && parentPaymentData.wellDAddress && parentPaymentData.wellDAddress.length) {
             let coinOfPayment = parentPaymentData.token.toUpperCase();
             let getCoinWellDAddress = parentPaymentData.wellDAddress.find((address: any) => address.coin === coinOfPayment);
@@ -259,6 +260,7 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
                 originCurrency: parentPaymentData.origincurrency.toUpperCase(),
                 token: parentPaymentData.token.toUpperCase(),
                 transactionhash: "",
+                transactionId: `REF-${parentPaymentData.parentUserId.slice(0, 4)}-${currentEpochTimestamp}`,
                 transactionType: parentPaymentData.transactionType,
                 type: parentPaymentData.type,
                 address: getCoinAddress ? getCoinAddress : parentConst.PARENT_REFFERAL_PAYMENT_ADDRESS_NO_ADDRESS,
