@@ -120,6 +120,13 @@
 .upgrade_items .btn_buy_now {width: 175px !important;}
 .upgrade_items .btn_buy_now button {width: 160px !important;}
 .bg_responisve_voting {background-size: cover !important;min-height: 75vh;}
+.bg_responisve_voting .bottomImageBlock {
+  bottom: -30% !important;
+  top: initial !important;
+}
+.bg_responisve_voting .padBotImgBox {
+  padding-bottom: 30% !important;
+}
 }
 
 @media only screen and (min-device-width: 767px) and (max-device-width: 1024px) {

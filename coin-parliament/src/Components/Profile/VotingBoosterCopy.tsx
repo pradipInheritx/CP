@@ -257,7 +257,7 @@ const [comingSoon, setComingSoon] = useState(false)
         {/* @ts-ignore */}
         {userInfo?.isUserUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
       </H2>
-      <div className="pt-5 pb-5 d-flex justify-content-center"
+      <div className="pt-5 pb-5 d-flex justify-content-center padBotImgBox"
         style={{
           flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
           overflow: "hidden",
@@ -278,7 +278,7 @@ const [comingSoon, setComingSoon] = useState(false)
             position: "relative"
           }}
         >
-          {window.screen.width > 766 && <div
+          {window.screen.width > 766 && <div className="bottomImageBlock"
             style={{
               // marginTop: "20%",
               position: "absolute",
