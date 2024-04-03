@@ -2396,7 +2396,7 @@ exports.getAllUersData = functions.https.onCall(async (data) => {
     return {
       status: true,
       message: "User Data from the userStatistics successfully",
-      data: { getAllUsersDetails },
+      data: getAllUsersDetails 
     };
   } catch (error) {
     return {
