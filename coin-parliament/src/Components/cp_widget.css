@@ -51,6 +51,23 @@
         align-items: flex-start;
     }
     .coinCardshopModal .modal-body button {height: 32px;}
+    .gauge_responisve {
+        height: 160px !important;
+    }
+    .BigDiv_Responsive .textbox .mid {
+top: 8% !important;
+    }
+    .BigDiv_Responsive .textbox * {
+        font-size: 12px !important;
+    }
+    .cpCardGraph .range_detail_logo {
+        height: auto !important;
+        object-fit: contain;
+    }
+    .cpCardGraph .text_timer_responsive {
+        font-size: 18px !important;
+        left: 42% !important;
+    }
 }
 
 @media only screen and (max-width: 575px) {

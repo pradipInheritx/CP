@@ -164,15 +164,11 @@ const ResponsiveContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 3px 6px #00000029;
 
-  @media (max-width: 767px) {
+  @media (max-width: 991px) {
     width: 250px;
-    height: 360px;
+    height: 280px;
   }
 
-  @media (max-width: 767px) {
-    width: 250px;
-    height: 360px;
-  }
 `;
 
 
@@ -431,7 +427,7 @@ useEffect(() => {
                 marginTop:"10px",display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center"
               }}
               >
-                 <img src={cardData.img1} alt=""  width={"30px"} style={{height:"50px"}} />
+                 <img src={cardData.img1} alt="" className='range_detail_logo'  width={"30px"} style={{height:"50px"}} />
                  <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"13px"}}>{"Bitcoin"}</p>
                  <p style={{marginBottom:"0rem",fontSize:"13px"}}>{"BTC"}</p>
                  <p style={{marginBottom:"0rem",fontWeight:"500",fontSize:"14px"}}>{Math.floor(activeTime / 1000) + " Sec Vote"}</p>

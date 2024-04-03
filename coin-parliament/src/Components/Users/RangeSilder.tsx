@@ -126,7 +126,7 @@ function Speed(props: SpeedProps) {
         }
       `}
       </style>
-      <div className="BigDiv">
+      <div className="BigDiv BigDiv_Responsive">
         <div className="textbox">
           <span className={value < 40 ? "span low red" : "span low"}
             style={{
@@ -150,7 +150,7 @@ function Speed(props: SpeedProps) {
             }}
           >high</span>
         </div>
-        <div className="gauge">
+        <div className="gauge gauge_responisve">
           <svg className="w-full overflow-visible p-4 SvgCss" {...gauge.getSVGProps()}
           >
             <g id="arcs">

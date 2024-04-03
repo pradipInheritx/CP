@@ -11,7 +11,7 @@ const CountDown = ({activeTime,setLastValue}:{activeTime:number,setLastValue:any
             
                 // console.log("Countdown Renderer - Hours:", hours, "Minutes:", minutes, "Seconds:", seconds, "Completed:", completed);
                return (
-                    <span className="text-uppercase" style={{
+                    <span className="text-uppercase text_timer_responsive" style={{
                         color: '#6352e8', fontSize: '25px', fontWeight: 300, lineHeight: "10%", position: "absolute",
                         left: "42%",
                         top: "-25px",
