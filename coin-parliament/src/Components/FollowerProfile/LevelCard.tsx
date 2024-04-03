@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { UserTypeProps } from "../../common/models/UserType";
 import { UserProps } from "../../common/models/User";
 import { useTranslation } from "../../common/models/Dictionary";
 import './Style.css';
+import CoinsContext from "Contexts/CoinsContext";
 
 type LevelCardProps = {
   userTypes: UserTypeProps[];
@@ -23,6 +24,7 @@ const Badge = styled.span`
   white-space: nowrap;
   vertical-align: baseline;
   line-height: 1;
+  min-width:150px;
 `;
 const I = styled.i`
   border-radius: 50%;
@@ -44,6 +46,25 @@ const I = styled.i`
 const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
   const translate = useTranslation();
   const [tooltipShow, setTooltipShow] = React.useState(false);
+  const [userRank, setUserRank] = React.useState(0);
+  const { leaders } = useContext(CoinsContext);
+
+  useEffect(() => {
+    if (userInfo?.uid) {     
+      console.log(userInfo?.uid, leaders ,"userId")
+      const ourUser = leaders.filter((item) => item?.userId == userInfo?.uid)      
+      if (ourUser && ourUser[0]?.rank) {
+        setUserRank(ourUser[0]?.rank)
+      }
+    }
+
+    return () => {
+
+    }
+  }, [userInfo?.uid])
+
+  console.log(userInfo?.uid,"userInfo?.uid")
+
   return (
     <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{ position: 'relative' }}>
       {tooltipShow &&
@@ -99,8 +120,8 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
           const opacity =
             userInfo?.status?.name === userType.name ? "" : " opacity-50";
           return (
-            <Badge className={"rounded-pill mt-1 w-50 d-flex justify-content-center" + opacity} key={i} >
-              {userType.name}
+            <Badge className={"rounded-pill mt-1 d-flex justify-content-around " + opacity} key={i} >
+              <span className="opacity-0">{opacity == "" && userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</span><span> {userType?.name}</span> <span>{opacity == "" && userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</span>
             </Badge>
           );
         })}
