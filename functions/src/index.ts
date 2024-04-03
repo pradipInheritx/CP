@@ -2387,15 +2387,146 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
 
 exports.getAllUersData = functions.https.onCall(async (data) => {
   try {
-    let getAllUsersDetails = (await admin.firestore().collection("userStatistics")
-    .get()).docs.map((users) => {
-      return users.data(); 
+    // Extract pagination parameters from request query
+    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "" } = data
+
+    limit = parseInt(limit);
+
+    let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
+    switch (orderBy) {
+      case "userName":
+        orderByConsolidate = "userName";
+        break;
+
+      case "TotalAmbassadorRewards":
+        orderByConsolidate = "TotalAmbassadorRewards";
+        break;
+
+      case "noOfVotesDays":
+        orderByConsolidate = "noOfVotesDays";
+        break;
+
+      case "averageVotes":
+        orderByConsolidate = "averageVotes";
+        break;
+
+        case "source":
+          orderByConsolidate = "source";
+          break;
+
+          case "accountUpgrade":
+            orderByConsolidate = "accountUpgrade";
+            break;
+
+            case "userId":
+              orderByConsolidate = "userId";
+              break;
+
+            case "TotalCPM":
+            orderByConsolidate = "TotalCPM";
+            break;
+
+            case "lastVoteDay":
+              orderByConsolidate = "lastVoteDay";
+              break;
+
+              case "totalVotes":
+              orderByConsolidate = "totalVotes";
+              break;
+
+              case "lastLoginDay":
+              orderByConsolidate = "lastLoginDay";
+              break;
+
+              case "signUpTime":
+              orderByConsolidate = "signUpTime";
+              break;
+
+              case "GameTitle":
+              orderByConsolidate = "GameTitle";
+              break;
+
+              case "Country":
+              orderByConsolidate = "Country";
+              break;
+
+              case "extraVotePurchased":
+              orderByConsolidate = "extraVotePurchased";
+              break;
+
+
+              case "email":
+              orderByConsolidate = "email";
+              break;
+
+      default:
+        orderByConsolidate = "userName";
+        break;
+    }
+    let getAllUsersData;
+
+    console.log("orderByConsolidate", orderByConsolidate)
+    
+
+if (search) {
+  getAllUsersData = await admin.firestore()
+    .collection("userStatistics")
+    .where("userName", ">=", search)
+    .where("userName", "<=", search + "\uf8ff")
+    .offset((page - 1) * limit)
+    .limit(limit)
+    .get();
+} else {
+  getAllUsersData = await admin.firestore()
+    .collection("userStatistics")
+    .orderBy(orderByConsolidate, sort)
+    .offset((page - 1) * limit)
+    .limit(limit)
+    .get();
+}
+
+  let getUsersResponse = getAllUsersData.docs.map((doc) => {
+    let userData = doc.data();
+    // Check if signUpTime exists and is not an empty string
+    if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+      // Convert signUpTime to Date object
+      let signUpDate = new Date(userData.signUpTime);
+      // Format date portion to YYYY-MM-DD
+      let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+      // Update userData with the formatted date
+      userData.signUpTime = signUpDateFormatted;
+    } else {
+      // Set signUpTime to an empty string or any default value you prefer
+      userData.signUpTime = ""; // Or set to a default value like "N/A"
+    }
+    return userData;
+  });
+  
+  // Sorting by signUpTime as Date object
+  if (orderBy === "signUpTime") {
+    getUsersResponse.sort((a, b) => {
+      // Handle cases where signUpTime might be an empty string
+      if (!a.signUpTime) return -1;
+      if (!b.signUpTime) return 1;
+      
+      if (sort === "asc") {
+        return a.signUpTime.localeCompare(b.signUpTime);
+      } else {
+        return b.signUpTime.localeCompare(a.signUpTime);
+      }
     });
+  }
+  
+    const getTotalDataQuery = await admin.firestore().collection('userStatistics').get();
+    const getTotal = getTotalDataQuery.docs.length;
+
+    console.log("Total data--", getTotal);
+    console.log("getUsersResponse----------", getUsersResponse);
 
     return {
       status: true,
-      message: "User Data from the userStatistics successfully",
-      data: getAllUsersDetails 
+      message: "users fetched successfully",
+      result: { data: getUsersResponse, total: getTotal },
     };
   } catch (error) {
     return {
