@@ -2385,3 +2385,24 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
     };
   }
 });
+
+exports.getAllUersData = functions.https.onCall(async (data) => {
+  try {
+    let getAllUsersDetails = (await admin.firestore().collection("userStatistics")
+    .get()).docs.map((users) => {
+      return users.data(); 
+    });
+
+    return {
+      status: true,
+      message: "User Data from the userStatistics successfully",
+      data: { getAllUsersDetails },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Users not found",
+      data: null,
+    };
+  }
+});
