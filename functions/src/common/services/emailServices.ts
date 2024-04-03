@@ -10,7 +10,7 @@ export async function sendEmail(to: any, subject: any, body: any): Promise<{ sta
       to,
       from: {
         email:"support@votetoearn.net",
-        name: "Sport Parliament | V2E"
+        name: "Vote to Earn (V2E)"
     },
       subject,
       html: body,
