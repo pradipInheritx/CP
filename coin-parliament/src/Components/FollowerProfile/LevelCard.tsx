@@ -114,7 +114,7 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
       ></I>
       <div className="d-flex justify-content-center align-items-center flex-column">
         <h6 className="mt-1 box_title card-header mb-2" style={{ fontSize: '12px', padding: "0.5rem 1rem"}}>
-          {translate("User Level")}a
+          {translate("User Level")}
         </h6>
         {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {
           const opacity =
