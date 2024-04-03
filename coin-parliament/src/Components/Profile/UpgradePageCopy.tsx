@@ -265,12 +265,12 @@ const UpgradePageCopy = () => {
             Now you can<strong> enjoy the benefits</strong>  of being a miner.
           </P>}
 
-          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5`}>
+          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5 upgrade_content`}>
 
-            <div style={{
+            <div className="upgrade_side" style={{
               width:`${window.screen.width >767 ? "35%" :"45%"} `,
             }}>
-              <RoundBox>
+              <RoundBox className="innerBlock">
                 <div
                   // className="d-flex justify-content-center align-items-center ml-1 flex-warp"
                   className={`${window.screen.width > 767 ? "justify-content-center align-items-center" :"justify-content-center" } d-flex ml-1`}
@@ -282,7 +282,7 @@ const UpgradePageCopy = () => {
                 >
                 <img src={MoneyUG} alt="" width={"90px"} />
                 </div>
-                <div className="d-flex justify-content-center flex-column"
+                <div className="d-flex justify-content-center flex-column innerContent"
                   style={{
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
                   }}
@@ -292,7 +292,7 @@ const UpgradePageCopy = () => {
                 </div>
               </RoundBox>
 
-              <RoundBox className={`${window.screen.width > 767 ? "mt-5" :"mt-3"}`}>
+              <RoundBox className={`${window.screen.width > 767 ? "mt-5" :"mt-3"} innerBlock`}>
                 <div
                   className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
                   style={{
@@ -301,7 +301,7 @@ const UpgradePageCopy = () => {
                 >
                 <img src={CardUG} alt="" width={"90px"} />
                 </div>
-                <div className="d-flex justify-content-center flex-column"
+                <div className="d-flex justify-content-center flex-column innerContent"
                   style={{
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
                   }}
@@ -314,7 +314,7 @@ const UpgradePageCopy = () => {
             </div>
             {window.screen.width > 767 && <div
               
-              className="d-flex justify-content-around align-items-center"
+              className="d-flex justify-content-around align-items-center upgrade_center_side"
               style={{
                 width: "30%",
             }}
@@ -325,10 +325,10 @@ const UpgradePageCopy = () => {
               }}
               />
             </div>}
-            <div style={{
+            <div className="upgrade_side" style={{
               width: `${window.screen.width > 767 ? "35%" : "45%"} `,
             }}>
-              <RoundBox>
+              <RoundBox className="innerBlock">
                 <div
                   className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
                   style={{
@@ -339,7 +339,7 @@ const UpgradePageCopy = () => {
                 >
                 <img src={GiftUG} alt="" width={"90px"} />
                 </div>
-                <div className="d-flex justify-content-center flex-column"
+                <div className="d-flex justify-content-center flex-column innerContent"
                   style={{
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
                   }}
@@ -350,7 +350,7 @@ const UpgradePageCopy = () => {
                 </div>
               </RoundBox>
 
-              <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"}`}>
+              <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"} innerBlock`}>
                 <div
                   className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
                   style={{
@@ -359,7 +359,7 @@ const UpgradePageCopy = () => {
                 >
                 <img src={MiniUG} alt="" width={"90px"} />
                 </div>
-                <div className="d-flex justify-content-center flex-column"
+                <div className="d-flex justify-content-center flex-column innerContent"
                   style={{
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
                   }}>      
@@ -400,7 +400,7 @@ const UpgradePageCopy = () => {
           {!userInfo?.isUserUpgraded &&
             <>
             <div
-              className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+              className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center mt-3`}
             >
               <ButttonDiv className="mt-1">
                 <button
@@ -473,7 +473,7 @@ const UpgradePageCopy = () => {
                     margin: "auto",
                     background: `${window.screen.width > 767 && "linear-gradient(180deg,rgba(82, 99, 184, 0.30) 0%,rgba(178, 102, 245, 0.30) 100%)"}`,
                   }}
-                  className="mb-4"
+                  className="mb-4 additionBox"
                 >
                   <p
                     style={{
@@ -498,7 +498,7 @@ const UpgradePageCopy = () => {
                         width: `${window.screen.width > 767 ? "19%" : "28%"}`,
                         borderRadius: "25px",
                       }}
-                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                      className="d-flex justify-content-center align-items-center flex-column  pt-3 pb-3"
                     >
                       <img src={GiftUg2} alt="" width={"40px"} />
                       <p className="text-center mt-2"
@@ -516,7 +516,7 @@ const UpgradePageCopy = () => {
                   
 
                       }}
-                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                      className="d-flex justify-content-center align-items-center flex-column  pt-3 pb-3"
                     >
                       <img src={VoteUg} alt="" width={"70px"} />
                       <p className="text-center mt-2"
@@ -535,7 +535,7 @@ const UpgradePageCopy = () => {
                         borderRadius: "25px",
                   
                       }}
-                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                      className="d-flex justify-content-center align-items-center flex-column  pt-3 pb-3"
                     >
               
                       <img src={XXCOIN} alt="" width={"80px"} />

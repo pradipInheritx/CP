@@ -495,7 +495,7 @@ const NFTGallery = () => {
       <h5 className="mt-4 text-center ">        
         <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Wall of fame</strong>
       </h5>
-      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
+      <div style={{ rowGap: '10px' }} className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
       // style={{background:"#6352e8"}}
       >
         <input
@@ -613,9 +613,9 @@ const NFTGallery = () => {
       </div>}
 
       
-      <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
+      <GalleryType className='d-flex galleryRow' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
         {(!cardShow && selectCollection === 'none') && collectionType?.map((data: any, index: number) => {
-          return <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
+          return <div className="galleryCol" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
             style={{
               width: "380px",
               overflow: "hidden",
@@ -641,7 +641,7 @@ const NFTGallery = () => {
               borderRadius: "10px",
               backgroundSize: "cover",
             }}
-            className="d-flex justify-content-center align-items-center flex-column"
+            className="d-flex justify-content-center align-items-center flex-column diff_item_Col"
           >
             {/* <i className="bi bi-lock-fill"
           style={{fontSize:"50px"}}

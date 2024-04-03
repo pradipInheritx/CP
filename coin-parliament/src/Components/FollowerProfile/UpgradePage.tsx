@@ -94,7 +94,7 @@ const UpgradePage = () => {
   return (
     <>
       <div
-        className='p-0 m-0 w-100 d-flex justify-content-center'
+        className='p-0 m-0 w-100 px-3 d-flex justify-content-center'
         style={{
           background: "#160133",
           height: `${screenHeight()}`,

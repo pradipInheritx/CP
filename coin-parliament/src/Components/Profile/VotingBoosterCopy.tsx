@@ -239,7 +239,7 @@ const [comingSoon, setComingSoon] = useState(false)
 
   const [handleSoundClick] = useSound(buttonClick);
   return (
-    <div
+    <div className="bg_responisve_voting"
       style={{        
         backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
         backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
@@ -271,7 +271,7 @@ const [comingSoon, setComingSoon] = useState(false)
         >
           <img src={votingbooster} alt="" />
         </div> */}
-        <div className=" d-flex justify-content-center flex-wrap mt-2"
+        <div className=" d-flex justify-content-center flex-wrap mt-2 upgrade_items_row"
           style={{
             width: `${window.screen.width > 767 ? "100%" : "100%"}`,
             height: "600px",
@@ -291,7 +291,7 @@ const [comingSoon, setComingSoon] = useState(false)
           </div>}
           {window.screen.width > 766 && PaytypeValue?.map((item,index) => {
             return <div
-              className="d-flex justify-content-center"
+              className="d-flex justify-content-center upgrade_items"
               style={{
                 position: "relative",
                 height: "350px",
@@ -345,7 +345,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     lineHeight: 1.1
                   }}
                 >$ {item?.value}.00</NumberText>
-                <div className="d-flex mt-3">
+                <div className="d-flex mt-3 stars_items">
                   {/* @ts-ignore */}
                   {Array(item?.star).fill().map(() => {
                     return <img src={VoteStar} alt="" width={"50px"} className=""/>
@@ -369,7 +369,7 @@ const [comingSoon, setComingSoon] = useState(false)
                   
                   <VotText>votes</VotText>
                 </div>
-                <ButttonDiv className="mt-1">
+                <ButttonDiv className="mt-1 btn_buy_now">
                   <button
                     onClick={() => {
                       handleSoundClick()

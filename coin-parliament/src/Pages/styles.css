@@ -113,3 +113,25 @@
     max-width: 310px;
   }
 }
+
+@media only screen and (min-device-width: 767px) and (max-device-width: 1024px) {
+  .upgrade_items_row .upgrade_items {flex: 0 0 25%;max-width: 25%;height: auto !important;}
+.upgrade_items .stars_items img{max-width: 35px;}
+.upgrade_items .btn_buy_now {width: 175px !important;}
+.upgrade_items .btn_buy_now button {width: 160px !important;}
+.bg_responisve_voting {background-size: cover !important;min-height: 75vh;}
+}
+
+@media only screen and (min-device-width: 767px) and (max-device-width: 1024px) {
+  .upgrade_content {padding: 0px 15px;}
+.upgrade_content .upgrade_center_side>img{margin: 0px auto !important;max-width: 100%;}
+.upgrade_content .upgrade_side {width: 40% !important;}
+.upgrade_content .upgrade_center_side {width: 20% !important;}
+.upgrade_content .innerContent p, .upgrade_content .innerContent span {padding: 5px;font-size: 15px;}
+.upgrade_content .innerBlock {padding: 2px 5px;}
+.upgrade_content .innerBlock div>img {max-width: 100%;}
+.additionBox {max-width: 90%;}
+.galleryRow {padding: 0px 10px;}
+.galleryRow .galleryCol {margin: 0px 5px;flex: 0 0 calc(50% - 10px);max-width: calc(50% - 10px);width: calc(50% - 10px) !important;margin-bottom: 10px;}
+.diff_item_Col {width: calc(50% - 10px) !important;margin-left: 5px !important;margin-right: 5px !important;}
+}
