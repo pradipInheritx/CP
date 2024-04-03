@@ -2264,7 +2264,7 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   const { user } = data;
 
   try {
-    let commission = 0;
+    
 
     const getChildAllUsers = await admin
       .firestore()
@@ -2272,9 +2272,8 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
       .where("uid", "in", user.children)
       .get();
 
-    await getChildAllUsers.docs.map((user: any) => {
-      commission += user.refereeScrore;
-    });
+    const allChildren = await getChildAllUsers.docs.map((user: any) => user.data());
+    const commission = await allChildren.reduce((total:any,user:any)=>total + Number(user.refereeScrore))
 
     console.log("commission : ", commission);
     await admin
