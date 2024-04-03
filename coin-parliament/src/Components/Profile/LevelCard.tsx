@@ -55,10 +55,9 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
 
   useEffect(() => {
     if (userInfo?.uid) {      
-      const ourUser = leaders.filter((item) => item.userId == userInfo?.uid)
-      console.log(ourUser[0].rank, "allourUser")
-      if (ourUser[0].rank) {
-        setUserRank(ourUser[0].rank)
+      const ourUser = leaders.filter((item) => item?.userId == userInfo?.uid)
+      if (ourUser && ourUser[0]?.rank) {
+        setUserRank(ourUser[0]?.rank)
       }
     }
 

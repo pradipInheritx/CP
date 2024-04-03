@@ -836,7 +836,7 @@ const VotingPaymentCopy: React.FC<{
           setPaymentStatus({ type: "error", message: error.data.error})
         }
         else if (errorCodeGet == "NETWORK_ERROR") {          
-          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This some network error please try again."})
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again."})
         }
         else {          
           setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : errorMessageWithoutTextAfterBracket })

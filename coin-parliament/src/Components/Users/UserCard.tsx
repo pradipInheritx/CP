@@ -232,7 +232,7 @@ const UserCard = ({
             <Minister>{translate(leader?.status || "")}</Minister>
             {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
               </Group4092>
-              <RankValue>#{Rank}</RankValue>
+              {Rank && Rank > 0 && <RankValue>#{Rank}</RankValue>}
             </div>
           }
           
