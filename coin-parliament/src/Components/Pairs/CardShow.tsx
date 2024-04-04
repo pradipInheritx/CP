@@ -187,6 +187,7 @@ function CardShow({coins}: any) {
   const prevCountRef = useRef(currentPrice)
   const [lastvalue,setLastValue] = useState()
   const[startprice,setStartPrice]=useState(0)
+  const [headerShow, setHeaderShow]=useState(false)
 
   const [allBUtton, setAllBUtton] = useState<any>([
     {
@@ -254,18 +255,22 @@ useEffect(() => {
   const getstartprice = () =>{
     setStartPrice(coins)
   }
-  // console.log(startprice,"startprice444")
+  const scrollToRef = useRef<HTMLDivElement>(null);
 
-  // console.log(voteLastPrice,"lastprice444")
+  const handleClickScroll = () => {
+    if (scrollToRef.current) {
+      scrollToRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   
 // @ts-ignore
     return (
       <MainDiv className='frameCoinshow'
       >
-        <CoinsShow
+        {headerShow == false && <CoinsShow
           className='d-flex justify-content-between frameCoinHeader'
           style={{
-          backgroundColor:"#160133",
+            backgroundColor: "#160133",
         }}
         >
           <div className=''
@@ -297,11 +302,11 @@ useEffect(() => {
             marginRight:"20px"
           }}
           ><img src={CPLogo} alt="" width={"70px"} /></div>
-        </CoinsShow>
+        </CoinsShow>}
       
         {ShowSpdometer == false ?(
         <>
-        <ButtonDiv className='timeSlotes'>
+        {/* <ButtonDiv className='timeSlotes'>
           {allBUtton.map((item:any,index:number) => {
             return (
               <div className='timeBlocks'
@@ -331,7 +336,7 @@ useEffect(() => {
               </div>
                 )
           })}
-        </ButtonDiv>
+        </ButtonDiv> */}
         </>
         ):("")}
       
@@ -358,18 +363,18 @@ useEffect(() => {
               }}
                 onClick={() => {  
                   setClickedOption1(true);
-                  getstartprice()
-                  // console.log(coins,"786 firstvalue")
+                  getstartprice()                  // console.log(coins,"786 firstvalue")
                   setTimeout(() => {
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
                     setVoteDirection(1)  
                     setShowSpdometer(true)
                     setClickedOption1(false)
+                    setHeaderShow(true)
                   }, 600);
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
                     getLastPrice()
+                    setHeaderShow(false)
                   },activeTime
                   );
                 }
@@ -396,17 +401,19 @@ useEffect(() => {
               }}
                 onClick={() => {  
                   setVoteDirection(2)                
-                   setClickedOption0(true);
+                  setClickedOption0(true);                  
                   setTimeout(() => {
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+                    
                      setClickedOption0(false)
-                     setShowSpdometer(true)
+                    setShowSpdometer(true)
+                    setHeaderShow(true)
                    }, 600
                    );
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false) 
                     getLastPrice()
+                    setHeaderShow(false)
                   }, activeTime);
                 }
                 }
@@ -417,11 +424,14 @@ useEffect(() => {
           </> :
           <div
             className='d-flex justify-content-center ml-3 mt-3 cpCardGraph'
+            ref={scrollToRef}
             style={{
             
           }}
           >          
-            <ResponsiveContainer             > 
+            <ResponsiveContainer
+              
+            > 
               <div
                 style={{
                 marginTop:"10px",display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center"
@@ -436,8 +446,7 @@ useEffect(() => {
                   color:"black"
                 }}
                 >YOUR CURRENT VOTE IMPACT</p>
-              </div>
-            
+              </div>            
               <RangeSilder
                 coins={coins}
                 activeTime={activeTime}
