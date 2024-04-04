@@ -166,7 +166,7 @@ const ResponsiveContainer = styled.div`
 
   @media (max-width: 991px) {
     width: 250px;
-    height: 280px;
+    height: 240px;
   }
 
 `;

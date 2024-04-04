@@ -1,12 +1,16 @@
 @media only screen and (max-width: 991px) {
     .frameCoinHeader {
-        border-radius: 0px 0px 90px 0px !important;
-        padding: 10px 15px !important;
+        border-radius: 0px 0px 60px 0px !important;
+        padding: 10px 15px 5px !important;
+    }
+
+    .frameCoinHeader p {
+        font-size: 12px !important;
     }
 
     .frameCoinshow .confetti-button {
-        max-width: 130px;
-        height: 55px;
+        max-width: 120px;
+        height: 50px;
     }
 
     .frameCoinshow .frameCoinHeader .frameheadLogo>div {
@@ -35,35 +39,58 @@
     .timeSlotes .timeBlocks p {
         font-size: 12px;
     }
-    .coinCardshopModal .modal-content{
-        border-radius: 50px 0px 50px 50px !important;
-        margin-top: 5%;
+
+    .coinCardshopModal .modal-content {
+        border-radius: 20px 0px 20px 20px !important;
+        margin-top: 1%;
+        padding: 5px 10px;
     }
+
     .coinCardshopModal .modal-content .modal-body {
-        padding: 10px 5px;
+        padding: 0px 5px 5px;
     }
+
+    .coinCardshopModal .modal-content .modal-body div>img {
+        height: 30px !important;
+        object-fit: contain;
+    }
+
     .coinCardshopModal .modal-content .modal-body p {
-        font-size: 14px !important;
-        margin-bottom: 5px;
+        font-size: 12px !important;
+        margin-bottom: 2px;
     }
-    .cpCardGraph p {font-size: 12px !important;margin-bottom: 2px !important;}
+
+    .cpCardGraph p {
+        font-size: 11px !important;
+        margin-bottom: 0px !important;
+    }
+
     .coinCardshopModal .modal-dialog-centered {
         align-items: flex-start;
     }
-    .coinCardshopModal .modal-body button {height: 32px;}
+
+    .coinCardshopModal .modal-body button {
+        height: 28px;
+        padding: 10px 10px;
+    }
+
     .gauge_responisve {
-        height: 160px !important;
+        height: 140px !important;
     }
+
     .BigDiv_Responsive .textbox .mid {
-top: 8% !important;
+        top: 5% !important;
     }
+
     .BigDiv_Responsive .textbox * {
         font-size: 12px !important;
     }
+
     .cpCardGraph .range_detail_logo {
         height: auto !important;
         object-fit: contain;
     }
+
     .cpCardGraph .text_timer_responsive {
         font-size: 18px !important;
         left: 42% !important;
@@ -75,8 +102,17 @@ top: 8% !important;
         max-width: 40px;
     }
 
+    .frameCoinshow .confetti-button {
+        max-width: 100px;
+        height: 40px;
+    }
+
     .frameCoinshow .frameHeadcpLogo img {
         max-width: 50px;
+    }
+
+    .cpCardGraph p {
+        font-size: 10px !important;
     }
 
     .timeSlotes .timeBlocks {
