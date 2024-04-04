@@ -133,11 +133,11 @@ const UserTableToolbar = ({
                   )
               )}
             </div>
-            <Tooltip title="Filter list">
+            {/* <Tooltip title="Filter list">
               <IconButton aria-label="filter list" onClick={handleClick}>
                 <FilterListIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <Menu
               transformOrigin={{
                 vertical: "top",

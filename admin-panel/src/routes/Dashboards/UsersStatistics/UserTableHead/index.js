@@ -10,7 +10,7 @@ const headCells = [
   {
     id: "userName",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "User Name"
   },
   {

@@ -1,48 +1,54 @@
-import React, { useContext } from 'react';
-import { MenuItem, MenuList, Paper, Popover, Typography } from '@material-ui/core';
-import CmtAvatar from '../../../../@coremat/CmtAvatar';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDispatch } from 'react-redux';
-import { AuhMethods } from '../../../../services/auth';
-import { CurrentAuthMethod } from '../../../constants/AppConstants';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
-import SettingsIcon from '@material-ui/icons/Settings';
-import SidebarThemeContext from '../../../../@coremat/CmtLayouts/SidebarThemeContext/SidebarThemeContext';
+import React, { useContext } from "react";
+import {
+  MenuItem,
+  MenuList,
+  Paper,
+  Popover,
+  Typography
+} from "@material-ui/core";
+import CmtAvatar from "../../../../@coremat/CmtAvatar";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useDispatch } from "react-redux";
+import { AuhMethods } from "../../../../services/auth";
+import { CurrentAuthMethod } from "../../../constants/AppConstants";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PersonIcon from "@material-ui/icons/Person";
+import SettingsIcon from "@material-ui/icons/Settings";
+import SidebarThemeContext from "../../../../@coremat/CmtLayouts/SidebarThemeContext/SidebarThemeContext";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: '30px 16px 12px 16px',
-    borderBottom: props => `solid 1px ${props.sidebarTheme.borderColor}`,
+    padding: "30px 16px 12px 16px",
+    borderBottom: props => `solid 1px ${props.sidebarTheme.borderColor}`
   },
   userInfo: {
     paddingTop: 24,
-    transition: 'all 0.1s ease',
+    transition: "all 0.1s ease",
     height: 75,
     opacity: 1,
-    '.Cmt-miniLayout .Cmt-sidebar-content:not(:hover) &': {
+    ".Cmt-miniLayout .Cmt-sidebar-content:not(:hover) &": {
       height: 0,
       paddingTop: 0,
       opacity: 0,
-      transition: 'all 0.3s ease',
-    },
+      transition: "all 0.3s ease"
+    }
   },
   userTitle: {
     color: props => props.sidebarTheme.textDarkColor,
-    marginBottom: 8,
+    marginBottom: 8
   },
   userSubTitle: {
     fontSize: 14,
     fontWeight: theme.typography.fontWeightBold,
-    letterSpacing: 0.25,
-  },
+    letterSpacing: 0.25
+  }
 }));
 
 const SidebarHeader = () => {
   const { sidebarTheme } = useContext(SidebarThemeContext);
   const classes = useStyles({ sidebarTheme });
-  const userDetalis = JSON.parse(localStorage.getItem("userData"))
+  const userDetalis = JSON.parse(localStorage.getItem("userData"));
   // const {firstName,lastName,email,phone}=userDetalis
   const dispatch = useDispatch();
 
@@ -65,17 +71,25 @@ const SidebarHeader = () => {
 
   return (
     <div className={classes.root}>
-      <CmtAvatar src={'https://via.placeholder.com/150'} alt="User Avatar" />
-      <div className={classes.userInfo} onClick={handlePopoverOpen}>
+      <CmtAvatar src={"https://via.placeholder.com/150"} alt="User Avatar" />
+      <div
+        className={classes.userInfo}
+        // onClick={handlePopoverOpen}
+      >
         <div
           className="pointer"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-          }}>
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end"
+          }}
+        >
           <div className="mr-2">
-            <Typography className={classes.userTitle} component="h3" variant="h6">
+            <Typography
+              className={classes.userTitle}
+              component="h3"
+              variant="h6"
+            >
               {/* Robert Johnson */}
               {userDetalis?.firstName} {userDetalis?.lastName}
             </Typography>
@@ -84,7 +98,7 @@ const SidebarHeader = () => {
               {userDetalis?.email}
             </Typography>
           </div>
-          <ArrowDropDownIcon />
+          {/* <ArrowDropDownIcon /> */}
         </div>
       </div>
 
@@ -95,13 +109,14 @@ const SidebarHeader = () => {
           container={anchorEl}
           onClose={handlePopoverClose}
           anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'right',
+            vertical: "center",
+            horizontal: "right"
           }}
           transformOrigin={{
-            vertical: 'center',
-            horizontal: 'right',
-          }}>
+            vertical: "center",
+            horizontal: "right"
+          }}
+        >
           <Paper elevation={8}>
             <MenuList>
               <MenuItem onClick={handlePopoverClose}>

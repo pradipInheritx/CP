@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: lighten(theme.palette.background.paper, 0.1)
   },
   container: {
-    maxHeight: 415
+    maxHeight: "44rem"
   },
   table: {
     minWidth: 750
