@@ -620,7 +620,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
               .set({ "status": status[0] }, { merge: true });
 
             // Call updateGametitleOfUser function
-            await updateGametitleOfUser(eachUser.userId);
+            // await updateGametitleOfUser(eachUser.userId);
           }
         }
 
@@ -661,7 +661,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
               .doc(eachUser.userId)
               .set({ "status": status[0] }, { merge: true });
 
-            await updateGametitleOfUser(eachUser.userId);
+            //await updateGametitleOfUser(eachUser.userId);
           }
         }
         leaders.splice(0, getTotalNumberOfCouncil);
@@ -702,7 +702,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
               .doc(eachUser.userId)
               .set({ "status": status[0] }, { merge: true });
 
-            await updateGametitleOfUser(eachUser.userId);
+            //await updateGametitleOfUser(eachUser.userId);
           }
         }
         leaders.splice(0, getTotalNumberOfAmbassador);
@@ -738,7 +738,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
               .doc(eachUser.userId)
               .set({ "status": status[0] }, { merge: true });
 
-            await updateGametitleOfUser(eachUser.userId);
+            //await updateGametitleOfUser(eachUser.userId);
           }
         }
         leaders.splice(0, getTotalNumberOfMinister);
@@ -774,7 +774,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
               .doc(eachUser.userId)
               .set({ "status": status[0] }, { merge: true });
 
-            await updateGametitleOfUser(eachUser.userId);
+            //await updateGametitleOfUser(eachUser.userId);
           }
         }
         leaders.splice(0, getTotalNumberOfChairman);
@@ -796,9 +796,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
 
         for (let record = 0; record < leaderStatus.length; record++) {
           if (leaderStatus && leaderStatus[record].displayName) {
-            console.log("Get DisplayName", leaderStatus[record].displayName)
+            console.log("Get DisplayName", leaderStatus[record], "Record", record)
           } else {
-            console.log("Get DisplayName", leaderStatus[record].displayName, "UserID---", leaderStatus[record].userId)
+            console.log("Get DisplayName", leaderStatus[record], "UserID---", leaderStatus[record].userId)
           }
         }
 
