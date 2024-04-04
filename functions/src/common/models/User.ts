@@ -136,22 +136,6 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-
-function generateRandomName(length: number) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  let randomName = '';
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomName += characters.charAt(randomIndex);
-  }
-
-  return randomName;
-}
-
-
-
-
 export const sendEmailVerificationLink = async (email:string)=>{
   try {
     console.log("user email : ", email);
