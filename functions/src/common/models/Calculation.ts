@@ -784,16 +784,21 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
         leaderStatus.push({ ...leaderStatusForChairman[speaker], rank: speaker + 1 });
       }
-      console.info("leaders", leaders)
-      console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
-      console.log("leaderStatus Final", JSON.stringify(leaderStatus));
 
-      leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
+      try {
+        console.info("leaders", leaders)
+        console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
+        console.log("leaderStatus Final", JSON.stringify(leaderStatus));
 
-      return await firestore()
-        .collection("stats")
-        .doc("leaders")
-        .set({ leaders: leaderStatus }, { merge: true });
+        leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
+
+        return await firestore()
+          .collection("stats")
+          .doc("leaders")
+          .set({ leaders: leaderStatus }, { merge: true });
+      } catch (error: any) {
+        console.log("Error in Catch After Sort::", error)
+      }
     } catch (error: any) {
       console.log("Error in Set Leaders", error);
       return error;
