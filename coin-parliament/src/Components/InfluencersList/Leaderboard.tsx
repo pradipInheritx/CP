@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { toFollow, UserProps } from "../../common/models/User";
 import UserCard from "./UserCard";
@@ -60,11 +60,17 @@ const Leaderboard = ({
 
   // @ts-ignore
   const myUserIndex = userInfo?.uid && leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore)).findIndex(obj => obj.userId === userInfo?.uid) || 0;
-  console.log(myUserIndex, leaders, "myUserIndex")
   const EndIndex = 10;
   const navigate = useNavigate();
   // @ts-ignore
-  // console.log(leaders, "leaderscheck")
+  useEffect(() => {
+    if (indexOfLastItem >= leaders?.length) {
+      window.scrollTo(0, 0);
+    }    
+    return () => {
+      
+    };
+  }, [indexOfLastItem]);
   return (
     <div>
       <LeadersContainer>
@@ -112,7 +118,11 @@ const Leaderboard = ({
           })}        
         <div>
           <div className="d-flex mb-3">
-            <Button onClick={prevPage} disabled={currentPage === 1}
+            <Button onClick={() => {              
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              prevPage()
+            }
+            } disabled={currentPage === 1}
               style={{
               marginRight:"10px"
             }}
@@ -120,7 +130,10 @@ const Leaderboard = ({
             PREV
           </Button>
           
-            <Button onClick={nextPage} disabled={indexOfLastItem >= leaders.length}
+            <Button onClick={() => {
+              nextPage()
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }} disabled={indexOfLastItem >= leaders.length}
               style={{
                 marginLeft: "10px"
               }}
