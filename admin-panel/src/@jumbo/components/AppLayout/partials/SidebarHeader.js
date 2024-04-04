@@ -72,10 +72,7 @@ const SidebarHeader = () => {
   return (
     <div className={classes.root}>
       <CmtAvatar src={"https://via.placeholder.com/150"} alt="User Avatar" />
-      <div
-        className={classes.userInfo}
-        // onClick={handlePopoverOpen}
-      >
+      <div className={classes.userInfo} onClick={handlePopoverOpen}>
         <div
           className="pointer"
           style={{
@@ -98,7 +95,7 @@ const SidebarHeader = () => {
               {userDetalis?.email}
             </Typography>
           </div>
-          {/* <ArrowDropDownIcon /> */}
+          <ArrowDropDownIcon />
         </div>
       </div>
 
@@ -119,14 +116,14 @@ const SidebarHeader = () => {
         >
           <Paper elevation={8}>
             <MenuList>
-              <MenuItem onClick={handlePopoverClose}>
+              {/* <MenuItem onClick={handlePopoverClose}>
                 <PersonIcon />
                 <div className="ml-2">Profile</div>
               </MenuItem>
               <MenuItem onClick={handlePopoverClose}>
                 <SettingsIcon />
                 <div className="ml-2">Settings</div>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={onLogoutClick}>
                 <ExitToAppIcon />
                 <div className="ml-2">Logout</div>
