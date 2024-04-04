@@ -260,6 +260,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user:any) => {
     phone: user.phoneNumber,
     subscribers: [],
     children: [],
+    firstTimeLogin: true,
     voteStatistics: {
       total: 0,
       successful: 0,
