@@ -652,8 +652,11 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 
 export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
   try {
-    const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
-    const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
+    //Stage ---> const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
+    //Stage ----> Key const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
+
+    const url = 'https://acme-prod.fly.dev/operations/dev/intent/create-pay-intent'
+    const apiKey = 'RULOTKI-6U2EHRQ-SANJUMQ-ASXWLCI';
 
     const data = {
       contractAddress: req.body.contractAddress,
