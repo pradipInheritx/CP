@@ -793,6 +793,15 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
 
       try {
         console.log("Come Here To Update:", "TYPE OF", typeof leaderStatus, "Value", leaderStatus);
+
+        for (let record = 0; record < leaderStatus.length; record++) {
+          if (leaderStatus && leaderStatus[record].displayName) {
+            console.log("Get DisplayName", leaderStatus[record].displayName)
+          } else {
+            console.log("Get DisplayName", leaderStatus[record].displayName, "UserID---", leaderStatus[record].userId)
+          }
+        }
+
         return await firestore()
           .collection("stats")
           .doc("leaders")
