@@ -62,12 +62,12 @@ export type Totals = {
 };
 
 export type Leader = {
-  displayName: string;
-  email: string;
-  userId: string;
+  displayName?: string;
+  email?: string;
+  userId?: string;
   avatar?: string;
-  score: number;
-  pct: number;
+  score?: number;
+  pct?: number;
   subscribers?: number;
   leaders?: number;
   status?: string;
