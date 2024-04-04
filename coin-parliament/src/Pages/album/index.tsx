@@ -603,7 +603,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }
         }>
-            <div className='d-flex justify-content-center pt-5 flex-wrap' >
+            <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2 ipad_row_gap'>
                 <input
                     type='text'
                     onChange={e => {
@@ -888,12 +888,12 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     
                     :
                     <>
-                        {collectionValue == "none" ?<GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
+                        {collectionValue == "none" ?<GalleryType className='d-flex galleryRow' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
                         {
                             collectionType?.map((data: any, index: number) => {
                                 return (
-                                    <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
+                                    <div className="galleryCol" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
                                     } key={index}
                                         style={{
                                             width: "380px",

@@ -495,7 +495,7 @@ const NFTGallery = () => {
       <h5 className="mt-4 text-center ">        
         <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Wall of fame</strong>
       </h5>
-      <div style={{ rowGap: '10px' }} className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
+      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2 ipad_row_gap'
       // style={{background:"#6352e8"}}
       >
         <input
