@@ -248,7 +248,6 @@ useEffect(() => {
 }, [coins,activeTime,allBUtton])
   
   const getLastPrice = () => {
-    console.log("yes i am calling")
     setVoteLastPrice(coins)
   }
 

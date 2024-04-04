@@ -46,8 +46,6 @@ function Speed(props: SpeedProps) {
     }else{
       setImpactValue('High')
     }
-
-    console.log(value,"rightvalue")
   },[value])
 
 
@@ -272,9 +270,7 @@ export default function SpeedTest(
   const getCoinValue = () => {
     let tempNewValue = parseFloat(coins) * 100;
     let tempOldValue = parseFloat(startprice || coins ) * 100;
-    
-    console.log(tempNewValue * 100 - prevCountRef.current * 100 ,"bothprice")
-    // console.log(tempNewValue - tempOldValue, "tempOldValue")
+        
     if (tempNewValue === tempOldValue) {
       
       setValue(50);
