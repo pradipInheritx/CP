@@ -1111,7 +1111,8 @@ function App() {
       // }, 10000); // reconnect after 3 seconds                
   }
 
-  let reconnectTimeout:any;
+  let reconnectTimeout:any;  
+  
   async function throttleReconnectWebSocket() {
     // If there's already a reconnect attempt scheduled, do nothing
     if (reconnectTimeout) {
@@ -1125,10 +1126,12 @@ function App() {
     reconnectWebSocket()
 
     // Schedule the next reconnect attempt after a delay
-    reconnectTimeout = setTimeout(() => {
-      reconnectTimeout = null; // Reset the timeout after it's executed
-      throttleReconnectWebSocket(); // Trigger another reconnect attempt
-    }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
+    if (!socketConnect) {      
+      reconnectTimeout = setTimeout(() => {
+        reconnectTimeout = null; // Reset the timeout after it's executed
+        throttleReconnectWebSocket(); // Trigger another reconnect attempt
+      }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
+    }
   }
 
 

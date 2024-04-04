@@ -298,7 +298,7 @@ const FirstBoxdiv = styled.div`
   // background-color:#1e0243;
   // padding :20px;
   display:flex;  
-  flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}
+  flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}  
 `;
 
 const Opctiondiv = styled.div`
@@ -452,55 +452,55 @@ const VotingPaymentCopy: React.FC<{
 
     const translate = useTranslation();
     const { user, userInfo } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, paymentCoinList, setPaymentCoinList, } =
-    useContext(AppContext);
-  const { coins} = useContext(CoinsContext);
+    const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, paymentCoinList, setPaymentCoinList, } =
+      useContext(AppContext);
+    const { coins } = useContext(CoinsContext);
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
     const { width } = useWindowSize();
     const [isLoading, setIsLoading] = useState(false)
-  const [coinsList, setCoinsList] = useState(mainnet)
-  const [extraCoinsList, setExtraCoinsList] = useState([
-    {
-      chainId: 8086,
-      name: '',
-      currency: 'BTC',
-      Img: btc,
-      ColorImg: btcColor,
-    },
-    {
-      chainId: "USDT",
-      name: 'ERC20',
-      currency: 'USDT',      
-      Img: USDT,      
-      ColorImg: USDTColor,      
-    },
-    {
-      chainId: "USDC",
-      name: '',
-      currency: 'USDC',      
-      Img: usdc,      
-      ColorImg: usdcColor,      
-    },
-    
-    {
-      chainId: "PAX1",
-      name: 'ERC20',
-      currency: 'PAX',      
-      Img: pax1,      
-      ColorImg: pax1Color,      
-    },
-    {
-      chainId: "PAX56",
-      name: 'BEP20',
-      currency: 'PAX',  
-      Img: pax56,  
-      ColorImg: pax56Color,  
-    },
-  ])
+    const [coinsList, setCoinsList] = useState(mainnet)
+    const [extraCoinsList, setExtraCoinsList] = useState([
+      {
+        chainId: 8086,
+        name: '',
+        currency: 'BTC',
+        Img: btc,
+        ColorImg: btcColor,
+      },
+      {
+        chainId: "USDT",
+        name: 'ERC20',
+        currency: 'USDT',
+        Img: USDT,
+        ColorImg: USDTColor,
+      },
+      {
+        chainId: "USDC",
+        name: '',
+        currency: 'USDC',
+        Img: usdc,
+        ColorImg: usdcColor,
+      },
+
+      {
+        chainId: "PAX1",
+        name: 'ERC20',
+        currency: 'PAX',
+        Img: pax1,
+        ColorImg: pax1Color,
+      },
+      {
+        chainId: "PAX56",
+        name: 'BEP20',
+        currency: 'PAX',
+        Img: pax56,
+        ColorImg: pax56Color,
+      },
+    ])
 
     const [selectPayment, setSelectPayment] = useState(0);
-  const [showChangeCoin, setShowChangeCoin] = useState(false);
+    const [showChangeCoin, setShowChangeCoin] = useState(false);
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
@@ -508,45 +508,45 @@ const VotingPaymentCopy: React.FC<{
     const [extraPer, setExtraPer] = useState(0);
     const [showText, setShowText] = useState(false);
     const [comingSoon, setComingSoon] = useState(false);
-  const [chainNetworkTest, setChainNetworkTest] = useState(false);
-  // const metamaskCoin = mainnet?.find((network?: any) => network?.chainId == chainId)
+    const [chainNetworkTest, setChainNetworkTest] = useState(false);
+    // const metamaskCoin = mainnet?.find((network?: any) => network?.chainId == chainId)
     const [metaCoin, setMetaCoin] = useState("none");
     const [transactionInst, setTransactionInst] = useState(false);
-  const [showPayButoom, setShowPayButoom] = useState(false);
+    const [showPayButoom, setShowPayButoom] = useState(false);
     const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
-  const [addHoverCss, setAddHoverCss] = useState<any>("");
+    const [addHoverCss, setAddHoverCss] = useState<any>("");
 
     // const 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
     const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
     let navigate = useNavigate();
-  const events = useWeb3ModalEvents()
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
-  const coinImage:any = {
-    ETH:ETHsvg,
-    BNB:BNBsvg,
-    MATIC:MATICSVG,
-  }
-  const SelectCoinImage:any = {
-    ETH:ETHColor,
-    BNB: bnbColor,
-    MATIC: polygonColor,
-  }
-  // @ts-ignore  
-  const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
-  
-  // useEffect(() => {    
-  //   if (coinInfo) {
-  //     if (window.screen.width > 767) {
-  //       window.scrollTo({ top: 650, behavior: 'smooth' });
-  //     }
-  //     else {
-  //       window.scrollTo({ top: 630, behavior: 'smooth' });
-  //     }
-  //   }
-  // }, [coinInfo, chainId, selectPayment])
+    const events = useWeb3ModalEvents()
+    const { address, chainId, isConnected } = useWeb3ModalAccount()
+    const { walletProvider } = useWeb3ModalProvider()
+    const coinImage: any = {
+      ETH: ETHsvg,
+      BNB: BNBsvg,
+      MATIC: MATICSVG,
+    }
+    const SelectCoinImage: any = {
+      ETH: ETHColor,
+      BNB: bnbColor,
+      MATIC: polygonColor,
+    }
+    // @ts-ignore  
+    const liveAmount = localStorage.getItem('CoinsPrice') && JSON.parse(localStorage.getItem('CoinsPrice')) || coins
+
+    // useEffect(() => {    
+    //   if (coinInfo) {
+    //     if (window.screen.width > 767) {
+    //       window.scrollTo({ top: 650, behavior: 'smooth' });
+    //     }
+    //     else {
+    //       window.scrollTo({ top: 630, behavior: 'smooth' });
+    //     }
+    //   }
+    // }, [coinInfo, chainId, selectPayment])
 
 
     useEffect(() => {
@@ -563,8 +563,8 @@ const VotingPaymentCopy: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-  console.log(selectCoin,"selectCoincheck")
-  
+    console.log(selectCoin, "selectCoincheck")
+
     // const getCoinList = async () => {
     //   const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
@@ -586,49 +586,49 @@ const VotingPaymentCopy: React.FC<{
     // }, [])
 
 
-  const handleClick = async () => {
-    console.log("web function")
-    window.scrollTo({ top: 50, behavior: 'smooth' });
-    if (isConnected) {        
-      if (coinInfo.chainId != chainId) {        
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        setIsLoading(true)
-        switchNetwork(coinInfo.chainId).then((res?:any) => {                      
-          if (res == null) {              
-            sendTransaction()
-          }
-      })
-      }
-      else {
-        setIsLoading(true)
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        sendTransaction()        
-      }
-    } else {      
-      open()
-      // switchNetwork(coinInfo.chainId)
-      // open({view:"Networks"})
+    const handleClick = async () => {
+      console.log("web function")
+      window.scrollTo({ top: 50, behavior: 'smooth' });
+      if (isConnected) {
+        if (coinInfo.chainId != chainId) {
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          setIsLoading(true)
+          switchNetwork(coinInfo.chainId).then((res?: any) => {
+            if (res == null) {
+              sendTransaction()
+            }
+          })
+        }
+        else {
+          setIsLoading(true)
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          sendTransaction()
+        }
+      } else {
+        open()
+        // switchNetwork(coinInfo.chainId)
+        // open({view:"Networks"})
 
-      setTransactionInst(true)
+        setTransactionInst(true)
       }
     };
 
-  useEffect(() => {
-    if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {     
+    useEffect(() => {
+      if (events?.data?.event == "CONNECT_SUCCESS" && transactionInst) {
         if (coinInfo.chainId != chainId) {
           setIsLoading(true)
           setShowText(true)
           setPayButton(true);
           setPaymentStatus({ type: "", message: '' });
 
-          switchNetwork(coinInfo.chainId).then((res) => {  
+          switchNetwork(coinInfo.chainId).then((res) => {
             // console.log(res, chainId , coinInfo.chainId, "check chainID")
-            
-            if (res == null) {              
+
+            if (res == null) {
               sendTransaction()
             }
           })
@@ -639,41 +639,41 @@ const VotingPaymentCopy: React.FC<{
           setPayButton(true);
           setIsLoading(true)
           sendTransaction()
-        }      
-    }
-    if (window.screen.width < 767 && events?.data?.event == "MODAL_LOADED" || events?.data?.event == "MODAL_CLOSE") {
-      
-      // window.scrollTo({ top: 850, behavior: 'smooth' });
-    }
-    // return () => {
-    //   setTransactionInst(false)
-    // }
-  }, [events])  
-
-  const handleClickMob = async () => {
-    console.log("Mobile function ")
-    const data = mainnet?.find((network?: any) => network?.chainId == chainId && localStorage.getItem("CoinPay") == network?.name)
-    window.scrollTo({ top: 50, behavior: 'smooth' });
-    if (isConnected) {
-      if (localStorage.getItem("CoinPay") != data?.name) {
-        open({ view: "Networks" })             
-        setChainNetworkTest(true)        
+        }
       }
-      else {        
-        setIsLoading(true)
-        setShowText(true)
-        setPaymentStatus({ type: "", message: '' });
-        setPayButton(true);
-        sendTransaction()
-      }      
-    } else {
-      open()
-      // switchNetwork(coinInfo.chainId)
-      // open({view:"Networks"})
-      // setTransactionInst(true)
-    }
-  };
-  
+      if (window.screen.width < 767 && events?.data?.event == "MODAL_LOADED" || events?.data?.event == "MODAL_CLOSE") {
+
+        // window.scrollTo({ top: 850, behavior: 'smooth' });
+      }
+      // return () => {
+      //   setTransactionInst(false)
+      // }
+    }, [events])
+
+    const handleClickMob = async () => {
+      console.log("Mobile function ")
+      const data = mainnet?.find((network?: any) => network?.chainId == chainId && localStorage.getItem("CoinPay") == network?.name)
+      window.scrollTo({ top: 50, behavior: 'smooth' });
+      if (isConnected) {
+        if (localStorage.getItem("CoinPay") != data?.name) {
+          open({ view: "Networks" })
+          setChainNetworkTest(true)
+        }
+        else {
+          setIsLoading(true)
+          setShowText(true)
+          setPaymentStatus({ type: "", message: '' });
+          setPayButton(true);
+          sendTransaction()
+        }
+      } else {
+        open()
+        // switchNetwork(coinInfo.chainId)
+        // open({view:"Networks"})
+        // setTransactionInst(true)
+      }
+    };
+
     const startAgainAction = () => {
       navigate(-1)
       setSelectCoin("none");
@@ -684,37 +684,37 @@ const VotingPaymentCopy: React.FC<{
       setSelectCoin("none");
     }
 
-  const { open, close } = useWeb3Modal()
-  const {disconnect} = useDisconnect()  
+    const { open, close } = useWeb3Modal()
+    const { disconnect } = useDisconnect()
 
-  useEffect(() => {
-    // let CoinPay = localStorage.getItem("CoinPay")
-    if (chainId && isConnected) {
-      const data = mainnet?.find((network?: any) => network?.chainId == chainId)
-      console.log(data,"datafrommetamask")
-      if (!data) return
-      if (data && selectCoin == "none") {        
-        setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)         
-        setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
-          chainId: 1,
-          name: 'USDT ERC20',
-          currency: 'USDT ERC20',
-          explorerUrl: 'https://etherscan.io',
-          rpcUrl: 'https://cloudflare-eth.com'
-        } : data)
+    useEffect(() => {
+      // let CoinPay = localStorage.getItem("CoinPay")
+      if (chainId && isConnected) {
+        const data = mainnet?.find((network?: any) => network?.chainId == chainId)
+        console.log(data, "datafrommetamask")
+        if (!data) return
+        if (data && selectCoin == "none") {
+          setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
+          setCoinInfo(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? {
+            chainId: 1,
+            name: 'USDT ERC20',
+            currency: 'USDT ERC20',
+            explorerUrl: 'https://etherscan.io',
+            rpcUrl: 'https://cloudflare-eth.com'
+          } : data)
+        }
+        if (data) {
+          setMetaCoin(data?.name)
+        }
+        if (localStorage.getItem("CoinPay") == data?.name || (localStorage.getItem("CoinPay") == "USDT ERC20" && data.chainId == 1)) {
+          setChainNetworkTest(false)
+        }
       }
-      if (data) {        
-        setMetaCoin(data?.name)
-      }
-      if (localStorage.getItem("CoinPay") == data?.name || (localStorage.getItem("CoinPay") == "USDT ERC20" && data.chainId==1)) {        
-        setChainNetworkTest(false)
-      }
-      }
-  }, [chainId, isConnected, localStorage.getItem("CoinPay")])
-      
+    }, [chainId, isConnected, localStorage.getItem("CoinPay")])
+
     // console.log(address, chainId, isConnected, "address,chainId,isConnected")
-  const payNow = (detail?: any) => {
-      
+    const payNow = (detail?: any) => {
+
       const headers = {
         // 'Content-Type': 'application/json',
         "accept": "application/json",
@@ -722,7 +722,7 @@ const VotingPaymentCopy: React.FC<{
         "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
         "content-type": "application/json"
       }
-    
+
       const data = {
 
         userId: `${user?.uid}`,
@@ -742,7 +742,7 @@ const VotingPaymentCopy: React.FC<{
         paymentDetails: detail,
 
       }
-    console.log("afterPayment Data : ",data)
+      console.log("afterPayment Data : ", data)
       axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
         {
           headers: headers
@@ -766,7 +766,7 @@ const VotingPaymentCopy: React.FC<{
           setPayButton(false);
         })
     }
-    async function sendTransaction() {    
+    async function sendTransaction() {
       setTransactionInst(false)
       setTimeout(() => {
         setIsLoading(false)
@@ -774,25 +774,25 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false)
         console.log("take more that 5 sec")
       }, 5000);
-      let ethereum = (window as any).ethereum;      
-            
+      let ethereum = (window as any).ethereum;
+
       const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
       // console.log(coinInfo,"coinInfoUSDT ERC20")
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
-        
+
         if (coinInfo?.currency == "USDT ERC20") {
-          
-          const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
+
+          const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
           const usdtContractABI = ContractABI;
-          const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);          
+          const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);
           const recipientAddress = "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d";
           const amountToSend = ethers.utils.parseUnits(amountInCrypto);
-          console.log(amountToSend,"amountToSend")
+          console.log(amountToSend, "amountToSend")
           console.log(coinInfo?.currency, "coinInfo?.currency")
-          
+
           const trax = {
             to: usdtContractAddress,
             value: ethers.utils.parseUnits(amountInCrypto),
@@ -801,87 +801,87 @@ const VotingPaymentCopy: React.FC<{
             gasLimit: ethers.utils.parseEther(amountInCrypto),
           };
           const txResponse = await wallet.sendTransaction(trax);
-  
+
           // Handle the transaction response
           console.log('Transaction hash:', txResponse.hash);
           if (txResponse.hash) {
-            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
+            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
           }
         }
-        else {          
+        else {
           const transaction = {
             chainId: coinInfo?.chainId,
             to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
             value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
-          const txResponse = await wallet.sendTransaction(transaction);  
+          const txResponse = await wallet.sendTransaction(transaction);
           // Handle the transaction response
           console.log('Transaction hash:', txResponse.hash);
           if (txResponse.hash) {
-            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })          
+            payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
           }
-        }                   
+        }
         console.log('Transaction mined!');
 
       } catch (error: any) {
         console.log('errorror', error)
-        const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];        
-        const errorCodeGet = error.code;        
+        const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
+        const errorCodeGet = error.code;
         setIsLoading(false)
-        setShowText(false)        
+        setShowText(false)
         setPayButton(false);
 
-        if (errorCodeGet == -32603) {          
-          setPaymentStatus({ type: "error", message: error.data.error})
+        if (errorCodeGet == -32603) {
+          setPaymentStatus({ type: "error", message: error.data.error })
         }
-        else if (errorCodeGet == "NETWORK_ERROR") {          
-          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again."})
+        else if (errorCodeGet == "NETWORK_ERROR") {
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again." })
         }
-        else {          
+        else {
           setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
         }
       }
-      
-      
 
-  } 
 
-  const switchNetwork = async (chainId:number) => {
-    let ethereum = (window as any).ethereum;
-    const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
-    
-    console.log(chainId,"chainIdchainList")
-    try {
-      if (!provider) throw new Error('Provider is not initialized.');
-      // Switch network
-      const chainData = await provider.send('wallet_switchEthereumChain', [{ chainId: `0x${chainId.toString(16)}` }]);
-      return chainData
-      // console.log('Switched to network:', chainId);
+
     }
-    catch (error) {
-      let codeError = ""
-      console.error('Error switching network:', error);       
-      // @ts-ignore
-      const errorCode = error?.code;
-      // @ts-ignore
-      const errorMessage = error?.message;
-      if (errorCode == 4902) {        
-        setPaymentStatus({ type: "error", message: `Please add ${coinInfo.name} in your metamask to do payment with this network` })
-        setIsLoading(false)
-        setShowText(false)
-        setPayButton(false);
-      }       
-      else {
-        setPaymentStatus({ type: "error", message: "User rejected the request" })
-        setIsLoading(false)
-        setShowText(false)
-        setPayButton(false);
+
+    const switchNetwork = async (chainId: number) => {
+      let ethereum = (window as any).ethereum;
+      const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
+
+      console.log(chainId, "chainIdchainList")
+      try {
+        if (!provider) throw new Error('Provider is not initialized.');
+        // Switch network
+        const chainData = await provider.send('wallet_switchEthereumChain', [{ chainId: `0x${chainId.toString(16)}` }]);
+        return chainData
+        // console.log('Switched to network:', chainId);
       }
-      return codeError
-    }
-  };
-  
+      catch (error) {
+        let codeError = ""
+        console.error('Error switching network:', error);
+        // @ts-ignore
+        const errorCode = error?.code;
+        // @ts-ignore
+        const errorMessage = error?.message;
+        if (errorCode == 4902) {
+          setPaymentStatus({ type: "error", message: `Please add ${coinInfo.name} in your metamask to do payment with this network` })
+          setIsLoading(false)
+          setShowText(false)
+          setPayButton(false);
+        }
+        else {
+          setPaymentStatus({ type: "error", message: "User rejected the request" })
+          setIsLoading(false)
+          setShowText(false)
+          setPayButton(false);
+        }
+        return codeError
+      }
+    };
+
     useEffect(() => {
       if (userInfo?.uid && paymentCurruntTime) {
         const colRef = collection(db, "callbackHistory")
@@ -917,10 +917,17 @@ const VotingPaymentCopy: React.FC<{
       const data = {
         userId: userInfo?.uid,
         email: userInfo?.email,
-        amount: payamount,
+        amount: `${payamount}`,
         transactionType: payType,
         numberOfVotes: extraVote,
-        timestamp: (new Date().getTime()).toString(),
+        timestamp: (new Date().getTime()).toString(),                
+        chainId: "56",
+        // to: "0xa546feEFDbA6ED2E22FE08715d13E4342db3Bb57",
+        to: "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",
+        // contractAddress: "0x967aad5216d89623729AC892E6a20977bf510cFa",
+        contractAddress: "0x55d398326f99059fF775485246999027B3197955",
+        intentLimit: 1
+
       }
       console.log(data, "datacehck")
       const headers = {
@@ -945,7 +952,7 @@ const VotingPaymentCopy: React.FC<{
           console.log(error)
         })
     }
-  
+
     return (
       <>
         {isLoading && <div style={{
@@ -970,26 +977,26 @@ const VotingPaymentCopy: React.FC<{
           }}>
             {texts.waitForIt}
           </span>
-        </div>}                
+        </div>}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
             marginTop: "35px",
             fontSize: "1.25rem",
           }}
-        >   
-          {/* @ts-ignore */}  
+        >
+          {/* @ts-ignore */}
           {translate("Boost your voting power").toUpperCase()}
         </H2>}
         {/* @ts-ignore */}
-        {payType !== "EXTRAVOTES" && (userInfo?.isUserUpgraded == false || userInfo?.isUserUpgraded == undefined ) && <H2
+        {payType !== "EXTRAVOTES" && (userInfo?.isUserUpgraded == false || userInfo?.isUserUpgraded == undefined) && <H2
           style={{
             zIndex: 1,
             marginTop: "35px",
             fontSize: "1.25rem",
           }}
-        >      
-          {/* @ts-ignore */}  
+        >
+          {/* @ts-ignore */}
           {translate("Upgrade your account").toUpperCase()}
         </H2>}
         {/* <div className="pt-5 pb-5 d-flex justify-content-center"
@@ -1105,15 +1112,15 @@ const VotingPaymentCopy: React.FC<{
           >
             <FirstBoxdiv className={`${window.screen.width > 767 ? "" : ""}`}
               style={{
-                justifyContent: `${selectPayment == 0 ? "" : ""}`,                
+                justifyContent: `${selectPayment == 0 ? "" : ""}`,
               }}
             >
               {showPayButoom == false ? <Opctiondiv className="">
                 <div className="justify-content-between d-flex flex-wrap"
-                  style={{                    
+                  style={{
                     border: "1px solid",
-                    borderRadius:"10px",
-                    width:`${window.screen.width>767 ?"46%" :"98%"}`,
+                    borderRadius: "10px",
+                    width: `${window.screen.width < 767 ? "98%" : payamount < 24 ? "60%" : "48%"}`,
                     // cursor: "pointer",
                     marginBottom: '10px',
                     // borderBottom: "1px solid white",
@@ -1121,69 +1128,69 @@ const VotingPaymentCopy: React.FC<{
                     padding: `${window.screen.width < 767 ? "30px 55px" : "30px 40px"}`,
                     // position: "relative",
                   }}
-                  onClick={() => {                    
+                  onClick={() => {
                     // setComingSoon(true)                        
                   }}
                 >
                   {/* <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p> */}
                   <div className="justify-content-between d-flex flex-wrap"
-                    style={{   
-                  }}
+                    style={{
+                    }}
                   >
-                  {coinsList.map((item:any , index) => {
-                    return <div className={`${item.chainId == chainId ? "selectCoinBox" : addHoverCss == item.chainId ? "selectCoinBox" : "CoinBox"} my-2`}
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setSelectPayment(1)
-                        setShowPayButoom(true)
-                        setSelectCoin(item.currency)
-                        setCoinInfo(item)                                                
-                        setShowOptionList(false)
-                        localStorage.setItem("CoinPay", item.name) 
-                        setAddHoverCss("")
-                      }}
-                      onMouseDown={(e) => {
-                        setAddHoverCss("")
-                      }}
-                      onMouseUp={(e) => {
-                        setAddHoverCss(item.chainId)
-                      }}
-                      onMouseEnter={() => setAddHoverCss(item.chainId)}
-                      onMouseLeave={() => setAddHoverCss("")}
-                    >
-                      <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : addHoverCss == item.chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
+                    {coinsList.map((item: any, index) => {
+                      return <div className={`${item.chainId == chainId ? "selectCoinBox" : addHoverCss == item.chainId ? "selectCoinBox" : "CoinBox"} my-2`}
                         style={{
-                        marginRight:"8px"
-                      }}
-                      />
-                      <div className="d-flex flex-wrap">
-                      <span className="ml-2">
-                            {item.currency}
-                      </span>
-                        {item.currency == "MATIC" && <span className="ml-2"
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setSelectPayment(1)
+                          setShowPayButoom(true)
+                          setSelectCoin(item.currency)
+                          setCoinInfo(item)
+                          setShowOptionList(false)
+                          localStorage.setItem("CoinPay", item.name)
+                          setAddHoverCss("")
+                        }}
+                        onMouseDown={(e) => {
+                          setAddHoverCss("")
+                        }}
+                        onMouseUp={(e) => {
+                          setAddHoverCss(item.chainId)
+                        }}
+                        onMouseEnter={() => setAddHoverCss(item.chainId)}
+                        onMouseLeave={() => setAddHoverCss("")}
+                      >
+                        <img src={item.chainId == chainId ? SelectCoinImage[item.currency] : addHoverCss == item.chainId ? SelectCoinImage[item.currency] : coinImage[item.currency]} alt="" width={"20px"}
                           style={{
-                            fontSize: "8px",
-                            fontWeight: 100,
+                            marginRight: "8px"
                           }}
-                        >
-                        {("Polygon").toUpperCase()}
-                      </span>}
+                        />
+                        <div className="d-flex flex-wrap">
+                          <span className="ml-2">
+                            {item.currency}
+                          </span>
+                          {item.currency == "MATIC" && <span className="ml-2"
+                            style={{
+                              fontSize: "8px",
+                              fontWeight: 100,
+                            }}
+                          >
+                            {("Polygon").toUpperCase()}
+                          </span>}
+                        </div>
                       </div>
-                    </div>
-                  })}
+                    })}
                     {extraCoinsList.map((item: any, index) => {
                       return <div className={`${item.chainId == chainId ? "selectCoinBox" : addHoverCss == item.chainId ? "selectCoinBox" : "CoinBox"} my-2`}
-                        
+
                         style={{
                           cursor: "not-allowed",
                           opacity: 0.6,
                           filter: "grayscale(80%)",
                         }}
                         onClick={() => {
-                        }}                        
+                        }}
                       >
                         <img src={item.chainId == chainId ? item.Img : addHoverCss == item.chainId ? item.Img : item.ColorImg} alt="" width={"20px"}
                           style={{
@@ -1191,18 +1198,18 @@ const VotingPaymentCopy: React.FC<{
                           }}
                         />
                         <div className="d-flex flex-wrap">
-                        <span className="ml-2"
-                          style={{
-                            cursor: "not-allowed"
-                          }}
-                        >
-                          {item.currency}
+                          <span className="ml-2"
+                            style={{
+                              cursor: "not-allowed"
+                            }}
+                          >
+                            {item.currency}
                           </span>
                           <span
                             style={{
                               fontSize: "9px",
-                              fontWeight:200,
-                          }}
+                              fontWeight: 200,
+                            }}
                           >{item.name}</span>
                         </div>
                       </div>
@@ -1210,9 +1217,9 @@ const VotingPaymentCopy: React.FC<{
                   </div>
                 </div>
                 {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
-                  
+
                   style={{
-                    borderRadius:"10px",
+                    borderRadius: "10px",
                     width: `${window.screen.width > 767 ? "46%" : "98%"}`,
                     cursor: "pointer",
                     marginBottom: "10px",
@@ -1235,45 +1242,45 @@ const VotingPaymentCopy: React.FC<{
                 >
                   <span className="d-flex align-items-center justify-content-center mb-2"
                     style={{
-                      fontSize:"16px"
-                  }}
+                      fontSize: "16px"
+                    }}
                   >
                     <i className="bi bi-credit-card-fill me-2"></i> No Crypto? <strong>&nbsp; No problem.</strong>
                   </span>
                   <span className="circleBtn mt-2">
                     <span className="inn_btn">Buy Crypto</span>
                   </span>
-                  <img src={CardsLogo} alt="" width={"97%"}  className="mt-4"/>
-                </div>                
-                }                
+                  <img src={CardsLogo} alt="" width={"97%"} className="mt-4" />
+                </div>
+                }
               </Opctiondiv>
                 :
-                <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column"                  
+                <div className="w-100 m-auto d-flex justify-content-center align-items-center flex-column"
                   style={{
                     background: "#281764fa",
                     padding: "20px",
-                    borderRadius:"10px"
+                    borderRadius: "10px"
                   }}
                 >
                   <div>
-                  <SmallBackArrow />
-                  <span className="                  
+                    <SmallBackArrow />
+                    <span className="                  
                    text-center"
-                    style={{
-                      cursor: "pointer", 
-                      // border: "1px solid white",
-                      // padding: "7px 7px",
-                      marginLeft:"4px",
-                      borderRadius:"5px"
-                      
-                    }}
-                      
-                    onClick={() => {
-                    setShowPayButoom(false)
-                      setSelectPayment(0)
-                      // setSelectCoin("none")
-                    }}>Back</span>
-                  </div>   
+                      style={{
+                        cursor: "pointer",
+                        // border: "1px solid white",
+                        // padding: "7px 7px",
+                        marginLeft: "4px",
+                        borderRadius: "5px"
+
+                      }}
+
+                      onClick={() => {
+                        setShowPayButoom(false)
+                        setSelectPayment(0)
+                        // setSelectCoin("none")
+                      }}>Back</span>
+                  </div>
                   {/* {isConnected == true && selectCoin !=="none" && <Sidediv style={{ display: 'flex', justifyContent: 'center' }} className="mt-3">
 
                     <div className={`pay-custom-select-container mb-3`} style={{                      
@@ -1332,7 +1339,7 @@ const VotingPaymentCopy: React.FC<{
                     </div>
                   </Sidediv>} */}
                 </div>
-            }
+              }
             </FirstBoxdiv>
 
             {selectPayment == 1 &&
@@ -1368,12 +1375,12 @@ const VotingPaymentCopy: React.FC<{
                     <div
                       className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
                       onClick={() => {
-                        console.log((selectCoin == "none" || isConnected == false),"showselectCoin")
+                        console.log((selectCoin == "none" || isConnected == false), "showselectCoin")
                         if (payButton) {
                           return
                         }
-                        if (selectCoin == "none" || isConnected == false ) {
-                          
+                        if (selectCoin == "none" || isConnected == false) {
+
                           setShowOptionList(prev => !prev)
                         }
                         // open({ view: 'Networks' })
@@ -1383,43 +1390,43 @@ const VotingPaymentCopy: React.FC<{
                     >
                       {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
-                    {(selectCoin == "none" || isConnected == false)&& showOptionList && (
+                    {(selectCoin == "none" || isConnected == false) && showOptionList && (
                       <ul className="pay-select-options"
                         style={{
 
-                          maxHeight: "200px",                        
-                          top: `${selectCoin == "none" ? `${mainnet.length > 5 ? "-200px" : `-${mainnet.length*44}px`}` : ""}`,
+                          maxHeight: "200px",
+                          top: `${selectCoin == "none" ? `${mainnet.length > 5 ? "-200px" : `-${mainnet.length * 44}px`}` : ""}`,
                           borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                           borderTop: "none",
                           border: " 1px solid #cab7ff",
                         }}
                       >
                         {mainnet?.map((option: any, index: number) => {
-                                        
-                            return (
-                              <>
+
+                          return (
+                            <>
                               <li
                                 style={{
-                                
-                                  }}                                  
+
+                                }}
                                 className="pay-custom-select-option"
                                 data-name={option.name}
                                 key={index}
                                 onClick={async () => {
                                   setSelectCoin(option.currency)
                                   setCoinInfo(option)
-                                  setShowOptionList(!showOptionList)  
+                                  setShowOptionList(!showOptionList)
                                   localStorage.setItem("CoinPay", option.name)
                                   setChainNetworkTest(false)
                                   // switchNetwork(option.chainId)
                                 }}
                               >
-                                  {option.currency}
-  
-                                </li>
-                              </>
-                            );
-                          
+                                {option.currency}
+
+                              </li>
+                            </>
+                          );
+
                         })}
                       </ul>
                     )}
@@ -1465,7 +1472,7 @@ const VotingPaymentCopy: React.FC<{
                   </Divbutton>
                 } */}
                 {
-                 selectCoin != "none" && window.innerWidth < 768 && !isConnected && <div
+                  selectCoin != "none" && window.innerWidth < 768 && !isConnected && <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     <ButttonDiv className="mt-1">
@@ -1486,8 +1493,8 @@ const VotingPaymentCopy: React.FC<{
                           }).catch((err) => {
                             // window.scrollTo({ top: 800, behavior: 'smooth' });  
                             // console.log("yes i am close", events.data)
-                          });  
-                          
+                          });
+
                         }}
                       >
 
@@ -1503,12 +1510,12 @@ const VotingPaymentCopy: React.FC<{
                   >
                     {/* Note: To pay with {selectCoin} change to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network manually in your wallet, or choose a different coin from {metaCoin} network. */}
                     Note:
-                    To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network {metaCoin != "none" ?`, or change to a different coin from ${metaCoin} network.`:"."}
+                    To pay with {selectCoin}, change your wallet manually to {localStorage?.getItem("CoinPay") == "USDT ERC20" ? "Ethereum" : localStorage?.getItem("CoinPay")} network {metaCoin != "none" ? `, or change to a different coin from ${metaCoin} network.` : "."}
                   </span>
                 }
 
                 {
-                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId && !chainNetworkTest && selectCoin !="none" &&  <div
+                  window.innerWidth < 768 && isConnected && coinInfo?.chainId != chainId && !chainNetworkTest && selectCoin != "none" && <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
                     <ButttonDiv className="mt-1">
@@ -1518,7 +1525,7 @@ const VotingPaymentCopy: React.FC<{
                           // opacity: `${payButton ? "0.6" : "1"}`
                         }}
                         onClick={() => {
-                          handleClickMob()                                                                               
+                          handleClickMob()
                         }}
                       >
 
@@ -1526,19 +1533,19 @@ const VotingPaymentCopy: React.FC<{
                       </button>
                     </ButttonDiv>
                   </div >
-                }                                
+                }
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" &&
 
-                  <>                  
+                  <>
                     {
-                      (window.innerWidth > 768 || isConnected) && !chainNetworkTest && ((window.innerWidth < 768 && coinInfo?.chainId == chainId) || window.innerWidth > 768)&& <div
+                      (window.innerWidth > 768 || isConnected) && !chainNetworkTest && ((window.innerWidth < 768 && coinInfo?.chainId == chainId) || window.innerWidth > 768) && <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                       >
                         <ButttonDiv className="mt-1"
                           style={{
                             // opacity: `${chainNetworkTest ? 0.7 :1}`
-                        }}
+                          }}
                         >
                           <button
                             disabled={payButton}
@@ -1546,8 +1553,8 @@ const VotingPaymentCopy: React.FC<{
                               // opacity: `${payButton ? "0.6" : "1"}`
                             }}
                             onClick={() => {
-                              if (!chainNetworkTest) {                                
-                                if (window.innerWidth < 768) {                                
+                              if (!chainNetworkTest) {
+                                if (window.innerWidth < 768) {
                                   handleClickMob()
                                 } else {
                                   handleClick()
@@ -1560,54 +1567,54 @@ const VotingPaymentCopy: React.FC<{
                           </button>
                         </ButttonDiv>
                       </div >
-                    }                                      
+                    }
                   </>
                 }
 
                 {payType !== "EXTRAVOTES" && selectCoin != "none" &&
                   <>
 
-                  {(window.innerWidth > 768 || isConnected) && !chainNetworkTest && (window.innerWidth < 768 && coinInfo?.chainId == chainId || window.innerWidth > 768) && 
-                    <div
-                      className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                    >
-                    <ButttonDivSec className="mt-1"
-                      style={{
-                        // opacity: `${chainNetworkTest ? 0.7 : 1}`
-                      }}
-                    >
-                        <button
-                          onClick={() => {
-                            // upgradeProfile(99, 0)
-                          // handleClick()
-                          if (!chainNetworkTest) { 
-                            if (window.innerWidth < 768) {
-                              handleClickMob()
-                            } else {
-                              handleClick()
-                            }
-                          }
+                    {(window.innerWidth > 768 || isConnected) && !chainNetworkTest && (window.innerWidth < 768 && coinInfo?.chainId == chainId || window.innerWidth > 768) &&
+                      <div
+                        className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                      >
+                        <ButttonDivSec className="mt-1"
+                          style={{
+                            // opacity: `${chainNetworkTest ? 0.7 : 1}`
                           }}
                         >
-                          <div className='d-flex justify-content-around' >
-                            <div
-                            >
-                              <span
-                                style={{
-                                  letterSpacing: "4px",
-                                  // display:"inline-block",
-                                }}
-                              >LIMITED
-                              </span>
-                              <br />
-                              <span>TIME OFFER</span>
+                          <button
+                            onClick={() => {
+                              // upgradeProfile(99, 0)
+                              // handleClick()
+                              if (!chainNetworkTest) {
+                                if (window.innerWidth < 768) {
+                                  handleClickMob()
+                                } else {
+                                  handleClick()
+                                }
+                              }
+                            }}
+                          >
+                            <div className='d-flex justify-content-around' >
+                              <div
+                              >
+                                <span
+                                  style={{
+                                    letterSpacing: "4px",
+                                    // display:"inline-block",
+                                  }}
+                                >LIMITED
+                                </span>
+                                <br />
+                                <span>TIME OFFER</span>
+                              </div>
+                              <u>$199</u>
+                              <p>$99</p>
                             </div>
-                            <u>$199</u>
-                            <p>$99</p>
-                          </div>
-                        </button>
-                      </ButttonDivSec>           
-                    </div>}
+                          </button>
+                        </ButttonDivSec>
+                      </div>}
                   </>
                 }
               </Boxdiv>}
