@@ -42,7 +42,7 @@ const dashboardsMenus = [
     icon: <Group />,
     type: "item",
     link: "/dashboard/subadmin"
-  },  
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
     icon: <People />,
@@ -55,7 +55,6 @@ const dashboardsMenus = [
     type: "item",
     link: "/dashboard/votebooster"
   },
-  
 
   {
     name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
@@ -80,14 +79,22 @@ const dashboardsMenus = [
     icon: <People />,
     type: "item",
     link: "/dashboard/paxgeneral"
-  }, 
-  
+  },
+
   {
     name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/rewardnft"
   },
+
+  {
+    name: <IntlMessages id={"sidebar.dashboard.userstatistics"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/usersstatistics"
+  }
+
   // {
   //   name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
   //   icon: <MonetizationOn />,
@@ -989,9 +996,9 @@ const AllTransactions = [
     icon: <People />,
     type: "item",
     link: "/dashboard/WalletDetails"
-  },
+  }
 ];
-const AllList = [  
+const AllList = [
   {
     name: <IntlMessages id={"sidebar.dashboard.coins"} />,
     icon: <Group />,
@@ -1009,14 +1016,17 @@ const AllList = [
     icon: <People />,
     type: "item",
     link: "/dashboard/users"
-  },
+  }
 ];
 const AllTables = [
   {
     name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
     icon: <People />,
     type: "item",
-    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
+    link:
+      "/dashboard/followtable" ||
+      "/dashboard/followeruser" ||
+      "/dashboard/followinguser"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,
@@ -1029,7 +1039,7 @@ const AllTables = [
     icon: <People />,
     type: "item",
     link: "/dashboard/pairsvotestable"
-  },
+  }
 ];
 const AllSettings = [
   {
@@ -1049,7 +1059,7 @@ const AllSettings = [
     icon: <People />,
     type: "item",
     link: "/dashboard/cmpsettings"
-  },  
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
     icon: <People />,
@@ -1067,7 +1077,7 @@ const AllSettings = [
     icon: <People />,
     type: "item",
     link: "/dashboard/returnsettings"
-  },
+  }
 ];
 
 const socialAppsMenus = [
@@ -1526,7 +1536,7 @@ export const sidebarNavs = [
     name: "All Transactions",
     type: "section",
     children: AllTransactions
-  },
+  }
   // {
   //   name: <IntlMessages id={"sidebar.components"} />,
   //   type: "section",
@@ -1542,7 +1552,7 @@ export const sidebarNavs = [
   //   type: "section",
   //   children: appsMenus
   // },
-  
+
   // {
   //   name: <IntlMessages id={"sidebar.social"} />,
   //   type: "section",

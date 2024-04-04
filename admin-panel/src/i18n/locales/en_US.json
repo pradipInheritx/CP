@@ -275,7 +275,7 @@
   "appModule.userTypeCpm": "User Type CPM",
   "appModule.weight": "Weight",
   "appModule.returnCMP": "Return CMP",
-  
+
   "appModule.totalSupply": "Total Supply",
   "appModule.mintedQuantity": "Minted Quantity",
   "appModule.blockNumber": "Block Number",
@@ -701,7 +701,7 @@
   "sidebar.dashboard.pairsvotestable": "Pairs Votes Table",
   "sidebar.dashboard.votingpass": "Voting Pass",
   "sidebar.dashboard.rewardtransactions": "Reward Transactions",
-  "sidebar.dashboard.paymenttransactions": "Payment Transactions",  
+  "sidebar.dashboard.paymenttransactions": "Payment Transactions",
   "sidebar.dashboard.cmptransactions": "CMP Transactions",
   "sidebar.dashboard.walletdetails": "Wallet Details",
   "sidebar.dashboard.transactiontypes": "Transaction Types",
@@ -715,6 +715,7 @@
   "sidebar.dashboard.coins": "Coins",
   "sidebar.dashboard.pairs": "Pairs",
   "sidebar.dashboard.listing": "Listing",
+  "sidebar.dashboard.userstatistics": "User Statistics",
   "sidebar.classic": "Classic",
   "sidebar.modern": "Modern",
   "dashboard.viewAll": "View All",

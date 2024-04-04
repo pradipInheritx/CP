@@ -276,13 +276,13 @@
   "appModule.returnCMP": "Return CMP",
   "appModule.sharePercent": "Share Percent",
 
-    "appModule.totalSupply": "Total Supply",
-    "appModule.mintedQuantity": "Minted Quantity",
-    "appModule.blockNumber": "Block Number",
-    "appModule.nextHalvingBlocks": "Next Halving is in Blocks",
-    "appModule.currentBlockRewardPAX": "Current Block Reward PAX",
-    "appModule.PAXValue": "PAX Value",
-    
+  "appModule.totalSupply": "Total Supply",
+  "appModule.mintedQuantity": "Minted Quantity",
+  "appModule.blockNumber": "Block Number",
+  "appModule.nextHalvingBlocks": "Next Halving is in Blocks",
+  "appModule.currentBlockRewardPAX": "Current Block Reward PAX",
+  "appModule.PAXValue": "PAX Value",
+
   "appModule.email": "Email",
   "appModule.newpassword": "New Password",
   "appModule.confirmpassword": "Confirm Password",
@@ -703,6 +703,7 @@
   "sidebar.dashboard.pairs": "Pairs",
   "sidebar.dashboard.listing": "Listado",
   "sidebar.dashboard.walletdetails": "Wallet Details",
+  "sidebar.dashboard.userstatistics": "User Statistics",
   "sidebar.classic": "Clásico",
   "sidebar.modern": "حديث",
   "dashboard.viewAll": "Ver todo",

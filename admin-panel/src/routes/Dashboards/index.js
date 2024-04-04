@@ -1,8 +1,8 @@
-import React, {lazy, Suspense} from "react";
-import {Redirect, Route, Switch} from "react-router";
+import React, { lazy, Suspense } from "react";
+import { Redirect, Route, Switch } from "react-router";
 import PageLoader from "../../@jumbo/components/PageComponents/PageLoader";
 
-const Dashboards = ({match}) => {
+const Dashboards = ({ match }) => {
   const requestedUrl = match.url.replace(/\/$/, "");
   return (
     <Suspense fallback={<PageLoader />}>
@@ -11,7 +11,7 @@ const Dashboards = ({match}) => {
           exact
           from={`${requestedUrl}/`}
           to={`${requestedUrl}/subAdmin`}
-        />        
+        />
         <Route
           path={`${requestedUrl}/crypto`}
           component={lazy(() => import("./Crypto"))}
@@ -31,6 +31,10 @@ const Dashboards = ({match}) => {
         <Route
           path={`${requestedUrl}/users`}
           component={lazy(() => import("./Users"))}
+        />
+        <Route
+          path={`${requestedUrl}/usersstatistics`}
+          component={lazy(() => import("./UsersStatistics"))}
         />
         <Route
           path={`${requestedUrl}/usertypesetting`}
