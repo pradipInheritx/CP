@@ -786,7 +786,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       }
       console.info("leaders", leaders)
       console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
-      console.log("leaderStatus Final", leaderStatus);
+      console.log("leaderStatus Final", JSON.stringify(leaderStatus));
 
       leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
 
