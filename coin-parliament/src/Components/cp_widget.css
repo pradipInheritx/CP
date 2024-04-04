@@ -1,3 +1,12 @@
+@media screen and (min-device-width: 768px) and (max-device-width: 991px) { 
+    .BigDiv_Responsive .textbox .low {
+        left: 16.5% !important;
+    }
+    .BigDiv_Responsive .textbox .high {
+        right: 15.5% !important;
+    }
+}
+
 @media only screen and (max-width: 991px) {
     .frameCoinHeader {
         border-radius: 0px 0px 60px 0px !important;
