@@ -5,7 +5,6 @@ import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
-import { addNewKeysInCollection } from "./common/models/User";
 import cors from "cors";
 import * as jwt from "jsonwebtoken";
 import {
@@ -309,22 +308,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   } catch (e) {
     return false;
   }
-});
-
-// temporarily used to add add keys to the collection
-exports.addNewKeysInCollection = functions.https.onCall((data) => {
-  const { keyName, keyValue, collectionName } = data;
-  console.log(
-    `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
-  );
-
-  if (keyName && collectionName) {
-    const result = addNewKeysInCollection(keyName, keyValue, collectionName);
-    return result;
-  } else
-    return {
-      message: "some credentials is missing",
-    };
 });
 
 exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
