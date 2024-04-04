@@ -9,6 +9,8 @@ import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
+import multer from "multer";
+
 //import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -25,11 +27,9 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink
+  // sendEmailVerificationLink,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
-
-
 
 import {
   getLeaderUsers,
@@ -86,10 +86,24 @@ import {
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
+  poolMiningNotification,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/types/Admin.type";
-import { createPushNotificationOnCallbackURL, } from "./common/models/Notification"
+import {
+  createPushNotificationOnCallbackURL,
+  sendEmailAcknowledgementStatus,
+  sendEmailForVoiceMatterInLast24Hours,
+  sendEmailForUserUpgradeInLast48Hours,
+  sendEmailForAddressNotUpdatedInLast72Hours,
+  sendEmailForLifetimePassiveIncomeInLast96Hours,
+  sendEmailForEarnRewardsByPaxTokensInLast168Hours,
+  sendEmailForUnloackRewardsInLast192Hours,
+  sendEmailForSVIUpdateInLast216Hours,
+  sendEmailForProgressWithFriendInLast240Hours,
+  sendEmailForTopInfluencerInLast264Hours,
+  sendEmailForUserFollowersCountInWeek,
+} from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -102,24 +116,24 @@ import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
-// import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
+// import sendGrid Email function and templates
+import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
-
 
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
 import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
 import { checkTransactionStatus } from "./common/models/Payments";
+import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
+import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 // initialize express server
@@ -157,7 +171,7 @@ app.use("/admin/FollowTable", Routers.FollowTableRouter);
 app.use("/admin/payments", Routers.adminPaymentRouter);
 app.use("/admin/foundation", Routers.foundationRouter);
 app.use("/payment", Routers.paymentRouter);
-app.patch("/updateReferScore", correctReferScoreToAllUsers)
+app.patch("/updateReferScore", correctReferScoreToAllUsers);
 
 // global routers
 app.post(
@@ -188,25 +202,92 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid)
+    console.log("decodedToken.uid : ", decodedToken.uid);
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
-      .then((userRecord) => {
+      .then(async (userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
-        let userData: any = userRecord.toJSON()
+        let userData: any = userRecord.toJSON();
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
+
+          await sendEmail(
+            userData.email,
+            "Welcome To Coin Parliament!",
+            userWelcomeEmailTemplate(
+              `${userData.userName ? userData.userName : "user"}`,
+              env.BASE_SITE_URL
+            )
+          );
           res.send(successTemplate);
         }
-      })
-  }
-  catch (error: any) {
+      });
+  } catch (error: any) {
     console.error("Error verifying user:", error);
     const failureTemplate = newUserVerifyFailureTemplate();
     return res.status(400).send(failureTemplate);
   }
 });
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
+app.post("/authBulk", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+    const users: any = [];
+    req.file.buffer
+      .toString()
+      .split("\n")
+      .forEach((line) => {
+        // Parse each CSV line and push to users array
+        const [firstName, lastName, email] = line.split(",");
+        !firstName && !lastName && !email
+          ? null
+          : users.push({ firstName, lastName, email });
+      });
+    users.shift();
+    await Promise.all(
+      users.map((user: any) => {
+        let password = generateRandomPassword(8);
+
+        console.log(" user : ", { email: user.email, password });
+        admin
+          .auth()
+          .createUser({
+            email: user.email.trim(),
+            password,
+          })
+          .then(() => console.log("Created user: ", user.email));
+        sendBulkEmail(
+          user.email.trim(),
+          "Vote to Earn",
+          adminSignupTemplate(
+            user.email.trim(),
+            password,
+            "Welcome to Vote to earn"
+          )
+        );
+      })
+    );
+    return res.status(200).send("Users imported from CSV successfully.");
+  } catch (error) {
+    console.error("Error importing users from CSV:", error);
+    return res.status(500).send("Error importing users from CSV.");
+  }
+});
+function generateRandomPassword(length: number) {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -220,25 +301,47 @@ exports.api = functions.https.onRequest(main);
 
 async function correctReferScoreToAllUsers() {
   try {
-    const getAllUser = (await admin.firestore().collection('users').where('children', "!=", []).get()).docs.map((user) => user.data());
-    const filterTheUser = getAllUser.filter((user) => user.children?.length > 0 ? { id: user.uid, children: user.children } : null);
-    console.log("filter the user length : ", filterTheUser.length)
+    const getAllUser = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("children", "!=", [])
+        .get()
+    ).docs.map((user) => user.data());
+    const filterTheUser = getAllUser.filter((user) =>
+      user.children?.length > 0
+        ? { id: user.uid, children: user.children }
+        : null
+    );
+    console.log("filter the user length : ", filterTheUser.length);
     for (let index = 0; index < filterTheUser.length; index++) {
       const user = filterTheUser[index];
-      console.log("user : ", user, index)
+      console.log("user : ", user, index);
       let commission = 0;
       for (let child = 0; child < user.children; child++) {
-        admin.firestore().collection('users').doc(user.children[child]).get().then((snapshot) => {
-          let userData = snapshot.data();
-          commission = commission + parseFloat(userData?.refereeScrore);
-        })
+        admin
+          .firestore()
+          .collection("users")
+          .doc(user.children[child])
+          .get()
+          .then((snapshot) => {
+            let userData = snapshot.data();
+            commission = commission + parseFloat(userData?.refereeScrore);
+          });
       }
-      await admin.firestore().collection('users').doc(user.id).set({ commission }, { merge: true }).then(() => { console.log("userid : ", user.id, "update commission ", commission) })
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.id)
+        .set({ commission }, { merge: true })
+        .then(() => {
+          console.log("userid : ", user.id, "update commission ", commission);
+        });
     }
 
-    return { status: true, message: "All user Refer score", result: true }
+    return { status: true, message: "All user Refer score", result: true };
   } catch (error) {
-    return { status: false, message: "something went wrong", error }
+    return { status: false, message: "something went wrong", error };
   }
 }
 
@@ -279,12 +382,25 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
+    console.log("user record : ", userRecord);
 
     // Check if the user registered with Google
-    if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
+    if (
+      userRecord.providerData.some(
+        (provider) => provider.providerId === "google.com"
+      )
+    ) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true };
+      await sendEmail(
+        userRecord.email,
+        "Welcome To Coin Parliament!",
+        userWelcomeEmailTemplate(
+          `${userRecord.displayName ? userRecord.displayName : "user"}`,
+          env.BASE_SITE_URL
+        )
+      );
+
+      return true;
     }
 
     // Create a JWT token with user data
@@ -294,54 +410,75 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
         email,
         "Verify Your Account",
-        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+        userVerifyEmailTemplate(
+          email,
+          verificationLink,
+          "Your account has been created. Please verify your email for login."
+        )
       );
       console.info("Send Email Successfully");
     }
 
     console.log("Verification link:", verificationLink);
-    return { verificationLink }
+    return { verificationLink };
   } catch (error) {
     console.error("Error sending verification link:", error);
-    return { error }
+    return { error };
   }
 });
 
 exports.callBackURLFromServerToServer = functions.https.onCall(async (data) => {
   try {
+    const {
+      userId,
+      payloadKey,
+      uniqueId,
+      childUserEmail,
+      notificationType,
+      amount,
+      currency,
+      commission,
+    } = data;
 
-    const { userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission } = data;
-
-
-    console.info("data--->", data)
-    const getResponseAfterInsert = await admin.firestore()
-      .collection("userServerPushNotification").add({ userId, payloadKey, uniqueId, childUserEmail, notificationType, amount, currency, commission });
+    console.info("data--->", data);
+    const getResponseAfterInsert = await admin
+      .firestore()
+      .collection("userServerPushNotification")
+      .add({
+        userId,
+        payloadKey,
+        uniqueId,
+        childUserEmail,
+        notificationType,
+        amount,
+        currency,
+        commission,
+      });
     return {
       status: true,
       message: "Push Notification Server Data Added Successfully ",
-      result: getResponseAfterInsert.id
-    }
+      result: getResponseAfterInsert.id,
+    };
   } catch (error) {
-    console.info("catch", (error))
+    console.info("catch", error);
     return error;
   }
-}
-)
+});
 
 exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
   const getReponse = await createPushNotificationOnCallbackURL(data);
   console.info("getReponse--->", getReponse);
-  return getReponse
-})
+  return getReponse;
+});
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
-  console.log("create user");
+  console.log("create user : ", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -351,8 +488,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     share: 0,
     color: Colors.PLATINUM,
   };
+  const createdAt = new Date().toUTCString();
   const userData: UserProps = {
     uid: user.uid,
+    createdAt: createdAt,
     address: "",
     avatar: "",
     bio: "",
@@ -365,6 +504,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     displayName: user.displayName,
     userName: "",
     phone: user.phoneNumber,
+    subscribersCurrentTotalCount: 0,
+    lastTimeSubscribedUser: null,
     subscribers: [],
     children: [],
     voteStatistics: {
@@ -384,7 +525,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     },
     favorites: [],
     status,
-    isVoteToEarn: user.isVoteToEarn || false,
+    // isVoteToEarn: user.isVoteToEarn || false,
     firstTimeLogin: true,
     refereeScrore: 0,
     lastVoteTime: 0,
@@ -399,22 +540,26 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData);
+      .set(userData, { merge: true });
 
-    const getUserEmail: any = (
+    // Create user statistics data
+    await createUserStatistics(userData, user.uid);
+
+    const getUser: any = (
       await admin.firestore().collection("users").doc(user.uid).get()
     ).data();
-    console.log("new user email  : ", getUserEmail.email);
+    console.log("new user email  : ", getUser.email);
 
-    //Send Welcome Mail To User
-    // if (user.isVoteToEarn == false) {
-    await sendEmail(
-      userData.email,
-      "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
-    )
-    await sendEmailVerificationLink(getUserEmail.email);
-    //  }
+    // Return if user isVoteToEarn is true
+    console.log("get userData", getUser);
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn);
+    if (getUser.isVoteToEarn === true) {
+      return newUser;
+    }
+    // Send Email Verification Link to User
+    // await sendEmailVerificationLink(getUser.email);
+
+    await sendEmailAcknowledgementStatus(getUser);
 
     return newUser;
   } catch (e) {
@@ -422,6 +567,39 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
     return false;
   }
 });
+
+async function createUserStatistics(userData: any, userId: any) {
+  try {
+    const userStatisticsData = {
+      userId: userData.uid,
+      userName: userData?.userName || "",
+      email: userData?.email || "",
+      Country: userData?.country || " ",
+      signUpTime: userData?.createdAt || "",
+      totalVotes: userData?.voteStatistics?.total || 0, //needs to be updated  for the old users
+      averageVotes: 0,
+      accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
+      extraVotePurchased: false,
+      noOfVotesDays: 0,
+      lastVoteDay: "",
+      source: userData?.parent ? "Referral" : "Self",
+      GameTitle: userData?.status?.name || "",
+      TotalCPM: userData?.voteStatistics?.score || "",
+      TotalAmbassadorRewards: 0
+    };
+
+    await admin
+      .firestore()
+      .collection("userStatistics")
+      .doc(userId)
+      .set(userStatisticsData);
+
+    console.log("User statistics data added successfully for user:", userId);
+  } catch (error) {
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
+  }
+}
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -728,8 +906,6 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-
-
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
   const { auth } = context;
@@ -759,13 +935,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
     .doc(leader.userId)
     .withConverter(userConverter);
 
-  const userProps = await userRef.get();
+  const userProps: any = await userRef.get();
+  const getAllSubscriber: any = userProps.data()?.subscribers;
   const token = userProps.data()?.token;
 
   if (add) {
     const subscribers = union(userProps.data()?.subscribers, [userId]);
     await userRef.set(
       {
+        lastTimeSubscribedUser: admin.firestore.Timestamp.now(),
+        subscribersCurrentTotalCount: getAllSubscriber?.length + 1,
         subscribers,
       },
       { merge: true }
@@ -803,6 +982,26 @@ exports.onUpdateUser = functions.firestore
     // await addReward(snapshot.after.id, before, after);
     // await checkAndUpdateRewardTotal(snapshot.after.id)
 
+    // Check if username has been updated
+    if (before.userName !== after.userName || before.country !== after.country) {
+      const userId = snapshot.after.id;
+      const updatedUsername = after.userName;
+      const updatedCountry = after.country;
+
+      // Update name and country fields in userStatistics collection
+      const updateData = {
+        userName: updatedUsername,
+        Country: updatedCountry // Assuming the field name in userStatistics is also 'country'
+      };
+
+      // Update name field in userStatistics collection
+      await admin
+        .firestore()
+        .collection("userStatistics")
+        .doc(userId)
+        .set(updateData, { merge: true });
+    }
+
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -833,19 +1032,156 @@ exports.onVote = functions.firestore
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
+
     //await sendToTokens(vote);
 
-    await admin
+    // await admin
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(vote.userId)
+    //   .update({
+    //     "voteStatistics.total": admin.firestore.FieldValue.increment(1),
+    //   });
+
+    const userEmailAcknowledgementRef = await admin
       .firestore()
-      .collection("users")
-      .doc(vote.userId)
+      .collection("userEmailAcknowledgement")
+      .where("userId", "==", vote.userId)
+      .get();
+
+    const userAckBatch = admin.firestore().batch(); // Initialize a batch write operation
+
+    userEmailAcknowledgementRef.docs.forEach((doc) => {
+      if (doc.data().isUserFirstVoted === false) {
+        userAckBatch.update(doc.ref, {
+          isUserFirstVoted: true,
+          firstTimeUserVoteTime: admin.firestore.Timestamp.now(),
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
+    const userRef = admin.firestore().collection("users").doc(vote.userId);
+
+    // Perform the update operation and fetch the updated document in a single call
+    let updatedUserDoc = await userRef
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
-      });
+      })
+      .then(() => userRef.get());
+
+    // Extract the data from the updated document
+    const updatedUserData = updatedUserDoc.data();
+
+    let voteStatistics = updatedUserData?.voteStatistics?.total;
+
+    // Create user statistics data
+    await updateUserStatistics(vote.userId, voteStatistics);
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
     await addVoteResultForCPVI(data); // add cpvi here
   });
+
+const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+  try {
+    let userVoteList: any[] = [];
+    let userVoteQuerySnapshot = await admin.firestore().collection("votes").where("userId", "==", userId).get();
+
+    userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+
+    const voteTimes = userVoteList.map((doc) => new Date(doc.voteTime));
+    console.log("voteTimes>>>>>>>", voteTimes);
+
+    const voteTimeDates = voteTimes.map(time => new Date(time));
+
+    // Sort voteTimeDates in descending order
+    voteTimeDates.sort((a, b) => b.getTime() - a.getTime());
+
+    // Get the latest vote time
+    const latestVoteTime = voteTimeDates[0];
+    const latestVoteDate = latestVoteTime?.toISOString().split('T')[0];
+
+    let lastVoteDay = latestVoteDate ? latestVoteDate : '';
+
+    const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
+    let numberOfDaysVoted = uniqueDates.length;
+
+    let averageVotes = numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+
+    await admin
+      .firestore()
+      .collection("userStatistics")
+      .doc(userId)
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
+
+    console.log("User statistics data updated successfully for user:", userId);
+  } catch (error) {
+    console.error("Error adding user statistics data for user:", userId, error);
+    throw error;
+  }
+
+}
+
+// const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
+//   try {
+//     let userVoteList: any[] = [];
+//     let userVoteQuerySnapshot = await admin
+//       .firestore()
+//       .collection("votes")
+//       .where("userId", "==", userId)
+//       .get();
+
+//     // Check if there are votes data for the user
+//     if (!userVoteQuerySnapshot.empty) {
+//       userVoteList = userVoteQuerySnapshot.docs.map((doc: any) => doc.data());
+
+//       const voteTimes = userVoteList.map((doc) => {
+//         // Create a new Date object using the timestamp
+//         const date = new Date(doc.voteTime);
+
+//         // Extract the date components
+//         const year = date.getFullYear();
+//         const month = String(date.getMonth() + 1).padStart(2, "0"); 
+//         const day = String(date.getDate()).padStart(2, "0");
+
+//         // Construct the date string in the desired format (e.g., YYYY-MM-DD)
+//         const formattedDate = `${year}-${month}-${day}`;
+//         console.log(formattedDate); // Output: "2022-01-11" (for the provided timestamp)
+//         return formattedDate;
+//       });
+
+//       const uniqueDates = [...new Set(voteTimes)];
+//       let numberOfDaysVoted = uniqueDates.length;
+
+//       let averageVotes =
+//         numberOfDaysVoted !== 0 ? userVoteList.length / numberOfDaysVoted : 0;
+
+//       // Update user statistics only if there are vote data for the user
+//       await admin
+//         .firestore()
+//         .collection("userStatistics")
+//         .doc(userId)
+//         .set(
+//           {
+//             noOfVotesDays: numberOfDaysVoted,
+//             averageVotes: averageVotes,
+//             totalVotes: voteStatistics,
+//           },
+//           { merge: true }
+//         );
+
+//       console.log(
+//         "User statistics data updated successfully for user:",
+//         userId
+//       );
+//     } else {
+//       console.log("No vote data found for user:", userId);
+//     }
+//   } catch (error) {
+//     console.log("Error adding user statistics data for user:", userId, error);
+//   }
+// };
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -856,8 +1192,6 @@ exports.assignReferrer = functions.https.onCall(async (data) => {
     console.log(e);
   }
 });
-
-
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
@@ -993,7 +1327,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
     // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    console.log("getAfterVoteUpdatedData------", getAfterVoteUpdatedData);
 
     return {
       voteId: getAfterUpdatedVoteInstance.id,
@@ -1002,11 +1336,11 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   }
 );
 
-exports.checkAndUpdateRewardTotal = functions.https.onCall(
-  async (data) => {
-    const { userId } = data;
-    return await checkAndUpdateRewardTotal(userId);
-  });
+
+exports.checkAndUpdateRewardTotal = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  return await checkAndUpdateRewardTotal(userId);
+});
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -1154,6 +1488,77 @@ exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
   return await getLeaderUsersByIds(userIds);
 });
 
+exports.setParentCommission = functions.https.onCall(async (data: any) => {
+  const { childId, voteScore } = data;
+  const db = admin.firestore().collection("users");
+  try {
+    const getSettings: any = (
+      await admin.firestore().collection("settings").doc("settings").get()
+    ).data();
+    const { pctReferralActivity } = getSettings.CPMSettings;
+
+    const getChild = (await db.doc(childId).get()).data();
+    if (!getChild) {
+      return {
+        status: false,
+        message: "child do not have parent",
+      };
+    }
+    const getParent = (await db.doc(getChild.parent).get()).data();
+    const parentVoteStatistics = getParent?.voteStatistics;
+    const getCommissionNumber = (
+      Number(voteScore * pctReferralActivity) / 100
+    ).toFixed(4);
+    const commission: number = Number(getCommissionNumber);
+    const newScore = (
+      Number(parentVoteStatistics?.score || 0) + commission
+    ).toFixed(4);
+    const newCommission = (
+      Number(parentVoteStatistics?.commission || 0) + commission
+    ).toFixed(4);
+    console.log("Score ", voteScore);
+    console.log("parentVoteStatistics : ", parentVoteStatistics);
+    console.log("parent get commission :", commission);
+    console.log("new Score ", newScore);
+    console.log("newCommission :", newCommission);
+    const childNewReferScore = (getChild.refereeScrore + commission).toFixed(4);
+    // child refer score
+    await db
+      .doc(childId)
+      .set({ refereeScrore: Number(childNewReferScore) }, { merge: true });
+    // parent commission
+    await db.doc(getChild.parent).set(
+      {
+        voteStatistics: {
+          ...getParent?.voteStatistics,
+          commission: Number(newCommission),
+          score: Number(newScore),
+        },
+      },
+      { merge: true }
+    );
+    console.log(
+      "pool mining Notification is calling: -- ",
+      getChild.parent,
+      getChild.displayName || "",
+      getChild.refereeScrore
+    );
+    console.log("commission : ", commission);
+    console.log("score -- ", voteScore);
+    await poolMiningNotification(
+      getChild.parent,
+      getChild.displayName || "",
+      commission
+    );
+    return {
+      status: true,
+      message: "parent commission and child refer score added successfully",
+    };
+  } catch (error) {
+    return errorLogging("setParentCommission", "Error: ", error);
+  }
+});
+
 exports.sendEmail = functions.https.onCall(async () => {
   console.log("email>>>>>>>>");
   sgMail.setApiKey(env.sendgrid_api_key);
@@ -1260,93 +1665,197 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// function that return some parameters for coin parliament players
-exports.getCoinParliamentUsersDetails = functions.https.onCall(async (data, context) => {
-  try {
-    const userId = data.userId; // Extract userId from data parameter
-    console.log("userId>>>>", userId);
+// Function to get payment details
+// async function getPaymentDetailsForUser() {
+//   try {
+//     const getAllPaymentsQuery = await admin
+//       .firestore()
+//       .collection("payments")
+//       .get();
+//     const paymentDetails: any = [];
 
-    const databaseQuery = await admin
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .get();
+//     getAllPaymentsQuery.docs.forEach((payment: any) => {
+//       let paymentData = payment.data();
+//       let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
+//       let userId = paymentData.userId;
 
-    const userData = databaseQuery.data();
-    if (!userData) {
-      return {
-        status: true,
-        message: "User not found.",
-        data: {} // Empty array when user not found
-      };
-    }
+//       if (extraVotePurchased) {
+//         let obj = { userId: userId, extraVotePurchased: "yes" };
+//         paymentDetails.push(obj);
+//       } else {
+//         let obj = { userId: userId, extraVotePurchased: "no" };
+//         paymentDetails.push(obj);
+//       }
+//     });
 
-    const name = userData.status.name;
-    console.log("name>>>>>", name)
-    const totalVotes = userData.voteStatistics.total;
-    console.log("totalVotes>>>>>", userData.voteStatistics.total)
-    const totalCMP = userData.voteStatistics.score;
-    console.log("totalCMP>>>>>", userData.voteStatistics.score)
+//     return paymentDetails;
+//   } catch (error) {
+//     console.error("Error fetching payment details:", error);
+//     return false;
+//   }
+// }
 
-    const paxTransactionQuery = await admin.firestore().collection('paxTransaction')
-      .where('userId', '==', userId)
-      .limit(1)
-      .get();
+// Function to get user details
+// async function getUsersDetails() {
+//   try {
+//     const getAllUserData = (
+//       await admin.firestore().collection("users").get()
+//     ).docs.map((user: any) => {
+//       let userData = user.data();
+//       return {
+//         userId: user.id,
+//         name: userData?.userName || "",
+//         email: userData?.email || "",
+//         totalVotes: userData?.voteStatistics?.total || 0,
+//         accountUpgrade: userData?.isUserUpgraded || false,
+//       };
+//     });
 
-    let accountUpgrade = false; // Default value if not found
-    if (!paxTransactionQuery.empty) {
-      const paxTransactionData = paxTransactionQuery.docs[0].data();
-      console.log("paxTransactionData>>>>>", paxTransactionData)
-      accountUpgrade = paxTransactionData.isUserUpgraded || false;
-      console.log("accountUpgrade>>>>>", accountUpgrade)
-    }
+//     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
 
-    const paymentQuery = await admin.firestore().collection('payments')
-      .where('userId', '==', userId)
-      .where('transactionType', '==', 'EXTRAVOTES')
-      .get();
+//     const getAuthUserSignUpTime: any = [];
+//     const allUsers = await admin.auth().listUsers();
+//     allUsers.users.forEach((userRecord: any) => {
+//       //console.log("User signupDate added:", userRecord.uid);
 
-    const hasPurchasedVotes = !paymentQuery.empty;
-    const votePurchaseStatus = hasPurchasedVotes ? 'Yes' : 'No';
+//       getAuthUserSignUpTime.push({
+//         userId: userRecord.uid,
+//         signUpTime: userRecord.metadata.creationTime,
+//       });
+//     });
 
-    const userRecord = await admin.auth().getUser(userId);
+//     //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
 
-    const votesQuerySnapshot = await admin
-      .firestore()
-      .collection("votes")
-      .where("userId", "==", userId)
-      .get();
+//     const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
+//       const signUpData = getAuthUserSignUpTime.find(
+//         (data: any) => data.userId === userData.userId
+//       );
+//       if (signUpData) {
+//         userData.signUpTime = signUpData.signUpTime;
+//       }
+//       return userData;
+//     });
 
-    const voteTimes = votesQuerySnapshot.docs.map(doc => doc.data().voteTime.toDate());
-    console.log("voteTimes>>>>>>>", voteTimes);
-    const uniqueDates = [...new Set(voteTimes.map(date => date.toDateString()))];
-    const numberOfDaysVoted = uniqueDates.length;
-    console.log("numberOfDaysVoted>>>>>>>", numberOfDaysVoted);
+//     return {
+//       status: true,
+//       message: "Users fetched successfully",
+//       data: userDetailsWithSignUpDate,
+//     };
+//   } catch (error) {
+//     console.error("Error while fetching user data:", error);
+//     return {
+//       status: false,
+//       message: "Error while fetching user data",
+//       data: {},
+//     };
+//   }
+// }
 
-    return {
-      status: true,
-      message: "User fetched successfully",
-      data: {
-        name: name,
-        country: userData.country,
-        signupDate: userRecord.metadata.creationTime,
-        totalVotes: totalVotes,
-        totalCMP: totalCMP,
-        accountUpgrade: accountUpgrade,
-        numberOfDaysVoted: numberOfDaysVoted,
-        votePurchase: votePurchaseStatus,
-        userId: userId,
-      }
-    };
-  } catch (error) {
-    console.log("Error while fetching user data:", error);
-    return {
-      status: false,
-      message: "Error while fetching user data",
-      data: {}
-    };
-  }
-});
+// async function getVoteList() {
+//   try {
+//     let voteDetails = (
+//       await admin
+//         .firestore()
+//         .collection("votes")
+//         .where("voteTime", ">=", Date.now() - 60 * 24 * 60 * 60 * 1000)
+//         .get()
+//     ).docs.map((vote: any) => {
+//       let voteData = vote.data();
+//       return {
+//         userId: voteData.userId,
+//         voteTime: voteData.voteTime,
+//       };
+//     });
+
+//     console.log("Votes fetched successfully", voteDetails);
+//     return voteDetails;
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return null;
+//   }
+// }
+
+// async function getCombinedDetails() {
+//   try {
+//     // Fetch payment details
+//     const paymentDetails = await getPaymentDetailsForUser();
+
+//     console.log("paymentDetails", paymentDetails);
+
+//     // Fetch user details
+//     let userDetails = await getUsersDetails();
+
+//     let userData: any = userDetails.data;
+
+//     userData.forEach((element: any) => {
+//       let userId = element.userId;
+
+//       // Key and value to filter
+//       const keyToFilter = "userId";
+//       const valueToFilter = userId;
+
+//       // Filtering the array based on the key and value
+//       const filteredObj = paymentDetails.find(
+//         (obj: any) => obj[keyToFilter] === valueToFilter
+//       );
+//       //console.log(filteredObj);
+
+//       if (filteredObj !== undefined) {
+//         element.extraVotePurchased = filteredObj.extraVotePurchased;
+//       } else {
+//         element.extraVotePurchased = "no";
+//       }
+//     });
+
+//     return userDetails;
+//   } catch (error) {
+//     console.error("Error fetching combined details:", error);
+//     return false;
+//   }
+// }
+
+// async function getCoinParliamentAllUsersDeatils() {
+//   try {
+//     // Fetch payment details
+//     const voteList: any = await getVoteList();
+
+//     console.log("voteList", voteList);
+
+//     // Fetch user details
+//     let userList: any = await getCombinedDetails();
+
+//     //console.log("userList", userList)
+
+//     userList = userList.data;
+
+//     userList.map((user: any) => {
+//       let userVote = voteList.filter(
+//         (vote: any) => vote.userId === user.userId
+//       );
+//       console.log("UserVote : ", userVote);
+
+//       const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
+//       console.log("voteTimes>>>>>>>", voteTimes);
+
+//       const uniqueDates = [
+//         ...new Set(voteTimes.map((date: Date) => date.toDateString())),
+//       ];
+//       let numberOfDaysVoted = uniqueDates.length;
+
+//       user["noOfVotesDays"] = numberOfDaysVoted;
+
+//       let averageVotes =
+//         numberOfDaysVoted !== 0 ? userVote.length / numberOfDaysVoted : 0;
+
+//       user["averageVotes"] = averageVotes;
+//     });
+
+//     return userList;
+//   } catch (error) {
+//     console.error("Error fetching combined details:", error);
+//     return false;
+//   }
+// }
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
@@ -1383,58 +1892,104 @@ exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
 
 // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
 export const pendingPaymentSettlement = functions.pubsub
-  .schedule("*/5 * * * *")
+  .schedule("*/30 * * * *")
   .onRun(async () => {
     console.log("pendingPaymentSettlement start");
 
     // Get the current timestamp
     const currentTimeStamp = new Date();
-    const twentyFourHoursAgo = new Date(currentTimeStamp.getTime() - (24 * 60 * 60 * 1000));
-
+    const twentyFourHoursAgo = new Date(
+      currentTimeStamp.getTime() - 24 * 60 * 60 * 1000
+    );
 
     try {
       // Query payments collection for payments within the last 24 hours
-      const paymentsSnapshot = await admin.firestore().collection('payments')
+      const paymentsSnapshot = await admin
+        .firestore()
+        .collection("payments")
         .where("timestamp", ">=", twentyFourHoursAgo)
         .get();
 
-      paymentsSnapshot.forEach(doc => {
-        console.log("Document ID:", doc.id);
-        console.log("Document Data:", doc.data());
-      });
+      // paymentsSnapshot.forEach(doc => {
+      //   console.log("Document ID:", doc.id);
+      //   console.log("Document Data:", doc.data());
+      // });
 
       // Filter payments where event is 'Approved'
-      const approvedPayments: any = paymentsSnapshot.docs.filter((snapshot: any) => {
-        const paymentData = snapshot.data();
-        console.log("paymentData>>>>>>>>>>>>>>>>>>>>", paymentData)
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>", paymentData.event === 'Approved')
-        return paymentData.event === 'Approved';
-      });
-
-
-      console.log("approvedPayments >>>>>>>>>>>>>>>", approvedPayments);
+      const approvedPayments: any = paymentsSnapshot.docs.filter(
+        (snapshot: any) => {
+          const paymentData = snapshot.data();
+          console.log("paymentData >>>> ", paymentData);
+          console.log(
+            "paymentData.event === 'Approved' >>>>",
+            paymentData.event === "Approved"
+          );
+          return paymentData.event === "Approved"
+            ? { ...paymentData, transactionId: snapshot.id }
+            : null;
+        }
+      );
+      console.log("approvedPayments >>>>", approvedPayments);
 
       // Update each approved payment's event to 'Confirmed'
       for (const transaction of approvedPayments) {
-        console.log("approvedPayments>>>>>>>>>>>>>", transaction)
-        const paymentRef = transaction.ref;
-        console.log("approvedPaymentRef>>>>>>>>>>>>>", transaction.ref)
+        console.log("transaction>>>>", transaction);
+        // const paymentRef = transaction.ref;
+        // console.log("approvedPaymentRef>>>", transaction.ref)
         // call the api to check transaction is confirmed or not
-        const transactionStatus: any = await checkTransactionStatus(transaction?.paymentDetails);
-        if (transactionStatus.status) {
-          console.log("transactionStatus : ", transactionStatus.message)
-          await paymentRef.update({ event: 'Confirmed' });
+        const transactionStatus: any = await checkTransactionStatus({
+          ...transaction?.paymentDetails,
+          network: transaction.network,
+        });
+        console.log("TransactionStatus : ", transactionStatus);
+        if (transactionStatus.data.status) {
+          console.log("transactionStatus : ", transactionStatus.message);
+          await admin
+            .firestore()
+            .collection("payments")
+            .doc(transaction.transactionId)
+            .set({ event: "Confirmed" }, { merge: true });
         } else {
-          console.error("transactionStatus : ", transactionStatus)
+          console.error("transactionStatus : ", transactionStatus);
         }
       }
-      console.log('Payments updated successfully.');
+      console.log("Payments updated successfully.");
     } catch (error) {
-      console.error('Error updating payments:', error);
+      console.error("Error updating payments:", error);
     }
   });
 
+// exports.storeCPUsersDetailsIntoDB = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
+//     try {
+//       console.log("Starting");
+//       const userList = await getCoinParliamentAllUsersDeatils();
+//       console.log("userList", userList);
 
+//       const usersRef = admin.firestore().collection("userStatistics");
+//       console.log("usersRef: created");
+
+//       for (const user of userList) {
+//         try {
+//           await usersRef.doc(user.userId).set(user);
+//           console.log(`User data stored successfully for user ${user.userId}`);
+//         } catch (error) {
+//           console.error(
+//             `Error storing user data for user ${user.userId}:`,
+//             error
+//           );
+//         }
+//       }
+
+//       console.log("User data stored successfully in users collection.");
+//       return true;
+//     } catch (error) {
+//       console.error("Error storing user data in users collection:", error);
+//       return false;
+//     }
+//   });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -1521,6 +2076,42 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 //----------END CPVI scheduler-------------
 
+/**
+ * @author Mukut Prasad
+ * @description Prepare all emails on time based
+ */
+
+exports.sendEmailOnTimeForAcknowledge = functions.pubsub
+  .schedule("every 60 minutes")
+  .onRun(async () => {
+    await sendEmailForVoiceMatterInLast24Hours();
+
+    await sendEmailForUserUpgradeInLast48Hours();
+
+    await sendEmailForAddressNotUpdatedInLast72Hours();
+
+    await sendEmailForLifetimePassiveIncomeInLast96Hours();
+
+    await sendEmailForEarnRewardsByPaxTokensInLast168Hours();
+
+    await sendEmailForUnloackRewardsInLast192Hours();
+
+    await sendEmailForSVIUpdateInLast216Hours();
+
+    await sendEmailForProgressWithFriendInLast240Hours();
+
+    await sendEmailForTopInfluencerInLast264Hours();
+
+    console.log("Come to email Acknowledge", new Date());
+  });
+
+exports.sendEmailForUserFollowerCount = functions.pubsub
+  .schedule("every 168 hours")
+  .onRun(async () => {
+    await sendEmailForUserFollowersCountInWeek();
+
+    console.log("Come to Email For User Follower Counts", new Date());
+  });
 
 // -------- pax distribution -----------
 // ------ 24 hours --------
@@ -1528,67 +2119,85 @@ exports.paxDistribution = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(async () => {
     try {
-      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+      const getPaxTransactionList = (
+        await admin.firestore().collection("paxTransaction").get()
+      ).docs.map((pax: any) => {
+        return { ...pax.data(), id: pax.id };
+      });
+      const getIsVirtualTransaction = getPaxTransactionList.filter(
+        (pax: any) => pax.isVirtual == true
+      );
       console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
       if (getIsVirtualTransaction.length == 0) {
         return {
           status: true,
           message: "pax transaction is updated successfully",
-          result: getIsVirtualTransaction
-        }
+          result: getIsVirtualTransaction,
+        };
       }
       for (let index = 0; index < getIsVirtualTransaction.length; index++) {
         let pax = getIsVirtualTransaction[index];
-        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-          isVirtual: admin.firestore.FieldValue.delete()
-        }, { merge: true });
+        await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+          {
+            isVirtual: admin.firestore.FieldValue.delete(),
+          },
+          { merge: true }
+        );
       }
       return {
         status: true,
         message: "pax transaction is updated successfully",
-        result: null
-      }
+        result: null,
+      };
     } catch (error: any) {
-      errorLogging("paxDistribution", "ERROR", error)
+      errorLogging("paxDistribution", "ERROR", error);
       return {
         status: false,
         message: "Something went wrong",
-        result: null
-      }
+        result: null,
+      };
     }
   });
 
 exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
   try {
-    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-    const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+    const getPaxTransactionList = (
+      await admin.firestore().collection("paxTransaction").get()
+    ).docs.map((pax: any) => {
+      return { ...pax.data(), id: pax.id };
+    });
+    const getIsVirtualTransaction = getPaxTransactionList.filter(
+      (pax: any) => pax.isVirtual == true
+    );
     console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
     if (getIsVirtualTransaction.length == 0) {
       return {
         status: true,
         message: "pax transaction is updated successfully",
-        result: getIsVirtualTransaction
-      }
+        result: getIsVirtualTransaction,
+      };
     }
     for (let index = 0; index < getIsVirtualTransaction.length; index++) {
       let pax = getIsVirtualTransaction[index];
-      await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-        isVirtual: admin.firestore.FieldValue.delete()
-      }, { merge: true });
+      await admin.firestore().collection("paxTransaction").doc(pax.id).set(
+        {
+          isVirtual: admin.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
     }
     return {
       status: true,
       message: "pax transaction is updated successfully",
-      result: null
-    }
+      result: null,
+    };
   } catch (error: any) {
-    errorLogging("paxDistribution", "ERROR", error)
+    errorLogging("paxDistribution", "ERROR", error);
     return {
       status: false,
       message: "Something went wrong",
-      result: null
-    }
+      result: null,
+    };
   }
 });
 
@@ -1606,6 +2215,324 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 //   });
 
 // ******************* END CRON JOBS ****************
+exports.getAllCommissionUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const getCommissionUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("voteStatistics.commission", ">", 0)
+        .get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
+      return {
+        parentId: user.id,
+        parentVoteStatistics: userData.voteStatistics,
+        children: userData.children,
+      };
+    });
+    console.log("getCommissionUsers ", getCommissionUsers.length);
+
+    return {
+      status: true,
+      message: "success to get users",
+      result: getCommissionUsers,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error,
+    };
+  }
+});
+
+exports.correctCommission = functions.https.onCall(async (data: any) => {
+  const { user } = data;
+
+  try {
+    
+
+    const getChildAllUsers = await admin
+      .firestore()
+      .collection("users")
+      .where("uid", "in", user.children)
+      .get();
+
+    const allChildren = await getChildAllUsers.docs.map((user: any) => user.data());
+    const commission = await allChildren.reduce((total:any,user:any)=>total + Number(user.refereeScrore))
+
+    console.log("commission : ", commission);
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(user.parentId)
+      .set(
+        {
+          voteStatistics: { ...user.parentVoteStatistics, commission },
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("success to update users", user.parentId);
+      });
+    return {
+      status: true,
+      message: "success to update users",
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "failed to get users",
+      error,
+    };
+  }
+});
+
+exports.scriptToUpdateAllUsers = functions.https.onCall(async () => {
+  try {
+    const getAllUsers = (
+      await admin
+        .firestore()
+        .collection("users")
+        .where("referalReceiveType.name", "!=", "ONDEMAND")
+        .limit(50)
+        .get()
+    ).docs.map((user: any) => {
+      let userData = user.data();
+      return { userId: user.id, referalType: userData.referalReceiveType };
+    });
+    console.log("getAllUsers length: " + getAllUsers.length);
+    const updateUserList = getAllUsers.map(async (user) => {
+      let getRefrealType = user.referalType;
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(user.userId)
+        .set({ referalReceiveType: { ...getRefrealType, name: "ONDEMAND" } });
+    });
+    Promise.all(updateUserList)
+      .then(() => {
+        console.log("All updates completed successfully");
+      })
+      .catch((error) => {
+        console.error("Error performing updates:", error);
+      });
+  } catch (error) {
+    console.error("scriptToUpdateAllUsers ERROR: " + error);
+  }
+});
+
+exports.appendUserName = functions.https.onCall(async (data) => {
+  const { users } = data;
+  let updatedUsers = [];
+  try {
+    let date = Date.now();
+    if (users && users.length) {
+      for (let user = 0; user < users.length; user++) {
+        let userName =
+          users[user].email.split("@")[0] ||
+          "cpUser" + date.toString().slice(-4);
+        updatedUsers.push({ ...users[user], userName });
+      }
+    }
+    return {
+      status: true,
+      message: "User Created Successfully",
+      data: updatedUsers,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null,
+    };
+  }
+});
+
+exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
+  const { userId } = data;
+  try {
+    const userEmailAcknowledgementRef = await admin
+      .firestore()
+      .collection("userEmailAcknowledgement")
+      .where("userId", "==", userId)
+      .get();
+
+    const userAckBatch = admin.firestore().batch();
+    userEmailAcknowledgementRef.docs.forEach((doc) => {
+      if (doc.data().isUserLogin === false) {
+        userAckBatch.update(doc.ref, {
+          isUserLogin: true,
+          isUserFirstLoginTime: admin.firestore.Timestamp.now(),
+        });
+      }
+    });
+
+    await userAckBatch.commit();
+
+    return {
+      status: true,
+      message: "User first time login time set Successfully",
+      data: { userId },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "User Not Created ",
+      data: null,
+    };
+  }
+});
+
+exports.getAllUersData = functions.https.onCall(async (data) => {
+  try {
+    // Extract pagination parameters from request query
+    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "" } = data
+
+    limit = parseInt(limit);
+
+    let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
+    switch (orderBy) {
+      case "userName":
+        orderByConsolidate = "userName";
+        break;
+
+      case "TotalAmbassadorRewards":
+        orderByConsolidate = "TotalAmbassadorRewards";
+        break;
+
+      case "noOfVotesDays":
+        orderByConsolidate = "noOfVotesDays";
+        break;
+
+      case "averageVotes":
+        orderByConsolidate = "averageVotes";
+        break;
+
+        case "source":
+          orderByConsolidate = "source";
+          break;
+
+          case "accountUpgrade":
+            orderByConsolidate = "accountUpgrade";
+            break;
+
+            case "userId":
+              orderByConsolidate = "userId";
+              break;
+
+            case "TotalCPM":
+            orderByConsolidate = "TotalCPM";
+            break;
+
+            case "lastVoteDay":
+              orderByConsolidate = "lastVoteDay";
+              break;
+
+              case "totalVotes":
+              orderByConsolidate = "totalVotes";
+              break;
+
+              case "lastLoginDay":
+              orderByConsolidate = "lastLoginDay";
+              break;
+
+              case "signUpTime":
+              orderByConsolidate = "signUpTime";
+              break;
+
+              case "GameTitle":
+              orderByConsolidate = "GameTitle";
+              break;
+
+              case "Country":
+              orderByConsolidate = "Country";
+              break;
+
+              case "extraVotePurchased":
+              orderByConsolidate = "extraVotePurchased";
+              break;
 
 
+              case "email":
+              orderByConsolidate = "email";
+              break;
 
+      default:
+        orderByConsolidate = "userName";
+        break;
+    }
+    let getAllUsersData;
+
+    console.log("orderByConsolidate", orderByConsolidate)
+    
+
+if (search) {
+  getAllUsersData = await admin.firestore()
+    .collection("userStatistics")
+    .where("userName", ">=", search)
+    .where("userName", "<=", search + "\uf8ff")
+    .offset((page - 1) * limit)
+    .limit(limit)
+    .get();
+} else {
+  getAllUsersData = await admin.firestore()
+    .collection("userStatistics")
+    .orderBy(orderByConsolidate, sort)
+    .offset((page - 1) * limit)
+    .limit(limit)
+    .get();
+}
+
+  let getUsersResponse = getAllUsersData.docs.map((doc) => {
+    let userData = doc.data();
+    // Check if signUpTime exists and is not an empty string
+    if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+      // Convert signUpTime to Date object
+      let signUpDate = new Date(userData.signUpTime);
+      // Format date portion to YYYY-MM-DD
+      let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+      // Update userData with the formatted date
+      userData.signUpTime = signUpDateFormatted;
+    } else {
+      // Set signUpTime to an empty string or any default value you prefer
+      userData.signUpTime = ""; // Or set to a default value like "N/A"
+    }
+    return userData;
+  });
+  
+  // Sorting by signUpTime as Date object
+  if (orderBy === "signUpTime") {
+    getUsersResponse.sort((a, b) => {
+      // Handle cases where signUpTime might be an empty string
+      if (!a.signUpTime) return -1;
+      if (!b.signUpTime) return 1;
+      
+      if (sort === "asc") {
+        return a.signUpTime.localeCompare(b.signUpTime);
+      } else {
+        return b.signUpTime.localeCompare(a.signUpTime);
+      }
+    });
+  }
+  
+    const getTotalDataQuery = await admin.firestore().collection('userStatistics').get();
+    const getTotal = getTotalDataQuery.docs.length;
+
+    console.log("Total data--", getTotal);
+    console.log("getUsersResponse----------", getUsersResponse);
+
+    return {
+      status: true,
+      message: "users fetched successfully",
+      result: { data: getUsersResponse, total: getTotal },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Users not found",
+      data: null,
+    };
+  }
+});

@@ -3,7 +3,7 @@ import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
 import { upgradeMessage, downGradeMessage } from "../consts/config";
-import {errorLogging} from '../helpers/commonFunction.helper'
+import { errorLogging } from '../helpers/commonFunction.helper'
 import env from '../../env/env.json'
 
 
@@ -173,32 +173,34 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
 
   let token = userData.token;
   console.log("Called Token", token)
-  // if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
-  remainingCMP = parseFloat(remainingCMP.toFixed(3));
-  const message: messaging.Message = {
-    token,
-    notification: {
-      title: `💰 You just earnd ${cmp} cmp 🤑`,
-      body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
-    },
-    webpush: {
-      headers: {
-        Urgency: "high",
+  if (token) {
+    // if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
+    remainingCMP = parseFloat(remainingCMP.toFixed(3));
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: `💰 You just earnd ${cmp} cmp 🤑`,
+        body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
       },
-      fcmOptions: {
-        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        },
       },
-    },
-  };
-  console.log("message:", message);
+    };
+    console.log("message:", message);
 
-  await sendNotification({
-    token,
-    id: userId,
-    body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
-    title: `💰 You just earnd ${cmp} cmp 🤑`,
-    message,
-  });
+    await sendNotification({
+      token,
+      id: userId,
+      body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
+      title: `💰 You just earnd ${cmp} cmp 🤑`,
+      message,
+    });
+  }
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
 
@@ -244,16 +246,16 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
 
       for (let vote = 0; vote < userVoteList.length; vote++) {
         console.log("vote Index ->", vote);
-        let newStatusData= userVoteList[vote];
-        let oldStatusData= userVoteList[userVoteList?.length - 1];
+        let newStatusData = userVoteList[vote];
+        let oldStatusData = userVoteList[userVoteList?.length - 1];
         console.log("userVoteList new =>", newStatusData);
         console.log("userVoteList old =>", oldStatusData);
 
-        if(!newStatusData.status || !oldStatusData.status) continue;
-        
+        if (!newStatusData.status || !oldStatusData.status) continue;
+
         if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
           let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';
-          console.log("user status level: ",status)
+          console.log("user status level: ", status)
           let message;
           let title;
           let statusName: any = newStatusData?.status?.name;
@@ -312,31 +314,33 @@ export async function poolMiningNotification(parentId: string, childrenName: str
   const userDetailsQuery = await firestore().collection("users").doc(parentId).get();
   const userData: any = userDetailsQuery.data();
   const token = userData.token;
-  const message: messaging.Message = {
-    token,
-    notification: {
-      title: `You just earnd ${cmp} CMP from ${childrenName}`,
-      body: `You just earnd ${cmp} CMP from ${childrenName}`,
-    },
-    webpush: {
-      headers: {
-        Urgency: "high",
+  if (token) {
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: `You just earnd ${cmp} CMP from ${childrenName}`,
+        body: `You just earnd ${cmp} CMP from ${childrenName}`,
       },
-      fcmOptions: {
-        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        },
       },
-    },
-  };
-  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
-  console.log("message:", message);
+    };
+    console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
+    console.log("message:", message);
 
-  await sendNotification({
-    token,
-    id: parentId,
-    body: `You just earnd ${cmp} CMP from ${childrenName}`,
-    title: `You just earnd ${cmp} CMP from ${childrenName}`,
-    message,
-  });
+    await sendNotification({
+      token,
+      id: parentId,
+      body: `You just earnd ${cmp} CMP from ${childrenName}`,
+      title: `You just earnd ${cmp} CMP from ${childrenName}`,
+      message,
+    });
+  }
   console.log("Finished pool minig notification")
 }
 
@@ -346,34 +350,35 @@ export const sendNotificationForCpm = async (userId: any) => {
   const user: any = userRef.data();
   console.log("userId from sendNotificationForCpm : ", user.uid)
   const token = user.token;
-  if (!token) {
-    console.log("Token not found");
-  }
+  if (token) {
 
-  const message: messaging.Message = {
-    token,
-    notification: {
-      title: "Wow",
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: "Wow",
+        body: "Claim your rewards now!",
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        },
+      },
+    };
+    console.log("Block Complete notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
+    console.log("Block Complete Message:", message);
+    await sendNotification({
+      token,
+      message,
       body: "Claim your rewards now!",
-    },
-    webpush: {
-      headers: {
-        Urgency: "high",
-      },
-      fcmOptions: {
-        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
-      },
-    },
-  };
-  console.log("Block Complete notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
-  console.log("Block Complete Message:", message);
-  await sendNotification({
-    token,
-    message,
-    body: "Claim your rewards now!",
-    title: "Wow",
-    id: userId,
-  });
+      title: "Wow",
+      id: userId,
+    });
+
+  }
+  console.log("Finished sendNotificationForCpm")
 };
 
 // 24 hours no activity notification
@@ -415,32 +420,35 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
       const token = getAllUsers[user].token;
 
       console.info("Token,", token);
-      const message: messaging.Message = {
-        token,
-        notification: {
-          title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
+      if (token) {
+        const message: messaging.Message = {
+          token,
+          notification: {
+            title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
+            body,
+          },
+          webpush: {
+            headers: {
+              Urgency: "high",
+            },
+            fcmOptions: {
+              link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+            },
+          },
+        };
+        console.info("Id,", getAllUsers[user].id);
+        console.log("checkInActivityOfVotesAndSendNotification link : ", `${env.BASE_SITE_URL}`)
+        await sendNotification({
+          token,
+          message,
           body,
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
-          },
-          fcmOptions: {
-            link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
-          },
-        },
-      };
-      console.info("Id,", getAllUsers[user].id);
-      console.log("checkInActivityOfVotesAndSendNotification link : ", `${env.BASE_SITE_URL}`)
-      await sendNotification({
-        token,
-        message,
-        body,
-        title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
-        id: getAllUsers[user].id,
-      });
+          title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
+          id: getAllUsers[user].id,
+        });
+      }
     }
   }
+  console.log("Finished ActivityOfVotesnotification")
 };
 
 // user don't have PAX Address
@@ -456,30 +464,33 @@ export const sendNotificationForMintAddress = async (userId: string) => {
     }
     console.log("userWellDAddress : ", user.paxAddress);
     if (!user.paxAddress.address && !user.paxAddress.coin) {
-      const message: messaging.Message = {
-        token: user.token,
-        notification: {
+      const token = user.token;
+      if (token) {
+        const message: messaging.Message = {
+          token: user.token,
+          notification: {
+            title: "Add PAX address",
+            body: "Please add the PAX address for receive the PAX",
+          },
+          webpush: {
+            headers: {
+              Urgency: "high",
+            },
+            fcmOptions: {
+              link: `${env.BASE_SITE_URL}/profile/wallet`, // TODO: put link for deep linking
+            },
+          },
+        };
+
+        await sendNotification({
+          token: user.token,
+          message,
           title: "Add PAX address",
           body: "Please add the PAX address for receive the PAX",
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
-          },
-          fcmOptions: {
-            link: `${env.BASE_SITE_URL}/profile/wallet`, // TODO: put link for deep linking
-          },
-        },
-      };
-
-      await sendNotification({
-        token: user.token,
-        message,
-        title: "Add PAX address",
-        body: "Please add the PAX address for receive the PAX",
-        id: user.uid,
-      });
-
+          id: user.uid,
+        });
+      }
+      console.log("----END sendNotificationForMintAddress Notification-------")
       return {
         status: false,
         message: "PAX Notification is sent successfully",
@@ -514,29 +525,32 @@ export const sendRefferalNotification = async (userData: any) => {
 
       const title = userData[index].isParent ? `Earn some amount` : `Paid some amount`;
       const body = userData[index].isParent ? `you earn ${userData[index].amount} amount` : `you paid ${userData[index].amount} amount`;
-      const message: messaging.Message = {
-        token: user.token,
-        notification: {
-          title,
-          body
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
+      const token = user.token
+      if (token) {
+        const message: messaging.Message = {
+          token,
+          notification: {
+            title,
+            body
           },
-          fcmOptions: {
-            link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+          webpush: {
+            headers: {
+              Urgency: "high",
+            },
+            fcmOptions: {
+              link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+            },
           },
-        },
-      };
+        };
 
-      await sendNotification({
-        token: user.token,
-        message,
-        title,
-        body,
-        id: user.uid,
-      });
+        await sendNotification({
+          token: user.token,
+          message,
+          title,
+          body,
+          id: user.uid,
+        });
+      }
     }
 
     console.log("-----End Refferal Notification -------");
@@ -547,41 +561,43 @@ export const sendRefferalNotification = async (userData: any) => {
 }
 
 // Pax Pending notification
-export async function sendPaxPendingNotification(userId: string){
-try {
-  const userRef = await firestore().collection("users").doc(userId).get();
-  const user: any = userRef.data();
-  console.log("userId from sendNotificationForCpm : ", user)
-  const token = user.token;
-  if (!token) {
-    throw errorLogging("sendPaxPendingNotification","ERROR", "No token found from sendNotification");
-  }
+export async function sendPaxPendingNotification(userId: string) {
+  try {
+    const userRef = await firestore().collection("users").doc(userId).get();
+    const user: any = userRef.data();
+    console.log("userId from sendNotificationForCpm : ", user)
+    const token = user.token;
+    if (token) {
 
-  const message: messaging.Message = {
-    token,
-    notification: {
-      title: "Pax pending",
-      body: "Your 50 pax is pending...",
-    },
-    webpush: {
-      headers: {
-        Urgency: "high",
-      },
-      fcmOptions: {
-        link: `${env.BASE_SITE_URL}/profile/wallet`,
-      },
-    },
-  };
-  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
-  console.log("Message:", message);
-  await sendNotification({
-    token,
-    message,
-    title: "Pax pending",
-    body: "Your 50 pax is pending...",
-    id: userId,
-  });
-} catch (error) {
-  return errorLogging("sendPaxPendingNotification","Error", error);
-}
+
+
+      const message: messaging.Message = {
+        token,
+        notification: {
+          title: "Pax pending",
+          body: "Your 50 pax is pending...",
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}/profile/wallet`,
+          },
+        },
+      };
+      console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
+      console.log("Message:", message);
+      await sendNotification({
+        token,
+        message,
+        title: "Pax pending",
+        body: "Your 50 pax is pending...",
+        id: userId,
+      });
+    }
+    console.log("-----End sendPaxPending Notification -------");
+  } catch (error) {
+    return errorLogging("sendPaxPendingNotification", "Error", error);
+  }
 }

@@ -6,12 +6,13 @@ import axios from "axios";
 import { log } from "firebase-functions/logger";
 import env from "../../env/env.json";
 import {
-  //isParentExistAndGetReferalAmount,
+  isParentExistAndGetReferalAmount,
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
 import { getAllPendingPaxByUserId } from "./PAX";
 import { errorLogging } from "../helpers/commonFunction.helper";
+import { sendEmailForAfterUpgradeOnImmediate } from "../models/Notification";
 
 
 export const callbackFromServer = async (req: any, res: any) => {
@@ -101,6 +102,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+    dollarAmount
   } = req.body;
   await storeInDBOfPayment({
     userId,
@@ -114,19 +116,50 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+    dollarAmount: dollarAmount || 0
   });
-  console.log("start parent payment");
-  // const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
-  //   req.body
-  // );
 
-  const getResponseAfterParentPayment = {};
+  await updateExtraVotePurchasedValue(userId)
+
+  console.log("start parent payment");
+
+  const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
+    req.body
+  );
+  console.info("getResponseAfterParentPayment", getResponseAfterParentPayment)
+
+  // const getResponseAfterParentPayment = {};
   console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
   res.status(200).send({
     status: true,
     message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
     data: req.body,
   });
+};
+
+export const updateExtraVotePurchasedValue = async (userId: string) => {
+  const paymentSnapshot = await firestore().collection("payments")
+    .where("userId", "==", userId)
+    .get();
+
+  if (!paymentSnapshot.empty) {
+    paymentSnapshot.forEach(async (doc) => {
+      const paymentData = doc.data();
+
+      // Check if the transactionType is either "EXTRAVOTES" or "UPGRADE"
+      // const extraVotePurchased = ;
+
+      // If extraVotePurchased is true, update extraVotePurchased in the userStatistics collection
+      if (paymentData.transactionType === "EXTRAVOTES" || paymentData.transactionType === "UPGRADE") {
+        await firestore().collection("userStatistics").doc(userId).set(
+          { extraVotePurchased: true },
+          { merge: true }
+        );
+      }
+    });
+  } else {
+    console.log("No payment documents found for user:", userId);
+  }
 };
 
 
@@ -196,6 +229,9 @@ export const addIsUpgradedValue = async (userId: string) => {
     await firestore().collection("users").doc(userId).get()
   ).data();
 
+
+  await sendEmailForAfterUpgradeOnImmediate(getUserDetails);
+
   const rewardStatistics: any = getUserDetails.rewardStatistics;
   rewardStatistics.extraVote =
     parentConst.UPGRADE_USER_VOTE + rewardStatistics.extraVote;
@@ -208,6 +244,13 @@ export const addIsUpgradedValue = async (userId: string) => {
     .collection("users")
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
+
+  // Update accountUpgrade in the userStatistics collection
+  await firestore().collection("userStatistics").doc(userId).set(
+    { accountUpgrade: true },
+    { merge: true }
+  );
+
 
   const rewardData = {
     winData: {
@@ -232,6 +275,7 @@ export const addIsUpgradedValue = async (userId: string) => {
     console.log("rewardData is not added")
   }
 };
+
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
   try {
@@ -275,9 +319,13 @@ export const getParentPayment = async (req: any, res: any) => {
     const getQuery = firestore()
       .collection("parentPayment")
       .where("parentUserId", "==", userId);
+
     const getParentPaymentQuery: any = !status
       ? await getQuery.get()
-      : await getQuery.where("status", "==", status).get();
+      : await getQuery.where("status", "in", [status, "CLAIMED"]).get();
+    // const getParentPaymentQuery: any = !status
+    //   ? await getQuery.get()
+    //   : await getQuery.where("status", "==", status).get();
     getParentPaymentQuery.docs.forEach((snapshot: any) => {
       let payment = snapshot.data();
       let id = snapshot?.id;
@@ -356,7 +404,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
   const getUserPendingReferalAmount = await firestore()
     .collection("parentPayment")
     .where("parentUserId", "==", userId)
-    .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
+    .where("status", "in", [parentConst.PAYMENT_STATUS_PENDING, parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED])
     .get();
   const getUserPendingReferalAmountData: any =
     getUserPendingReferalAmount.docs.map((payment) => {
@@ -429,7 +477,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
       }
     }
     return res.status(200).send({
-      status: false,
+      status: true,
       message: parentConst.MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT,
       data: getUserPendingReferalAmountData,
     });
@@ -604,17 +652,49 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 
 export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
   try {
-    await firestore()
-      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
+    const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
+    const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
 
-    const redirectUrl = `https://direct.palaris.io/api?ref_id=2&email=${req.body.email}&ftype=1&famount=${req.body.amount}&ctype=2&p1=${req.body.userId}&p2=${req.body.timestamp}`;
+    const data = {
+      contractAddress: req.body.contractAddress,
+      to: req.body.to,
+      chainId: req.body.chainId,
+      amount: req.body.amount,
+      intentLimit: req.body.intentLimit ? req.body.intentLimit : 1
+    };
 
-    res.status(200).send({
-      status: true,
-      message: "Temp payment transaction created successfully",
-      redirectUrl
-    });
+    const getResponseFromIntentRequest = await axios.post(url, data, {
+      headers: {
+        'X-API-KEY': apiKey,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (getResponseFromIntentRequest.status === 200) {
+
+      const redirectUrl = getResponseFromIntentRequest && getResponseFromIntentRequest.data && getResponseFromIntentRequest.data.data ? getResponseFromIntentRequest.data.data : "N/A";
+      const getIntentId = redirectUrl.split("pay/")[1]; //This is temporary way to find the Intent ID
+      await firestore()
+        .collection("tempPaymentTransaction").add({ ...req.body, uniquePaymentLink: redirectUrl, intentId: getIntentId, serverTimestamp: Timestamp.now() });
+
+
+      console.info("Redirect URL", JSON.stringify(redirectUrl));
+
+      res.status(200).send({
+        status: true,
+        message: "Payment transaction link created successfully",
+        redirectUrl
+      });
+    } else {
+      res.status(500).send({
+        status: false,
+        message: "Something went wrong while create the payment link from acme",
+        redirectUrl: ""
+      });
+    }
   } catch (error) {
+    console.info("Error", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong",
@@ -646,6 +726,7 @@ export const getAllPendingPaxByUser = async (req: any, res: any) => {
 export const checkTransactionStatus = async (paymentDetails: any) => {
   try {
     console.log("paymentDetails : ", paymentDetails)
+    console.log("paymentDetails network : ", paymentDetails.network)
     if (!paymentDetails.hash) {
       errorLogging("checkTransactionStatus", "ERROR", "Transaction hash is required")
       return {
@@ -658,26 +739,88 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
         "Content-Type": "application/json",
       }
     };
-    return axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
-      .then((response: any) => response.json())
-      .then((apiResponse) => {
-        console.log("apiResponse : ", apiResponse)
-        if (apiResponse.status === 1) {
-          return apiResponse.result.status === 1 ? {
-            status: true,
-            message: "Transaction is confirmed"
-          } : {
-            status: false,
-            message: "Transaction is not confirmed"
-          };
-        } else {
-          return {
-            status: false,
-            message: apiResponse.message,
-            reason: apiResponse.resson
-          };
-        }
-      })
+
+    const returnFinalResponse: any = {}
+
+    // EhterScan API
+    if (paymentDetails.network == 1) {
+      console.log("EtherScan")
+      await axios.get(`https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.ETHERSCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === '1') {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+      console.log("returnFinalResponse ether: ", returnFinalResponse)
+      return returnFinalResponse
+    } else if (paymentDetails.network == 137) {
+      // ploygonScan 
+      console.log("ploygonScan")
+      await axios.get(`https://api.polygonscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.POLYGONSCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === '1') {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+      console.log("returnFinalResponse polygon: ", returnFinalResponse)
+      return returnFinalResponse
+    } else if (paymentDetails.network == 56) {
+      // binance 
+      console.log("binance")
+      await axios.get(`https://api.bscscan.com/api?module=transaction&action=gettxreceiptstatus&txhash=${paymentDetails.hash}&apikey=${env.BINANCESCAN_API_KEY}`, options)
+        .then((apiResponse: any) => {
+          const response = apiResponse.data
+          console.log("response : ", response)
+          if (response.status === '1') {
+            returnFinalResponse['data'] = response.result.status === "1" ? {
+              status: true,
+              message: "Transaction is confirmed"
+            } : {
+              status: false,
+              message: "Transaction is not confirmed"
+            };
+          } else {
+            returnFinalResponse['data'] = {
+              status: false,
+              message: response.message,
+              reason: response.reason
+            };
+          }
+        });
+      console.log("returnFinalResponse binance: ", returnFinalResponse)
+      return returnFinalResponse
+    }
+    console.log("returnFinalResponse >>>> ", returnFinalResponse)
+    // return returnFinalResponse
   } catch (error) {
     errorLogging("checkTransactionStatus", "ERROR", error)
     return false

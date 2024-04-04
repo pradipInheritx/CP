@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 
-// import { sendPaxToFoundation } from "../Reward"
+import { sendPaxToFoundation } from "../Reward"
 import { errorLogging } from "../../helpers/commonFunction.helper";
 
 const foundationConst: any = {}
@@ -54,7 +54,7 @@ export const createFoundation = async (req: any, res: any) => {
         const {
             name,
             address,
-            commissionPercentage =10
+            commissionPercentage = 10
         } = req.body;
 
         const foundationObject = {
@@ -138,7 +138,7 @@ export const updateFoundation = async (req: any, res: any) => {
         if (address) {
             updatedData['address'] = address;
         }
-        if(commissionPercentage){
+        if (commissionPercentage) {
             updatedData['commissionPercentage'] = commissionPercentage;
         }
         console.log("Updated data : ", updatedData);
@@ -192,19 +192,17 @@ export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
         console.log("user.foundationData.id : ", user?.foundationData?.id)
         const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
         const foundationCommission = foundation?.commissionPercentage || 10
-        const foundationCPM = (cpm *foundationCommission ) / 100;
+        const foundationCPM = (cpm * foundationCommission) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
-        console.info("commission", commission)
-        // if ((commission / 100) >= 1) {
-        //     // foundation Payment method here sendPaxToFoundation
-        //     const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-        //     console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
-        // } else {
-        //     const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
-        //     console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
-        // }
+        console.log("commission--->", commission)
+        if ((commission / 100) >= 1) {
+            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id); // Update Pax To Foundation 
+            console.log("getResultAfterPaxTransferToFoundation--->", getResultAfterPaxTransferToFoundation);
+        } else {
+            await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
+        }
+        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ totalCommissionEarned: commission }, { merge: true });
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
-        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
         return {
             status: true,
             message: "Added PAX To Foundation"
