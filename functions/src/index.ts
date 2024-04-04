@@ -2388,7 +2388,7 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
 exports.getAllUersData = functions.https.onCall(async (data) => {
   try {
     // Extract pagination parameters from request query
-    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "" } = data
+    let { page = 1, limit = 10, orderBy = "userName", sort = "desc", search = "" } = data
 
     limit = parseInt(limit);
 
