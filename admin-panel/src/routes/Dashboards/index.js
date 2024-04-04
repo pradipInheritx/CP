@@ -7,10 +7,15 @@ const Dashboards = ({ match }) => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        <Redirect
+        {/* <Redirect
           exact
           from={`${requestedUrl}/`}
           to={`${requestedUrl}/subAdmin`}
+        /> */}
+        <Redirect
+          exact
+          from={`${requestedUrl}/`}
+          to={`${requestedUrl}/usersstatistics`}
         />
         <Route
           path={`${requestedUrl}/crypto`}
