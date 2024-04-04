@@ -652,17 +652,49 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 
 export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
   try {
-    await firestore()
-      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
+    const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
+    const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
 
-    const redirectUrl = `https://direct.palaris.io/api?ref_id=2&email=${req.body.email}&ftype=1&famount=${req.body.amount}&ctype=2&p1=${req.body.userId}&p2=${req.body.timestamp}`;
+    const data = {
+      contractAddress: req.body.contractAddress,
+      to: req.body.to,
+      chainId: req.body.chainId,
+      amount: req.body.amount,
+      intentLimit: req.body.intentLimit ? req.body.intentLimit : 1
+    };
 
-    res.status(200).send({
-      status: true,
-      message: "Temp payment transaction created successfully",
-      redirectUrl
-    });
+    const getResponseFromIntentRequest = await axios.post(url, data, {
+      headers: {
+        'X-API-KEY': apiKey,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (getResponseFromIntentRequest.status === 200) {
+
+      const redirectUrl = getResponseFromIntentRequest && getResponseFromIntentRequest.data && getResponseFromIntentRequest.data.data ? getResponseFromIntentRequest.data.data : "N/A";
+      const getIntentId = redirectUrl.split("pay/")[1]; //This is temporary way to find the Intent ID
+      await firestore()
+        .collection("tempPaymentTransaction").add({ ...req.body, uniquePaymentLink: redirectUrl, intentId: getIntentId, serverTimestamp: Timestamp.now() });
+
+
+      console.info("Redirect URL", JSON.stringify(redirectUrl));
+
+      res.status(200).send({
+        status: true,
+        message: "Payment transaction link created successfully",
+        redirectUrl
+      });
+    } else {
+      res.status(500).send({
+        status: false,
+        message: "Something went wrong while create the payment link from acme",
+        redirectUrl: ""
+      });
+    }
   } catch (error) {
+    console.info("Error", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong",
@@ -734,7 +766,7 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
-        console.log("returnFinalResponse ether: ",returnFinalResponse)
+      console.log("returnFinalResponse ether: ", returnFinalResponse)
       return returnFinalResponse
     } else if (paymentDetails.network == 137) {
       // ploygonScan 
@@ -759,7 +791,7 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
-        console.log("returnFinalResponse polygon: ",returnFinalResponse)
+      console.log("returnFinalResponse polygon: ", returnFinalResponse)
       return returnFinalResponse
     } else if (paymentDetails.network == 56) {
       // binance 
@@ -784,7 +816,7 @@ export const checkTransactionStatus = async (paymentDetails: any) => {
             };
           }
         });
-        console.log("returnFinalResponse binance: ",returnFinalResponse)
+      console.log("returnFinalResponse binance: ", returnFinalResponse)
       return returnFinalResponse
     }
     console.log("returnFinalResponse >>>> ", returnFinalResponse)
