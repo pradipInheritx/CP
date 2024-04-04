@@ -252,7 +252,7 @@ useEffect(() => {
     setVoteLastPrice(coins)
   }
 
-  const getstartprice = () =>{
+  const getstartprice = () => {    
     setStartPrice(coins)
   }
   const scrollToRef = useRef<HTMLDivElement>(null);
@@ -362,21 +362,23 @@ useEffect(() => {
                borderRadius:"60px 0px 60px 60px"
               }}
                 onClick={() => {  
-                  setClickedOption1(true);
-                  getstartprice()                  // console.log(coins,"786 firstvalue")
-                  setTimeout(() => {
-                    setVoteDirection(1)  
-                    setShowSpdometer(true)
-                    setClickedOption1(false)
-                    setHeaderShow(true)
-                  }, 600);
-                  setTimeout(() => {
-                    setShowPopUp(true)
-                    setShowSpdometer(false)
-                    getLastPrice()
-                    setHeaderShow(false)
-                  },activeTime
-                  );
+                  if (coins) {                    
+                    setClickedOption1(true);
+                    getstartprice()                  // console.log(coins,"786 firstvalue")
+                    setTimeout(() => {
+                      setVoteDirection(1)  
+                      setShowSpdometer(true)
+                      setClickedOption1(false)
+                      setHeaderShow(true)
+                    }, 600);
+                    setTimeout(() => {
+                      setShowPopUp(true)
+                      setShowSpdometer(false)
+                      getLastPrice()
+                      setHeaderShow(false)
+                    },activeTime
+                    );
+                  }
                 }
                 }
               >
@@ -399,22 +401,24 @@ useEffect(() => {
                   animation: "bull_shake_right 2s ease 2s 3 alternate forwards",
                  borderRadius:"0px 60px 60px 60px"
               }}
-                onClick={() => {  
-                  setVoteDirection(2)                
-                  setClickedOption0(true);                  
-                  setTimeout(() => {
-                    
-                     setClickedOption0(false)
-                    setShowSpdometer(true)
-                    setHeaderShow(true)
-                   }, 600
-                   );
-                  setTimeout(() => {
-                    setShowPopUp(true)
-                    setShowSpdometer(false) 
-                    getLastPrice()
-                    setHeaderShow(false)
-                  }, activeTime);
+                onClick={() => {
+                  if (coins) {                    
+                    setVoteDirection(2)              
+                    setClickedOption0(true);                  
+                    getstartprice()    
+                    setTimeout(() => {
+                       setClickedOption0(false)
+                      setShowSpdometer(true)
+                      setHeaderShow(true)
+                     }, 600
+                     );
+                    setTimeout(() => {
+                      setShowPopUp(true)
+                      setShowSpdometer(false) 
+                      getLastPrice()
+                      setHeaderShow(false)
+                    }, activeTime);
+                  }
                 }
                 }
               >
@@ -452,6 +456,7 @@ useEffect(() => {
                 activeTime={activeTime}
                 voteDirection={voteDirection}  
                 setImpactValue={setImpactValue}
+                startprice={startprice}
               />
               <div
                 style={{

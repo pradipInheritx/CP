@@ -11,7 +11,8 @@ interface SpeedProps {
   setImpactValue: any
 }
 
-function Speed(props: SpeedProps) {
+function Speed(props: SpeedProps) {  
+
   const { value, setImpactValue } = props;
 
   const gauge = useGauge({
@@ -29,9 +30,7 @@ function Speed(props: SpeedProps) {
   });
   const needleAnimatePoint = useRef(needle.points)
   useEffect(() => {
-
     if (!needle.points.toString().includes('e')) needleAnimatePoint.current = needle.points
-    // console.log('needle points', value, needle.points.toString().includes('e'), needle.points)
   }, [value])
   // 1.4695761589768238e-15
   // 6.000000000000002,-10.392304845413264 174.2050807568878,98.26794919243098 172.2050807568878,101.73205080756874 -5.999999999999997,10.392304845413264
@@ -39,14 +38,16 @@ function Speed(props: SpeedProps) {
   // -11.992689924229149,-0.4187939604300108 4.981117686462064,-199.94796439722415 8.978680994538447,-199.80836641041412 11.992689924229149,0.4187939604300116
 
   useEffect(()=>{
-    if(value < 40){
+    if(value < 45){
 
       setImpactValue('Low')
-    }else if( value >=40 && value <=60){
+    }else if( value >=45 && value <=55){
       setImpactValue('Mid')
     }else{
       setImpactValue('High')
     }
+
+    console.log(value,"rightvalue")
   },[value])
 
 
@@ -228,7 +229,6 @@ function Speed(props: SpeedProps) {
               <motion.line
                 stroke="#2d2966"
                 strokeWidth={4}
-
                 animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
               />
             </g>
@@ -248,7 +248,8 @@ export default function SpeedTest(
     symbol1,
     symbol2,
     voteDirection,
-    setImpactValue
+    setImpactValue,
+    startprice,
   }: {
     // lastTenSec?: any
     vote?: VoteResultProps;
@@ -257,7 +258,8 @@ export default function SpeedTest(
     symbol1?: string;
       symbol2?: string;
       voteDirection?: any;
-      setImpactValue?: any
+      setImpactValue?: any;
+      startprice?: any;
   }
 ) {
   // const { value } = useSpeedTest();
@@ -269,18 +271,20 @@ export default function SpeedTest(
   
   const getCoinValue = () => {
     let tempNewValue = parseFloat(coins) * 100;
-    let tempOldValue = prevCountRef.current *100;
+    let tempOldValue = parseFloat(startprice || coins ) * 100;
+    
+    console.log(tempNewValue * 100 - prevCountRef.current * 100 ,"bothprice")
     // console.log(tempNewValue - tempOldValue, "tempOldValue")
     if (tempNewValue === tempOldValue) {
       
       setValue(50);
     } else if (voteDirection == 1) {
-      const temp = (tempNewValue - tempOldValue);
-      setValue(50 + temp);
+      const temp = (tempNewValue - tempOldValue) / 1;
+      setValue(50 + temp > 100 ? 100 : 50 + temp < 0 ? 0 : 50 + temp);
     }
     else {
-      const temp = (tempOldValue - tempNewValue);
-      setValue(50 + temp);
+      const temp = (tempOldValue - tempNewValue) / 1;
+      setValue(50 + temp > 100 ? 100 : 50 + temp < 0 ? 0 : 50 + temp);
     }
     setCurrentPrice(coins)
 }

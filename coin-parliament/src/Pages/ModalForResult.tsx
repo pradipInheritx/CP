@@ -59,7 +59,7 @@ const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp
 const [lastPrice, setLastPrice] = useState<any>(coins)
 
 const twoDigitLastPrice = lastPrice && parseFloat(lastPrice)?.toFixed(2)
-const twoDigitStartPrice = startprice && parseFloat(startprice)?.toFixed(2)
+  const twoDigitStartPrice = startprice && parseFloat(startprice)?.toFixed(2)
 
 
 
@@ -102,6 +102,8 @@ if (urlParams.has('username')) {
 } else {
   console.log('Username parameter not found in the URL. 11');
 }
+    
+
   return (
     <div className=''>      
       <Modal show={show} onHide={handleClose}
@@ -155,7 +157,7 @@ if (urlParams.has('username')) {
                     <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"20px"}}>{Math.floor(activeTime / 1000) + "Sec"}</p>
                     <p style={{fontSize:"20px"}}>{voteDirection === 1 ? "Bull " : "Bear "}{'$'+twoDigitStartPrice}</p>
                     <p  style={{marginBottom:"0rem",fontSize:"20px",color:"#6352e8"}}>{"Vote Result"}</p>
-                    <p style={{fontSize:"20px",color:`${twoDigitLastPrice >= twoDigitStartPrice ? "green" : "red"}`}}>{voteDirection === 1 && twoDigitLastPrice >= twoDigitStartPrice ? "Bull " : "Bear "}{'$'+twoDigitLastPrice}</p>
+                <p style={{ fontSize: "20px", color: `${twoDigitLastPrice > twoDigitStartPrice ? "green" : twoDigitLastPrice ==  twoDigitStartPrice ?"black":"red"}`}}>{voteDirection === 1 && twoDigitLastPrice >= twoDigitStartPrice ? "Bull " : "Bear "}{'$'+twoDigitLastPrice}</p>
                     <p style={{fontSize:"17px"}}>{"Vote impact :"} {impactValue.toUpperCase()}</p>
                   </div>
                 </div>
