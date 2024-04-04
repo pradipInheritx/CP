@@ -585,7 +585,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
         .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
       leaders.sort((user_1: any, user_2: any) => user_1.total - user_2.total); // sort the users based on total 
-      console.log("Length With Leaders", leaders);
+      // console.log("Length With Leaders", leaders);
       console.log("leader length : ", leaders.length);
       const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
       let leaderStatus: Leader[] = [];
@@ -624,7 +624,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           }
         }
 
-        console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
+        //console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
         leaders.splice(0, getTotalNumberOfSpeaker);
         // console.info("leaders In Speaker", leaders)
       }
@@ -668,8 +668,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         // console.info("leaders In Council", leaders)
       }
 
-      console.log("Council Data Only", leaderStatusForCouncil)
-      console.log("after Council ,Leader list ", leaders, leaders.length)
+      //console.log("Council Data Only", leaderStatusForCouncil)
+      // console.log("after Council ,Leader list ", leaders, leaders.length)
       leaderStatusForCouncil.sort((councilOne: any, councilTwo: any) => councilTwo.influencersScore - councilOne.influencersScore);
       for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
         leaderStatus.push({ ...leaderStatusForCouncil[speaker], rank: speaker + 1 });
@@ -707,7 +707,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
         leaders.splice(0, getTotalNumberOfAmbassador);
         console.log("Ambassador List : ", leaderStatusForAmbassador);
-        console.log("after Ambassador ,Leader list ", leaders, leaders.length)
+        //console.log("after Ambassador ,Leader list ", leaders, leaders.length)
       }
       leaderStatusForAmbassador.sort((ambassadorOne: any, ambassadorTwo: any) => ambassadorTwo.influencersScore - ambassadorOne.influencersScore);
       for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
@@ -742,8 +742,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           }
         }
         leaders.splice(0, getTotalNumberOfMinister);
-        console.log("Minister List : ", leaderStatusForMinister);
-        console.log("after Minister ,Leader list ", leaders, leaders.length)
+        //console.log("Minister List : ", leaderStatusForMinister);
+        //console.log("after Minister ,Leader list ", leaders, leaders.length)
       }
       leaderStatusForMinister.sort((ministerOne: any, ministerTwo: any) => ministerTwo.influencersScore - ministerOne.influencersScore);
       for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
@@ -778,21 +778,21 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           }
         }
         leaders.splice(0, getTotalNumberOfChairman);
-        console.log("Chairman List : ", leaderStatusForChairman);
+        // console.log("Chairman List : ", leaderStatusForChairman);
       }
       leaderStatusForChairman.sort((chairmanOne: any, chairmanTwo: any) => chairmanTwo.influencersScore - chairmanOne.influencersScore);
       for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
         leaderStatus.push({ ...leaderStatusForChairman[speaker], rank: speaker + 1 });
       }
 
-      console.info("leaders", leaders)
-      console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
-      console.log("leaderStatus Final", JSON.stringify(leaderStatus));
+      //console.info("leaders", leaders)
+      //console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
+      //console.log("leaderStatus Final", leaderStatus);
 
       leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
 
       try {
-        console.log("Come Here To Update:")
+        console.log("Come Here To Update:", "TYPE OF", typeof leaderStatus, "Value", leaderStatus);
         return await firestore()
           .collection("stats")
           .doc("leaders")
