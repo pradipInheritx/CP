@@ -2465,6 +2465,7 @@ exports.getAllUersData = functions.https.onCall(async (data:any) => {
         break;
     }
     let getAllUsersData:any ;
+    let filteredData:any = [];
 
     console.log("orderByConsolidate", orderByConsolidate)
 
@@ -2496,7 +2497,7 @@ if (search) {
             .get()
         ).docs.map((user) => user.data());
 
-        const filteredData = getAllUsersData.filter(doc => {
+        filteredData = getAllUsersData.filter(doc => {
           for (let field of filterFields){
             const fieldValue = doc[field];
             //console.log("fieldValue",fieldValue)
@@ -2526,8 +2527,8 @@ if (search) {
         );
 
       console.log("filteredData",filteredData)
-      getAllUsersData = filteredData
-      console.log("getAllUsersData.docs",getAllUsersData)
+      // getAllUsersData = filteredData
+      // console.log("getAllUsersData.docs",getAllUsersData)
 
 
       // Paginate filtered data
@@ -2543,8 +2544,8 @@ if (search) {
     .get();
 }
 
-console.log("getUsersResponseStarted>>>>>>>>>>>>>")
-  let getUsersResponse = getAllUsersData.map((doc:any) => {
+console.log("filteredData>>>>>>>>>>>>>",filteredData)
+  let getUsersResponse = filteredData.map((doc:any) => {
     let userData = doc;
     console.log("userData",userData);
     if (userData.signUpTime && userData.signUpTime.trim() !== "") {
