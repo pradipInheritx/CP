@@ -18,56 +18,54 @@ import { sendEmailForAfterUpgradeOnImmediate } from "../models/Notification";
 export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
-    if (req.body.order_buyer) {
-      if (req.body.order_status !== "Open") {
-        await firestore()
-          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
 
-        const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
-          .where("timestamp", "==", req.body.p2)
-          .get();
+    if (req.body.order && req.body.order.status.toUpperCase() === "COMPLETED") {
+      await firestore()
+        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status.toUpperCase(), callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
 
-        const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-          return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
-        });
+      const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
+        .where("intentId", "==", req.body.order.intentId)
+        .get();
 
-        console.info("getTempCrediCardData", getTempCrediCardData[getTempCrediCardData.length - 1])
-        let requestBody: any;
-        if (getTempCrediCardData.length && getTempCrediCardData[getTempCrediCardData.length - 1]) {
-          let userId = req.body && req.body.p1 ? req.body.p1 : "";
-          requestBody = { userId, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[getTempCrediCardData.length - 1].transactionType, numberOfVotes: getTempCrediCardData[getTempCrediCardData.length - 1].numberOfVotes, initiated: "BE" };
-        } else {
-          requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[getTempCrediCardData.length - 1].numberOfVotes, initiated: "BE" };
-        }
+      const getTempAcmeData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
+        return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
+      });
 
-        console.log("Request Body Before", requestBody);
+      console.info("getTempAcmeRecords", getTempAcmeData[getTempAcmeData.length - 1])
+      let requestBody: any;
+      if (getTempAcmeData.length && getTempAcmeData[getTempAcmeData.length - 1]) {
+        let userId = getTempAcmeData[getTempAcmeData.length - 1].userId;
+        requestBody = { userId, intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
+      } else {
+        requestBody = { userId: "", intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
+      }
 
-        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
-        console.log("getResponseFromCreditCard", getResponseFromCreditCard, "For Delete", getTempCrediCardData[getTempCrediCardData.length - 1].id);
+      console.log("Request Body Before", requestBody);
 
-        await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[getTempCrediCardData.length - 1].id).delete().then(() => {
-          console.log("Temp Payment Transaction Deletion Start Begins ");
-          res.status(200).send({
-            status: true,
-            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
-          });
-        }).catch((error) => {
-          res.status(400).send({
-            status: false,
-            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
-            result: error,
-          });
-        });
+      const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
+      console.log("getResponseFromCreditCard", getResponseFromCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
 
+      await firestore().collection('tempPaymentTransaction').doc(getTempAcmeData[getTempAcmeData.length - 1].id).delete().then(() => {
+        console.log("Temp Payment Transaction Deletion Start Begins ");
         res.status(200).send({
           status: true,
-          message: "Transaction logged in DB and transaction made successfully",
-          data: [],
+          message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
         });
+      }).catch((error) => {
+        res.status(400).send({
+          status: false,
+          message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
+          result: error,
+        });
+      });
 
-      }
+      res.status(200).send({
+        status: true,
+        message: "Transaction logged in DB and transaction made successfully",
+        data: [],
+      });
       await firestore()
-        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order.status.toUpperCase(), callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -75,14 +73,13 @@ export const callbackFromServer = async (req: any, res: any) => {
       });
     } else {
       await firestore()
-        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.Timestamp.now() });
+        .collection("callbackHistory").add({ ...req.body.order, callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
         data: [],
       });
     }
-    // Assuming there's only one user with the given email (unique constraint)
   } catch (error: any) {
     console.info("Error while call callback URL payment to welld app server", error);
   }
@@ -573,29 +570,23 @@ export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
 export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any) => {
   try {
     console.log("requestBody--------->", requestBody)
-    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = requestBody;
+    const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
-    console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
-    if (!getTransactionFromCreditCard) {
+    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId);
+    console.log("getTransactionFromAcme : ", getTransactionFromAcme);
+    if (!getTransactionFromAcme) {
       return {
         statusCode: 404,
         status: false,
-        message: parentConst.CREDITCARD_TRANSACTION_NOT_FOUND,
+        message: parentConst.ACME_TRANSACTION_NOT_FOUND,
         result: "",
       }
     }
 
-    if (getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
+    if (getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase({
           userId,
-          userEmail,
-          walletType,
-          amount,
-          network,
-          origincurrency,
-          token,
           transactionType,
           numberOfVotes,
           initiated
@@ -605,32 +596,26 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
         await addIsUpgradedValue(userId)
       }
     }
-    await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).set({
+    await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).set({
       paymentDetails
-        : getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.data,
-      event: getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event,
+        : getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
+      event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
       userId,
-      userEmail,
-      walletType,
-      amount,
-      network,
-      origincurrency,
-      token,
+      initiatedTransactionDetails,
       transactionType,
       numberOfVotes,
       initiated
     }, { merge: true });
 
-    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).get()).data();
+    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).get()).data();
 
-    //TODO Get the data and store in payment collection 
     const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.Timestamp.now() });
 
     if (addNewPayment.id) {
-      firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).delete().then(() => {
-        console.log(`${getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id} Document successfully deleted from callbackHistory!`)
+      firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
+        console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document successfully deleted from callbackHistory!`)
       }).catch((error) => {
-        console.log(`${getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+        console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
       });
     };
 
@@ -655,8 +640,8 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
     //Stage ---> const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
     //Stage ----> Key const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
 
-    const url = 'https://acme-prod.fly.dev/operations/dev/intent/create-pay-intent'
-    const apiKey = 'RULOTKI-6U2EHRQ-SANJUMQ-ASXWLCI';
+    const url = parentConst.PAYMENT_WEBHOOK_URL_PROD
+    const apiKey = parentConst.PAYMENT_WEBHOOK_API_KEY
 
     const data = {
       contractAddress: req.body.contractAddress,
