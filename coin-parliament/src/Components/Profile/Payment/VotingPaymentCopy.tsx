@@ -779,6 +779,13 @@ const VotingPaymentCopy: React.FC<{
       const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
       // console.log(coinInfo,"coinInfoUSDT ERC20")
+      // @ts-ignore
+      const accounts = await window.ethereum.enable()
+      console.log(accounts, "allaccounts")
+      
+      if (accounts <= 0) {
+        return setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Please connect again with your wallet after try again." })
+      }
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
@@ -838,8 +845,24 @@ const VotingPaymentCopy: React.FC<{
         else if (errorCodeGet == "NETWORK_ERROR") {
           setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again." })
         }
+        else if (error.code === "INSUFFICIENT_FUNDS") {
+          setPaymentStatus({ type: "error", message: "Insufficient funds. Please make sure you have enough balance to complete the transaction." });
+        } else if (error.code === "OUT_OF_GAS") {
+          setPaymentStatus({ type: "error", message: "Out of gas error. Please try again with a higher gas limit." });
+        } else if (error.code === "NONCE_TOO_LOW") {
+          setPaymentStatus({ type: "error", message: "Nonce too low or already used. Please try again later." });
+        }
+        else if (error.code === "UNSUPPORTED_OPERATION") {
+          setPaymentStatus({ type: "error", message: "Unsupported operation. This feature is not supported in your current environment." });
+        }          
+        else if (error.code === "INVALID_VALUE") {
+          setPaymentStatus({ type: "error", message: "Invalid transaction value. Please provide a valid value for the transaction." });
+        }          
+        else if (error.code === "INVALID_ADDRESS") {
+          setPaymentStatus({ type: "error", message: "Invalid recipient address. Please check the address and try again." });
+        }          
         else {
-          setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : errorMessageWithoutTextAfterBracket })
+          setPaymentStatus({ type: "error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction') ? 'User rejected transaction' : errorMessageWithoutTextAfterBracket == "Internal JSON-RPC error." ? "Insufficient funds for gas" : "Error sending transaction. Please try again later." })
         }
       }
 
