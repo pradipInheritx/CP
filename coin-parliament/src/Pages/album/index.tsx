@@ -603,7 +603,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }
         }>
-            <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2 ipad_row_gap'>
+            <div className='d-flex justify-content-center flex-wrap w-100 py-2 ipad_row_gap'>
                 <input
                     type='text'
                     onChange={e => {
