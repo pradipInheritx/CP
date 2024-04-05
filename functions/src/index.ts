@@ -2385,11 +2385,10 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
   }
 });
 
-exports.getAllUersData = functions.https.onCall(async (data:any) => {
+exports.getAllUersData = functions.https.onCall(async (data) => {
   try {
     // Extract pagination parameters from request query
-    
-    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "", startDate = "", endDate = "",filterFields= [] } = data;
+    let { page = 1, limit = 10, orderBy = "userName", sort = "desc", search = "" } = data
 
     limit = parseInt(limit);
 
@@ -2464,10 +2463,10 @@ exports.getAllUersData = functions.https.onCall(async (data:any) => {
         orderByConsolidate = "userName";
         break;
     }
-    let getAllUsersData:any ;
-    let filteredData:any = [];
+    let getAllUsersData;
 
     console.log("orderByConsolidate", orderByConsolidate)
+    
 
 if (search) {
   getAllUsersData = await admin.firestore()
@@ -2477,64 +2476,6 @@ if (search) {
     .offset((page - 1) * limit)
     .limit(limit)
     .get();
-} else if (startDate && endDate && filterFields) {
-  
-  const startDateTime = new Date(startDate).getTime() / 1000;
-  console.log("startDateTime>>>",startDateTime)
-  const endDateTime = new Date(endDate).getTime() / 1000;
-  console.log("endDateTime>>>",endDateTime)
-
-  console.log("filterFields",filterFields)
-  // const parsedFilterFields = JSON.parse(filterFields);
-  // console.log("parsedFilterFields",parsedFilterFields)
-
-         let getAllUsersData = (
-          await admin
-            .firestore()
-            .collection("userStatistics")
-            .offset((page - 1) * limit)
-            .limit(limit)
-            .get()
-        ).docs.map((user) => user.data());
-
-        filteredData = getAllUsersData.filter(doc => {
-          for (let field of filterFields){
-            const fieldValue = doc[field];
-            //console.log("fieldValue",fieldValue)
-            let finalCondition:any = null
-
-            if (field == "signUpTime"){
-              const signUpTime = new Date(fieldValue).getTime() / 1000;
-              console.log("signUpTime",signUpTime)
-              finalCondition = signUpTime >= startDateTime && signUpTime <= endDateTime;
-              console.log("finalSignUpTime",finalCondition)
-
-            }else if (field == "lastLoginDay"){
-              // console.log("Hello World!!!!!!",fieldValue,field)
-              const lastLoginDay = new Date(fieldValue).getTime() / 1000;
-              console.log("lastLoginDay",lastLoginDay)
-              finalCondition = lastLoginDay >= startDateTime && lastLoginDay <= endDateTime;
-              console.log("finalLastLoginDay",finalCondition)
-            }else if(field == "lastVoteDay"){
-              console.log("Hello World!!!!!!",fieldValue,field)
-              const lastVoteDay = new Date(fieldValue).getTime() / 1000;
-              finalCondition= lastVoteDay >= startDateTime && lastVoteDay <= endDateTime;
-              console.log("finalLastVoteDay",finalCondition)
-            }
-            return finalCondition;
-          }
-        }
-        );
-
-      console.log("filteredData",filteredData)
-      // getAllUsersData = filteredData
-      // console.log("getAllUsersData.docs",getAllUsersData)
-
-
-      // Paginate filtered data
-      //getAllUsersData.docs = filteredData.slice((page - 1) * limit, page * limit);
-     
-      
 } else {
   getAllUsersData = await admin.firestore()
     .collection("userStatistics")
@@ -2544,24 +2485,26 @@ if (search) {
     .get();
 }
 
-console.log("filteredData>>>>>>>>>>>>>",filteredData)
-  let getUsersResponse = filteredData.map((doc:any) => {
-    let userData = doc;
-    console.log("userData",userData);
+  let getUsersResponse = getAllUsersData.docs.map((doc) => {
+    let userData = doc.data();
+    // Check if signUpTime exists and is not an empty string
     if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+      // Convert signUpTime to Date object
       let signUpDate = new Date(userData.signUpTime);
+      // Format date portion to YYYY-MM-DD
       let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+      // Update userData with the formatted date
       userData.signUpTime = signUpDateFormatted;
     } else {
-      userData.signUpTime = ""; 
+      // Set signUpTime to an empty string or any default value you prefer
+      userData.signUpTime = ""; // Or set to a default value like "N/A"
     }
     return userData;
   });
-  // console.log("getUsersResponse",getUsersResponse)
   
   // Sorting by signUpTime as Date object
   if (orderBy === "signUpTime") {
-    getUsersResponse.sort((a:any, b:any) => {
+    getUsersResponse.sort((a, b) => {
       // Handle cases where signUpTime might be an empty string
       if (!a.signUpTime) return -1;
       if (!b.signUpTime) return 1;
@@ -2578,16 +2521,14 @@ console.log("filteredData>>>>>>>>>>>>>",filteredData)
     const getTotal = getTotalDataQuery.docs.length;
 
     console.log("Total data--", getTotal);
-    //console.log("getUsersResponse----------", getUsersResponse);
+    console.log("getUsersResponse----------", getUsersResponse);
 
     return {
       status: true,
       message: "users fetched successfully",
       result: { data: getUsersResponse, total: getTotal },
     };
-
   } catch (error) {
-    console.error("Error while fetching users:", error);
     return {
       status: false,
       message: "Users not found",
