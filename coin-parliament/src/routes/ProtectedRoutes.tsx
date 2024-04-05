@@ -33,7 +33,7 @@ const ProtectedRoutes = () => {
 
     // console.log(loading , localStorage.getItem('mfa_passed'),auth?.currentUser,checkAuth,userInfo,'hello');
     
-    return (!loading && localStorage.getItem('mfa_passed') !== 'true') ? (checkAuth ? <Outlet /> : <Navigate to={'/login'} />) : <></>;
+    return (!loading && localStorage.getItem('mfa_passed') !== 'true') ? (checkAuth ? <Outlet /> : <Navigate to={`${window.screen.width < 767  ? '/HomePage' : '/login'}`} />) : <></>;
 }
 
 export default ProtectedRoutes;

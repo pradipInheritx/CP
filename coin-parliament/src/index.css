@@ -1452,3 +1452,19 @@ animation: blinker 1s linear infinite;
         color:white;
     }
   }
+
+  .vte-landing img  {
+max-width: 100%;
+vertical-align: top;
+  }
+
+  .vte-landing .logo{
+    max-width: 75px;
+    margin: 0px auto;
+  }
+
+  @media only screen and (max-width: 767px) {
+  .vte-landing .title-sec{
+    font-size: 20px
+  }
+  }
