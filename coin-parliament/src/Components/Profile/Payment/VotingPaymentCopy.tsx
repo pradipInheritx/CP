@@ -1108,9 +1108,9 @@ const VotingPaymentCopy: React.FC<{
             style={{
               width: "100%",
             }}
-            className="d-flex justify-content-center flex-column align-items-center"
+            className="d-flex justify-content-center flex-column align-items-center votingPaymentContainer"
           >
-            <FirstBoxdiv className={`${window.screen.width > 767 ? "" : ""}`}
+            <FirstBoxdiv className={`${window.screen.width > 767 ? "" : ""} containerVote`}
               style={{
                 justifyContent: `${selectPayment == 0 ? "" : ""}`,
               }}
