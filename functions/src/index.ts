@@ -2483,8 +2483,9 @@ if (search) {
   const endDateTime = new Date(endDate).getTime() / 1000;
   console.log("endDateTime>>>",endDateTime)
 
-  const parsedFilterFields = JSON.parse(filterFields);
-  console.log("parsedFilterFields",parsedFilterFields)
+  console.log("filterFields",filterFields)
+  // const parsedFilterFields = JSON.parse(filterFields);
+  // console.log("parsedFilterFields",parsedFilterFields)
 
          let getAllUsersData = (
           await admin
@@ -2496,7 +2497,7 @@ if (search) {
         ).docs.map((user) => user.data());
 
         const filteredData = getAllUsersData.filter(doc => {
-          for (let field of parsedFilterFields){
+          for (let field of filterFields){
             const fieldValue = doc[field];
             //console.log("fieldValue",fieldValue)
             let finalCondition:any = null
