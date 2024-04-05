@@ -21,7 +21,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 
     if (req.body.order && req.body.order.status.toUpperCase() === "COMPLETED") {
       await firestore()
-        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status.toUpperCase(), callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
+        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
 
       const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
         .where("intentId", "==", req.body.order.intentId)
@@ -65,7 +65,7 @@ export const callbackFromServer = async (req: any, res: any) => {
         data: [],
       });
       await firestore()
-        .collection("callbackHistory").add({ data: req.body, event: req.body.order.status.toUpperCase(), callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
