@@ -124,7 +124,7 @@
 .upgrade_items .stars_items img{max-width: 35px;}
 .upgrade_items .btn_buy_now {width: 175px !important;}
 .upgrade_items .btn_buy_now button {width: 160px !important;}
-.bg_responisve_voting {background-size: cover !important;min-height: 75vh;}
+.bg_responisve_voting {background-size: cover !important;min-height: 80vh;}
 .bg_responisve_voting .bottomImageBlock {
   bottom: -30% !important;
   top: initial !important;

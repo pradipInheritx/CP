@@ -297,7 +297,7 @@ function PaymentFun({ isVotingPayment }: any) {
 }
 
   return (
-    <div className=''
+    <div className="bg_responisve_voting"
       style={{
         backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
         backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
