@@ -82,7 +82,7 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
     // currentScore=localStorage.getItem('')
     return (
         <div style={{
-            width: w > 767 ? "55px" : "45px", height: w > 767 ? "55px" : "45px",
+            width: w > 979 ? "55px" : "45px", height: w > 979 ? "55px" : "45px",
         }}
         >
 
@@ -135,7 +135,7 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
                 >
                     <div
                         style={{
-                            width: w > 767 ? "47px" : "38px", height: w > 767 ? "47px" : "38px",
+                            width: w > 979 ? "47px" : "38px", height: w > 979 ? "47px" : "38px",
                             border: "1px solid #160133",
                             borderRadius: "50%",
                         }}
