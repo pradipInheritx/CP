@@ -2484,6 +2484,7 @@ if (search) {
   console.log("endDateTime>>>",endDateTime)
 
   const parsedFilterFields = JSON.parse(filterFields);
+  console.log("parsedFilterFields",parsedFilterFields)
 
          let getAllUsersData = (
           await admin
