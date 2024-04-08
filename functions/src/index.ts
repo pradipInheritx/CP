@@ -2491,6 +2491,8 @@ if (search) {
           await admin
             .firestore()
             .collection("userStatistics")
+            .offset((page - 1) * limit)
+            .limit(limit)
             .get()
         ).docs.map((user) => user.data());
 
