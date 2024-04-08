@@ -73,7 +73,7 @@ export const callbackFromServer = async (req: any, res: any) => {
       });
     } else {
       await firestore()
-        .collection("callbackHistory").add({ ...req.body.order, callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
+        .collection("callbackHistory").add({ ...req.body.order, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -572,7 +572,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     console.log("requestBody--------->", requestBody)
     const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && transaction.callbackDetails.status === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED);
+    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED);
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
     if (!getTransactionFromAcme) {
       return {
