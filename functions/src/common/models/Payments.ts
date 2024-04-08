@@ -572,7 +572,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     console.log("requestBody--------->", requestBody)
     const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId);
+    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && transaction.callbackDetails.status === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED);
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
     if (!getTransactionFromAcme) {
       return {
