@@ -106,11 +106,12 @@ const Item = ({userType}: { userType: UserTypeProps }) => {
       <H2>TOP {userType.name.toUpperCase()}S</H2>
       <Leaderboard
         {...{
-          leaders: leaders.filter((leader) => {
+          // @ts-ignore
+          leaders: leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore))?.filter((leader) => {
             return (
               leader.status?.toLowerCase() === userType.name.toLowerCase()
-            );
-          })?.slice(0,3),
+            );            
+          })?.slice(0, 3),
           userInfo,
           setChecked: setChecked(leaders, user),
         }}
