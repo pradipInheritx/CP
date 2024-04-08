@@ -1,16 +1,20 @@
-import { fetchError, fetchStart, fetchSuccess } from '../../../redux/actions';
-import { setAuthUser, setForgetPassMailSent, updateLoadUser } from '../../../redux/actions/Auth';
-import React from 'react';
-import axios from './config';
+import { fetchError, fetchStart, fetchSuccess } from "../../../redux/actions";
+import {
+  setAuthUser,
+  setForgetPassMailSent,
+  updateLoadUser
+} from "../../../redux/actions/Auth";
+import React from "react";
+import axios from "./config";
 
-const localToken = localStorage.getItem('token');
+const localToken = localStorage.getItem("token");
 
 const JWTAuth = {
-  onRegister: (userDetail,callbackFun) => {
+  onRegister: (userDetail, callbackFun) => {
     return dispatch => {
       dispatch(fetchStart());
       axios
-        .post('auth/createAdminUser', {
+        .post("auth/createAdminUser", {
           ...userDetail
         })
         .then(({ data }) => {
@@ -36,26 +40,28 @@ const JWTAuth = {
       try {
         dispatch(fetchStart());
         axios
-          .post('auth/login', {
+          .post("auth/login", {
             email: email,
-            password: password,
+            password: password
           })
           .then(({ data }) => {
-            console.log(data,"allData")
             if (data.result) {
-              localStorage.setItem('token', data.result.authTokens[data.result.authTokens.length-1].token);
-              localStorage.setItem('userData', JSON.stringify(data.result));                 
-              axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.result.authTokens[data.result.authTokens.length-1].token;
-              dispatch(fetchSuccess());              
+              localStorage.setItem(
+                "token",
+                data.result.authTokens[data.result.authTokens.length - 1].token
+              );
+              localStorage.setItem("userData", JSON.stringify(data.result));
+              axios.defaults.headers.common["Authorization"] =
+                "Bearer " +
+                data.result.authTokens[data.result.authTokens.length - 1].token;
+              dispatch(fetchSuccess());
               dispatch(JWTAuth.getAuthUser(true, data.result.refreshToken));
             } else {
-              
               dispatch(fetchError(data.message));
             }
           })
-          .catch(function ( error) {                  
-            dispatch(fetchError(error.message));
-            // dispatch(fetchError(error.message));
+          .catch(error => {
+            dispatch(fetchError(error.response.data.message));
           });
       } catch (error) {
         dispatch(fetchError(error.message));
@@ -64,15 +70,15 @@ const JWTAuth = {
   },
   onLogout: () => {
     return dispatch => {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
+      axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
       dispatch(fetchStart());
       axios
-        .post('auth/logout')
+        .post("auth/logout")
         .then(({ data }) => {
           if (data) {
             dispatch(fetchSuccess());
-            localStorage.removeItem('token');
-            localStorage.removeItem('userData');
+            localStorage.removeItem("token");
+            localStorage.removeItem("userData");
             dispatch(setAuthUser(null));
           } else {
             dispatch(fetchError(data.error));
@@ -86,18 +92,16 @@ const JWTAuth = {
 
   getAuthUser: (loaded = false, token) => {
     return dispatch => {
-      
       if (!token) {
         // const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
+        axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
       }
       dispatch(fetchStart());
       dispatch(updateLoadUser(loaded));
-      const authToken = JSON.parse(localStorage.getItem('userData'));
-      // console.log(authToken,"authToken")
+      const authToken = JSON.parse(localStorage.getItem("userData"));
       axios
-        .post('auth/getAuthToken', {
-          refreshToken:authToken?.refreshToken
+        .post("auth/getAuthToken", {
+          refreshToken: authToken?.refreshToken
         })
         .then(({ data }) => {
           if (data.result) {
@@ -113,15 +117,15 @@ const JWTAuth = {
     };
   },
 
-  onForgotPassword: (email) => {
+  onForgotPassword: email => {
     return dispatch => {
       dispatch(fetchStart());
-    axios.post('auth/forgot-password',{email:email})
+      axios
+        .post("auth/forgot-password", { email: email })
         .then(({ data }) => {
           if (data) {
             dispatch(setForgetPassMailSent(true));
             dispatch(fetchSuccess(data.message));
-
           } else {
             dispatch(fetchError(data.error));
           }
@@ -137,16 +141,16 @@ const JWTAuth = {
     };
   },
 
-  onResetPassword: (data,callbackFun) => {
+  onResetPassword: (data, callbackFun) => {
     return dispatch => {
       dispatch(fetchStart());
-    axios.post('auth/reset-password',{...data})
+      axios
+        .post("auth/reset-password", { ...data })
         .then(({ data }) => {
           if (data) {
             dispatch(setForgetPassMailSent(true));
             dispatch(fetchSuccess(data.message));
             if (callbackFun) callbackFun();
-
           } else {
             dispatch(fetchError(data.error));
           }
@@ -163,7 +167,7 @@ const JWTAuth = {
   },
   getSocialMediaIcons: () => {
     return <React.Fragment> </React.Fragment>;
-  },
+  }
 };
 
 export default JWTAuth;

@@ -56,7 +56,7 @@ const Routes = () => {
   } else if (
     !authUser &&
     location.pathname !== "/signin" &&
-    location.pathname !== "/signup" &&
+    // location.pathname !== "/signup" &&
     location.pathname !== "/forgot-password" &&
     location.pathname !== "/reset-password"
   ) {
@@ -83,14 +83,14 @@ const Routes = () => {
         <RestrictedRoute path="/calendar" component={Calendar} />
         {/* <RestrictedRoute path="/users" component={UsersModule} /> */}
         <Route path="/signin" component={Login} />
-        <Route path="/signup" component={Signup} />
+        {/* <Route path="/signup" component={Signup} /> */}
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
         {/*<Route path="/layout-builder" component={LayoutBuilder} />*/}
       </Switch>
 
       {location.pathname !== "/signin" &&
-        location.pathname !== "/signup" &&
+        // location.pathname !== "/signup" &&
         location.pathname !== "/forgot-password" &&
         location.pathname !== "/reset-password" && <TourGuide />}
     </React.Fragment>

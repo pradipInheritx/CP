@@ -1,6 +1,10 @@
-import { fetchError, fetchStart, fetchSuccess } from '../../../redux/actions';
-import { setAuthUser, setForgetPassMailSent, updateLoadUser } from '../../../redux/actions/Auth';
-import React from 'react';
+import { fetchError, fetchStart, fetchSuccess } from "../../../redux/actions";
+import {
+  setAuthUser,
+  setForgetPassMailSent,
+  updateLoadUser
+} from "../../../redux/actions/Auth";
+import React from "react";
 
 const BasicAuth = {
   onRegister: ({ name, email, password }) => {
@@ -10,7 +14,7 @@ const BasicAuth = {
       setTimeout(() => {
         dispatch(fetchSuccess());
         const user = { name: name, email: email, password: password };
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
         dispatch(setAuthUser(user));
       }, 300);
     };
@@ -22,12 +26,13 @@ const BasicAuth = {
         dispatch(fetchStart());
 
         setTimeout(() => {
-          const user = { name: 'Admin', email: email, password: password };
+          const user = { name: "Admin", email: email, password: password };
           dispatch(fetchSuccess());
-          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem("user", JSON.stringify(user));
           dispatch(setAuthUser(user));
         }, 300);
       } catch (error) {
+        console.log("onLogin AAAAAAAAAA", error);
         dispatch(fetchError(error.message));
       }
     };
@@ -38,7 +43,7 @@ const BasicAuth = {
 
       setTimeout(() => {
         dispatch(fetchSuccess());
-        localStorage.removeItem('user');
+        localStorage.removeItem("user");
         dispatch(setAuthUser(null));
       }, 300);
     };
@@ -51,7 +56,7 @@ const BasicAuth = {
 
       setTimeout(() => {
         dispatch(fetchSuccess());
-        dispatch(setAuthUser(JSON.parse(localStorage.getItem('user'))));
+        dispatch(setAuthUser(JSON.parse(localStorage.getItem("user"))));
       }, 300);
     };
   },
@@ -68,7 +73,7 @@ const BasicAuth = {
   },
   getSocialMediaIcons: () => {
     return <React.Fragment> </React.Fragment>;
-  },
+  }
 };
 
 export default BasicAuth;

@@ -1,24 +1,34 @@
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import { setAuthUser, setForgetPassMailSent, updateLoadUser } from '../../../redux/actions/Auth';
-import { Box } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDispatch } from 'react-redux';
-import { auth, facebookAuthProvider, githubAuthProvider, googleAuthProvider, twitterAuthProvider } from './config';
-import { fetchError, fetchStart, fetchSuccess } from '../../../redux/actions';
+import React from "react";
+import IconButton from "@material-ui/core/IconButton";
+import FacebookIcon from "@material-ui/icons/Facebook";
+import TwitterIcon from "@material-ui/icons/Twitter";
+import GitHubIcon from "@material-ui/icons/GitHub";
+import {
+  setAuthUser,
+  setForgetPassMailSent,
+  updateLoadUser
+} from "../../../redux/actions/Auth";
+import { Box } from "@material-ui/core";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useDispatch } from "react-redux";
+import {
+  auth,
+  facebookAuthProvider,
+  githubAuthProvider,
+  googleAuthProvider,
+  twitterAuthProvider
+} from "./config";
+import { fetchError, fetchStart, fetchSuccess } from "../../../redux/actions";
 
 const useStyles = makeStyles(theme => ({
   iconBtn: {
-    '&:hover, &:focus': {
-      color: theme.palette.primary.main,
+    "&:hover, &:focus": {
+      color: theme.palette.primary.main
     },
-    [theme.breakpoints.down('xs')]: {
-      padding: 6,
-    },
-  },
+    [theme.breakpoints.down("xs")]: {
+      padding: 6
+    }
+  }
 }));
 
 const SocialMediaIcons = () => {
@@ -142,9 +152,11 @@ const Firebase = {
             dispatch(setAuthUser(data));
           })
           .catch(error => {
+            console.log("onLogin AAAAAAAAAA", error);
             dispatch(fetchError(error.message));
           });
       } catch (error) {
+        console.log("onLogin BBBBBBBBBb", error);
         dispatch(fetchError(error.message));
       }
     };
@@ -183,8 +195,8 @@ const Firebase = {
                 displayName: authUser.displayName,
                 email: authUser.email,
                 photoURL: authUser.photoURL,
-                token: authUser.refreshToken,
-              }),
+                token: authUser.refreshToken
+              })
             );
           } else {
             dispatch(updateLoadUser(true));
@@ -218,7 +230,7 @@ const Firebase = {
         <SocialMediaIcons />
       </Box>
     );
-  },
+  }
 };
 
 export default Firebase;

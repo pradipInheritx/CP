@@ -1,106 +1,129 @@
-import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import IntlMessages from '../../../utils/IntlMessages';
-import { useDispatch } from 'react-redux';
-import Button from '@material-ui/core/Button';
-import { Box } from '@material-ui/core';
-import { AuhMethods } from '../../../../services/auth';
-import ContentLoader from '../../ContentLoader';
-import { alpha, makeStyles } from '@material-ui/core/styles';
-import CmtImage from '../../../../@coremat/CmtImage';
-import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import { CurrentAuthMethod } from '../../../constants/AppConstants';
-import { NavLink } from 'react-router-dom';
-import AuthWrapper from './AuthWrapper';
+import React, { useState } from "react";
+import TextField from "@material-ui/core/TextField";
+import IntlMessages from "../../../utils/IntlMessages";
+import { useDispatch } from "react-redux";
+import Button from "@material-ui/core/Button";
+import { Box } from "@material-ui/core";
+import { AuhMethods } from "../../../../services/auth";
+import ContentLoader from "../../ContentLoader";
+import { alpha, makeStyles } from "@material-ui/core/styles";
+import CmtImage from "../../../../@coremat/CmtImage";
+import Typography from "@material-ui/core/Typography";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import { CurrentAuthMethod } from "../../../constants/AppConstants";
+import { NavLink } from "react-router-dom";
+import AuthWrapper from "./AuthWrapper";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 const useStyles = makeStyles(theme => ({
   authThumb: {
     backgroundColor: alpha(theme.palette.primary.main, 0.12),
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '50%',
-      order: 2,
-    },
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "50%",
+      order: 2
+    }
   },
   authContent: {
     padding: 30,
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: props => (props.variant === 'default' ? '50%' : '100%'),
-      order: 1,
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: props => (props.variant === "default" ? "50%" : "100%"),
+      order: 1
     },
-    [theme.breakpoints.up('xl')]: {
-      padding: 50,
-    },
+    [theme.breakpoints.up("xl")]: {
+      padding: 50
+    }
   },
   textCenter: {
     display: "flex",
-    justifyContent:"center"
+    justifyContent: "center"
   },
   titleRoot: {
     marginBottom: 14,
-    color: theme.palette.text.primary,
+    color: theme.palette.text.primary
   },
   heading: {
-    marginBottom: 14,    
-    fontSize:"25px",    
-    color: "#3f51b5",
+    marginBottom: 14,
+    fontSize: "25px",
+    color: "#3f51b5"
   },
   textFieldRoot: {
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: alpha(theme.palette.common.dark, 0.12),
-    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: alpha(theme.palette.common.dark, 0.12)
+    }
   },
   formcontrolLabelRoot: {
-    '& .MuiFormControlLabel-label': {
-      [theme.breakpoints.down('xs')]: {
-        fontSize: 12,
-      },
-    },
-  },
+    "& .MuiFormControlLabel-label": {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 12
+      }
+    }
+  }
 }));
-//variant = 'default', 'standard'
-const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+const SignIn = ({
+  method = CurrentAuthMethod,
+  variant = "default",
+  wrapperVariant = "default"
+}) => {
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
 
-  const onSubmit = () => {
-    dispatch(AuhMethods[method].onLogin({ email, password }));
-  };
+  const validationSchema = yup.object({
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Invalid email format")
+      .trim(),
+    password: yup.string().required("Password is required")
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: ""
+    },
+    validationSchema: validationSchema,
+    onSubmit: values => {
+      dispatch(AuhMethods[method].onLogin(values));
+    }
+  });
 
   return (
     <AuthWrapper variant={wrapperVariant}>
-      {variant === 'default' ? (
+      {variant === "default" ? (
         <Box className={classes.authThumb}>
-          <CmtImage src={'/images/auth/login-img.png'} />
+          <CmtImage src={"/images/auth/login-img.png"} />
         </Box>
       ) : null}
       <Box className={classes.authContent}>
         <Box mb={7} className={classes.textCenter}>
-          {/* <CmtImage src={'/images/logo.png'} /> */}
           <strong className={classes.heading}>Coin Parliament</strong>
         </Box>
         <Typography component="div" variant="h1" className={classes.titleRoot}>
           Login
         </Typography>
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <Box mb={2}>
             <TextField
               label={<IntlMessages id="appModule.email" />}
               fullWidth
-              onChange={event => setEmail(event.target.value)}
-              defaultValue={email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              name="email"
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
             />
           </Box>
           <Box mb={2}>
@@ -108,14 +131,23 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
               type="password"
               label={<IntlMessages id="appModule.password" />}
               fullWidth
-              onChange={event => setPassword(event.target.value)}
-              defaultValue={password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              name="password"
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
           </Box>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={5}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={5}
+          >
             <FormControlLabel
               className={classes.formcontrolLabelRoot}
               control={<Checkbox name="checkedA" />}
@@ -128,16 +160,21 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
             </Box>
           </Box>
 
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={5}>
-            <Button onClick={onSubmit} variant="contained" color="primary">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={5}
+          >
+            <Button type="submit" variant="contained" color="primary">
               <IntlMessages id="appModule.signIn" />
             </Button>
 
-            <Box component="p" fontSize={{ xs: 12, sm: 16 }}>
+            {/* <Box component="p" fontSize={{ xs: 12, sm: 16 }}>
               <NavLink to="/signup">
                 <IntlMessages id="signIn.signUp" />
               </NavLink>
-            </Box>
+            </Box> */}
           </Box>
         </form>
 

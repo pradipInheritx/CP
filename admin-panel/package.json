@@ -26,6 +26,7 @@
     "draftjs-to-html": "^0.9.1",
     "emoji-picker-react": "^3.2.1",
     "firebase": "^7.18.0",
+    "formik": "^2.4.5",
     "history": "^4.10.1",
     "jss": "^10.2.0",
     "jss-rtl": "^0.3.0",
@@ -81,7 +82,8 @@
     "styled-components": "^5.1.1",
     "sweetalert2": "^9.17.1",
     "sweetalert2-react-content": "^3.0.3",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -96,7 +98,11 @@
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [ ">0.2%", "not dead", "not op_mini all" ],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "ie 11",
       "last 1 chrome version",
@@ -128,7 +134,11 @@
     }
   },
   "lint-staged": {
-    "*.+(js|jsx)": [ "eslint --fix" ],
-    "*.+(js|jsx|json|css|md)": [ "prettier --write" ]
+    "*.+(js|jsx)": [
+      "eslint --fix"
+    ],
+    "*.+(js|jsx|json|css|md)": [
+      "prettier --write"
+    ]
   }
 }
