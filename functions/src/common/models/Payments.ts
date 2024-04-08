@@ -639,29 +639,12 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
   try {
     //Stage ---> const url = 'https://acme-stage.fly.dev/operations/dev/intent/create-pay-intent';
     //Stage ----> Key const apiKey = 'STAGE.RA7FESQ-B3MUBMI-TASJBXY-I4ZMYRA';
-    let contractAddress = "";
     const url = parentConst.PAYMENT_WEBHOOK_URL_PROD
     const apiKey = parentConst.PAYMENT_WEBHOOK_API_KEY
 
-    if (req.body.coin && req.body.coin === parentConst.PAYMENT_COIN_MATIC && req.body.chainId === parentConst.ACME_CHAINID_MATIC) {
-      contractAddress = parentConst.ACME_PAYMENT_MATIC_CONTRACT_ADDRESS
-    } else if (req.body.coin && req.body.coin === parentConst.PAYMENT_COIN_BSC && req.body.chainId === parentConst.ACME_CHAINID_BSC) {
-      // TODO For BSC Contract Address
-    } else if (req.body.coin && req.body.coin === parentConst.PAYMENT_COIN_ETH) {
-      // TODO For ETH Contract Address & Update the chainId
-    }
-
-    if (contractAddress === "") {
-      res.status(200).send({
-        status: false,
-        message: `Contract Address Is Not Found For ${req.body.coin}`,
-        redirectUrl: ""
-      });
-    }
-
     const data = {
-      contractAddress: contractAddress,
-      to: parentConst.ACME_CONTRACT_TO_ADRESS,
+      contractAddress: req.body.contractAddress,
+      to: req.body.to,
       chainId: req.body.chainId,
       amount: req.body.amount,
       intentLimit: req.body.intentLimit ? req.body.intentLimit : 0
