@@ -59,7 +59,7 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         allUserData: action.payload.data,
-        totalCount: action.payload.total
+        totalCount: action.payload.totalCount
       };
     }
     default:

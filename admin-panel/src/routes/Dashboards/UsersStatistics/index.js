@@ -43,6 +43,7 @@ const UsersModule = () => {
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
+  const [filter, setFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -54,7 +55,8 @@ const UsersModule = () => {
         limit: rowsPerPage,
         search: debouncedSearchTerm,
         orderBy: orderBy,
-        sort: order
+        sort: order,
+        ...filter
       }
     };
     dispatch(
@@ -66,6 +68,7 @@ const UsersModule = () => {
   }, [
     dispatch,
     filterOptions,
+    filter,
     debouncedSearchTerm,
     page,
     order,
@@ -164,6 +167,8 @@ const UsersModule = () => {
           setFilterOptions={setFilterOptions}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          setFilter={setFilter}
+          filter={filter}
         />
         <TableContainer className={classes.container}>
           <Table
