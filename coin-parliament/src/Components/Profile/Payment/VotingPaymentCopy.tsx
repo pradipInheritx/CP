@@ -779,15 +779,17 @@ const VotingPaymentCopy: React.FC<{
       const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
       // console.log(coinInfo,"coinInfoUSDT ERC20")
-      // @ts-ignore
-      const accounts = await window.ethereum.enable()
-      console.log(accounts, "allaccounts")
-      
-      if (accounts <= 0) {
-        return setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Please connect again with your wallet after try again." })
-      }
+      // @ts-ignore      
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
+        await provider.send('eth_requestAccounts', []).then(response => {
+          console.log(response, "response")
+          if (response.length == 0) {
+            setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Get some connecting issue please try again." })
+          }
+        }).catch(error => {
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Get some connecting issue please try again." })                    
+        });
         const wallet = provider.getSigner();
 
         if (coinInfo?.currency == "USDT ERC20") {
@@ -853,7 +855,7 @@ const VotingPaymentCopy: React.FC<{
           setPaymentStatus({ type: "error", message: "Nonce too low or already used. Please try again later." });
         }
         else if (error.code === "UNSUPPORTED_OPERATION") {
-          setPaymentStatus({ type: "error", message: "Unsupported operation. This feature is not supported in your current environment." });
+          setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Get some connecting issue please try again." });
         }          
         else if (error.code === "INVALID_VALUE") {
           setPaymentStatus({ type: "error", message: "Invalid transaction value. Please provide a valid value for the transaction." });
