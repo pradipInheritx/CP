@@ -1012,12 +1012,12 @@ function App() {
     ws.onclose = async (event: any) => {
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);   
-      throttleReconnectWebSocket()
+      throttleReconnectWebSocket(event)
     };
     ws.onerror = (event: any) => {  
       setSocketConnect(false);      
       console.log('WebSocket connection occurred',event);
-      throttleReconnectWebSocket()      
+      throttleReconnectWebSocket(event)      
     };      
   }    
 
@@ -1113,13 +1113,13 @@ function App() {
 
   let reconnectTimeout:any;  
   
-  async function throttleReconnectWebSocket() {
+  async function throttleReconnectWebSocket(event:any) {
     // If there's already a reconnect attempt scheduled, do nothing
     if (reconnectTimeout) {
       return;
     }
 
-    console.log('Attempting to reconnect...');
+    console.log('Attempting to reconnect...', event);
 
     // Your reconnection logic goes here
 
@@ -1129,7 +1129,7 @@ function App() {
     if (!socketConnect) {      
       reconnectTimeout = setTimeout(() => {
         reconnectTimeout = null; // Reset the timeout after it's executed
-        throttleReconnectWebSocket(); // Trigger another reconnect attempt
+        throttleReconnectWebSocket(event); // Trigger another reconnect attempt
       }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
     }
   }
