@@ -292,11 +292,11 @@ const Boxdiv = styled.div`
 `;
 
 const FirstBoxdiv = styled.div`
-  width:${window.screen.width > 767 ? "48%" : "99%"};
-  border-radius:10px;
-  // opacity:0.8;
-  // background-color:#1e0243;
-  // padding :20px;
+// opacity:0.8;
+// background-color:#1e0243;
+// padding :20px;
+border-radius:10px;
+width:${window.screen.width > 767 ? "48%" : "99%"};
   display:flex;  
   flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}  
 `;
@@ -460,25 +460,25 @@ const VotingPaymentCopy: React.FC<{
     const { width } = useWindowSize();
     const [isLoading, setIsLoading] = useState(false)
     const [coinsList, setCoinsList] = useState(mainnet)
-    const [extraCoinsList, setExtraCoinsList] = useState([
+    const [extraCoinsList, setExtraCoinsList] = useState([      
       {
-        chainId: 8086,
-        name: '',
-        currency: 'BTC',
-        Img: btc,
-        ColorImg: btcColor,
+        chainId: "USDT3",
+        name: 'Polygon',
+        currency: 'USDT',
+        Img: MATICSVG,
+        ColorImg: polygonColor,
       },
       {
-        chainId: "USDT",
-        name: 'ERC20',
+        chainId: "USDT1",
+        name: 'Ethereum',
         currency: 'USDT',
         Img: USDT,
         ColorImg: USDTColor,
       },
       {
-        chainId: "USDC",
-        name: '',
-        currency: 'USDC',
+        chainId: "USDT2",
+        name: 'Bsc',
+        currency: 'USDT',
         Img: usdc,
         ColorImg: usdcColor,
       },
@@ -817,7 +817,9 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false);
 
         if (errorCodeGet == -32603) {
-          setPaymentStatus({ type: "error", message: error.data.error })
+          console.log("i am calling")
+          // setPaymentStatus({ type: "error", message: error.data.error })
+          setPaymentStatus({ type: "error", message: "Oops! It looks like there's not enough in your account. No worries – just top up to continue. We're here to help!" })
         }
         else if (errorCodeGet == "NETWORK_ERROR") {
           setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again." })
@@ -919,13 +921,13 @@ const VotingPaymentCopy: React.FC<{
         email: userInfo?.email,
         // amount: `${payamount}`,
         amount:"5000000",
-        transactionType: payType,
+        transactionType: `${payType}`,
         numberOfVotes: extraVote,
         timestamp: (new Date().getTime()).toString(),                
         chainId: "137",        
         to: "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",        
         contractAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-        intentLimit: 0
+        // intentLimit: 0
       }
 
       console.log(data, "datacehck")
@@ -1115,7 +1117,7 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               {showPayButoom == false ? <Opctiondiv className="">
-                <div className="justify-content-between d-flex flex-wrap"
+                <div className="justify-content-between d-flex flex-wrap flex-column"
                   style={{
                     border: "1px solid",
                     borderRadius: "10px",
@@ -1213,8 +1215,10 @@ const VotingPaymentCopy: React.FC<{
                         </div>
                       </div>
                     })}
-                  </div>
+                    
+                  </div>                  
                 </div>
+                
                 {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
 
                   style={{
@@ -1698,9 +1702,7 @@ const VotingPaymentCopy: React.FC<{
                   </>
                 }
               </Boxdiv>
-            }
-
-
+            }            
           </div>}
 
         <div>
