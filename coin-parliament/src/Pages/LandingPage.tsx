@@ -19,7 +19,7 @@ const LandingPage = () => {
 
 
     return (
-        <div className='vte-landing' style={{ backgroundColor: "white", height: "100vh" }}>
+        <div className='vte-landing' style={{ backgroundColor: "white", height: "100vh", position: 'fixed', top: '0px', left: '0px' }}>
             <div className='container'>
                 <div className='row'>
                     <div className='col-12 text-center p-2'>

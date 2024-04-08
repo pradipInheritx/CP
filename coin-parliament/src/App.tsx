@@ -824,8 +824,8 @@ useEffect(()=>{
                               padding: '0px 0px 0px 0px'
                             }}
                           >
-                            {!pathname.includes("HomePage") &&
-                            (sessionStorage.getItem("landing") == 'true') &&
+                            {
+                            // (window.screen.width < 767 ? sessionStorage.getItem("landing") == 'true': "false") &&
                             // landing === "true" &&
                             <Header
                             setMfaLogin={setMfaLogin}
