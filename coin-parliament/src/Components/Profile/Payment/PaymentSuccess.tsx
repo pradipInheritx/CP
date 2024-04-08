@@ -49,7 +49,8 @@ const PaymentSuccess: React.FC<{ paymentSuccessAction: () => void, message?: str
                     padding: '0'
                 }}>
                     {/* {message} */}
-                    You get {AllInfo[2]} Votes
+                    {/* You get {AllInfo[2]} Votes */}
+                    Well done! Your vote purchase unlocks more opportunities for you. 🎉 Now you can vote more and earn more!
                 </div>}
                 {AllInfo[1] == "UPGRADE" && <div style={{
                     fontSize: '1.125em',
@@ -60,7 +61,8 @@ const PaymentSuccess: React.FC<{ paymentSuccessAction: () => void, message?: str
                     padding: '0'
                 }}>
                     {/* {message} */}
-                    You get {AllInfo[2]} Votes and 500 VTE
+                    {/* You get {AllInfo[2]} Votes and 500 VTE */}
+                    Awesome! Your account upgrade is a big step forward. 🚀 Let's explore the perks together!
                 </div>}
                 <div style={{
                     fontSize: '1.125em',

@@ -63,8 +63,7 @@ const Leaderboard = ({
   const pathname = location.pathname;
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
-  const navigate = useNavigate();
-
+  const navigate = useNavigate();  
   // @ts-ignore
   const myUserIndex = userInfo?.uid && leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore)).findIndex(obj => obj.userId === userInfo?.uid) || 0;  
   const EndIndex = 10;
@@ -138,7 +137,7 @@ const Leaderboard = ({
         </>}
 
         {
-          leaders.length > EndIndex && <>
+          pathname?.includes("/influencers") && leaders?.length > EndIndex &&<>
             <ViewALL
               onClick={() => {
                 navigate(`/influencers/${leaders[0]?.status}`)

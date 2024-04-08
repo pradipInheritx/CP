@@ -3,7 +3,7 @@
 import StatusNav from "./StatusNav";
 import Leaderboard from "../Leaderboard";
 import { UserProps } from "../../common/models/User";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { UserTypeProps } from "../../common/models/UserType";
 import { Leader } from "../../Contexts/CoinsContext";
 
@@ -24,10 +24,25 @@ const InfluencersComponent = ({
   userInfo,
   setChecked,
 }: InfluencersComponentProps) => {
+  const scrollToTopRef = useRef<HTMLDivElement>(null);
+  const scrollToTop = () => {
+    console.log("scrollToTop working")
+    if (scrollToTopRef.current) {      
+      // Use type assertion to assert that scrollToTopRef.current is of type HTMLElement
+      (scrollToTopRef.current as HTMLElement).scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
 
+  useEffect(() => {
+    // Scroll to top when the component mounts
+    scrollToTop();
+  }, []); // Empty dependency array means this effect runs only once, on component mount
   return (
     <React.Fragment>
-      <div className='mb-4'>
+      <div className='mb-4' ref={scrollToTopRef}>
         <div className="d-flex justify-content-center my-2 px-2 text-center">
           <h5 className="">            
             <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Who doesn’t want to be heard?</strong>

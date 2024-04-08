@@ -292,11 +292,11 @@ const Boxdiv = styled.div`
 `;
 
 const FirstBoxdiv = styled.div`
-  width:${window.screen.width > 767 ? "48%" : "99%"};
-  border-radius:10px;
-  // opacity:0.8;
-  // background-color:#1e0243;
-  // padding :20px;
+// opacity:0.8;
+// background-color:#1e0243;
+// padding :20px;
+border-radius:10px;
+width:${window.screen.width > 767 ? "48%" : "99%"};
   display:flex;  
   flex-wrap:${window.screen.width > 767 ? "wrap" : "wrap"}  
 `;
@@ -460,25 +460,25 @@ const VotingPaymentCopy: React.FC<{
     const { width } = useWindowSize();
     const [isLoading, setIsLoading] = useState(false)
     const [coinsList, setCoinsList] = useState(mainnet)
-    const [extraCoinsList, setExtraCoinsList] = useState([
+    const [extraCoinsList, setExtraCoinsList] = useState([      
       {
-        chainId: 8086,
-        name: '',
-        currency: 'BTC',
-        Img: btc,
-        ColorImg: btcColor,
+        chainId: "USDT3",
+        name: 'Polygon',
+        currency: 'USDT',
+        Img: MATICSVG,
+        ColorImg: polygonColor,
       },
       {
-        chainId: "USDT",
-        name: 'ERC20',
+        chainId: "USDT1",
+        name: 'Ethereum',
         currency: 'USDT',
         Img: USDT,
         ColorImg: USDTColor,
       },
       {
-        chainId: "USDC",
-        name: '',
-        currency: 'USDC',
+        chainId: "USDT2",
+        name: 'Bsc',
+        currency: 'USDT',
         Img: usdc,
         ColorImg: usdcColor,
       },
@@ -565,27 +565,6 @@ const VotingPaymentCopy: React.FC<{
 
     console.log(selectCoin, "selectCoincheck")
 
-    // const getCoinList = async () => {
-    //   const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
-
-    //   try {
-    //     const snapshot = await getDoc(coinsDocRef);
-    //     const allList = snapshot.data()?.mainnet;
-    //     console.log(allList,"allList")
-    //     // const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
-    //     // setCoinsList(filterCoin || allList);
-    //     setCoinsList(allList);
-
-    //   } catch (error) {
-    //     console.log(error, "error");
-    //   }
-    // };
-
-    // useEffect(() => {      
-    //   // getCoinList()
-    // }, [])
-
-
     const handleClick = async () => {
       console.log("web function")
       window.scrollTo({ top: 50, behavior: 'smooth' });
@@ -610,9 +589,6 @@ const VotingPaymentCopy: React.FC<{
         }
       } else {
         open()
-        // switchNetwork(coinInfo.chainId)
-        // open({view:"Networks"})
-
         setTransactionInst(true)
       }
     };
@@ -778,8 +754,7 @@ const VotingPaymentCopy: React.FC<{
 
       const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
       console.log(amountInCrypto, "amountInCrypto")
-      // console.log(coinInfo,"coinInfoUSDT ERC20")
-      // @ts-ignore      
+      
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         await provider.send('eth_requestAccounts', []).then(response => {
@@ -791,7 +766,7 @@ const VotingPaymentCopy: React.FC<{
           setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Get some connecting issue please try again." })                    
         });
         const wallet = provider.getSigner();
-
+        const toAddress = coinInfo?.chainId == 56 ? process.env.REACT_APP_BNB_ACCOUNT_KEY : coinInfo?.chainId == 137 ? process.env.REACT_APP_MATIC_ACCOUNT_KEY : process.env.REACT_APP_ETH_ACCOUNT_KEY;
         if (coinInfo?.currency == "USDT ERC20") {
 
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
@@ -820,7 +795,7 @@ const VotingPaymentCopy: React.FC<{
         else {
           const transaction = {
             chainId: coinInfo?.chainId,
-            to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
+            to: toAddress,
             value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
@@ -842,7 +817,9 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false);
 
         if (errorCodeGet == -32603) {
-          setPaymentStatus({ type: "error", message: error.data.error })
+          console.log("i am calling")
+          // setPaymentStatus({ type: "error", message: error.data.error })
+          setPaymentStatus({ type: "error", message: "Oops! It looks like there's not enough in your account. No worries – just top up to continue. We're here to help!" })
         }
         else if (errorCodeGet == "NETWORK_ERROR") {
           setPaymentStatus({ type: "error", message: "We apologize for the inconvenience. This is some network error please try again." })
@@ -942,18 +919,17 @@ const VotingPaymentCopy: React.FC<{
       const data = {
         userId: userInfo?.uid,
         email: userInfo?.email,
-        amount: `${payamount}`,
-        transactionType: payType,
+        // amount: `${payamount}`,
+        amount:"5000000",
+        transactionType: `${payType}`,
         numberOfVotes: extraVote,
         timestamp: (new Date().getTime()).toString(),                
-        chainId: "56",
-        // to: "0xa546feEFDbA6ED2E22FE08715d13E4342db3Bb57",
-        to: "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",
-        // contractAddress: "0x967aad5216d89623729AC892E6a20977bf510cFa",
-        contractAddress: "0x55d398326f99059fF775485246999027B3197955",
-        intentLimit: 1
-
+        chainId: "137",        
+        to: "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",        
+        contractAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+        // intentLimit: 0
       }
+
       console.log(data, "datacehck")
       const headers = {
         "accept": "application/json",
@@ -1141,7 +1117,7 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               {showPayButoom == false ? <Opctiondiv className="">
-                <div className="justify-content-between d-flex flex-wrap"
+                <div className="justify-content-between d-flex flex-wrap flex-column"
                   style={{
                     border: "1px solid",
                     borderRadius: "10px",
@@ -1222,7 +1198,7 @@ const VotingPaymentCopy: React.FC<{
                             marginRight: "8px"
                           }}
                         />
-                        <div className="d-flex flex-wrap">
+                        <div className="d-flex flex-column">
                           <span className="ml-2"
                             style={{
                               cursor: "not-allowed"
@@ -1239,8 +1215,10 @@ const VotingPaymentCopy: React.FC<{
                         </div>
                       </div>
                     })}
-                  </div>
+                    
+                  </div>                  
                 </div>
+                
                 {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
 
                   style={{
@@ -1724,9 +1702,7 @@ const VotingPaymentCopy: React.FC<{
                   </>
                 }
               </Boxdiv>
-            }
-
-
+            }            
           </div>}
 
         <div>
