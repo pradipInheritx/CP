@@ -206,7 +206,7 @@ const UpgradePageCopy = () => {
           backgroundSize:`${window.screen.width > 767 ? "100% 100%" : "100%"}`,
           // backgroundSize: "cover",
           backgroundAttachment: "fixed",   
-          // height: "75vh",
+          minHeight: "80vh",
           // overflow:"scroll"
           overflow:"hidden"
         }}
@@ -265,7 +265,7 @@ const UpgradePageCopy = () => {
             Now you can<strong> enjoy the benefits</strong>  of being a miner.
           </P>}
 
-          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5 upgrade_content`}>
+          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5 upgrade_content mb-4`}>
 
             <div className="upgrade_side" style={{
               width:`${window.screen.width >767 ? "35%" :"45%"} `,
@@ -321,7 +321,7 @@ const UpgradePageCopy = () => {
             >
               <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
                 style={{
-                marginLeft:"35px"
+                marginLeft:"0px", maxWidth: "100%",
               }}
               />
             </div>}
