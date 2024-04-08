@@ -470,6 +470,27 @@ const VotingPaymentCopy: React.FC<{
       },
       {
         chainId: "USDT",
+        name: 'Ethereum',
+        currency: 'USDT',
+        Img: ETHsvg,
+        ColorImg: ETHColor,
+      },
+      {
+        chainId: "USDT",
+        name: 'Polygon',
+        currency: 'USDT',
+        Img: MATICSVG,
+        ColorImg: polygonColor,
+      },
+      {
+        chainId: "USDT",
+        name: 'Bsc',
+        currency: 'USDT',
+        Img: BNBsvg,
+        ColorImg: bnbColor,
+      },
+      {
+        chainId: "USDT",
         name: 'ERC20',
         currency: 'USDT',
         Img: USDT,
