@@ -660,7 +660,7 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
     }
 
     const data = {
-      contractAddress: req.body.contractAddress,
+      contractAddress: contractAddress,
       to: parentConst.ACME_CONTRACT_TO_ADRESS,
       chainId: req.body.chainId,
       amount: req.body.amount,
