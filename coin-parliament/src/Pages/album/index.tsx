@@ -20,6 +20,7 @@ import { divideArray, divideArray1 } from "common/utils/helper";
 import SetsScreen from "Pages/SetsScreen";
 import { firestore } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import NftLodding from "Pages/NftLodding";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -721,30 +722,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
             </div>
-            {isLoading && collectionType !== "" &&<div style={{
-                position: 'fixed',
-                height: '68%',
-                display: 'flex',
-                textAlign: 'center',
-                justifyContent: 'center',
-                // top: '0px',
-                right: '0px',
-                bottom: '0px',
-                zIndex: '9999',
-                overflow: 'hidden',
-                width: '100%',
-                alignItems: 'center',
-
-            }}>
-                <span className="loading" style={{
-                    color: "#7767f7", zIndex: "2220px", fontSize: '1.5em',
-                    // marginTop: `${window.screen.width > 767 ? "50px" : "240px"}`
-                }}
-                
-                >
-                    {texts.waitForIt}
-                </span>
-            </div>}
+            {isLoading && collectionType !== "" && <NftLodding />}
             {
                 collectionValue !== "none" && collectionSetValue == "none" && collectionCardValue == "none" && collectionTypeValue == "all" && !displayMyCards && searchValue == "" &&  <>
                     <div className="w-100 d-flex">
