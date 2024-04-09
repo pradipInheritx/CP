@@ -21,7 +21,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 
     if (req.body.order && req.body.order.status.toUpperCase() === "COMPLETED") {
       await firestore()
-        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
+        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
 
       const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
         .where("intentId", "==", req.body.order.intentId)
@@ -37,9 +37,19 @@ export const callbackFromServer = async (req: any, res: any) => {
         let userId = getTempAcmeData[getTempAcmeData.length - 1].userId;
         requestBody = { userId, intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
       } else {
-
-        await firestore()
-          .collection("callbackHistory").add({ data: req.body, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", executionType: "EXTRA_INVOCATION", timestamp: Timestamp.now() });
+        try {
+          await firestore()
+            .collection("callbackHistory").add({
+              data: req.body.order,
+              event: req.body.order.status,
+              callbackFrom: "ACME_PAYMENT_MODE",
+              timestamp: Timestamp.now(),
+              additionalExecutionType: "EXTRA_INVOCATION" // Add your additional field here
+            });
+          console.log("Document added successfully in callback!");
+        } catch (error) {
+          console.error("Error while adding document on extra invocation:", error);
+        }
 
         return res.status(200).send({
           status: true,
@@ -60,9 +70,6 @@ export const callbackFromServer = async (req: any, res: any) => {
       }).catch((error: any) => {
         console.log("Error while delete from tempPaymentTransaction", error);
       });
-
-      await firestore()
-        .collection("callbackHistory").add({ data: req.body, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
 
       res.status(200).send({
         status: true,
@@ -596,9 +603,15 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     }
     await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).set({
       paymentDetails
-        : getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
+        : {
+        ...getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
+        hash: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash,
+        orderId: `ACME-${userId.slice(0, 4)}-${getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash.slice(0, 4)}`
+      },
       event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
       userId,
+      amount: initiatedTransactionDetails.amount,
+      dollarAmount: parseInt(initiatedTransactionDetails.amount) / 1000000,
       initiatedTransactionDetails,
       transactionType,
       numberOfVotes,
@@ -606,6 +619,8 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     }, { merge: true });
 
     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).get()).data();
+
+    console.info("Get Updated data", getUpdatedData);
 
     const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: Timestamp.now() });
 
