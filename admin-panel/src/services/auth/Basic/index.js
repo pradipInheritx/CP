@@ -32,7 +32,6 @@ const BasicAuth = {
           dispatch(setAuthUser(user));
         }, 300);
       } catch (error) {
-        console.log("onLogin AAAAAAAAAA", error);
         dispatch(fetchError(error.message));
       }
     };

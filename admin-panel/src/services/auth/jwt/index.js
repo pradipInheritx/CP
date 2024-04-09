@@ -131,7 +131,7 @@ const JWTAuth = {
           }
         })
         .catch(function(error) {
-          dispatch(fetchError(error.message));
+          dispatch(fetchError(error.response.data.message));
         });
 
       // setTimeout(() => {
@@ -156,7 +156,7 @@ const JWTAuth = {
           }
         })
         .catch(function(error) {
-          dispatch(fetchError(error.message));
+          dispatch(fetchError(error.response.data.message));
         });
 
       // setTimeout(() => {
