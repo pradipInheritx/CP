@@ -2632,15 +2632,31 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
   try {
     // Extract pagination parameters from request query
 
-    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "", startDate = "", endDate = "", filterFields = "" } = data;
+    let { 
+      page = 1, 
+      limit = 10, 
+      orderBy , 
+      sort = "asc", 
+      search = "", 
+      startDate = "", 
+      endDate = "", 
+      filterFields = "" 
+    } = data;
 
     limit = parseInt(limit);
-
+    if (!orderBy) orderBy = "userName";
     let orderByConsolidate = orderBy;
+    console.log("---orderByConsolidate: ",orderByConsolidate)
     let result: any;
 
     if (search) {
       console.log("----Cond 1----")
+
+      // const final = await admin.firestore()
+      //   .collection("userStatistics")
+      //   .limit(10)
+      //   .get();
+      // console.log("final: ",final.docs)
 
       result = await admin.firestore()
         .collection("userStatistics")
@@ -2713,7 +2729,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         .collection("userStatistics")
         .orderBy(orderByConsolidate, sort)
         .get();
-
+      // console.log("====>",result.docs);
       result = result.docs.map((doc:any) => {
         const userData = doc.data();
         console.log("userData", userData);
@@ -2751,6 +2767,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
     };
 
   } catch (error) {
+    console.error("User Statistics List",error);
     return {
       status: false,
       message: "Internal Server error",
