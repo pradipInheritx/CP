@@ -13,7 +13,10 @@ const useStyles = makeStyles(theme => ({
     maxHeight: "44rem"
   },
   table: {
-    minWidth: 750
+    minWidth: 750,
+    "& span": {
+      width: "max-content"
+    }
   },
   visuallyHidden: {
     border: 0,

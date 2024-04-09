@@ -6,6 +6,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import ClearIcon from "@material-ui/icons/Clear";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -181,7 +182,10 @@ const UserTableToolbar = ({
             />
             <div className={classes.chipsRoot}>
               {searchTerm && (
-                <Chip label={searchTerm} onDelete={onSearchChipDelete} />
+                // <Chip onDelete={onSearchChipDelete} />
+                <IconButton aria-label="delete" onClick={onSearchChipDelete}>
+                  <ClearIcon />
+                </IconButton>
               )}
               {filterOptionsList.map(
                 (option, index) =>
@@ -221,9 +225,7 @@ const UserTableToolbar = ({
                 ))}
               </RadioGroup>
               {filterTypeError && (
-                <span style={{ color: "red" }}>
-                  {"Please select filter by key"}
-                </span>
+                <span style={{ color: "red" }}>{"Please select filter"}</span>
               )}
 
               <MenuItem>

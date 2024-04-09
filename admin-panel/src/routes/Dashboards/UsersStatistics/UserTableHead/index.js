@@ -30,7 +30,7 @@ const headCells = [
     id: "TotalCPM",
     numeric: false,
     disablePadding: false,
-    label: "TotalCPM"
+    label: "TotalCMP"
   },
   {
     id: "totalVotes",
@@ -42,7 +42,7 @@ const headCells = [
     id: "noOfVotesDays",
     numeric: false,
     disablePadding: false,
-    label: "NoOf Votes Days"
+    label: "No Of Vote Days"
   },
   {
     id: "lastVoteDay",
@@ -113,11 +113,13 @@ function UserTableHead({
             align={headCell.numeric ? "right" : "center"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
+            // className={classes.headerWidth}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={onSortOrderChange(headCell.id)}
+              className={classes.headerWidth}
             >
               {headCell.label}
               {orderBy === headCell.id ? (

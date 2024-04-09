@@ -76,7 +76,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.userId}
+            {currentUserDetelis?.userId ? currentUserDetelis?.userId : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -87,7 +87,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.userName}
+            {currentUserDetelis?.userName ? currentUserDetelis?.userName : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -98,7 +98,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.email}
+            {currentUserDetelis?.email ? currentUserDetelis?.email : "-"}
           </Box>
         </Box>
 
@@ -110,7 +110,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.Country}
+            {currentUserDetelis?.Country ? currentUserDetelis?.Country : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -121,7 +121,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.GameTitle}
+            {currentUserDetelis?.GameTitle
+              ? currentUserDetelis?.GameTitle
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -132,7 +134,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.TotalCPM}
+            {currentUserDetelis?.TotalCPM ? currentUserDetelis?.TotalCPM : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
@@ -143,7 +145,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.lastVoteDay}
+            {currentUserDetelis?.lastVoteDay
+              ? currentUserDetelis?.lastVoteDay
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
@@ -154,7 +158,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.totalVotes}
+            {currentUserDetelis?.totalVotes
+              ? currentUserDetelis?.totalVotes
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -165,7 +171,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.averageVotes}
+            {currentUserDetelis?.averageVotes
+              ? currentUserDetelis?.averageVotes
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -176,7 +184,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.noOfVotesDays}
+            {currentUserDetelis?.noOfVotesDays
+              ? currentUserDetelis?.noOfVotesDays
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -187,7 +197,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.extraVotePurchased}
+            {currentUserDetelis?.extraVotePurchased
+              ? currentUserDetelis?.extraVotePurchased
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -198,7 +210,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.TotalAmbassadorRewards}
+            {currentUserDetelis?.TotalAmbassadorRewards
+              ? currentUserDetelis?.TotalAmbassadorRewards
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -209,7 +223,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.accountUpgrade}
+            {currentUserDetelis?.accountUpgrade
+              ? currentUserDetelis?.accountUpgrade
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -220,7 +236,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.source}
+            {currentUserDetelis?.source ? currentUserDetelis?.source : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -231,7 +247,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.signUpTime}
+            {currentUserDetelis?.signUpTime
+              ? currentUserDetelis?.signUpTime
+              : "-"}
           </Box>
         </Box>
       </Box>
