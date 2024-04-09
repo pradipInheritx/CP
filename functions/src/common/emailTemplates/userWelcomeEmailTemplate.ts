@@ -20,22 +20,83 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
       <style>body,table,td { font-family: "Poppins", Arial, sans-serif; !important; }</style>
       <![endif]-->
    <style type="text/css">
-      body {margin: 0 !important;padding: 0 !important;-webkit-text-size-adjust: 100% !important;-ms-text-size-adjust: 100% !important;-webkit-font-smoothing: antialiased !important;font-family: "Poppins", Arial, sans-serif !important;}
-      img {border: 0 !important;outline: none !important;}
-      p {Margin: 0px !important;Padding: 0px !important;}
-      table {border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;}
-      td, a, span {border-collapse: collapse;mso-line-height-rule: exactly;}
-      .btn_site:hover {background-color: #0057E1 !important;border-color: #0057E1 !important;}
+      body {
+         margin: 0 !important;
+         padding: 0 !important;
+         -webkit-text-size-adjust: 100% !important;
+         -ms-text-size-adjust: 100% !important;
+         -webkit-font-smoothing: antialiased !important;
+         font-family: "Poppins", Arial, sans-serif !important;
+      }
+
+      img {
+         border: 0 !important;
+         outline: none !important;
+      }
+
+      p {
+         Margin: 0px !important;
+         Padding: 0px !important;
+      }
+
+      table {
+         border-collapse: collapse;
+         mso-table-lspace: 0px;
+         mso-table-rspace: 0px;
+      }
+
+      td,
+      a,
+      span {
+         border-collapse: collapse;
+         mso-line-height-rule: exactly;
+      }
+
+      .btn_site:hover {
+         background-color: #0057E1 !important;
+         border-color: #0057E1 !important;
+      }
 
       @media only screen and (max-width:600px) {
-         .inx_wrapper {width: 100% !important;}
-         .inx_side {padding-left: 15px !important;padding-right: 15px !important;}
-         .inx_img {width: 100% !important;height: auto !important;max-width: 100% !important;}
-         .inx_telegram_btn {width: 170px !important;height: auto !important;max-width: 100% !important;}
-         .inx_title {font-size: 18px !important;}
-         .inx_f14 {font-size: 14px !important;line-height: 18px !important;}
-         .inx_f12 {font-size: 12px !important;line-height: 16px !important;}
-         .btn_site:hover {background-color: #0057E1 !important;border-color: #0057E1 !important;}
+         .inx_wrapper {
+            width: 100% !important;
+         }
+
+         .inx_side {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+         }
+
+         .inx_img {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+         }
+
+         .inx_telegram_btn {
+            width: 170px !important;
+            height: auto !important;
+            max-width: 100% !important;
+         }
+
+         .inx_title {
+            font-size: 18px !important;
+         }
+
+         .inx_f14 {
+            font-size: 14px !important;
+            line-height: 18px !important;
+         }
+
+         .inx_f12 {
+            font-size: 12px !important;
+            line-height: 16px !important;
+         }
+
+         .btn_site:hover {
+            background-color: #0057E1 !important;
+            border-color: #0057E1 !important;
+         }
       }
    </style>
 </head>
@@ -74,8 +135,7 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                         <tr>
                            <td valign="top"
                               style="color: #0057E1;font-family: 'Poppins', Arial, sans-serif;font-size:20px;line-height: 26px;text-align: left;font-weight:bold;padding-bottom: 25px;"
-                              class="inx_title">
-                              Welcome to Vote To Earn – Unleash the Excitement of Web 3.0 Social Gaming!</td>
+                              class="inx_title">Welcome to VoteToEarn – Start Voting and Earning!</td>
                         </tr>
 
                         <tr>
@@ -88,27 +148,21 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                         <tr>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 25px;">
-                              Welcome to the VoteToEarn community! We're thrilled to have you join us on this exciting
-                              journey of voting and earning rewards. Allow us to introduce you to the incredible world
-                              of VoteToEarn – a pioneering WEB.3 social game where members mine tokens through voting –
-                              and the groundbreaking platform that is revolutionizing the industry!
+                              We're excited to have you join our community and embark on an exciting journey of voting
+                              and earning rewards.
                            </td>
                         </tr>
 
                         <tr>
                            <td valign="top"
-                              style="color: #0057E1;font-family: 'Poppins', Arial, sans-serif;font-size:20px;line-height: 26px;text-align: left;font-weight:bold;padding-bottom: 15px;">
-                              What is VoteToEarn?</td>
+                              style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:16px;line-height: 22px;text-align: left;font-weight:bold;padding-bottom: 15px;">
+                              Here's a quick overview of what you can expect.</td>
                         </tr>
 
                         <tr>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 30px;">
-                              VoteToEarn (V2E) is not just another platform – it's a dynamic WEB.3
-                              social game where members like you mine tokens by participating in the
-                              Coin Mining Process (CMP) through voting. Your votes directly contribute
-                              to mining rewards, allowing you to earn tokens while shaping community
-                              sentiment through the Social Voting Indicator (SVI).
+                              Your votes have the power to earn you rewards and shape the direction of the industry.
                            </td>
                         </tr>
 
@@ -118,7 +172,7 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                                  <tr>
                                     <td align="center">
                                        <a rel="noopener" class="btn_site" target="_blank"
-                                          href="https://coinparliament.com/" target="_blank"
+                                          href=${appLink} target="_blank"
                                           style="font-size: 20px;font-family: 'Poppins', Arial, sans-serif;color: #ffffff; font-weight: 500; text-decoration: none; border-radius: 10px; background-color: #4c228e; border-top: 12px solid #4c228e; border-bottom: 12px solid #4c228e; border-right: 18px solid #4c228e; border-left: 18px solid #4c228e; display: block;">Vote
                                           Now!</a>
                                     </td>
@@ -132,12 +186,6 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left">
 
                                  <tr>
-                                    <td valign="top"
-                                       style="color: #0057E1;font-family: 'Poppins', Arial, sans-serif;font-size:20px;line-height: 26px;text-align: left;font-weight:bold;padding-bottom: 15px;">
-                                       Advantages of Using VoteToEarn:</td>
-                                 </tr>
-
-                                 <tr>
                                     <td valign="top" style="padding-bottom: 10px;">
                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="left">
                                           <tr>
@@ -146,8 +194,9 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                                                 .</td>
                                              <td valign="top"
                                                 style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 0px;">
-                                                Earn Rewards: Your votes directly contribute to mining rewards, allowing
-                                                you to earn tokens while expressing your opinion.
+                                                <strong>Your Goal:</strong> Your mission on Vote To Earn is to complete sets and albums
+                                                collections of collectible cards. Every vote you cast brings you closer
+                                                to achieving this goal.
                                              </td>
                                           </tr>
                                        </table>
@@ -163,8 +212,7 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                                                 .</td>
                                              <td valign="top"
                                                 style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 0px;">
-                                                Shape Community Sentiment: Influence the direction of the cryptocurrency
-                                                market by actively participating in social voting.
+                                                <strong>Voting is Key:</strong> Each vote you make is a step towards completing your collections. So, get ready to vote, collect, and conquer!
                                              </td>
                                           </tr>
                                        </table>
@@ -180,9 +228,7 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
                                                 .</td>
                                              <td valign="top"
                                                 style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 0px;">
-                                                Engage in a Rewarding Experience: Immerse yourself in an interactive and
-                                                rewarding environment where every action you take leads to tangible
-                                                benefits.
+                                                <strong>Exclusive Rewards:</strong> As you progress and complete collections, you'll unlock exclusive rewards, including VTE coins, unique collectible cards, and valuable crypto tokens.
                                              </td>
                                           </tr>
                                        </table>
@@ -194,82 +240,23 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
 
                         <tr>
                            <td valign="top"
-                              style="color: #0057E1;font-family: 'Poppins', Arial, sans-serif;font-size:16px;line-height: 26px;text-align: left;font-weight:bold;padding-bottom: 15px;">
-                              Introducing Coin Parliament – The First Platform in the VoteToEarn&nbsp;Industry:</td>
+                              style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 26px;text-align: left;font-weight:bold;padding-bottom: 15px;">
+                              We're here to support you every step of the way, so if you have any questions or need assistance, feel free to reach out.</td>
                         </tr>
 
                         <tr>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 25px;">
-                              Coin Parliament stands as the world's first VoteToEarn (V2E) WEB.3 social game, offering
-                              unprecedented opportunities for voting, earning rewards, and engaging in a dynamic
-                              community. As a VoteToEarn subscriber, you're invited to join Coin Parliament and
-                              experience the future of social gaming.
+                              Let's make your Vote To Earn experience&nbsp;extraordinary!
                            </td>
                         </tr>
 
-                        <tr>
-                           <td valign="top" align="left" style="padding-bottom: 30px;">
-                              <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center"
-                                 bgcolor="#f1f1f1">
-                                 <tr>
-                                    <td valign="middle" align="center" style="padding: 20px;">
-                                       <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
-                                          <tr>
-                                             <td valign="top"
-                                                style="color: #0057E1;font-family: 'Poppins', Arial, sans-serif;font-size:18px;line-height: 26px;text-align: center;font-weight:bold;padding-bottom: 10px;"
-                                                class="inx_f14">
-                                                Get Started with Coin Parliament</td>
-                                          </tr>
-
-                                          <tr>
-                                             <td valign="top"
-                                                style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:16px;line-height: 24px;text-align: center;font-weight:400;padding-bottom: 15px;"
-                                                class="inx_f12">
-                                                Ready to dive into the excitement? Start voting and earning rewards
-                                                today and don't forget to join Vote To Earn Telegram community for
-                                                updates
-                                             </td>
-                                          </tr>
-
-                                          <tr>
-                                             <td align="center" valign="bottom" style="padding: 0px 0px 0px 0px;">
-                                                <a href="https://t.me/VoteToEarn" target="_blank"
-                                                   style="color:#000;text-decoration:none; display:inline-block;">
-                                                   <img src="https://firebasestorage.googleapis.com/v0/b/coin-parliament-staging.appspot.com/o/assests%2Femails%2Ftelegram.png?alt=media&token=dddf8117-7489-4291-b16d-e0a8d284e55d" alt="Coin Parliament Vote To Earn"
-                                                      class="inx_telegram_btn" width="200" height="76" border="0"
-                                                      style="display:block;font-family: 'Poppins', Arial, sans-serif;color:#ffffff;font-weight:bold;font-size:24px;max-width:200px;" />
-                                                </a>
-                                             </td>
-                                          </tr>
-                                       </table>
-                                    </td>
-                                 </tr>
-                              </table>
-                           </td>
-                        </tr>
-
-                        <tr>
-                           <td valign="top"
-                              style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 15px;">
-                              If you have any questions or need assistance, don't hesitate to reach out. We're here to
-                              support you every step of the way on your VoteToEarn journey.
-                           </td>
-                        </tr>
-
-                        <tr>
-                           <td valign="top"
-                              style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:14px;line-height: 24px;text-align: left;font-weight:400;padding-bottom: 15px;">
-                              Thank you for being part of the VoteToEarn community. Let's shape the future of
-                              cryptocurrency together!
-                           </td>
-                        </tr>
 
                         <tr>
                            <td valign="top"
                               style="color: #333333;font-family: 'Poppins', Arial, sans-serif;font-size:12px;line-height: 20px;text-align: left;font-weight:400;padding-bottom: 15px;padding-top: 20px;">
                               Best regards,<br />
-                              <span style="font-weight: 600;">VoteToEarn Team</span>
+                              <span style="font-weight: 600;">Vote To Earn Support Team</span>
                            </td>
                         </tr>
                      </table>
@@ -361,5 +348,5 @@ export const userWelcomeEmailTemplate = (displayName: any, appLink: any) => {
 
 </html>
            `;
- };
- 
+};
+
