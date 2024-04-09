@@ -21,6 +21,7 @@ import AppContext from "Contexts/AppContext";
 import SetsScreen from "./SetsScreen";
 import { firestore } from "../firebase";
 import { doc, getDocs, query, where, collection } from "firebase/firestore";
+import NftLodding from "./NftLodding";
 
 
 const GalleryType = styled.div`
@@ -588,29 +589,7 @@ const NFTGallery = () => {
       </div>
 
       {/* @ts-ignore */}      
-      {isLoading && collectionType !=="" && <div style={{
-        position: 'fixed',
-        height: '68%',
-        // border: "2px solid red",
-        display: 'flex',
-        textAlign: 'center',
-        justifyContent: 'center',
-        // top: '0px',
-        right: '0px',
-        bottom: '0px',
-        zIndex: '9999',
-        overflow: 'hidden',
-        width: '100%',
-        alignItems: 'center',
-
-      }}>
-        <span className="loading" style={{
-          color: "White", zIndex: "2220px", fontSize: '1.5em',
-          // marginTop: "50px"
-        }}>
-          {texts.waitForIt}
-        </span>
-      </div>}
+      {isLoading && collectionType !== "" && <NftLodding/>}
 
       
       <GalleryType className='d-flex galleryRow' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
