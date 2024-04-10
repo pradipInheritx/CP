@@ -249,6 +249,7 @@ const Header = ({
 	const [textBlink, setTextBlink] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
+	const [userRank, setUserRank] = React.useState(0);
 
 	var urlName = window.location.pathname.split('/');
 	const followerPage = urlName.includes("followerProfile")
@@ -308,6 +309,22 @@ const Header = ({
 			getFollowerData()
 		}
 	}, [followerUserId])
+
+	useEffect(() => {
+		if (followerUserId) {     
+		  console.log(followerUserId, leaders ,"userId1")
+		  const ourUser = leaders.filter((item) => item?.userId == followerUserId)     
+		  console.log(ourUser,"ouerdata");
+		   
+		  if (ourUser && ourUser[0]?.rank) {
+			setUserRank(ourUser[0]?.rank)
+		  }
+		}
+	
+		return () => {
+	
+		}
+	  }, [followerUserId])
 
 	useEffect(() => {
 		// @ts-ignore
@@ -765,9 +782,9 @@ const Header = ({
 															>{userInfo?.status?.name}</MemberText>}
 														</span>
 													</div>
-													{!!followerInfo && <div className="d-flex"
+													{!!followerInfo && <div className="d-flex justify-content-center " 
 													>
-														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}{userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</MemberText>}
 														{
 															(!!followerInfo?.bio && followerPage) && <>
 																<div className='mx-2 '>
@@ -1094,13 +1111,14 @@ const Header = ({
 																	</span>
 																</div>
 
-																{!!followerInfo && <div className="d-flex "
+																{!!followerInfo && <div className="d-flex justify-content-center"
 																>
-																	{(!!followerInfo?.status?.name && followerPage) && <MemberText className="mt-1 ml-1">{followerInfo?.status?.name}</MemberText>}
+																	{(!!followerInfo?.status?.name && followerPage) && <MemberText className="mt-1 ml-1">{followerInfo?.status?.name}{userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</MemberText>}
 																	{
 																		(!!followerInfo?.bio && followerPage) && <>
 																			<div className='mx-2 '>
 																				<I className='bi bi-info-circle'
+																				style={{paddingTop: '3px'}}
 																					onMouseDown={(e) => {
 																						setTooltipShow(false)
 																					}}
