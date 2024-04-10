@@ -2591,9 +2591,11 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
       } else {
         user.signUpTime = "";
       }
+      user.averageVotes = Math.round(user.averageVotes);
       return user;
     });
 
+    console.log("orderby--->", orderBy);
     // Sort result asc/desc acc to orderBy field
     result.sort(function (a: any, b: any) {
       if (orderBy.includes('Day') || orderBy.includes('Time')) {
@@ -2601,7 +2603,21 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
         return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
       } else {
-        return sort.toLowerCase() === 'asc' ? a[orderBy].localeCompare(b[orderBy], 'en', { sensitivity: 'base' }) : b[orderBy].localeCompare(a[orderBy], 'en', { sensitivity: 'base' });
+        // Handle sorting for string field values
+        if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+          const valueA = a[orderBy] || ''; // Default value if undefined
+          const valueB = b[orderBy] || ''; // Default value if undefined
+          console.log("valueA--->", valueA);
+          console.log("valueB--->", valueB);
+          return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
+
+        // Handle sorting for numeric field values
+        } else { 
+          const valueA = typeof a[orderBy] === 'number' ? a[orderBy] : (a[orderBy] || Number.NEGATIVE_INFINITY);
+          const valueB = typeof b[orderBy] === 'number' ? b[orderBy] : (b[orderBy] || Number.NEGATIVE_INFINITY);
+          return sort.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+        
       }
     });
 
