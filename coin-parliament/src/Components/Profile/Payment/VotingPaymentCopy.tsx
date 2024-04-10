@@ -1219,7 +1219,7 @@ const VotingPaymentCopy: React.FC<{
                   </div>                  
                 </div>
                 
-                {!!(payamount > 24) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
+                {!!(payamount > 10) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
 
                   style={{
                     borderRadius: "10px",
