@@ -170,7 +170,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
           dispatch(fetchSuccess());
           dispatch({
             type: GET_ALL_USER_DATA,
-            payload: data.data.result.result
+            payload: data.data.result
           });
 
           if (callbackFun) callbackFun(data.data);

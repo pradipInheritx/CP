@@ -63,7 +63,6 @@ const UserListRow = ({
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  console.log(row, "allrow");
   const onUserMenuClick = menu => {
     if (menu.action === "view") {
       onUserView(row);
@@ -85,6 +84,19 @@ const UserListRow = ({
   const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
+  function convertToDateOnly(dateString) {
+    if (!dateString || dateString == undefined || typeof dateString == "object")
+      return "-";
+    const date = new Date(dateString);
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`;
+    return formattedDate;
+  }
+
   return (
     <TableRow
       hover
@@ -96,18 +108,21 @@ const UserListRow = ({
       selected={isItemSelected}
     >
       <TableCell align="center">{row?.userName || "-"}</TableCell>
-      <TableCell align="center">{row?.userId || "-"}</TableCell>
+      <TableCell align="center">{row?.signUpTime || "-"}</TableCell>
+      <TableCell align="center">{row?.lastVoteDay || "-"}</TableCell>
+      <TableCell align="center">
+        {convertToDateOnly(row?.lastLoginDay)}
+      </TableCell>
       <TableCell align="center">{row?.email || "-"}</TableCell>
       <TableCell align="center">{row?.GameTitle || "-"}</TableCell>
       <TableCell align="center">{row?.TotalCPM || "-"}</TableCell>
       <TableCell>{row?.totalVotes || "-"}</TableCell>
-      <TableCell align="center">{row?.noOfVotesDays || "-"}</TableCell>
-      <TableCell align="center">{row?.lastVoteDay || "-"}</TableCell>
       <TableCell align="center">{row?.averageVotes || "-"}</TableCell>
-      <TableCell align="center">{row?.source || "-"}</TableCell>
+      <TableCell align="center">{row?.noOfVotesDays || "-"}</TableCell>
       <TableCell align="center">{row?.extraVotePurchased || "-"}</TableCell>
+      <TableCell align="center">{row?.source || "-"}</TableCell>
       <TableCell align="center">{row?.TotalAmbassadorRewards || "-"}</TableCell>
-      <TableCell align="center">{row?.signUpTime || "-"}</TableCell>
+      <TableCell align="center">{row?.userId || "-"}</TableCell>
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu
           items={userActions}

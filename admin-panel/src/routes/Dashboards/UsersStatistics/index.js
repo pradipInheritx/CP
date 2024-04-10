@@ -32,7 +32,7 @@ const UsersModule = () => {
     ({ usersReducer }) => usersReducer
   );
   const [orderBy, setOrderBy] = React.useState("");
-  const [order, setOrder] = React.useState("desc");
+  const [order, setOrder] = React.useState("asc");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selected, setSelected] = React.useState([]);

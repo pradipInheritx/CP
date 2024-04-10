@@ -14,17 +14,29 @@ const headCells = [
     label: "User Name"
   },
   {
-    id: "userId",
+    id: "signUpTime",
     numeric: false,
     disablePadding: false,
-    label: "UserId"
+    label: "SignUp-Time"
+  },
+  {
+    id: "lastVoteDay",
+    numeric: false,
+    disablePadding: false,
+    label: "Last Vote Day"
+  },
+  {
+    id: "lastLoginDay",
+    numeric: false,
+    disablePadding: false,
+    label: "Last login Day"
   },
   { id: "email", numeric: false, disablePadding: false, label: "Email" },
   {
     id: "GameTitle",
     numeric: false,
     disablePadding: false,
-    label: "GameTitle"
+    label: "Game Title"
   },
   {
     id: "TotalCPM",
@@ -39,28 +51,16 @@ const headCells = [
     label: "Total Vote"
   },
   {
-    id: "noOfVotesDays",
-    numeric: false,
-    disablePadding: false,
-    label: "No Of Vote Days"
-  },
-  {
-    id: "lastVoteDay",
-    numeric: false,
-    disablePadding: false,
-    label: "Last Vote Day"
-  },
-  {
     id: "averageVotes",
     numeric: false,
     disablePadding: false,
     label: "Average Votes"
   },
   {
-    id: "source",
+    id: "noOfVotesDays",
     numeric: false,
     disablePadding: false,
-    label: "Source"
+    label: "No Of Vote Days"
   },
   {
     id: "extraVotePurchased",
@@ -69,16 +69,22 @@ const headCells = [
     label: "Extra Vote Purchased"
   },
   {
+    id: "source",
+    numeric: false,
+    disablePadding: false,
+    label: "Source"
+  },
+  {
     id: "TotalAmbassadorRewards",
     numeric: false,
     disablePadding: false,
     label: "TotalAmbassadorRewards"
   },
   {
-    id: "signUpTime",
+    id: "userId",
     numeric: false,
     disablePadding: false,
-    label: "signUp-Time"
+    label: "UserId"
   }
   // { id: 'emailUsage', numeric: true, disablePadding: false, label: 'Email Usage' },
 ];
