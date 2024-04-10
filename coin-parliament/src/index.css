@@ -143,7 +143,7 @@ html[dir="rtl"] .offcanvas-start.show {
     font-weight: bold;
 }
 .pwaPopup{
-    z-index: 99999;
+    z-index: 99991;
     position: fixed;
     bottom: 0px;
     background: white;
@@ -1587,7 +1587,7 @@ border-top-left-radius: 0px !important;
 .custom-circle-progress .gift-icon {
     position: absolute;
     top: 50%;
-    left: 14px;
+    left: 13px;
     width: 30px;
     z-index: 2;
     transform: translateY(-50%);
@@ -1725,6 +1725,14 @@ border-top-left-radius: 0px !important;
         }
 }
 
+@media only screen and (max-width: 767px) {
+    .CookieContainer {
+      justify-content: center;
+      /* display: flex; */
+      font-size: 15px;
+    }
+  }
+
 @media only screen and (max-width: 575px) {
     .mobileHeader .mobile-centered-element {
     left: -20px;
@@ -1764,4 +1772,19 @@ border-top-left-radius: 0px !important;
 .form-inline-flex select {
     color: #160133 !important;
     height: 44px;
+}
+
+.CookieConsent>div:first-child {
+    flex: none !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .CookieConsent>div:first-child {
+        flex: 0 0 100% !important;
+        text-align: center;
+        margin: 0px !important;
+    }
+    .CookieConsent>div button {
+        margin: 3px !important;
+    }
 }

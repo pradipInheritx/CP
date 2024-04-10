@@ -168,6 +168,7 @@ import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ethers } from "ethers";
 import InfluencersList from "Components/InfluencersList";
 import NewUrlFram from "Components/NewUrlFram";
+import CookieConsent from "react-cookie-consent";
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
@@ -443,6 +444,7 @@ function App() {
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
   const [animateBox, setAnimateBox] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
 
   // console.log(coins, "allcoinsCheck")
 
@@ -1570,6 +1572,18 @@ useEffect(() => {
   }
 }, []);
 
+useEffect(() => {
+  const acceptedCookies = localStorage.getItem('acceptedCookies');
+  if (acceptedCookies) {
+    setShowPopup(false);
+  }
+}, []);
+
+const handleAcceptAll = () => {
+  localStorage.setItem('acceptedCookies', 'true');
+  setShowPopup(false);
+};
+
 
 
   return loader ? (
@@ -1587,6 +1601,27 @@ useEffect(() => {
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
       >  
+
+        
+        {showPopup && ( 
+        <>
+        <div style={{width:"100%",height:"100%",backgroundColor:"rgba(0, 0, 0, 0.6)",position:"fixed",zIndex:"99995"}}></div>
+        <CookieConsent
+          debug={true}
+          cookieName="myAwesomeCookieName2"
+          style={{ background: "white", color: "#7767f7", alignItems: "center",padding:"16px",margin:"about",zIndex:99999,justifyContent:"center",flex:"none"}}
+          buttonText="Accept All"
+          buttonStyle={{ width: "100px", borderRadius: "50px", background: "#7767f7", color: "white" }}
+          onAccept={handleAcceptAll}
+          
+        >
+          <span className="CookieConsent" style={{ justifyContent: "center",  fontSize: "15px" }}>
+            We use cookies to personalise content and ads, to provide social media features.{" "} <Link to="/terms-and-condition">Learn More</Link>
+          </span>
+        </CookieConsent>
+        </>
+      )}
+        
 
         {!login &&
           !firstTimeAvatarSlection &&
@@ -1610,7 +1645,7 @@ useEffect(() => {
             aria-label="Install app"
             title="Install app"
             onClick={onClick}
-            style={{ zIndex: 99999 }}
+            style={{ zIndex: 99991 }}
           >
             {texts.Install}
           </button>}
@@ -1620,7 +1655,7 @@ useEffect(() => {
             aria-label="Install app"
             title="Install app"
             onClick={e => setPwaPopUp('none')}
-            style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
+            style={{ zIndex: 99991, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
           >
             x
             </span>
