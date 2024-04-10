@@ -10,6 +10,7 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
 import multer from "multer";
+import moment from 'moment';
 
 //import { firestore } from "firebase-admin";
 
@@ -2385,268 +2386,24 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
   }
 });
 
-exports.getAllUersData = functions.https.onCall(async (data) => {
+exports.getAllUserStatisticsData = functions.https.onCall(async (data) => {
   try {
-    // Extract pagination parameters from request query
 
-    let { page = 1, limit = 10, orderBy = "userName", sort = "asc", search = "", startDate = "", endDate = "", filterFields = "" } = data;
-
-    limit = parseInt(limit);
-
-    let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
-    switch (orderBy) {
-      case "userName":
-        orderByConsolidate = "userName";
-        break;
-
-      case "TotalAmbassadorRewards":
-        orderByConsolidate = "TotalAmbassadorRewards";
-        break;
-
-      case "noOfVotesDays":
-        orderByConsolidate = "noOfVotesDays";
-        break;
-
-      case "averageVotes":
-        orderByConsolidate = "averageVotes";
-        break;
-
-      case "source":
-        orderByConsolidate = "source";
-        break;
-
-      case "accountUpgrade":
-        orderByConsolidate = "accountUpgrade";
-        break;
-
-      case "userId":
-        orderByConsolidate = "userId";
-        break;
-
-      case "TotalCPM":
-        orderByConsolidate = "TotalCPM";
-        break;
-
-      case "lastVoteDay":
-        orderByConsolidate = "lastVoteDay";
-        break;
-
-      case "totalVotes":
-        orderByConsolidate = "totalVotes";
-        break;
-
-      case "lastLoginDay":
-        orderByConsolidate = "lastLoginDay";
-        break;
-
-      case "signUpTime":
-        orderByConsolidate = "signUpTime";
-        break;
-
-      case "GameTitle":
-        orderByConsolidate = "GameTitle";
-        break;
-
-      case "Country":
-        orderByConsolidate = "Country";
-        break;
-
-      case "extraVotePurchased":
-        orderByConsolidate = "extraVotePurchased";
-        break;
-
-
-      case "email":
-        orderByConsolidate = "email";
-        break;
-
-      default:
-        orderByConsolidate = "userName";
-        break;
-    }
-    let getAllUsersData: any;
-
-    console.log("orderByConsolidate", orderByConsolidate)
-    if (search) {
-      getAllUsersData = await admin.firestore()
-        .collection("userStatistics")
-        .where("userName", ">=", search)
-        .where("userName", "<=", search + "\uf8ff")
-        .offset((page - 1) * limit)
-        .limit(limit)
-        .get();
-    } else if (startDate && endDate && filterFields) {
-
-      console.log("ELSE IFFF")
-      const startDateTime = new Date(startDate).getTime() / 1000;
-      console.log("startDateTime>>>", startDateTime)
-      const endDateTime = new Date(endDate).getTime() / 1000;
-      console.log("endDateTime>>>", endDateTime)
-
-      //const parsedFilterFields = JSON.parse(filterFields);
-      const parsedFilterFields = filterFields.split(",");
-
-      getAllUsersData = (
-        await admin
-          .firestore()
-          .collection("userStatistics")
-          .offset((page - 1) * limit)
-          .limit(limit)
-          .get()
-      ).docs.map((user) => user.data());
-
-      const filteredData = getAllUsersData.filter((doc: any) => {
-        for (let field of parsedFilterFields) {
-          const fieldValue = doc[field];
-          console.log("fieldValue", fieldValue)
-          let finalCondition: any = null
-
-          if (field == "signUpTime") {
-            const signUpTime = new Date(fieldValue).getTime() / 1000;
-            console.log("signUpTime", signUpTime)
-            finalCondition = signUpTime >= startDateTime && signUpTime <= endDateTime;
-            console.log("finalSignUpTime", finalCondition)
-
-          } else if (field == "lastLoginDay") {
-            // console.log("Hello World!!!!!!",fieldValue,field)
-            const lastLoginDay = new Date(fieldValue).getTime() / 1000;
-            console.log("lastLoginDay", lastLoginDay)
-            finalCondition = lastLoginDay >= startDateTime && lastLoginDay <= endDateTime;
-            console.log("finalLastLoginDay", finalCondition)
-          } else if (field == "lastVoteDay") {
-            console.log("Hello World!!!!!!", fieldValue, field)
-            const lastVoteDay = new Date(fieldValue).getTime() / 1000;
-            finalCondition = lastVoteDay >= startDateTime && lastVoteDay <= endDateTime;
-            console.log("finalLastVoteDay", finalCondition)
-          }
-          console.log("finalCondition", finalCondition)
-          return finalCondition;
-        }
-      }
-      );
-
-      console.log("filteredData", filteredData)
-      getAllUsersData = filteredData
-      console.log("getAllUsersData.docs", getAllUsersData)
-
-
-
-      // Paginate filtered data
-      // getAllUsersData.docs = filteredData.slice((page - 1) * limit, page * limit);
-
-
-
-    } else {
-      console.log("ELSEE---")
-      getAllUsersData = await admin.firestore()
-        .collection("userStatistics")
-        // .orderBy(orderByConsolidate, sort)
-        // .offset((page - 1) * limit)
-        // .limit(limit)
-        .get();
-    }
-    console.log("getUsersResponseStarted>>>>>>>>>>>>>", getAllUsersData.docs)
-
-    let getUsersResponse: any;
-    if (search) {
-      getUsersResponse = getAllUsersData.docs.map((doc: any) => {
-        let userData = doc.data();
-        console.log("userData", userData);
-        if (userData.signUpTime && userData.signUpTime.trim() !== "") {
-          let signUpDate = new Date(userData.signUpTime);
-          let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-          userData.signUpTime = signUpDateFormatted;
-        } else {
-          userData.signUpTime = "";
-        }
-        return userData;
-      });
-    } else if (startDate && endDate && filterFields) {
-      getUsersResponse = getAllUsersData.map((doc: any) => {
-        let userData = doc;
-        console.log("userData", userData);
-        if (userData.signUpTime && userData.signUpTime.trim() !== "") {
-          let signUpDate = new Date(userData.signUpTime);
-          let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-          userData.signUpTime = signUpDateFormatted;
-        } else {
-          userData.signUpTime = "";
-        }
-        return userData;
-      });
-
-    } else {
-      getUsersResponse = getAllUsersData.docs.map((doc: any) => {
-        let userData = doc.data();
-        console.log("userData", userData);
-        if (userData.signUpTime && userData.signUpTime.trim() !== "") {
-          let signUpDate = new Date(userData.signUpTime);
-          let signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-          userData.signUpTime = signUpDateFormatted;
-        } else {
-          userData.signUpTime = "";
-        }
-        return userData;
-      });
-
-    }
-    // console.log("getUsersResponse",getUsersResponse)
-
-    // Sorting by signUpTime as Date object
-    if (orderBy === "signUpTime") {
-      getUsersResponse.sort((a: any, b: any) => {
-        // Handle cases where signUpTime might be an empty string
-        if (!a.signUpTime) return -1;
-        if (!b.signUpTime) return 1;
-
-        if (sort === "asc") {
-          return a.signUpTime.localeCompare(b.signUpTime);
-        } else {
-          return b.signUpTime.localeCompare(a.signUpTime);
-        }
-      });
-    }
-
-    const getTotalDataQuery = await admin.firestore().collection('userStatistics').get();
-    const getTotal = getTotalDataQuery.docs.length;
-
-    console.log("Total data--", getTotal);
-    //console.log("getUsersResponse----------", getUsersResponse);
-
-    return {
-      status: true,
-      message: "users fetched successfully",
-      result: { data: getUsersResponse, totalCount: getTotal },
-    };
-
-  } catch (error) {
-    return {
-      status: false,
-      message: "Users not found",
-      data: null,
-    };
-  }
-});
-
-exports.getAllUserStatistics = functions.https.onCall(async (data) => {
-  try {
-    // Extract pagination parameters from request query
-
-    let { 
-      page = 1, 
-      limit = 10, 
-      orderBy , 
-      sort = "asc", 
-      search = "", 
-      startDate = "", 
-      endDate = "", 
-      filterFields = "" 
+    let {
+      page = 1,
+      limit = 10,
+      orderBy,
+      sort = "asc",
+      search = "",
+      startDate = "",
+      endDate = "",
+      filterFields = ""
     } = data;
 
     limit = parseInt(limit);
     if (!orderBy) orderBy = "userName";
     let orderByConsolidate = orderBy;
-    console.log("---orderByConsolidate: ",orderByConsolidate)
+    console.log("---orderByConsolidate: ", orderByConsolidate)
     let result: any;
 
     if (search) {
@@ -2664,7 +2421,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         .where("userName", "<=", search + "\uf8ff")
         .get();
 
-      result = result.docs.map((doc:any) => {
+      result = result.docs.map((doc: any) => {
         const userData = doc.data();
         console.log("userData", userData);
         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
@@ -2691,7 +2448,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
           .get()
       ).docs.map((user) => user.data());
 
-      let filteredData = result.filter((doc:any) => {
+      let filteredData = result.filter((doc: any) => {
         const fieldValue = doc[filterFields];
         console.log("fieldValue---->", fieldValue)
         let finalCondition = null
@@ -2711,7 +2468,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
       }
       );
 
-      filteredData = filteredData.map((userData:any) => {
+      filteredData = filteredData.map((userData: any) => {
         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
           const signUpDate = new Date(userData.signUpTime);
           const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
@@ -2730,7 +2487,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         .orderBy(orderByConsolidate, sort)
         .get();
       // console.log("====>",result.docs);
-      result = result.docs.map((doc:any) => {
+      result = result.docs.map((doc: any) => {
         const userData = doc.data();
         console.log("userData", userData);
         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
@@ -2767,7 +2524,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
     };
 
   } catch (error) {
-    console.error("User Statistics List",error);
+    console.error("User Statistics List", error);
     return {
       status: false,
       message: "Internal Server error",
@@ -2776,7 +2533,97 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
   }
 });
 
-function paginateArray(result:any, page:number, limit:number) {
+exports.getAllUserStatistics = functions.https.onCall(async (data) => {
+  try {
+    let {
+      page,
+      limit,
+      orderBy,
+      sort,
+      search,
+      startDate,
+      endDate,
+      filterFields
+    } = data;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+    if (!orderBy) orderBy = "userName";
+    if (!sort) sort = 'asc';
+    limit = parseInt(limit);
+
+    let query: any = admin.firestore().collection("userStatistics");
+
+    // Search through the given field
+    if (search) {
+      query = query
+        .where("userName", ">=", search)
+        .where("userName", "<=", search + "\uf8ff")
+    }
+
+    const snapshot = await query.get();
+    let result: any = [];
+    snapshot.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+
+    // Filter the data through the filterFields to be between start and end date
+    if (startDate && endDate && filterFields && ['signUpTime', 'lastLoginDay', 'lastVoteDay'].includes(filterFields)) {
+
+      startDate = new Date(startDate).getTime() / 1000;
+      endDate = new Date(endDate).getTime() / 1000;
+
+      console.log("startDate--->", startDate);
+      console.log("endDate--->", endDate);
+
+      result = result.filter(function (item: any) {
+        let fieldDate = moment(item[filterFields]).toDate().getTime() / 1000;
+        return startDate <= fieldDate && endDate >= fieldDate;
+      });
+
+    }
+
+    result = result.map((user: any) => {
+      if (user.signUpTime && user.signUpTime.trim() !== "") {
+        const signUpDate = new Date(user.signUpTime);
+        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+        user.signUpTime = signUpDateFormatted;
+      } else {
+        user.signUpTime = "";
+      }
+      return user;
+    });
+
+    // Sort result asc/desc acc to orderBy field
+    result.sort(function (a: any, b: any) {
+      if (orderBy.includes('Day') || orderBy.includes('Time')) {
+        const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
+        const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
+        return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+      } else {
+        return sort.toLowerCase() === 'asc' ? a[orderBy].localeCompare(b[orderBy], 'en', { sensitivity: 'base' }) : b[orderBy].localeCompare(a[orderBy], 'en', { sensitivity: 'base' });
+      }
+    });
+
+    console.log("result length: ", result.length);
+    return {
+      status: true,
+      message: "users fetched successfully",
+      data: paginateArray(result, page, limit),
+      totalCount: result.length
+    };
+
+  } catch (error) {
+    console.error("User Statistics List", error);
+    return {
+      status: false,
+      message: "Internal Server error",
+      data: null,
+    };
+  }
+});
+
+function paginateArray(result: any, page: number, limit: number) {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
   const paginatedResult = result.slice(startIndex, endIndex);
