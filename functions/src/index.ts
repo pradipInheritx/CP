@@ -11,6 +11,7 @@ import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
 
 import multer from "multer";
+import moment from "moment";
 
 //import { firestore } from "firebase-admin";
 
@@ -2163,3 +2164,118 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
     };
   }
 });
+
+// User Statistics Listing Function for ADMIN Panel
+exports.getAllUserStatistics = functions.https.onCall(async (data) => {
+  try {
+    let {
+      page,
+      limit,
+      orderBy,
+      sort,
+      search,
+      startDate,
+      endDate,
+      filterFields
+    } = data;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+    if (!orderBy) orderBy = "userName";
+    if (!sort) sort = 'asc';
+    limit = parseInt(limit);
+
+    let query: any = admin.firestore().collection("userStatistics");
+
+    // Search through the given field
+    if (search) {
+      query = query
+        .where("userName", ">=", search)
+        .where("userName", "<=", search + "\uf8ff")
+    }
+
+    const snapshot = await query.get();
+    let result: any = [];
+    snapshot.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+
+    // Filter the data through the filterFields to be between start and end date
+    if (startDate && endDate && filterFields && ['signUpTime', 'lastLoginDay', 'lastVoteDay'].includes(filterFields)) {
+
+      startDate = new Date(startDate).getTime() / 1000;
+      endDate = new Date(endDate).getTime() / 1000;
+
+      console.log("startDate--->", startDate);
+      console.log("endDate--->", endDate);
+
+      result = result.filter(function (item: any) {
+        let fieldDate = moment(item[filterFields]).toDate().getTime() / 1000;
+        return startDate <= fieldDate && endDate >= fieldDate;
+      });
+
+    }
+
+    result = result.map((user: any) => {
+      if (user.signUpTime && user.signUpTime.trim() !== "") {
+        const signUpDate = new Date(user.signUpTime);
+        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+        user.signUpTime = signUpDateFormatted;
+      } else {
+        user.signUpTime = "";
+      }
+      user.averageVotes = Math.round(user.averageVotes);
+      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+      return user;
+    });
+
+    console.log("orderby--->", orderBy);
+    // Sort result asc/desc acc to orderBy field
+    result.sort(function (a: any, b: any) {
+      if (orderBy.includes('Day') || orderBy.includes('Time')) {
+        const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
+        const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
+        return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+      } else {
+        // Handle sorting for string field values
+        if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+          const valueA = a[orderBy] || ''; // Default value if undefined
+          const valueB = b[orderBy] || ''; // Default value if undefined
+          console.log("valueA--->", valueA);
+          console.log("valueB--->", valueB);
+          return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
+
+        // Handle sorting for numeric field values
+        } else { 
+          const valueA = typeof a[orderBy] === 'number' ? a[orderBy] : (a[orderBy] || Number.NEGATIVE_INFINITY);
+          const valueB = typeof b[orderBy] === 'number' ? b[orderBy] : (b[orderBy] || Number.NEGATIVE_INFINITY);
+          return sort.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+        
+      }
+    });
+
+    console.log("result length: ", result.length);
+    return {
+      status: true,
+      message: "users fetched successfully",
+      data: paginateArray(result, page, limit),
+      totalCount: result.length
+    };
+
+  } catch (error) {
+    console.error("User Statistics List", error);
+    return {
+      status: false,
+      message: "Internal Server error",
+      data: null,
+    };
+  }
+});
+
+function paginateArray(result: any, page: number, limit: number) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedResult = result.slice(startIndex, endIndex);
+  return paginatedResult;
+}
