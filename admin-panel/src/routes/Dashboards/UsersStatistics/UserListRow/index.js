@@ -107,7 +107,9 @@ const UserListRow = ({
       key={row?.id}
       selected={isItemSelected}
     >
-      <TableCell align="center">{row?.userName || "-"}</TableCell>
+      <TableCell align="center">
+        {row?.userName ? row?.userName : row?.name ? row?.name : "-"}
+      </TableCell>
       <TableCell align="center">{row?.signUpTime || "-"}</TableCell>
       <TableCell align="center">{row?.lastVoteDay || "-"}</TableCell>
       <TableCell align="center">

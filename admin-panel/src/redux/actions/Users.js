@@ -158,11 +158,13 @@ export const deleteUser = (userId, callbackFun) => {
 };
 
 export const getAllUersData = (payloadObj, callbackFun) => {
+  // https://us-central1-coinparliament-51ae1.cloudfunctions.net live
+  // https://us-central1-coin-parliament-staging.cloudfunctions.net
   return dispatch => {
     dispatch(fetchStart());
     axios
       .post(
-        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getAllUserStatistics`,
+        `https://us-central1-coinparliament-51ae1.cloudfunctions.net/getAllUserStatistics`,
         { ...payloadObj }
       )
       .then(data => {
