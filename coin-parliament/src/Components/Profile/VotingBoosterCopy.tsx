@@ -203,26 +203,26 @@ const [comingSoon, setComingSoon] = useState(false)
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
   const [PaytypeValue, setPaytypeValue] = useState([
     {
-      value:5,
+      value:0.99,
       Extra:0,
       star: 2,
-      vote:5
+      vote:3
     },
     {
-      value:10,
-      Extra:20,
+      value:4.99,
+      Extra:0,
       star: 3,
-      vote: 12
+      vote: 10
     },
     {
-      value:15,
+      value:9.99,
       Extra:25,
       star: 4,
-      vote: 20
+      vote: 40
     },
     {
-      value:25,
-      Extra:50,
+      value:14.99,
+      Extra:10,
       star: 5,
       vote: 50
     }
@@ -344,7 +344,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "40px",
                     lineHeight: 1.1
                   }}
-                >$ {item?.value}.00</NumberText>
+                >$ {item?.value}</NumberText>
                 <div className="d-flex mt-3 stars_items">
                   {/* @ts-ignore */}
                   {Array(item?.star).fill().map(() => {
@@ -359,9 +359,9 @@ const [comingSoon, setComingSoon] = useState(false)
                 >
 
 
-                  <VotText>BUY</VotText>
+                  {/* <VotText>BUY</VotText> */}
                   <NumberText
-                    className=""
+                    className="mt-2"
                     style={{
                       fontSize: "100px"
                     }}
@@ -369,7 +369,7 @@ const [comingSoon, setComingSoon] = useState(false)
                   
                   <VotText>votes</VotText>
                 </div>
-                <ButttonDiv className="mt-1 btn_buy_now">
+                <ButttonDiv className="mt-4 btn_buy_now">
                   <button
                     onClick={() => {
                       handleSoundClick()
@@ -452,7 +452,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "30px",
                     lineHeight: 1.1
                   }}
-                >$ {item?.value}.00</NumberText>
+                >$ {item?.value}</NumberText>
                 <div className="d-flex justify-content-center"
                   style={{
                 }}
@@ -469,13 +469,13 @@ const [comingSoon, setComingSoon] = useState(false)
                     lineHeight: 0.9
                   }}
                 >
-                  <VotText
+                  {/* <VotText
                     style={{
                       fontSize: "25px"
                   }}
-                  >BUY</VotText>
+                  >BUY</VotText> */}
                   <NumberText
-                    className=""
+                    className="mt-2"
                     style={{
                       fontSize: "75px"
                     }}
@@ -487,7 +487,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     }}
                   >votes</VotText>
                 </div>
-                <ButttonDivMob className="mt-1">
+                <ButttonDivMob className="mt-3">
                   <button
                     onClick={() => {
                       if (item?.vote > 0) {
