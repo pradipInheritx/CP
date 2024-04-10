@@ -19,76 +19,125 @@ export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
 
-    if (req.body.order && req.body.order.status.toUpperCase() === "COMPLETED") {
-      await firestore()
-        .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
+    if (req.body.order && req.body.order.id) {
+      const getResponseFromOrderId = await getStatusFromOrderStatusAPI(req.body.order.id);
+      console.log("getResponseFromOrderId--->", getResponseFromOrderId.status);
+      if (getResponseFromOrderId.status && getResponseFromOrderId.data.data.status.toUpperCase() === "COMPLETED") {
+        await firestore()
+          .collection("callbackHistory").add({ data: req.body.order, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
 
-      const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
-        .where("intentId", "==", req.body.order.intentId)
-        .get();
+        const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
+          .where("intentId", "==", req.body.order.intentId)
+          .get();
 
-      const getTempAcmeData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-        return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
-      });
+        const getTempAcmeData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
+          return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
+        });
 
-      console.info("getTempAcmeRecords", getTempAcmeData[getTempAcmeData.length - 1])
-      let requestBody: any;
-      if (getTempAcmeData && getTempAcmeData.length && getTempAcmeData[getTempAcmeData.length - 1]) {
-        let userId = getTempAcmeData[getTempAcmeData.length - 1].userId;
-        requestBody = { userId, intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
-      } else {
-        try {
-          await firestore()
-            .collection("callbackHistory").add({
-              data: req.body.order,
-              event: req.body.order.status,
-              callbackFrom: "ACME_PAYMENT_MODE",
-              timestamp: Timestamp.now(),
-              additionalExecutionType: "EXTRA_INVOCATION" // Add your additional field here
-            });
-          console.log("Document added successfully in callback!");
-        } catch (error) {
-          console.error("Error while adding document on extra invocation:", error);
+        console.info("getTempAcmeRecords", getTempAcmeData[getTempAcmeData.length - 1])
+        let requestBody: any;
+        if (getTempAcmeData && getTempAcmeData.length && getTempAcmeData[getTempAcmeData.length - 1]) {
+          let userId = getTempAcmeData[getTempAcmeData.length - 1].userId;
+          requestBody = { userId, intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
+        } else {
+          try {
+            await firestore()
+              .collection("callbackHistory").add({
+                data: req.body.order,
+                event: req.body.order.status,
+                walletType: "ACME_PAYMENT_MODE",
+                timestamp: Timestamp.now(),
+                additionalExecutionType: "EXTRA_INVOCATION" // Add your additional field here
+              });
+            console.log("Document added successfully in callback!");
+          } catch (error) {
+            console.error("Error while adding document on extra invocation:", error);
+          }
+
+          return res.status(200).send({
+            status: true,
+            message: `Intent Id is invalid or already transaction completed: ${req.body.order.intentId}`,
+            data: {
+              intentId: req.body.order.intentId
+            },
+          });
         }
 
-        return res.status(200).send({
+        console.log("Request Body Before", requestBody);
+
+        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
+        console.log("getResponseFromCreditCard", getResponseFromCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
+
+        await firestore().collection('tempPaymentTransaction').doc(getTempAcmeData[getTempAcmeData.length - 1].id).delete().then(() => {
+          console.log("Temp Payment Transaction Deletion Start Begins", getTempAcmeData[getTempAcmeData.length - 1].id);
+        }).catch((error: any) => {
+          console.log("Error while delete from tempPaymentTransaction", error);
+        });
+
+        res.status(200).send({
           status: true,
-          message: `Intent Id is invalid or already transaction completed: ${req.body.order.intentId}`,
-          data: {
-            intentId: req.body.order.intentId
-          },
+          message: "Transaction logged in DB on transaction details",
+          data: [],
+        });
+      } else {
+        await firestore()
+          .collection("callbackHistory").add({ ...req.body.order, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", orderStatus: getResponseFromOrderId, timestamp: Timestamp.now() });
+        res.status(200).send({
+          status: true,
+          message: "Transaction logged in DB on transaction details",
+          data: [],
         });
       }
-
-      console.log("Request Body Before", requestBody);
-
-      const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
-      console.log("getResponseFromCreditCard", getResponseFromCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
-
-      await firestore().collection('tempPaymentTransaction').doc(getTempAcmeData[getTempAcmeData.length - 1].id).delete().then(() => {
-        console.log("Temp Payment Transaction Deletion Start Begins", getTempAcmeData[getTempAcmeData.length - 1].id);
-      }).catch((error: any) => {
-        console.log("Error while delete from tempPaymentTransaction", error);
-      });
-
-      res.status(200).send({
-        status: true,
-        message: "Transaction logged in DB on transaction details",
-        data: [],
-      });
     } else {
-      await firestore()
-        .collection("callbackHistory").add({ ...req.body.order, event: req.body.order.status, callbackFrom: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
-      res.status(200).send({
-        status: true,
-        message: "Transaction logged in DB on transaction details",
-        data: [],
-      });
+      console.log("No Order Id Found From Acme", req.body);
     }
   } catch (error: any) {
-    console.info("Error while call callback URL payment to welld app server", error);
+    console.log("Error while call callback URL payment to Acme app server", error);
   }
 };
+
+export const getStatusFromOrderStatusAPI = async (orderId: any) => {
+  try {
+    const url = parentConst.PAYMENT_GET_ORDER_URL_PROD;
+    const apiKey = parentConst.PAYMENT_WEBHOOK_API_KEY;
+
+    const getResponseFromIntentRequest = await axios.get(`${url}?id=${orderId}`, {
+      headers: {
+        'X-API-KEY': apiKey,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (getResponseFromIntentRequest.status === 200) {
+      if (getResponseFromIntentRequest && getResponseFromIntentRequest.data && getResponseFromIntentRequest.data.data && getResponseFromIntentRequest.data.data) {
+        return {
+          status: true,
+          message: "Status fetched successfully",
+          data: getResponseFromIntentRequest.data.data
+        }
+      } else {
+        return {
+          status: false,
+          message: "Data status not found in success response",
+          data: {}
+        }
+      }
+    } else {
+      return {
+        status: false,
+        message: "Error while fetch order status",
+        data: {}
+      }
+    }
+  } catch (error: any) {
+    return {
+      status: false,
+      message: "Error while fetch the response from order API",
+      data: error
+    }
+  }
+}
 
 export const updateUserAfterPayment = async (req: any, res: any) => {
   console.info("get request body", req.body);
