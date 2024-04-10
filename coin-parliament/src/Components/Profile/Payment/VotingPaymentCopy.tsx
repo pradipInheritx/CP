@@ -704,7 +704,7 @@ const VotingPaymentCopy: React.FC<{
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         const wallet = provider.getSigner();
-        
+        const toAddress = coinInfo?.chainId == 56 ? process.env.REACT_APP_BNB_ACCOUNT_KEY : coinInfo?.chainId == 137 ? process.env.REACT_APP_MATIC_ACCOUNT_KEY : process.env.REACT_APP_ETH_ACCOUNT_KEY;
         if (coinInfo?.currency == "USDT ERC20") {
           
           const usdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; 
@@ -733,7 +733,7 @@ const VotingPaymentCopy: React.FC<{
         else {          
           const transaction = {
             chainId: coinInfo?.chainId,
-            to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
+            to: toAddress,
             value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
