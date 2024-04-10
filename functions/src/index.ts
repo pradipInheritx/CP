@@ -2229,6 +2229,16 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
       return user;
     });
 
+    // Nan values handled
+    result.forEach((obj:any) => {
+      Object.keys(obj).forEach(key => {
+        // Check if the field value is a number and NaN
+        if (typeof obj[key] === 'number' && isNaN(obj[key])) {
+            obj[key] = 0;
+        }
+    });
+  });
+
     console.log("orderby--->", orderBy);
     // Sort result asc/desc acc to orderBy field
     result.sort(function (a: any, b: any) {
