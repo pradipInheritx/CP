@@ -2592,6 +2592,7 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         user.signUpTime = "";
       }
       user.averageVotes = Math.round(user.averageVotes);
+      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
       return user;
     });
 
