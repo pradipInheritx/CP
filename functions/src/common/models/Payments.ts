@@ -22,7 +22,7 @@ export const callbackFromServer = async (req: any, res: any) => {
     if (req.body.order && req.body.order.id) {
       const getResponseFromOrderId = await getStatusFromOrderStatusAPI(req.body.order.id);
       console.log("getResponseFromOrderId--->", getResponseFromOrderId);
-      if (getResponseFromOrderId.status && (getResponseFromOrderId.data.status === "BlockchainTransactionSubmission" || getResponseFromOrderId.data.status === "Completed")) {
+      if (getResponseFromOrderId.status && (getResponseFromOrderId.data.status === parentConst.CREDIT_CARD_EVENT_BLOCKCHAIN_SUBMISSION || getResponseFromOrderId.data.status === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED)) {
         const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
           .where("intentId", "==", req.body.order.intentId)
           .where("isProceedForParentTransaction", "==", false)
@@ -51,7 +51,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 
       console.log("getResponseFromOrderId.data--->", getResponseFromOrderId.data)
 
-      if (getResponseFromOrderId.status && (getResponseFromOrderId.data.status === "ProcessingFiatProviderOrder" || getResponseFromOrderId.data.status === "Completed")) {
+      if (getResponseFromOrderId.status && (getResponseFromOrderId.data.status === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || getResponseFromOrderId.data.status === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED)) {
         const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
           .where("intentId", "==", req.body.order.intentId)
           .where("isProceedForActualTransaction", "==", false)
@@ -78,9 +78,9 @@ export const callbackFromServer = async (req: any, res: any) => {
                 .collection("callbackHistory").add({
                   data: req.body.order,
                   event: req.body.order.status,
-                  walletType: "ACME_PAYMENT_MODE",
+                  walletType: parentConst.WALLET_TYPE_ACME_PAYMENT_MODE,
                   timestamp: Timestamp.now(),
-                  additionalExecutionType: "EXTRA_INVOCATION"
+                  additionalExecutionType: parentConst.ACME_ADDITIONAL_EXECUTION_TYPE_EXTRA_INVOCATION
                 });
               console.log("Document added successfully in callback!");
             } catch (error) {
@@ -129,7 +129,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 };
 
 export const getTempTransactionByIdUpdateAndDeleteFromTransaction = async (tempTransactionId: any, webhookEvent: any) => {
-  if (webhookEvent === "ProcessingFiatProviderOrder" || webhookEvent === "Completed") {
+  if (webhookEvent === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || webhookEvent === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForActualTransaction: true
     }).then(() => {
@@ -149,7 +149,7 @@ export const getTempTransactionByIdUpdateAndDeleteFromTransaction = async (tempT
 }
 
 export const getTempTransactionByIdUpdateAndDeleteFromParentPayment = async (tempTransactionId: any, webhookEvent: any) => {
-  if (webhookEvent === "BlockchainTransactionSubmission" || webhookEvent === "Completed") {
+  if (webhookEvent === parentConst.CREDIT_CARD_EVENT_BLOCKCHAIN_SUBMISSION || webhookEvent === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForParentTransaction: true
     }).then(() => {
@@ -729,7 +729,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     console.log("requestBody--------->", requestBody)
     const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED);
+    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && (transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED || transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER));
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
     if (!getTransactionFromAcme) {
       return {
