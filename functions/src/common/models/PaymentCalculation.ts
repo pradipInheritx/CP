@@ -172,7 +172,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 
         console.log("parentPaymentData : ", parentPaymentData);
 
-        console.log("parentPaymentUserID>>>>>",parentPaymentData.parentUserId)
+        console.log("parentPaymentUserID>>>>>", parentPaymentData.parentUserId)
 
         await updateTransactionRewardValue(parentPaymentData.parentUserId)
         // await sendRefferalNotification([
@@ -195,44 +195,44 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 export const updateTransactionRewardValue = async (parentUserId: string) => {
     try {
         const getAllPaymentsQuerySnapshot = await firestore().collection("parentPayment")
-          .where("parentUserId", "==", parentUserId)
-          .get();
-    
+            .where("parentUserId", "==", parentUserId)
+            .get();
+
         const getAllPaymentsData = getAllPaymentsQuerySnapshot.docs.map((parentPayment) => {
-          let parentData = parentPayment.data();
-          return parentData;
+            let parentData = parentPayment.data();
+            return parentData;
         });
-    
-        let parentAmounts:any = {};
-    
+
+        let parentAmounts: any = {};
+
         getAllPaymentsData.forEach((parentData) => {
-          // Assuming parentData contains parentUserId and amount fields
-          const userId = parentData.parentUserId;
-          const amount = parseFloat(parentData.amount);
-    
-          // Check if parentUserId exists in parentAmounts object
-          if (userId in parentAmounts) {
-            // If yes, add the amount to the existing sum
-            parentAmounts[userId] += amount;
-          } else {
-            // If not, initialize the sum with the current amount
-            parentAmounts[userId] = amount;
-          }
+            // Assuming parentData contains parentUserId and amount fields
+            const userId = parentData.parentUserId;
+            const amount = parseFloat(parentData.amount);
+
+            // Check if parentUserId exists in parentAmounts object
+            if (userId in parentAmounts) {
+                // If yes, add the amount to the existing sum
+                parentAmounts[userId] += amount;
+            } else {
+                // If not, initialize the sum with the current amount
+                parentAmounts[userId] = amount;
+            }
         });
-    
+
         console.log("parentAmounts:", parentAmounts);
-    
+
         // Update userStatistics for the parentUserId
         for (const [userId, amount] of Object.entries(parentAmounts)) {
-          const userStatisticsRef = firestore().collection("userStatistics").doc(userId);
-          await userStatisticsRef.set({ TotalAmbassadorRewards: amount }, { merge: true });
+            const userStatisticsRef = firestore().collection("userStatistics").doc(userId);
+            await userStatisticsRef.set({ TotalAmbassadorRewards: amount }, { merge: true });
         }
-    
+
         console.log("User statistics updated successfully.");
-    
-      } catch (error) {
+
+    } catch (error) {
         console.log("An error occurred:", error);
-      }
+    }
 };
 
 
@@ -249,6 +249,27 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
             let getCoinWellDAddress = parentPaymentData.wellDAddress.find((address: any) => address.coin === coinOfPayment);
             getCoinAddress = getCoinWellDAddress && getCoinWellDAddress.address ? getCoinWellDAddress.address : null;
         }
+
+        console.log("Get Request ", {
+            parentUserId: parentPaymentData.parentUserId,
+            childUserId: parentPaymentData.childUserId,
+            childUserName: parentPaymentData.childUserName,
+            amount: parentPaymentData.halfReferralAmount,
+            status: parentConst.PAYMENT_STATUS_PENDING,
+            numberOfVotes: parentPaymentData.numberOfVotes,
+            parentPendingPaymentId: null,
+            receiveType: parentConst.PARENT_REFFERAL_PAYMENT_REFERRAL_TYPE_MANUAL,
+            originCurrency: parentPaymentData.origincurrency.toUpperCase(),
+            token: parentPaymentData.token.toUpperCase(),
+            transactionhash: "",
+            transactionId: `REF-${parentPaymentData.parentUserId.slice(0, 4)}-${currentEpochTimestamp}`,
+            transactionType: parentPaymentData.transactionType,
+            type: parentPaymentData.type,
+            address: getCoinAddress ? getCoinAddress : parentConst.PARENT_REFFERAL_PAYMENT_ADDRESS_NO_ADDRESS,
+            timestamp: Timestamp.now(),
+            walletType: parentPaymentData.walletType,
+            paymentDetails: { ...parentPaymentData.paymentDetails }
+        })
 
         const getResponseFromPendingReferralAmount = await firestore()
             .collection("parentPayment")
@@ -280,6 +301,8 @@ export const storeParentReferralAmount = async (parentPaymentData: any) => {
             result: getResponseFromPendingReferralAmount
         };
     } catch (error) {
+
+
         return {
             status: false,
             message: "Something went wrong",
