@@ -158,6 +158,8 @@ export const deleteUser = (userId, callbackFun) => {
 };
 
 export const getAllUersData = (payloadObj, callbackFun) => {
+  // https://us-central1-coinparliament-51ae1.cloudfunctions.net live
+  // https://us-central1-coin-parliament-staging.cloudfunctions.net
   return dispatch => {
     dispatch(fetchStart());
     axios
@@ -181,10 +183,9 @@ export const getAllUersData = (payloadObj, callbackFun) => {
         }
       })
       .catch(error => {
-        console.log("error 11111", error);
-        // if (error.response.data.result.name == "TokenExpiredError") {
-        //   localStorage.clear();
-        // }
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError("There was something issue in responding server"));
       });
   };

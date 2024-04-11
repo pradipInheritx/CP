@@ -25,13 +25,21 @@ const UserDetailView = ({ open, onCloseDialog }) => {
     ({ UsersDetelis }) => UsersDetelis
   );
   const {
-    name,
+    userName,
+    userId,
     email,
-    status,
-    phones,
-    company,
-    designation,
-    profile_pic,
+    Country,
+    GameTitle,
+    TotalCPM,
+    lastVoteDay,
+    totalVotes,
+    averageVotes,
+    noOfVotesDays,
+    extraVotePurchased,
+    accountUpgrade,
+    TotalAmbassadorRewards,
+    source,
+    signUpTime,
     starred
   } = currentUserDetelis;
 
@@ -49,9 +57,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>
-                {currentUserDetelis?.userName}
-              </Typography>
+              <Typography className={classes.titleRoot}>{userName}</Typography>
             </Box>
           </Box>
         </Box>
@@ -64,21 +70,10 @@ const UserDetailView = ({ open, onCloseDialog }) => {
         </Box>
       </Box>
       <Box px={6} py={5}>
-        <Box mb={5} component="p" color="common.dark">
+        <Box mb={5} component="h6" color="common.dark">
           User Detail
         </Box>
 
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          User ID :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.userId ? currentUserDetelis?.userId : "-"}
-          </Box>
-        </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           User Name :
           <Box
@@ -87,7 +82,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.userName ? currentUserDetelis?.userName : "-"}
+            {userName || "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -98,10 +93,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.email ? currentUserDetelis?.email : "-"}
+            {email || "-"}
           </Box>
         </Box>
-
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           Country :
           <Box
@@ -110,133 +104,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.Country ? currentUserDetelis?.Country : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Game Title :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.GameTitle
-              ? currentUserDetelis?.GameTitle
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          TotalCPM :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.TotalCPM ? currentUserDetelis?.TotalCPM : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
-          Last Vote Day :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.lastVoteDay
-              ? currentUserDetelis?.lastVoteDay
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
-          Total Votes :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.totalVotes
-              ? currentUserDetelis?.totalVotes
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Average Votes :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.averageVotes
-              ? currentUserDetelis?.averageVotes
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          NoOfVotesDays:
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.noOfVotesDays
-              ? currentUserDetelis?.noOfVotesDays
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Extra Vote Purchased :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.extraVotePurchased
-              ? currentUserDetelis?.extraVotePurchased
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          TotalAmbassadorRewards :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.TotalAmbassadorRewards
-              ? currentUserDetelis?.TotalAmbassadorRewards
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          AccountUpgrade :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.accountUpgrade
-              ? currentUserDetelis?.accountUpgrade
-              : "-"}
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Source :
-          <Box
-            ml={5}
-            color="primary.main"
-            component="p"
-            className="pointer d-block"
-          >
-            {currentUserDetelis?.source ? currentUserDetelis?.source : "-"}
+            {Country || "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -247,9 +115,128 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.signUpTime
-              ? currentUserDetelis?.signUpTime
-              : "-"}
+            {signUpTime || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
+          Last Vote Day :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {lastVoteDay || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          Game Title :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {GameTitle || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          TotalCMP :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {TotalCPM || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
+          Total Votes :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {totalVotes || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          Average Votes :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {averageVotes || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          No Of Vote Days:
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {noOfVotesDays || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          Extra Vote Purchased :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {extraVotePurchased || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          Total Ambassador Rewards :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {TotalAmbassadorRewards || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          AccountUpgrade :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {accountUpgrade || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          Source :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {source || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+          User ID :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {userId || "-"}
           </Box>
         </Box>
       </Box>
