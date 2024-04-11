@@ -41,7 +41,7 @@ export const callbackFromServer = async (req: any, res: any) => {
               { userId: getTempTransactionData.userId, amount: getTempTransactionData.amount, transactionType: getTempTransactionData.transactionType, numberOfVotes: getTempTransactionData.numberOfVotes, token: getTempTransactionData.token, origincurrency: getTempTransactionData.origincurrency, paymentDetails: req.body.order, walletType: getTempTransactionData.walletType }
             );
             console.info("getResponseAfterParentPayment--->", getResponseAfterParentPayment)
-            await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, "BlockchainTransactionSubmission")
+            await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
             console.log("Get Temp getTempTransactionData--->", getTempTransactionData.id);
           }
         } else {
@@ -101,7 +101,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           const getResponseFromAcmeCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
           console.log("getResponseFromAcmeCreditCard", getResponseFromAcmeCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
 
-          await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, "ProcessingFiatProviderOrder")
+          await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
 
           res.status(200).send({
             status: true,
@@ -129,7 +129,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 };
 
 export const getTempTransactionByIdUpdateAndDelete = async (tempTransactionId: any, webhookEvent: any) => {
-  if (webhookEvent === "ProcessingFiatProviderOrder") {
+  if (webhookEvent === "ProcessingFiatProviderOrder" || webhookEvent === "Completed") {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForActualTransaction: true
     }).then(() => {
@@ -139,7 +139,7 @@ export const getTempTransactionByIdUpdateAndDelete = async (tempTransactionId: a
     });
   }
 
-  if (webhookEvent === "BlockchainTransactionSubmission") {
+  if (webhookEvent === "BlockchainTransactionSubmission" || webhookEvent === "Completed") {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForParentTransaction: true
     }).then(() => {
