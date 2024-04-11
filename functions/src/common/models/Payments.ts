@@ -824,7 +824,9 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
       to: req.body.to,
       chainId: req.body.chainId,
       amount: req.body.amount,
-      intentLimit: req.body.intentLimit ? req.body.intentLimit : 0
+      intentLimit: req.body.intentLimit ? req.body.intentLimit : 0,
+      redirectUrl: `${env.BASE_SITE_URL}?userId=${req.body.userId}`,
+      memo: "INITIATED"
     };
 
     const getResponseFromIntentRequest = await axios.post(url, data, {
