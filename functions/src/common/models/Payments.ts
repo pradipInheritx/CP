@@ -101,7 +101,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           const getResponseFromAcmeCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
           console.log("getResponseFromAcmeCreditCard", getResponseFromAcmeCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
 
-          await getTempTransactionByIdUpdateAndDeleteFromParentPayment(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
+          await getTempTransactionByIdUpdateAndDeleteFromTransaction(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
 
           res.status(200).send({
             status: true,
