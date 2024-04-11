@@ -126,6 +126,9 @@ export const LoginAuthProvider = async (
         setSmsVerification(true)
       }
       // setUser(user);
+      const lastLoginDay = new Date();
+      const userRefUpdate = doc(db, "userStatistics", user.uid);
+      await setDoc(userRefUpdate, { lastLoginDay }, { merge: true });
 
     }
   } catch (e) {
@@ -226,7 +229,11 @@ export const LoginRegular = async (
       } else {
         callback.successFunc(userCredential.user)
       }
-    }
+      const lastLoginDay = new Date();
+      const userRefUpdate = doc(db, "userStatistics", userCredential?.user?.uid);
+      await setDoc(userRefUpdate, { lastLoginDay }, { merge: true });
+
+    }    
     else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
   } catch (err) {
 
