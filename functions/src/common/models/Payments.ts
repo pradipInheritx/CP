@@ -61,7 +61,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
         });
 
-        if ((getTempAcmeData && getTempAcmeData.length) || true) {
+        if (getTempAcmeData && getTempAcmeData.length) {
 
           await firestore()
             .collection("callbackHistory").add({ data: { ...getResponseFromOrderId.data }, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
