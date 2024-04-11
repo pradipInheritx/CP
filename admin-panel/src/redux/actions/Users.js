@@ -170,7 +170,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
           dispatch(fetchSuccess());
           dispatch({
             type: GET_ALL_USER_DATA,
-            payload: data.data.result.result
+            payload: data.data.result
           });
 
           if (callbackFun) callbackFun(data.data);
@@ -181,10 +181,19 @@ export const getAllUersData = (payloadObj, callbackFun) => {
         }
       })
       .catch(error => {
-        if (error.response.data.result.name == "TokenExpiredError") {
-          localStorage.clear();
-        }
+        console.log("error 11111", error);
+        // if (error.response.data.result.name == "TokenExpiredError") {
+        //   localStorage.clear();
+        // }
         dispatch(fetchError("There was something issue in responding server"));
       });
   };
+};
+
+export const allUserDataExport = async () => {
+  let response = await axios.get(
+    `https://us-central1-coin-parliament-staging.cloudfunctions.net/exportUserStatisticsData`,
+    { responseType: "blob" }
+  );
+  return response.data;
 };
