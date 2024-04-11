@@ -269,7 +269,7 @@ export async function adminForgotPassword(req: any, res: any) {
     await admin.firestore().collection("admin").doc(adminUserId).set(userData);
 
     const url =
-      "https://admin-coinparliament.web.app" +
+      env.ADMIN_BASE_SITE_URL +
       "/reset-password?token=" +
       reset_password_token;
 
