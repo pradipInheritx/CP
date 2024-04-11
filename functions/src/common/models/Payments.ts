@@ -41,7 +41,7 @@ export const callbackFromServer = async (req: any, res: any) => {
               { userId: getTempTransactionData.userId, amount: getTempTransactionData.amount, transactionType: getTempTransactionData.transactionType, numberOfVotes: getTempTransactionData.numberOfVotes, token: getTempTransactionData.token, origincurrency: getTempTransactionData.origincurrency, paymentDetails: req.body.order, walletType: getTempTransactionData.walletType }
             );
             console.info("getResponseAfterParentPayment--->", getResponseAfterParentPayment)
-            await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
+            await getTempTransactionByIdUpdateAndDeleteFromParentPayment(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
             console.log("Get Temp getTempTransactionData--->", getTempTransactionData.id);
           }
         } else {
@@ -101,7 +101,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           const getResponseFromAcmeCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
           console.log("getResponseFromAcmeCreditCard", getResponseFromAcmeCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
 
-          await getTempTransactionByIdUpdateAndDelete(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
+          await getTempTransactionByIdUpdateAndDeleteFromParentPayment(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
 
           res.status(200).send({
             status: true,
@@ -128,17 +128,27 @@ export const callbackFromServer = async (req: any, res: any) => {
   }
 };
 
-export const getTempTransactionByIdUpdateAndDelete = async (tempTransactionId: any, webhookEvent: any) => {
+export const getTempTransactionByIdUpdateAndDeleteFromTransaction = async (tempTransactionId: any, webhookEvent: any) => {
   if (webhookEvent === "ProcessingFiatProviderOrder" || webhookEvent === "Completed") {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForActualTransaction: true
     }).then(() => {
-      console.log("Temp Payment Transaction Updated Successfully", tempTransactionId);
+      console.log("Temp Actual Payment Transaction Updated Successfully", tempTransactionId);
     }).catch((error: any) => {
       console.log("Error while delete from tempPaymentTransaction", error);
     });
   }
+  const getTempTransactionDetails: any = (await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).get()).data();
+  if (getTempTransactionDetails.isProceedForActualTransaction && getTempTransactionDetails.isProceedForParentTransaction) {
+    await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).delete().then(() => {
+      console.log("Temp Payment Transaction Deletion Start Begins", tempTransactionId);
+    }).catch((error: any) => {
+      console.log("Error while delete from tempPaymentTransaction", error);
+    });
+  }
+}
 
+export const getTempTransactionByIdUpdateAndDeleteFromParentPayment = async (tempTransactionId: any, webhookEvent: any) => {
   if (webhookEvent === "BlockchainTransactionSubmission" || webhookEvent === "Completed") {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).update({
       isProceedForParentTransaction: true
@@ -151,7 +161,7 @@ export const getTempTransactionByIdUpdateAndDelete = async (tempTransactionId: a
   const getTempTransactionDetails: any = (await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).get()).data();
   if (getTempTransactionDetails.isProceedForActualTransaction && getTempTransactionDetails.isProceedForParentTransaction) {
     await firestore().collection('tempPaymentTransaction').doc(tempTransactionId).delete().then(() => {
-      console.log("Temp Payment Transaction Deletion Start Begins", tempTransactionId);
+      console.log("Temp Parent Payment Transaction Deletion Start Begins", tempTransactionId);
     }).catch((error: any) => {
       console.log("Error while delete from tempPaymentTransaction", error);
     });
