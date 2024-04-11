@@ -778,13 +778,15 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 
       const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: Timestamp.now() });
 
-      if (addNewPayment.id) {
-        firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
-          console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document successfully deleted from callbackHistory!`)
-        }).catch((error) => {
-          console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
-        });
-      };
+      console.info("addNewPayment", addNewPayment);
+
+      // if (addNewPayment.id) {
+      //   firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
+      //     console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document successfully deleted from callbackHistory!`)
+      //   }).catch((error) => {
+      //     console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+      //   });
+      // };
 
       return {
         statusCode: 200,
