@@ -906,14 +906,16 @@ const VotingPaymentCopy: React.FC<{
         userId: userInfo?.uid,
         email: userInfo?.email,
         // amount: `${payamount}`,
-        amount:"5000000",
+        amount:"100000",
         transactionType: `${payType}`,
         numberOfVotes: extraVote,
         timestamp: (new Date().getTime()).toString(),                
         chainId: "137",        
-        to: "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",        
+        to: "0x9ad77D3185b1d0d37B6e0dc689872324910491D8",        
         contractAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-        // intentLimit: 0
+        origincurrency: "matic",
+        token: "matic",
+        intentLimit: 0        
       }
 
       console.log(data, "datacehck")
