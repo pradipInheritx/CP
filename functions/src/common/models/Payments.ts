@@ -101,7 +101,9 @@ export const callbackFromServer = async (req: any, res: any) => {
           const getResponseFromAcmeCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
           console.log("getResponseFromAcmeCreditCard", getResponseFromAcmeCreditCard, "For Delete", getTempAcmeData[getTempAcmeData.length - 1].id);
 
-          await getTempTransactionByIdUpdateAndDeleteFromTransaction(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
+          if (getResponseFromAcmeCreditCard.status) {
+            await getTempTransactionByIdUpdateAndDeleteFromTransaction(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
+          }
 
           res.status(200).send({
             status: true,
@@ -729,7 +731,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     console.log("requestBody--------->", requestBody)
     const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && (transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED || transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER));
+    const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && (transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED || transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || transaction.callbackDetails.event === parentConst.PAYMENT_STATUS_APPROVED));
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
     if (!getTransactionFromAcme) {
       return {
@@ -740,7 +742,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
       }
     }
 
-    if (getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
+    if (getTransactionFromAcme && getTransactionFromAcme.length && getTransactionFromAcme[getTransactionFromAcme.length - 1] && getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase({
           userId,
@@ -752,43 +754,51 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
       if (transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
         await addIsUpgradedValue(userId)
       }
-    }
-    await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).set({
-      paymentDetails
-        : {
-        ...getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
-        hash: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash,
-        orderId: `ACME-${userId.slice(0, 4)}-${getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash.slice(0, 4)}`
-      },
-      event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
-      userId,
-      amount: initiatedTransactionDetails.amount,
-      dollarAmount: parseInt(initiatedTransactionDetails.amount) / 1000000,
-      initiatedTransactionDetails,
-      transactionType,
-      numberOfVotes,
-      initiated
-    }, { merge: true });
 
-    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).get()).data();
+      await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).set({
+        paymentDetails
+          : {
+          ...getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
+          hash: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash,
+          orderId: `ACME-${userId.slice(0, 4)}-${getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash.slice(0, 4)}`
+        },
+        event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
+        userId,
+        amount: initiatedTransactionDetails.amount,
+        dollarAmount: parseInt(initiatedTransactionDetails.amount) / 1000000,
+        initiatedTransactionDetails,
+        transactionType,
+        numberOfVotes,
+        initiated
+      }, { merge: true });
 
-    console.info("Get Updated data", getUpdatedData);
+      const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).get()).data();
 
-    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: Timestamp.now() });
+      console.info("Get Updated data", getUpdatedData);
 
-    if (addNewPayment.id) {
-      firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
-        console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document successfully deleted from callbackHistory!`)
-      }).catch((error) => {
-        console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
-      });
-    };
+      const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: Timestamp.now() });
 
-    return {
-      statusCode: 200,
-      status: true,
-      message: parentConst.PAYMENT_UPDATE_SUCCESS,
-      getUpdatedData
+      if (addNewPayment.id) {
+        firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
+          console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document successfully deleted from callbackHistory!`)
+        }).catch((error) => {
+          console.log(`${getTransactionFromAcme[getTransactionFromAcme.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+        });
+      };
+
+      return {
+        statusCode: 200,
+        status: true,
+        message: parentConst.PAYMENT_UPDATE_SUCCESS,
+        getUpdatedData
+      }
+    } else {
+      return {
+        statusCode: 200,
+        status: false,
+        message: parentConst.PAYMENT_UPDATE_SUCCESS,
+        getUpdatedData: {}
+      }
     }
   } catch (error: any) {
     return {
