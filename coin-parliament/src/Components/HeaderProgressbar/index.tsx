@@ -28,7 +28,7 @@ export const TotalCmpDiv = styled.div`
   height:11px;  
   font-size:7px;
   position:absolute;
-  right:7px;
+  right:10px;
   top:9px;
   z-index:1000;
 `;
