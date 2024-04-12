@@ -209,7 +209,7 @@ const [comingSoon, setComingSoon] = useState(false)
       vote:3
     },
     {
-      value:4.99,
+      value:5,
       Extra:0,
       star: 3,
       vote: 10
