@@ -542,8 +542,8 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo, "AllInfo")
-      // setPayamount(AllInfo[0])
-      setPayamount(AllInfo[0] > 10 ? AllInfo[0] : 0.0001)
+      setPayamount(AllInfo[0])
+      // setPayamount(AllInfo[0] > 10 ? AllInfo[0] : 0.0001)
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])
@@ -782,7 +782,8 @@ const VotingPaymentCopy: React.FC<{
           const transaction = {
             chainId: coinInfo?.chainId,
             to: toAddress,
-            value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
+            // value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
+            value: ethers.utils.parseUnits("0.0001"), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
           const txResponse = await wallet.sendTransaction(transaction);
@@ -906,7 +907,7 @@ const VotingPaymentCopy: React.FC<{
         userId: userInfo?.uid,
         email: userInfo?.email,
         // amount: `${payamount}`,
-        amount:"100000",
+        amount:`${payamount * 1000000}`,
         transactionType: `${payType}`,
         numberOfVotes: extraVote,
         timestamp: (new Date().getTime()).toString(),                
@@ -928,13 +929,15 @@ const VotingPaymentCopy: React.FC<{
         }).then(async (response) => {
           console.log(response, "getresponse")
           window.open(`${response.data?.redirectUrl}`, '_blank');
-          const regex = /p2=([^&]*)/;
-          const match = response?.data?.redirectUrl.match(regex);
+          // const regex = /p2=([^&]*)/;
+
+          
+          const match = response?.data?.redirectUrl.match(/pay\/(.*)/)[1];
 
           if (match) {
-            const valueAfterP2 = match[1];
-            setPaymentCurruntTime(valueAfterP2)
-            console.log("P2 value", valueAfterP2)
+            
+            setPaymentCurruntTime(match)
+            console.log("P2 value", match)
           }
         })
         .catch((error) => {
@@ -1108,7 +1111,7 @@ const VotingPaymentCopy: React.FC<{
                 <div className="justify-content-between d-flex flex-wrap flex-column"
                 
                   style={{
-                    width: `${window.screen.width < 767 ? "98%" : payamount < 10 ? "60%" : "48%"}`,
+                    width: `${window.screen.width < 767 ? "98%" : payamount < 0 ? "60%" : "48%"}`,
                 }}
                 >
                 <div className="justify-content-between d-flex flex-wrap flex-column"
@@ -1263,7 +1266,7 @@ const VotingPaymentCopy: React.FC<{
                 </div>
 
                 
-                {!!(payamount > 10) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
+                {!!(payamount > 0) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
 
                   style={{
                     borderRadius: "10px",
@@ -1295,7 +1298,7 @@ const VotingPaymentCopy: React.FC<{
                     <i className="bi bi-credit-card-fill me-2"></i> No Crypto? <strong>&nbsp; No problem.</strong>
                   </span>
                   <span className="circleBtn mt-2">
-                    <span className="inn_btn">Buy Crypto</span>
+                    <span className="inn_btn">Buy Now</span>
                   </span>
                   <img src={CardsLogo} alt="" width={"97%"} className="mt-4" />
                 </div>

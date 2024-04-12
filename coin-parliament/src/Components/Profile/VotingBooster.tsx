@@ -203,7 +203,7 @@ const [comingSoon, setComingSoon] = useState(false)
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
   const [PaytypeValue, setPaytypeValue] = useState([
     {
-      value:1.00,
+      value:1,
       Extra:0,
       star: 2,
       vote:3
