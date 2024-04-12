@@ -9,7 +9,18 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "/index.html",
+        "headers": [
+          {
+            "source": "**",
+            "headers": [
+              {
+                "key": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        ]
       }
     ],
     "ignore": [
@@ -18,17 +29,6 @@
       "**/node_modules/**"
     ]
   },
-  "headers": [
-    {
-      "source": "/api/**",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
-  ],
   "storage": {
     "rules": "storage.rules"
   },
