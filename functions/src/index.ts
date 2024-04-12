@@ -129,7 +129,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
 import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
-import { checkTransactionStatus } from "./common/models/Payments";
+import { checkTransactionStatus, updateAllPendingTransactionByUsingOrderAPI } from "./common/models/Payments";
 import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
 import { sendBulkEmail } from "./common/services/bulkEmailService";
 
@@ -973,7 +973,6 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
-
 
     // console.info("after", after)
     // const beforeTotal: number = before.rewardStatistics?.total || 0;
@@ -2088,6 +2087,8 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .onRun(async () => {
 
     //await clearAllGarbageCallbackHistory();
+
+    await updateAllPendingTransactionByUsingOrderAPI();
 
     await sendEmailForVoiceMatterInLast24Hours();
 
