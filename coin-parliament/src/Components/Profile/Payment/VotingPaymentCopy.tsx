@@ -450,7 +450,7 @@ const VotingPaymentCopy: React.FC<{
   cardPayment,
 }) => {
 
-    const translate = useTranslation();
+  const translate = useTranslation();  
     const { user, userInfo } = useContext(UserContext);
     const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, paymentCoinList, setPaymentCoinList, } =
       useContext(AppContext);
@@ -513,7 +513,7 @@ const VotingPaymentCopy: React.FC<{
     const [metaCoin, setMetaCoin] = useState("none");
     const [transactionInst, setTransactionInst] = useState(false);
     const [showPayButoom, setShowPayButoom] = useState(false);
-    const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
+    // const [intentId, setIntentId] = useState<any>();
     const [addHoverCss, setAddHoverCss] = useState<any>("");
 
     // const 
@@ -542,14 +542,63 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo, "AllInfo")
-      // setPayamount(AllInfo[0])
-      setPayamount(AllInfo[0] > 10 ? AllInfo[0] : 0.0001)
+      setPayamount(AllInfo[0])
+      // setPayamount(AllInfo[0] > 10 ? AllInfo[0] : 0.0001)
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
       setExtraPer(AllInfo[3])
     }, [])
 
-    console.log(selectCoin, "selectCoincheck")
+  
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const params = new URLSearchParams(currentUrl);
+    const userIdcurrent = params.get('userId');    
+    // @ts-ignore 
+    const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
+    console.log(carPaymentData, "carPaymentData")
+    
+    console.log(userIdcurrent, userInfo?.uid,"i am calling")
+    if ((userIdcurrent != null && userInfo?.uid != undefined) && userIdcurrent == userInfo?.uid)
+    {      
+      cardPaymentDone(carPaymentData[0])
+    }
+    return () => {
+      
+    };
+  }, [userInfo?.uid, localStorage.getItem(`${userInfo?.uid}_IntentId`)]);
+
+
+  const cardPaymentDone = (intentId:any) => {
+    if (userInfo?.uid && intentId) {
+      const colRef = collection(db, "callbackHistory")
+      //real time update    
+      console.log(userInfo, "userInfodata")
+
+      onSnapshot(colRef, (snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          // setTestData((prev) => [...prev, doc.data()])
+          console.log(doc.data()?.data?.userId == userInfo?.uid ? doc.data()?.data?.intentId : "", "useralldata")
+          if (doc.data()?.data?.userId == userInfo?.uid && doc.data()?.data?.intentId == intentId) {
+            console.log(doc.data()?.data, "livepaymentdata")
+            if (doc.data()?.data?.status == "ProcessingFiatProviderOrder" || doc.data()?.data?.status == "BlockchainTransactionSubmission") {
+              setIsLoading(false)
+              // window.scrollTo({ top: 650, behavior: 'smooth' });
+              setPaymentStatus({ type: "success", message: '' });
+            }
+            if (doc.data()?.data?.status == "Failed") {
+              console.log(doc.data()?.data, "DeclinedData")
+              // window.scrollTo({ top: 650, behavior: 'smooth' });
+              setIsLoading(false)
+              setPaymentStatus({ type: "error", message: '' });
+            }
+          } else {
+            // console.log(doc.data(),"doc.data()")
+          }
+        })
+      })
+    }
+  }
 
     const handleClick = async () => {
       console.log("web function")
@@ -782,7 +831,8 @@ const VotingPaymentCopy: React.FC<{
           const transaction = {
             chainId: coinInfo?.chainId,
             to: toAddress,
-            value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
+            // value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
+            value: ethers.utils.parseUnits("0.0001"), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
           const txResponse = await wallet.sendTransaction(transaction);
@@ -869,44 +919,13 @@ const VotingPaymentCopy: React.FC<{
         return codeError
       }
     };
-
-    useEffect(() => {
-      if (userInfo?.uid && paymentCurruntTime) {
-        const colRef = collection(db, "callbackHistory")
-        //real time update    
-        console.log(userInfo, "userInfodata")
-
-        onSnapshot(colRef, (snapshot) => {
-          snapshot.docs.forEach((doc) => {
-            // setTestData((prev) => [...prev, doc.data()])
-            console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2 : "", "useralldata")
-            if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {
-              console.log(doc.data()?.data, "livepaymentdata")
-              if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {
-                setIsLoading(false)
-                // window.scrollTo({ top: 650, behavior: 'smooth' });
-                setPaymentStatus({ type: "success", message: '' });
-              }
-              if (doc.data()?.data?.order_status == "Declined") {
-                console.log(doc.data()?.data, "DeclinedData")
-                // window.scrollTo({ top: 650, behavior: 'smooth' });
-                setIsLoading(false)
-                setPaymentStatus({ type: "error", message: '' });
-              }
-            } else {
-              // console.log(doc.data(),"doc.data()")
-            }
-          })
-        })
-      }
-    }, [userInfo?.uid, paymentCurruntTime])
-
+    
     const getPayment = () => {
       const data = {
         userId: userInfo?.uid,
         email: userInfo?.email,
         // amount: `${payamount}`,
-        amount:"100000",
+        amount:`${payamount * 1000000}`,
         transactionType: `${payType}`,
         numberOfVotes: extraVote,
         timestamp: (new Date().getTime()).toString(),                
@@ -927,14 +946,15 @@ const VotingPaymentCopy: React.FC<{
           headers: headers
         }).then(async (response) => {
           console.log(response, "getresponse")
-          window.open(`${response.data?.redirectUrl}`, '_blank');
-          const regex = /p2=([^&]*)/;
-          const match = response?.data?.redirectUrl.match(regex);
+          window.open(`${response.data?.redirectUrl}`,"_self");
+          // navigate(`${response.data?.redirectUrl}`)
+          // const regex = /p2=([^&]*)/;          
+          const match = response?.data?.redirectUrl.match(/pay\/(.*)/)[1];
 
-          if (match) {
-            const valueAfterP2 = match[1];
-            setPaymentCurruntTime(valueAfterP2)
-            console.log("P2 value", valueAfterP2)
+          if (match) {            
+            // setIntentId(match)
+            localStorage.setItem(`${userInfo?.uid}_IntentId`,JSON.stringify([userInfo?.uid, match]));
+            console.log("P2 value", match)
           }
         })
         .catch((error) => {
@@ -1108,7 +1128,7 @@ const VotingPaymentCopy: React.FC<{
                 <div className="justify-content-between d-flex flex-wrap flex-column"
                 
                   style={{
-                    width: `${window.screen.width < 767 ? "98%" : payamount < 10 ? "60%" : "48%"}`,
+                    width: `${window.screen.width < 767 ? "98%" : payamount < 0 ? "60%" : "48%"}`,
                 }}
                 >
                 <div className="justify-content-between d-flex flex-wrap flex-column"
@@ -1263,7 +1283,7 @@ const VotingPaymentCopy: React.FC<{
                 </div>
 
                 
-                {!!(payamount > 10) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
+                {!!(payamount > 0) && <div className="d-flex flex-column align-items-center justify-content-center px-4 py-5 border"
 
                   style={{
                     borderRadius: "10px",
@@ -1279,7 +1299,7 @@ const VotingPaymentCopy: React.FC<{
                       // window.scrollTo({ top: 100, behavior: 'smooth' });
                       setIsLoading(true)
                       getPayment()
-                      // setPaymentCurruntTime(new Date().getTime())
+                      // setIntentId(new Date().getTime())
 
                     }
                     else {
@@ -1295,7 +1315,7 @@ const VotingPaymentCopy: React.FC<{
                     <i className="bi bi-credit-card-fill me-2"></i> No Crypto? <strong>&nbsp; No problem.</strong>
                   </span>
                   <span className="circleBtn mt-2">
-                    <span className="inn_btn">Buy Crypto</span>
+                    <span className="inn_btn">Buy Now</span>
                   </span>
                   <img src={CardsLogo} alt="" width={"97%"} className="mt-4" />
                 </div>
@@ -1690,7 +1710,7 @@ const VotingPaymentCopy: React.FC<{
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)    
                             getPayment()
-                            // setPaymentCurruntTime(new Date().getTime())
+                            // setIntentId(new Date().getTime())
                             }}
                           >
                             {payButton ? "BUY NOW..." : 'BUY NOW !'}
@@ -1718,7 +1738,7 @@ const VotingPaymentCopy: React.FC<{
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)
                             getPayment()
-                            // setPaymentCurruntTime(new Date().getTime())
+                            // setIntentId(new Date().getTime())
                         }}
                       >
                         <div className='d-flex justify-content-around' >
