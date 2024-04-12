@@ -297,7 +297,6 @@ app.get("/calculateCoinCPVI", async (req, res) => {
 app.get("/calculatePairCPVI", async (req, res) => {
   await cpviTaskPair((result) => res.status(200).json(result));
 });
-//app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -2740,6 +2739,10 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) =>
     // Set content disposition and type
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+    // Set CORS headers
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
 
     // Write workbook to response
     await workbook.xlsx.write(res);
