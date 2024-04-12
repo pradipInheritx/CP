@@ -1073,7 +1073,7 @@ function App() {
 
   
   async function reconnectWebSocket () {
-    console.log('Attempting to reconnect...');
+    if(socketConnect) return
     // @ts-ignore
     if (Object.keys(coins)?.length) {
       // @ts-ignore
@@ -1117,18 +1117,14 @@ function App() {
   
   async function throttleReconnectWebSocket(event:any) {
     // If there's already a reconnect attempt scheduled, do nothing
-    if (reconnectTimeout) {
+    if (reconnectTimeout || socketConnect) {
       return;
     }
 
     console.log('Attempting to reconnect...', event);
 
-    // Your reconnection logic goes here
-
-    reconnectWebSocket()
-
-    // Schedule the next reconnect attempt after a delay
     if (!socketConnect) {      
+      reconnectWebSocket()
       reconnectTimeout = setTimeout(() => {
         reconnectTimeout = null; // Reset the timeout after it's executed
         throttleReconnectWebSocket(event); // Trigger another reconnect attempt
@@ -1139,14 +1135,11 @@ function App() {
 
   useEffect(() => {
     if (Object.keys(coins).length) {      
+      if(socketConnect) return
       connect();
       croConnect();
     }
-
-console.log("check this is call again")
-    return () => {
-      console.log('close websocket connection');
-
+    return () => {     
       if (ws) ws.close();
       if (socket) socket.close();
       window.localStorage.removeItem('firstTimeloading')
