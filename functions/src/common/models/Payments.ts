@@ -71,7 +71,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           let requestBody: any;
           if (getTempAcmeData && getTempAcmeData.length && getTempAcmeData[getTempAcmeData.length - 1]) {
             let userId = getTempAcmeData[getTempAcmeData.length - 1].userId;
-            requestBody = { userId, intentId: req.body.order.intentId, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
+            requestBody = { userId, intentId: req.body.order.intentId, calculatedAmount: getResponseFromOrderId.data.tokenAmountInDecimals, initiatedTransactionDetails: getTempAcmeData[getTempAcmeData.length - 1], walletType: "ACME_PAYMENT_MODE", transactionType: getTempAcmeData[getTempAcmeData.length - 1].transactionType, numberOfVotes: getTempAcmeData[getTempAcmeData.length - 1].numberOfVotes, initiated: "BE" };
           } else {
             try {
               await firestore()
@@ -214,35 +214,35 @@ export const getStatusFromOrderStatusAPI = async (orderId: any) => {
   }
 }
 
-export const clearAllGarbageCallbackHistory = async () => {
-  try {
-    const currentTime = Timestamp.now();
-    const oneHoursAgo = new Date(currentTime.toMillis() - 1 * 60 * 60 * 1000);
+// export const clearAllGarbageCallbackHistory = async () => {
+//   try {
+//     const currentTime = Timestamp.now();
+//     const oneHoursAgo = new Date(currentTime.toMillis() - 1 * 60 * 60 * 1000);
 
-    const callbackRef = await firestore().collection('callbackHistory');
-    const queryOfCallback = callbackRef
-      .where('timestamp', '<=', oneHoursAgo);
+//     const callbackRef = await firestore().collection('callbackHistory');
+//     const queryOfCallback = callbackRef
+//       .where('timestamp', '<=', oneHoursAgo);
 
-    const callbackBatch = firestore().batch();
-    await queryOfCallback.get()
-      .then(async (callbackSnapshot: any) => {
-        if (callbackSnapshot.empty) {
-          console.log('No callback created in the last 1 hour from ACME.');
-          return;
-        }
-        callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
-          console.log("callbackAcmeDoc-->", callbackAcmeDoc.id)
-          const docRef = firestore().collection('callbackHistory').doc(callbackAcmeDoc.id);
-          callbackBatch.delete(docRef);
-        })
-      })
-    await callbackBatch.commit();
-    console.log("Batch delete operation successful");
-  } catch (error: any) {
-    console.error("Error while delete the document from callback: ", error);
-  }
+//     const callbackBatch = firestore().batch();
+//     await queryOfCallback.get()
+//       .then(async (callbackSnapshot: any) => {
+//         if (callbackSnapshot.empty) {
+//           console.log('No callback created in the last 1 hour from ACME.');
+//           return;
+//         }
+//         callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
+//           console.log("callbackAcmeDoc-->", callbackAcmeDoc.id)
+//           const docRef = firestore().collection('callbackHistory').doc(callbackAcmeDoc.id);
+//           callbackBatch.delete(docRef);
+//         })
+//       })
+//     await callbackBatch.commit();
+//     console.log("Batch delete operation successful");
+//   } catch (error: any) {
+//     console.error("Error while delete the document from callback: ", error);
+//   }
 
-}
+// }
 
 export const updateUserAfterPayment = async (req: any, res: any) => {
   console.info("get request body", req.body);
@@ -729,7 +729,7 @@ export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
 export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any) => {
   try {
     console.log("requestBody--------->", requestBody)
-    const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails } = requestBody;
+    const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails, calculatedAmount } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
     const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && (transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED || transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || transaction.callbackDetails.event === parentConst.PAYMENT_STATUS_APPROVED));
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
@@ -764,7 +764,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
         },
         event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
         userId,
-        amount: initiatedTransactionDetails.amount,
+        amount: calculatedAmount ? calculatedAmount : initiatedTransactionDetails.amount,
         dollarAmount: parseInt(initiatedTransactionDetails.amount) / 1000000,
         initiatedTransactionDetails,
         transactionType,
