@@ -1,7 +1,7 @@
 /** @format */
 
-import React, { useContext } from "react";
-import { Col, Image, Row } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { Col, Image, Modal, Row } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,11 +18,27 @@ import ContentContext from "../../Contexts/ContentContext";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import InfluencersCarousel from "../Users/InfluencersCarousel";
 import { BorderRadius4px } from "../../styledMixins";
-import votingbooster from "../../assets/images/votingbooster_small.png";
+import votingbooster from "../../assets/images/votingbooster_small2.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate } from "react-router-dom";
+import VoteBg from '../../assets/images/VoteBg.png';
+import votebgMob from '../../assets/images/votebgMob.png';
+import VoteStar from '../../assets/images/VoteStar.png';
+import BuyText from '../../assets/images/BuyText.png';
+import VotesText from '../../assets/images/VotesText.png';
+import VoteButton from '../../assets/images/VoteButton.png';
+import VoteButton2 from '../../assets/images/VoteButton2.png';
+import VoteTop from '../../assets/images/VoteTop.png';
+import VBG from '../../assets/images/VBG.png';
+import VBGM from '../../assets/images/VBGM.png';
+import Upgrade from "./Comingsoon";
+// import { handleSoundClick } from "common/utils/SoundClick";
+import { Buttons } from "Components/Atoms/Button/Button";
+import useSound from 'use-sound';
+// @ts-ignore
+import buttonClick from '../../assets/sounds/buttonClick.mp3';
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -42,65 +58,138 @@ letter-spacing: 0.6px;
 text-transform: uppercase; 
   text-align: center;
 `;
-const P = styled.p`
-  font-size: var(--font-size-l);
-  text-align: center;
+
+const NumberText = styled.strong`
+// border:1px solid red;
+font-family:"Lilita One";
+color :#e2cc4d;
+text-shadow: 1.5px 1.3px #daa636;
 `;
 
-const TextContainer = styled.div`
-  max-width: 350px;
-  margin: 0 auto;
-`;
-const Prices = styled.div`
-box-sizing: border-box;
-width: 264px;
-height: 261px;
-left: 1269px;
-top: 578px;
-background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%);
-`;
-const Corner = styled.div`
-  position:relative;
-  width: 95px; 
-	height: 95px;
-  background-image:url(${Rectangle}) 
-`;
-const CornerText = styled.span`
-  width: 60px;
-  text-align: center;
-  display:block;
-  line-height: 14.497px !important;
-  top:-3.8em;
-  padding-top:0.4em;
-`;
-const ForOnly = styled.span`
-color: #673C09;
-font-size: 11px;
-font-family: Poppins;
-font-weight: 700;
-text-transform: capitalize; 
-`;
-const Price = styled.span`
-font-family: Poppins;
-font-size: 25px;
-font-weight: 700;
-line-height: 45px;
-text-align: left;
-color:#FFE927;
-text-shadow:-1px -1px 0px #AF6A19;
-display:block;
-margin-left:-0.4em;
-margin-top: -0.2em;
-`;
-const ExtraText = styled.p`
-font-size:14px;
-  background: -webkit-linear-gradient(270deg, #FEFEFE 20.94%, #3C1ABA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+const VotText = styled.p`
+color: #fff;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 35px;
+font-style: normal;
+font-weight: 900;
+text-shadow: 1.2px 1.3px #c7ccf9;
+
 `;
 
+const TopDiv = styled.div`
+position :absolute;
+top:-47px;
+z-index:10;
+`;
 
-const VotingBooster = () => {
+const ButttonDiv = styled.div`
+width:200px;
+border:3px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:5px;    
+    margin:7px 0px;
+    font-size:20px;
+    color: red;
+    width:180px;
+    color: #B869FC;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 20px;
+transition: color 1s;
+
+animation: colorText 1s infinite ;
+
+    @keyframes colorText {
+  0% {    
+    color: #B869FC;
+  }
+  100% {
+   
+   color:#DAA636;
+  }  
+}
+
+  }
+
+
+`;
+
+const ButttonDivMob = styled.div`
+width:150px;
+border:3px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:0px;    
+    margin:6px 0px;    
+    color: red;
+    width:135px;
+    color: #B869FC;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 20px;
+transition: color 1s;
+font-size:15px;
+
+animation: colorText 1s infinite ;
+
+    @keyframes colorText {
+  0% {    
+    color: #B869FC;
+  }
+  100% {
+   
+   color:#DAA636;
+  }  
+}
+
+  }
+
+
+`;
+
+const VotingBoosterCopy = () => {
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
@@ -108,22 +197,56 @@ const VotingBooster = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-
+const [comingSoon, setComingSoon] = useState(false)
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+  const [PaytypeValue, setPaytypeValue] = useState([
+    {
+      value:1.00,
+      Extra:0,
+      star: 2,
+      vote:3
+    },
+    {
+      value:4.99,
+      Extra:0,
+      star: 3,
+      vote: 10
+    },
+    {
+      value:9.99,
+      Extra:25,
+      star: 4,
+      vote: 40
+    },
+    {
+      value:14.99,
+      Extra:10,
+      star: 5,
+      vote: 50
+    }
+  ])
   let navigate = useNavigate();
+  
 
-  const getExtraVote = (amount: any, extravote: any,ExtraPer:any) => {
+  const getExtraVote = (amount: any, extravote: any, ExtraPer: any) => {
     let payvalue = [amount, "EXTRAVOTES", extravote, ExtraPer]
     let PayValuestring = JSON.stringify(payvalue)
     localStorage.setItem("PayAmount", PayValuestring);
     navigate("/votepayment")
   }
 
+  const [handleSoundClick] = useSound(buttonClick);
   return (
-    <>
-
+    <div className="bg_responisve_voting"
+      style={{        
+        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
+        backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
+        backgroundPosition: "0 0",
+        backgroundSize: "100%",
+    }}
+    >      
       <H2
         style={{
           zIndex: 1,
@@ -134,207 +257,290 @@ const VotingBooster = () => {
         {/* @ts-ignore */}
         {userInfo?.isUserUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
       </H2>
-      <div className="pt-5 pb-5 d-flex justify-content-center"
+      <div className="pt-5 pb-5 d-flex justify-content-center padBotImgBox"
         style={{
           flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
           overflow: "hidden",
 
         }}
       >
-        <div className="d-flex justify-content-center"
+        {/* <div className="d-flex justify-content-center"
           style={{
             width: `${window.screen.width > 767 ? "49%" : "100%"}`
           }}
         >
           <img src={votingbooster} alt="" />
-        </div>
-        <div className=""
+        </div> */}
+        <div className=" d-flex justify-content-center flex-wrap mt-2 upgrade_items_row"
           style={{
-            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+            width: `${window.screen.width > 767 ? "100%" : "100%"}`,
+            height: "600px",
+            position: "relative"
           }}
         >
-          <Row className="">
-            <Col lg={5} sm={6} className="d-flex justify-content-center"
+          {window.screen.width > 766 && <div className="bottomImageBlock"
+            style={{
+              // marginTop: "20%",
+              position: "absolute",
+              left: "3%",
+              top:"47%",
+            }}
+            
+          >
+            <img src={votingbooster} alt="" className="" />
+          </div>}
+          {window.screen.width > 766 && PaytypeValue?.map((item,index) => {
+            return <div
+              className="d-flex justify-content-center upgrade_items"
               style={{
-                cursor: "pointer",
+                position: "relative",
+                height: "350px",
               }}
-              onClick={() => {
-                // @ts-ignore
-                getExtraVote(5, 5,0)
-              }}
+              key={index}
             >
-              <Prices style={{}} >
-                <div style={{
-                  backgroundImage: `url(${BGOBJECTS})`,
-                  backgroundRepeat: "no-repeat",
-                  marginTop: "30px",
-                  position: "absolute",
-                  width: "264px",
-                  height: "330px",                  
-                  // marginLeft: "-20px",
-                  opacity: "0.2",
-                  zIndex: "1"
-
-                }}>
-                </div>
+              {item?.Extra > 0 && <TopDiv >
+                <img src={VoteTop} alt="" width={"80px"} />
                 <div
+                  className="text-center w-100"
                   style={{
-                    position: "relative",
-                    width: "95px",
-                    height: "95px",
+                    position: "absolute",
+                    top: "20px",
+                    fontSize: "15px",
+                    lineHeight: 0.9,
                   }}
                 >
-                  {/* <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
-                    
-                  }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
+                  <p
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >SAVE</p>
+                  <p className="mt-1"><strong
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >{item?.Extra}</strong>%</p>
+                  
                 </div>
-                <div style={{ backgroundImage: `url(${Gift}) `, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
-                  <ForOnly>For Only</ForOnly>
-                  <Price>$5.00</Price>
-                </div>
-
-                <ExtraText className="text-center">
-                  <p>BUY 5 VOTES</p>
-                </ExtraText>
-
-              </Prices>
-            </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getExtraVote(10, 12,20)
-              }}
-            >
-              <Prices style={{}}>
-                <div style={{
-                  backgroundImage: `url(${BGOBJECTS})`,
+              </TopDiv>}
+              <div className="d-flex align-items-center flex-column"
+                style={{
+                  width: "250px",
+                  backgroundImage: `url(${VoteBg})`,
                   backgroundRepeat: "no-repeat",
-                  marginTop: "30px",
-                  position: "absolute",
-                  width: "264px",
-                  height: "330px",
-                  // marginTop: "-75px",
-                  // marginLeft: "-20px",
-                  opacity: "0.2",
-                  zIndex: "1"
+                  backgroundPosition: "center",
+                  height: "400px"
+                  
+                }}
+              >
+                <p className="mt-4 "
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "initial"
+                  }}
+                >FOR ONLY</p>
+                <NumberText
+                  className=""
+                  style={{
+                    fontSize: "40px",
+                    lineHeight: 1.1
+                  }}
+                >$ {(item?.value)?.toString()?.includes(".") ? item?.value : item?.value + ".00"}</NumberText>
+                <div className="d-flex mt-3 stars_items">
+                  {/* @ts-ignore */}
+                  {Array(item?.star).fill().map(() => {
+                    return <img src={VoteStar} alt="" width={"50px"} className=""/>
+                  })}                                    
+                </div>                
+                <div
+                  className="d-flex align-items-center flex-column"
+                  style={{
+                    lineHeight: 0.9
+                  }}
+                >
 
+
+                  {/* <VotText>BUY</VotText> */}
+                  <NumberText
+                    className="mt-2"
+                    style={{
+                      fontSize: "100px"
+                    }}
+                  >{item?.vote}</NumberText>
+                  
+                  <VotText>votes</VotText>
+                </div>
+                <ButttonDiv className="mt-4 btn_buy_now">
+                  <button
+                    onClick={() => {
+                      handleSoundClick()
+                      if (item?.vote > 0) {                        
+                        getExtraVote(item?.value, item?.vote, item?.Extra)
+                      } else {
+                      setComingSoon(true)
+                      }
+                      // showModal(<Upgrade />)
+                      // setComingSoon(true)
+                  }}
+                  >BUY NOW !</button>
+                </ButttonDiv>                
+              </div>
+            </div>
+          })}          
+          {window.screen.width <767 && PaytypeValue?.map((item, index) => {
+            return <div
+              className="d-flex justify-content-center"
+              style={{
+                position: "relative",
+                height: "350px",
+                
+              }}    
+              key={index}
+            >
+              {item?.Extra  > 0 &&<TopDiv >
+                <img src={VoteTop} alt="" width={"80px"}
+                  style={{
+                    textShadow: "1.5px 1.3px #000",
+                }}
+                />
+                <div
+                  className="text-center w-100"
+                  style={{
+                    position: "absolute",
+                    top: "20px",
+                    fontSize: "15px",
+                    lineHeight: 0.9,                    
                 }}
                 >
+                  <p
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >SAVE</p>
+                  <p className="mt-1"><strong
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >{item?.Extra}</strong>%</p>
+                  {/* <p className=""><strong
+                    style={{
+                      fontSize: "25px"
+                    }}
+                  >{item?.Extra}</strong>%</p>
+                <p>Extra</p> */}
                 </div>
-                <Corner>
-                  <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
-
-                  }}>20% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
-                </Corner>
-                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
-                  <ForOnly>For Only</ForOnly>
-                  <Price>$10.00</Price>
-                </div>
-                <ExtraText className="text-center">
-                  <p>BUY 12 VOTES</p>
-                </ExtraText>
-              </Prices>
-            </Col>
-          </Row>
-          <Row className="mt-5">
-            <Col lg={5} sm={6} className="d-flex justify-content-center"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                // @ts-ignore
-                getExtraVote(15, 20,25)
-              }}
-            >
-              <Prices style={{}}>
-                <div style={{
-                  backgroundImage: `url(${BGOBJECTS})`,
+              </TopDiv>}
+              <div className="d-flex align-items-center flex-column"
+                style={{
+                  width: "160px",
+                  backgroundImage: `url(${votebgMob})`,
                   backgroundRepeat: "no-repeat",
-                  marginTop: "30px",
-                  position: "absolute",
-                  width: "264px",
-                  height: "330px",
-                  // marginTop: "-75px",
-                  // marginLeft: "-20px",
-                  opacity: "0.2",
-                  zIndex: "1"
-
-                }}>
+                  backgroundPosition: "center",
+                  // backgroundSize:"150px 300px",
+                  height: "300px",
+                  position:"relative"
+                }}
+              >                
+                <p className="mt-4"
+                  style={{
+                    fontSize: "17px",
+                    fontWeight: "initial"
+                  }}
+                >FOR ONLY</p>
+                <NumberText
+                  className=""
+                  style={{
+                    fontSize: "30px",
+                    lineHeight: 1.1
+                  }}
+                >$ {item?.value}</NumberText>
+                <div className="d-flex justify-content-center"
+                  style={{
+                }}
+                >
+                  {/* @ts-ignore */}
+                  {Array(item?.star).fill().map((item,index) => {
+                    return <img src={VoteStar} alt="" width={"30px"} className="imgflip mt-2" key={index}/>
+                  })}
                 </div>
-                <Corner>
-                  <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
-
-                  }}>25% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText>
-                </Corner>
-                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
-                  <ForOnly>For Only</ForOnly>
-                  <Price>$15.00</Price>
+                {/* <img src={BuyText} alt="" /> */}
+                <div
+                  className="d-flex align-items-center flex-column"
+                  style={{
+                    lineHeight: 0.9
+                  }}
+                >
+                  {/* <VotText
+                    style={{
+                      fontSize: "25px"
+                  }}
+                  >BUY</VotText> */}
+                  <NumberText
+                    className="mt-2"
+                    style={{
+                      fontSize: "75px"
+                    }}
+                  >{item?.vote}</NumberText>
+                  {/* <img src={BuyText} alt="" /> */}
+                  <VotText
+                    style={{
+                      fontSize: "25px"
+                    }}
+                  >votes</VotText>
                 </div>
-                <ExtraText className="text-center">
-                  <p>BUY 20 VOTES</p>
-                </ExtraText>
-              </Prices>
-            </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getExtraVote(20, 30,33)
-              }}
-            >
-              <Prices style={{}}>
-                <div style={{
-                  backgroundImage: `url(${BGOBJECTS})`,
-                  backgroundRepeat: "no-repeat",
-                  marginTop: "30px",
-                  position: "absolute",
-                  width: "264px",
-                  height: "330px",
-                  // marginTop: "-75px",
-                  // marginLeft: "-20px",
-                  opacity: "0.2",
-                  zIndex: "1"
+                <ButttonDivMob className="mt-3">
+                  <button
+                    onClick={() => {
+                      if (item?.vote > 0) {
+                        getExtraVote(item?.value, item?.vote, item?.Extra)
+                      } else {
+                        setComingSoon(true)
+                      }
+                      // getExtraVote(item?.value, item?.vote, item?.Extra)
+                      // showModal(<Upgrade />)
+                      // setComingSoon(true)
+                    }}
+                  >BUY NOW !</button>
+                </ButttonDivMob>
+                {/* <img src={VoteButton} alt="" width={"250px"}/> */}
+              </div>              
+            </div>
 
-                }}>
-                </div>
-                <Corner>
-                  <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
-
-                  }}>33% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
-                </Corner>
-                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
-                  <ForOnly>For Only</ForOnly>
-                  <Price>$20.00</Price>
-                </div>
-                <ExtraText className="text-center">
-                  <p>BUY 30 VOTES</p>
-                </ExtraText>
-              </Prices>
-            </Col>
-          </Row>
+          })}          
         </div >
-      </div >      
-    </>
+        
+      </div >  
+      
+      <div>
+        <Modal
+          show={
+            comingSoon
+          } onHide={() => { setComingSoon(false) }}
+          backdrop="static"                    
+          aria-labelledby="contained-modal-title-vcenter"          
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+              setComingSoon(false)
+
+            }
+            }></button>
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center"            
+          >
+
+            <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Coming soon</p>
+
+          </Modal.Body>
+        </Modal>
+      </div>
+
+      {window.screen.width < 767 && <div>
+        <img src={votingbooster} alt="" className=""  width={"100px"}/>
+      </div>}
+    </div>
   );
 };
 
-export default VotingBooster;
+export default VotingBoosterCopy;

@@ -123,8 +123,8 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 // import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
-import UpgradePageCopy from "./Components/Profile/UpgradePageCopy";
-import VotingBoosterCopy from "./Components/Profile/VotingBoosterCopy";
+import UpgradePageCopy from "./Components/Profile/UpgradePage";
+import VotingBoosterCopy from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import Ambassador from "./Pages/Ambassador/Ambassador";
@@ -2169,7 +2169,7 @@ useEffect(() => {
                                             <Route
                                               path='/upgrade'
 
-                                              element={<UpgradePageCopy />}
+                                              element={<UpgradePage />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
@@ -2193,7 +2193,7 @@ useEffect(() => {
                                             />
                                             <Route
                                               path='/votingbooster'
-                                              element={<VotingBoosterCopy />}
+                                              element={<VotingBooster />}
                                             />
                                             <Route
                                               path='influencers'
