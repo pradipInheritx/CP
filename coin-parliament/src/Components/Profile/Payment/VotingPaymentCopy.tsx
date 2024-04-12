@@ -450,7 +450,7 @@ const VotingPaymentCopy: React.FC<{
   cardPayment,
 }) => {
 
-    const translate = useTranslation();
+  const translate = useTranslation();  
     const { user, userInfo } = useContext(UserContext);
     const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, paymentCoinList, setPaymentCoinList, } =
       useContext(AppContext);
@@ -513,7 +513,7 @@ const VotingPaymentCopy: React.FC<{
     const [metaCoin, setMetaCoin] = useState("none");
     const [transactionInst, setTransactionInst] = useState(false);
     const [showPayButoom, setShowPayButoom] = useState(false);
-    const [paymentCurruntTime, setPaymentCurruntTime] = useState<any>();
+    // const [intentId, setIntentId] = useState<any>();
     const [addHoverCss, setAddHoverCss] = useState<any>("");
 
     // const 
@@ -549,7 +549,56 @@ const VotingPaymentCopy: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-    console.log(selectCoin, "selectCoincheck")
+  
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const params = new URLSearchParams(currentUrl);
+    const userIdcurrent = params.get('userId');    
+    // @ts-ignore 
+    const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
+    console.log(carPaymentData, "carPaymentData")
+    
+    console.log(userIdcurrent, userInfo?.uid,"i am calling")
+    if ((userIdcurrent != null && userInfo?.uid != undefined) && userIdcurrent == userInfo?.uid)
+    {      
+      cardPaymentDone(carPaymentData[0])
+    }
+    return () => {
+      
+    };
+  }, [userInfo?.uid, localStorage.getItem(`${userInfo?.uid}_IntentId`)]);
+
+
+  const cardPaymentDone = (intentId:any) => {
+    if (userInfo?.uid && intentId) {
+      const colRef = collection(db, "callbackHistory")
+      //real time update    
+      console.log(userInfo, "userInfodata")
+
+      onSnapshot(colRef, (snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          // setTestData((prev) => [...prev, doc.data()])
+          console.log(doc.data()?.data?.userId == userInfo?.uid ? doc.data()?.data?.intentId : "", "useralldata")
+          if (doc.data()?.data?.userId == userInfo?.uid && doc.data()?.data?.intentId == intentId) {
+            console.log(doc.data()?.data, "livepaymentdata")
+            if (doc.data()?.data?.status == "ProcessingFiatProviderOrder" || doc.data()?.data?.status == "BlockchainTransactionSubmission") {
+              setIsLoading(false)
+              // window.scrollTo({ top: 650, behavior: 'smooth' });
+              setPaymentStatus({ type: "success", message: '' });
+            }
+            if (doc.data()?.data?.status == "Failed") {
+              console.log(doc.data()?.data, "DeclinedData")
+              // window.scrollTo({ top: 650, behavior: 'smooth' });
+              setIsLoading(false)
+              setPaymentStatus({ type: "error", message: '' });
+            }
+          } else {
+            // console.log(doc.data(),"doc.data()")
+          }
+        })
+      })
+    }
+  }
 
     const handleClick = async () => {
       console.log("web function")
@@ -870,38 +919,7 @@ const VotingPaymentCopy: React.FC<{
         return codeError
       }
     };
-
-    useEffect(() => {
-      if (userInfo?.uid && paymentCurruntTime) {
-        const colRef = collection(db, "callbackHistory")
-        //real time update    
-        console.log(userInfo, "userInfodata")
-
-        onSnapshot(colRef, (snapshot) => {
-          snapshot.docs.forEach((doc) => {
-            // setTestData((prev) => [...prev, doc.data()])
-            console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2 : "", "useralldata")
-            if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {
-              console.log(doc.data()?.data, "livepaymentdata")
-              if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {
-                setIsLoading(false)
-                // window.scrollTo({ top: 650, behavior: 'smooth' });
-                setPaymentStatus({ type: "success", message: '' });
-              }
-              if (doc.data()?.data?.order_status == "Declined") {
-                console.log(doc.data()?.data, "DeclinedData")
-                // window.scrollTo({ top: 650, behavior: 'smooth' });
-                setIsLoading(false)
-                setPaymentStatus({ type: "error", message: '' });
-              }
-            } else {
-              // console.log(doc.data(),"doc.data()")
-            }
-          })
-        })
-      }
-    }, [userInfo?.uid, paymentCurruntTime])
-
+    
     const getPayment = () => {
       const data = {
         userId: userInfo?.uid,
@@ -928,15 +946,14 @@ const VotingPaymentCopy: React.FC<{
           headers: headers
         }).then(async (response) => {
           console.log(response, "getresponse")
-          window.open(`${response.data?.redirectUrl}`, '_blank');
-          // const regex = /p2=([^&]*)/;
-
-          
+          window.open(`${response.data?.redirectUrl}`,"_self");
+          // navigate(`${response.data?.redirectUrl}`)
+          // const regex = /p2=([^&]*)/;          
           const match = response?.data?.redirectUrl.match(/pay\/(.*)/)[1];
 
-          if (match) {
-            
-            setPaymentCurruntTime(match)
+          if (match) {            
+            // setIntentId(match)
+            localStorage.setItem(`${userInfo?.uid}_IntentId`,JSON.stringify([userInfo?.uid, match]));
             console.log("P2 value", match)
           }
         })
@@ -1282,7 +1299,7 @@ const VotingPaymentCopy: React.FC<{
                       // window.scrollTo({ top: 100, behavior: 'smooth' });
                       setIsLoading(true)
                       getPayment()
-                      // setPaymentCurruntTime(new Date().getTime())
+                      // setIntentId(new Date().getTime())
 
                     }
                     else {
@@ -1693,7 +1710,7 @@ const VotingPaymentCopy: React.FC<{
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)    
                             getPayment()
-                            // setPaymentCurruntTime(new Date().getTime())
+                            // setIntentId(new Date().getTime())
                             }}
                           >
                             {payButton ? "BUY NOW..." : 'BUY NOW !'}
@@ -1721,7 +1738,7 @@ const VotingPaymentCopy: React.FC<{
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)
                             getPayment()
-                            // setPaymentCurruntTime(new Date().getTime())
+                            // setIntentId(new Date().getTime())
                         }}
                       >
                         <div className='d-flex justify-content-around' >
