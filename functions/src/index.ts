@@ -11,7 +11,8 @@ import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
 
 import multer from "multer";
-
+import moment from 'moment';
+import * as excel from 'exceljs';
 //import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -2161,5 +2162,218 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
       message: "User Not Created ",
       data: null,
     };
+  }
+});
+
+exports.getAllUserStatistics = functions.https.onCall(async (data) => {
+  try {
+    let {
+      page,
+      limit,
+      orderBy,
+      sort,
+      search,
+      startDate,
+      endDate,
+      filterFields
+    } = data;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+    if (!orderBy) orderBy = "userName";
+    if (!sort) sort = 'asc';
+    limit = parseInt(limit);
+
+    let query: any = admin.firestore().collection("userStatistics");
+
+    // Search through the given field
+    if (search) {
+      query = query
+        .where("userName", ">=", search)
+        .where("userName", "<=", search + "\uf8ff")
+    }
+
+    const snapshot = await query.get();
+    let result: any = [];
+    snapshot.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+
+    // Filter the data through the filterFields to be between start and end date
+    if (startDate && endDate && filterFields && ['signUpTime', 'lastLoginDay', 'lastVoteDay'].includes(filterFields)) {
+
+      startDate = new Date(startDate).getTime() / 1000;
+      endDate = new Date(endDate).getTime() / 1000;
+
+      console.log("startDate--->", startDate);
+      console.log("endDate--->", endDate);
+
+      result = result.filter(function (item: any) {
+        let fieldDate = moment(item[filterFields]).toDate().getTime() / 1000;
+        return startDate <= fieldDate && endDate >= fieldDate;
+      });
+
+    }
+
+    result = result.map((user: any) => {
+      if (user.signUpTime && user.signUpTime.trim() !== "") {
+        const signUpDate = new Date(user.signUpTime);
+        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+        user.signUpTime = signUpDateFormatted;
+      } else {
+        user.signUpTime = "";
+      }
+      user.averageVotes = Math.round(user.averageVotes);
+      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+      return user;
+    });
+
+    console.log("orderby--->", orderBy);
+    // Sort result asc/desc acc to orderBy field
+    result.sort(function (a: any, b: any) {
+      if (orderBy.includes('Day') || orderBy.includes('Time')) {
+        const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
+        const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
+        return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+      } else {
+        // Handle sorting for string field values
+        if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+          const valueA = a[orderBy] || ''; // Default value if undefined
+          const valueB = b[orderBy] || ''; // Default value if undefined
+          console.log("valueA--->", valueA);
+          console.log("valueB--->", valueB);
+          return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
+
+          // Handle sorting for numeric field values
+        } else {
+          const valueA = typeof a[orderBy] === 'number' ? a[orderBy] : (a[orderBy] || Number.NEGATIVE_INFINITY);
+          const valueB = typeof b[orderBy] === 'number' ? b[orderBy] : (b[orderBy] || Number.NEGATIVE_INFINITY);
+          return sort.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+
+      }
+    });
+
+    console.log("result length: ", result.length);
+    return {
+      status: true,
+      message: "users fetched successfully",
+      data: paginateArray(result, page, limit),
+      totalCount: result.length
+    };
+
+  } catch (error) {
+    console.error("User Statistics List", error);
+    return {
+      status: false,
+      message: "Internal Server error",
+      data: null,
+    };
+  }
+});
+
+function paginateArray(result: any, page: number, limit: number) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedResult = result.slice(startIndex, endIndex);
+  return paginatedResult;
+}
+
+// Export User Statistics data
+exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) => {
+  try {
+    // Query Firestore data
+    const snapshot = await admin.firestore().collection('userStatistics').get();
+    let data = snapshot.docs.map(doc => doc.data());
+
+    // Format some data
+    data = data.map((user: any) => {
+      if (user.signUpTime && user.signUpTime.trim() !== "") {
+        const signUpDate = new Date(user.signUpTime);
+        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+        user.signUpTime = signUpDateFormatted;
+      } else {
+        user.signUpTime = "";
+      }
+      user.averageVotes = Math.round(user.averageVotes);
+      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+      return user;
+    });
+
+    const headerMappings = [
+      { customHeader: 'User Name', dbKey: 'userName' },
+      { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
+      { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
+      { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
+      { customHeader: 'Email', dbKey: 'email' },
+      { customHeader: 'Game Title', dbKey: 'GameTitle' },
+      { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
+      { customHeader: 'Total Votes', dbKey: 'totalVotes' },
+      { customHeader: 'Average Votes', dbKey: 'averageVotes' },
+      { customHeader: 'No of Vote Days', dbKey: 'noOfVotesDays' },
+      { customHeader: 'Extra Vote Purchased', dbKey: 'extraVotePurchased' },
+      { customHeader: 'Source', dbKey: 'source' },
+      { customHeader: 'Total Ambassador Rewards', dbKey: 'TotalAmbassadorRewards' },
+      { customHeader: 'User ID', dbKey: 'userId' }
+    ];
+
+    // Create a new Excel workbook
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet('User Statistics Data');
+
+    // Add headers to the worksheet
+    const headers = headerMappings.map(mapping => mapping.customHeader);
+    worksheet.addRow(headers);
+
+    // Add data to the worksheet
+    data.forEach(userData => {
+      const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
+      worksheet.addRow(rowValues);
+    });
+
+    // Apply styles to the headers
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFF00' } // Yellow color
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+      cell.font = { bold: true }; // Make text bold
+      cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
+    });
+
+    // Apply styles to the data cells
+    worksheet.eachRow((row, rowNum) => {
+      if (rowNum > 1) { // Skip header row
+        row.eachCell((cell, colNumber) => {
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+          };
+        });
+      }
+    });
+
+    // Set content disposition and type
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+
+    // Write workbook to response
+    await workbook.xlsx.write(res);
+
+    // End response
+    res.end();
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    res.status(500).send('Error exporting User Statistics data');
   }
 });
