@@ -553,15 +553,13 @@ const VotingPaymentCopy: React.FC<{
   useEffect(() => {
     const currentUrl = window.location.href;
     const params = new URLSearchParams(currentUrl);
-    const userIdcurrent = params.get('userId');    
-    // @ts-ignore 
-    const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
-    console.log(carPaymentData, "carPaymentData")
-    
-    console.log(userIdcurrent, userInfo?.uid,"i am calling")
+    const userIdcurrent = params.get('userId');            
     if ((userIdcurrent != null && userInfo?.uid != undefined) && userIdcurrent == userInfo?.uid)
-    {      
-      cardPaymentDone(carPaymentData[0])
+      {      
+      // @ts-ignore 
+      const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
+      console.log(carPaymentData, "carPaymentData")
+      cardPaymentDone(carPaymentData[1])
     }
     return () => {
       
