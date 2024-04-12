@@ -248,6 +248,48 @@ export const getStatusFromOrderStatusAPI = async (orderId: any) => {
 
 // }
 
+export const updateAllPendingTransactionByUsingOrderAPI = async () => {
+  try {
+    const callbackRef = await firestore().collection('payments');
+    const currentTime = Timestamp.now();
+    const currentTimeStamp = new Date(currentTime.toMillis());
+    const queryOfCallback = callbackRef
+      .where("timestamp", "<", currentTimeStamp)
+      .where("event", "in", ["BlockchainTransactionSubmission", "ProcessingFiatProviderOrder"]);
+
+    const callbackSnapshot = await queryOfCallback.get();
+
+    if (callbackSnapshot.empty) {
+      console.log('No payment transaction with ProcessingFiatProviderOrder and BlockchainTransactionSubmission status created in the last 1 hour from ACME.');
+      return;
+    }
+
+    callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
+      console.log("callbackAcmeDoc-->", callbackAcmeDoc.id, "Data", callbackAcmeDoc.data());
+      let getTransactionData = callbackAcmeDoc.data();
+      const getResponseFromOrderId = await getStatusFromOrderStatusAPI(getTransactionData.data.id);
+
+      console.info("getResponseFromOrderId--->", getResponseFromOrderId);
+      if (getResponseFromOrderId.status && getResponseFromOrderId.data && getResponseFromOrderId.data.status === "Completed") {
+        const paymentDocRef = firestore().collection('payments').doc(callbackAcmeDoc.id);
+        getTransactionData.data = getResponseFromOrderId.data;
+
+        //Remove old one doc from payments
+        delete getResponseFromOrderId.data.hash;
+        delete getResponseFromOrderId.data.orderId;
+        delete getResponseFromOrderId.data.event;
+
+        let getPaymentDetails = { ...getResponseFromOrderId.data, hash: getResponseFromOrderId.data.blockchainTransactionHash, orderId: `ACME-${getTransactionData.userId.slice(0, 4)}-${getResponseFromOrderId.data.blockchainTransactionHash.slice(0, 4)}` }
+        // Update the document
+        await paymentDocRef.update({ event: getResponseFromOrderId.data.status, data: getResponseFromOrderId.data, paymentDetails: getPaymentDetails });
+      }
+    })
+  } catch (error) {
+    console.error("Error while deleting the document from callback: ", error);
+  }
+}
+
+
 export const updateUserAfterPayment = async (req: any, res: any) => {
   console.info("get request body", req.body);
   const {
