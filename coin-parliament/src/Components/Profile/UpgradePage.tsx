@@ -406,7 +406,7 @@ const UpgradePageCopy = () => {
                         <button
                           onClick={() => {
                             handleSoundClick()
-                            upgradeProfile(99, 25)
+                            upgradeProfile(100, 25)
                             // showModal(<Upgrade />)
                             // setComingSoon(true)
                           }}
@@ -426,8 +426,8 @@ const UpgradePageCopy = () => {
                               <br />
                               <span>TIME OFFER</span>
                             </div>
-                            <u>$199</u>
-                            <p>$99</p>
+                            <u>$200</u>
+                            <p>$100</p>
                           </div>
 
 
