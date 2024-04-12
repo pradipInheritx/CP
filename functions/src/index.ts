@@ -129,7 +129,7 @@ import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVer
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
 import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
-import { checkTransactionStatus, clearAllGarbageCallbackHistory } from "./common/models/Payments";
+import { checkTransactionStatus } from "./common/models/Payments";
 import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
 import { sendBulkEmail } from "./common/services/bulkEmailService";
 
@@ -2088,7 +2088,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 60 minutes")
   .onRun(async () => {
 
-    await clearAllGarbageCallbackHistory();
+    //await clearAllGarbageCallbackHistory();
 
     await sendEmailForVoiceMatterInLast24Hours();
 
