@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Heart } from "../Atoms/Checkbox/Icon";
 import { Image } from "react-bootstrap";
 import { Coin, formatCurrency, precision } from "../../common/models/Coin";
@@ -32,6 +32,18 @@ const LighCart1 = styled.div`
   padding: 10px 12px;
   border: ${(props: { single: boolean }) =>
     props.single ? 0 : "1px solid #3712b3"};
+
+    ${(props) => css`
+    @media screen and (min-width: 820px) and (max-width: 1180px) {
+      min-width:  ${(props: { pathname: string, single: boolean }) =>
+      props.pathname?.includes('/pairs') ? "300px" : ''};
+    }
+  `}
+
+  @media screen and (min-width: 1024px) and (max-width: 1366px) {
+    min-width:  ${(props: { pathname: string, single: boolean }) =>
+    props.pathname?.includes('/pairs') ? "240px" : ''};
+  }
 `;
 
 const LogoContainer = styled.div`
