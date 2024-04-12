@@ -1674,8 +1674,8 @@ const VotingPaymentCopy: React.FC<{
                                 <br />
                                 <span>TIME OFFER</span>
                               </div>
-                              <u>$199</u>
-                              <p>$99</p>
+                              <u>$200</u>
+                              <p>$100</p>
                             </div>
                           </button>
                         </ButttonDivSec>
