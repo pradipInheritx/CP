@@ -1611,7 +1611,7 @@ border-top-left-radius: 0px !important;
 }
 
 .gift_animation-css {
-    animation:bull_shake_left 2s ease 2s infinite;
+    animation:bull_shake_left 2s ease 0s infinite;
 }
 
 .custom-circle-progress .progress-cs {
@@ -1788,3 +1788,33 @@ border-top-left-radius: 0px !important;
         margin: 3px !important;
     }
 }
+
+.HomeImage {
+    width: 100%;
+    height: auto;
+    /* position: absolute; */
+  }
+  
+  @media screen and (min-width: 820px) and (max-width: 1180px) {
+    .HomeImage {
+      margin-top: 50px !important;
+    }
+  }
+
+  .HomeText {
+    zIndex: 0;
+    fontWeight: "400";
+    position: "relative";
+  }
+
+  @media screen and (min-width: 820px) and (max-width: 1180px) {
+    .HomeText {
+      margin-top: 182px;
+    }
+  }
+
+  @media screen and (min-width: 1024px) and (max-width: 1366px) {
+    .ipadProText {
+      margin-top: unset;
+    }
+  }
