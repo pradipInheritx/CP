@@ -64,7 +64,7 @@ text-align:center;
 
 const RoundBox = styled.div` 
 border:2px solid #fff,#F4F6FA;
-height:${window.screen.width >767 ? "140px" :"190px"};
+height:${window.screen.width > 767 ? "140px" : "190px"};
 border-radius:${window.screen.width > 767 ? "30px" : "0px"};
 border: 4px solid var(--White-Gradient, #F4F6FA);
 background: linear-gradient(180deg, rgba(82, 99, 184, 0.60) 0%, rgba(178, 102, 245, 0.60) 100%);
@@ -72,7 +72,7 @@ display:flex;
 flex-wrap:wrap;
 & p{
   padding:${window.screen.width > 767 ? " 10px" : "10px 0px 5px 0px"};
-font-size: ${window.screen.width > 767 ? " 16.701px" :"12px"};
+font-size: ${window.screen.width > 767 ? " 16.701px" : "12px"};
 font-style: normal;
 font-weight: 800;
 line-height: normal;
@@ -185,195 +185,195 @@ const UpgradePageCopy = () => {
     localStorage.setItem("PayAmount", PayValuestring);
     navigate("/paymentList")
   }
-  
+
 
   return (
     <>
-    {
+      {
 
-    
-    userInfo?
-   
-    <>            
-      <div
-        className='p-0 m-0 w-100 d-flex justify-content-center'
-        
-        style={{
-          backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
-          backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}` ,
-          backgroundPosition: "0 0",
-          // backgroundSize: "100% 100%",
-          backgroundSize:`${window.screen.width > 767 ? "100% 100%" : "100%"}`,
-          // backgroundSize: "cover",
-          backgroundAttachment: "fixed",   
-          // height: "75vh",
-          // overflow:"scroll"
-          overflow:"hidden"
-        }}
-       
-      >
-        <div
-          className=''
-          style={{
-            // background: "#160133",
-            width: `${window.screen.width > 979 ? "1000px" : "100%"}`,
-          }}
-        >
-          {/* @ts-ignore */}
-         {!userInfo?.isUserUpgraded && <H2
-            style={{
-              textAlign:"center",
-              textTransform: 'uppercase',
-              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
-            }}
-          >
-            {translate("Become a miner")}
-          </H2>}
-          {/* @ts-ignore */}
-          {userInfo?.isUserUpgraded && <H2
-            style={{
-              textAlign: "center",
-              textTransform: 'uppercase',
-              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
-            }}
-          >
-            {translate("Congratulations")}
-          </H2>}
-{/* @ts-ignore */}
-          {userInfo?.isUserUpgraded && <H2
-            style={{
-              textAlign: "center",
-              textTransform: 'uppercase',
-              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
-            }}
-          >
-            {translate("YOU'RE NOW A MINER")}
-          </H2>}
-          
-        {/* @ts-ignore */}
-         {!userInfo?.isUserUpgraded ? <P
-            style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
-            className="px-3 pt-4  pb-3"
-          >
-            Upgrade your account to a full mining account and enjoy the benefits of being a miner.
-          </P>:null}
-{/* @ts-ignore */}
-          {userInfo?.isUserUpgraded && <P
-            style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
-            className="px-3 pt-4  pb-3"
-          >
-            Now you can<strong> enjoy the benefits</strong>  of being a miner.
-          </P>}
 
-          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5 upgrade_content`}>
+        userInfo ?
 
-            <div className="upgrade_side" style={{
-              width:`${window.screen.width >767 ? "35%" :"45%"} `,
-            }}>
-              <RoundBox className="innerBlock">
-                <div
-                  // className="d-flex justify-content-center align-items-center ml-1 flex-warp"
-                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" :"justify-content-center" } d-flex ml-1`}
-                  style={{
-                    height: `${window.screen.width > 767 ? "" : "85px"} `,
-                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
-                    
-                }}
-                >
-                <img src={MoneyUG} alt="" width={"90px"} />
-                </div>
-                <div className="d-flex justify-content-center flex-column innerContent"
-                  style={{
-                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
-                  }}
-                >                  
-                  <p>Collectibles Market</p>
-                  <span>Use your VTE  for  collectibles trading</span>
-                </div>
-              </RoundBox>
+          <>
+            <div
+              className='p-0 m-0 w-100 d-flex justify-content-center'
 
-              <RoundBox className={`${window.screen.width > 767 ? "mt-5" :"mt-3"} innerBlock`}>
-                <div
-                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
-                  style={{
-                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
-                  }}
-                >
-                <img src={CardUG} alt="" width={"90px"} />
-                </div>
-                <div className="d-flex justify-content-center flex-column innerContent"
-                  style={{
-                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
-                  }}
-                >                    
-                  <p>Card converter</p>
-                  <span>Convert your card to collectible cards</span>
-                </div>
-              </RoundBox>
-              
-            </div>
-            {window.screen.width > 767 && <div
-              
-              className="d-flex justify-content-around align-items-center upgrade_center_side"
               style={{
-                width: "30%",
-            }}
-            >
-              <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
-                style={{
-                marginLeft:"35px"
+                backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
+                backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
+                backgroundPosition: "0 0",
+                // backgroundSize: "100% 100%",
+                backgroundSize: `${window.screen.width > 767 ? "100% 100%" : "100%"}`,
+                // backgroundSize: "cover",
+                backgroundAttachment: "fixed",
+                minHeight: "80vh",
+                // overflow:"scroll"
+                overflow: "hidden"
               }}
-              />
-            </div>}
-            <div className="upgrade_side" style={{
-              width: `${window.screen.width > 767 ? "35%" : "45%"} `,
-            }}>
-              <RoundBox className="innerBlock">
-                <div
-                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
-                  style={{
-                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
-                    height: `${window.screen.width > 767 ? "" : "85px"} `,
-                  }}
-                  
-                >
-                <img src={GiftUG} alt="" width={"90px"} />
-                </div>
-                <div className="d-flex justify-content-center flex-column innerContent"
-                  style={{
-                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
-                  }}
-                >                   
-                  <p>Purchases</p>
-                  <span>Use your VTE to buy merchandise</span>
-                  
-                </div>
-              </RoundBox>
 
-              <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"} innerBlock`}>
-                <div
-                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+            >
+              <div
+                className=''
+                style={{
+                  // background: "#160133",
+                  width: `${window.screen.width > 979 ? "1000px" : "100%"}`,
+                }}
+              >
+                {/* @ts-ignore */}
+                {!userInfo?.isUserUpgraded && <H2
                   style={{
-                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                    textAlign: "center",
+                    textTransform: 'uppercase',
+                    fontSize: `${window.screen.width > 767 ? "4rem" : "2rem"}`,
                   }}
                 >
-                <img src={MiniUG} alt="" width={"90px"} />
-                </div>
-                <div className="d-flex justify-content-center flex-column innerContent"
+                  {translate("Become a miner")}
+                </H2>}
+                {/* @ts-ignore */}
+                {userInfo?.isUserUpgraded && <H2
                   style={{
-                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
-                  }}>      
-                  <p>Full mining machine</p>
-                  <span>Mine PAX BEP20 token <br />to your external wallet</span>
+                    textAlign: "center",
+                    textTransform: 'uppercase',
+                    fontSize: `${window.screen.width > 767 ? "4rem" : "2rem"}`,
+                  }}
+                >
+                  {translate("Congratulations")}
+                </H2>}
+                {/* @ts-ignore */}
+                {userInfo?.isUserUpgraded && <H2
+                  style={{
+                    textAlign: "center",
+                    textTransform: 'uppercase',
+                    fontSize: `${window.screen.width > 767 ? "4rem" : "2rem"}`,
+                  }}
+                >
+                  {translate("YOU'RE NOW A MINER")}
+                </H2>}
+
+                {/* @ts-ignore */}
+                {!userInfo?.isUserUpgraded ? <P
+                  style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
+                  className="px-3 pt-4  pb-3"
+                >
+                  Upgrade your account to a full mining account and enjoy the benefits of being a miner.
+                </P> : null}
+                {/* @ts-ignore */}
+                {userInfo?.isUserUpgraded && <P
+                  style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
+                  className="px-3 pt-4  pb-3"
+                >
+                  Now you can<strong> enjoy the benefits</strong>  of being a miner.
+                </P>}
+
+                <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5 upgrade_content mb-4`}>
+
+                  <div className="upgrade_side" style={{
+                    width: `${window.screen.width > 767 ? "35%" : "45%"} `,
+                  }}>
+                    <RoundBox className="innerBlock">
+                      <div
+                        // className="d-flex justify-content-center align-items-center ml-1 flex-warp"
+                        className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                        style={{
+                          height: `${window.screen.width > 767 ? "" : "85px"} `,
+                          width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+
+                        }}
+                      >
+                        <img src={MoneyUG} alt="" width={"90px"} />
+                      </div>
+                      <div className="d-flex justify-content-center flex-column innerContent"
+                        style={{
+                          width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                        }}
+                      >
+                        <p>Collectibles Market</p>
+                        <span>Use your VTE  for  collectibles trading</span>
+                      </div>
+                    </RoundBox>
+
+                    <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"} innerBlock`}>
+                      <div
+                        className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                        style={{
+                          width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                        }}
+                      >
+                        <img src={CardUG} alt="" width={"90px"} />
+                      </div>
+                      <div className="d-flex justify-content-center flex-column innerContent"
+                        style={{
+                          width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                        }}
+                      >
+                        <p>Card converter</p>
+                        <span>Convert your card to collectible cards</span>
+                      </div>
+                    </RoundBox>
+
+                  </div>
+                  {window.screen.width > 767 && <div
+
+                    className="d-flex justify-content-around align-items-center upgrade_center_side"
+                    style={{
+                      width: "30%",
+                    }}
+                  >
+                    <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
+                      style={{
+                        marginLeft: "0px", maxWidth: "100%",
+                      }}
+                    />
+                  </div>}
+                  <div className="upgrade_side" style={{
+                    width: `${window.screen.width > 767 ? "35%" : "45%"} `,
+                  }}>
+                    <RoundBox className="innerBlock">
+                      <div
+                        className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                        style={{
+                          width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                          height: `${window.screen.width > 767 ? "" : "85px"} `,
+                        }}
+
+                      >
+                        <img src={GiftUG} alt="" width={"90px"} />
+                      </div>
+                      <div className="d-flex justify-content-center flex-column innerContent"
+                        style={{
+                          width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                        }}
+                      >
+                        <p>Purchases</p>
+                        <span>Use your VTE to buy merchandise</span>
+
+                      </div>
+                    </RoundBox>
+
+                    <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"} innerBlock`}>
+                      <div
+                        className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                        style={{
+                          width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                        }}
+                      >
+                        <img src={MiniUG} alt="" width={"90px"} />
+                      </div>
+                      <div className="d-flex justify-content-center flex-column innerContent"
+                        style={{
+                          width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                        }}>
+                        <p>Full mining machine</p>
+                        <span>Mine PAX BEP20 token <br />to your external wallet</span>
+                      </div>
+                    </RoundBox>
+
+                  </div>
+
                 </div>
-              </RoundBox>
-              
-            </div>
-            
-          </div>
-                               
-          {/* @ts-ignore */}
-          {/* {!userInfo?.isUserUpgraded &&
+
+                {/* @ts-ignore */}
+                {/* {!userInfo?.isUserUpgraded &&
             <div
               className='text-center mb-4'              
             >
@@ -396,74 +396,74 @@ const UpgradePageCopy = () => {
                 <span style={{ fontSize: "12px" }}>One time Payment of <del>$199</del> $99</span>
               </button>
             </div>} */}
-          {/* @ts-ignore */}
-          {!userInfo?.isUserUpgraded &&
-            <>
-            <div
-              className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center mt-3`}
-            >
-              <ButttonDiv className="mt-1">
-                <button
-                  onClick={() => {
-                    handleSoundClick()
-                    upgradeProfile(99, 25)
-                          // showModal(<Upgrade />)
-                          // setComingSoon(true)
+                {/* @ts-ignore */}
+                {!userInfo?.isUserUpgraded &&
+                  <>
+                    <div
+                      className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center mt-3`}
+                    >
+                      <ButttonDiv className="mt-1">
+                        <button
+                          onClick={() => {
+                            handleSoundClick()
+                            upgradeProfile(99, 25)
+                            // showModal(<Upgrade />)
+                            // setComingSoon(true)
+                          }}
+                        >
+                          <div className='d-flex justify-content-around' >
+                            <div
+
+                            >
+
+                              <span
+                                style={{
+                                  letterSpacing: "4px",
+                                  // display:"inline-block",
+                                }}
+                              >LIMITED
+                              </span>
+                              <br />
+                              <span>TIME OFFER</span>
+                            </div>
+                            <u>$199</u>
+                            <p>$99</p>
+                          </div>
+
+
+                        </button>
+                      </ButttonDiv>
+                    </div>
+                    <div
+                      className="text-center mb-4"
+                      style={{
+
+                        fontSize: `${window.screen.width > 767 ? "30px" : "20px"}`,
+                        fontStyle: "normal",
+                        fontWeight: "800",
+                        lineHeight: "normal",
+                        color: "#dfc650"
+                      }}
+                    >
+                      <p>
+                        ONE TIME PAYMENT
+                      </p></div>
+                  </>
+                }
+
+                {window.screen.width < 767 && <div
+
+                  className="d-flex justify-content-center align-items-center"
+                  style={{
+                    width: "100%",
                   }}
                 >
-                  <div className='d-flex justify-content-around' >
-                    <div
-                    
-                    >
-
-                      <span                      
-                        style={{
-                          letterSpacing: "4px",
-                          // display:"inline-block",
-                        }}
-                    >LIMITED                    
-                      </span>
-                      <br />
-                      <span>TIME OFFER</span>
-                    </div>
-                    <u>$199</u>
-                    <p>$99</p>
-                  </div>
-
-
-                </button>
-              </ButttonDiv>
-            </div>
-            <div
-              className="text-center mb-4"
-              style={{
-                
-            fontSize: `${window.screen.width >767? "30px" :"20px"}`,
-            fontStyle: "normal",
-            fontWeight: "800",
-                lineHeight: "normal",
-                color:"#dfc650"
-              }}
-            >
-              <p>
-              ONE TIME PAYMENT
-            </p></div>
-          </>
-          }
-          
-          {window.screen.width < 767 && <div
-
-            className="d-flex justify-content-center align-items-center"
-            style={{
-              width: "100%",
-            }}
-          >
-            <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "400px"}
-              // style={{
-              //   marginLeft: "35px"
-              // }}
-            />
-          </div>}
+                  <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "400px"}
+                  // style={{
+                  //   marginLeft: "35px"
+                  // }}
+                  />
+                </div>}
                 {!userInfo?.isUserUpgraded && <div
                   style={{
                     width: `${window.screen.width > 767 ? "800px" : "100%"}`,
@@ -505,7 +505,7 @@ const UpgradePageCopy = () => {
                         style={{
                           fontSize: "14px",
                         }}>
-                  
+
                         Merchandise Voucher</p>
                     </div>
                     <div
@@ -513,7 +513,7 @@ const UpgradePageCopy = () => {
                         background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
                         width: `${window.screen.width > 767 ? "19%" : "28%"}`,
                         borderRadius: "25px",
-                  
+
 
                       }}
                       className="d-flex justify-content-center align-items-center flex-column  pt-3 pb-3"
@@ -524,31 +524,31 @@ const UpgradePageCopy = () => {
                           fontSize: "14px",
                           padding: "1px"
                         }}>
-                  
+
                         25 <br /> Extra Votes</p>
                     </div>
                     <div
                       style={{
-                  
+
                         background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
                         width: `${window.screen.width > 767 ? "19%" : "28%"}`,
                         borderRadius: "25px",
-                  
+
                       }}
                       className="d-flex justify-content-center align-items-center flex-column  pt-3 pb-3"
                     >
-              
+
                       <img src={XXCOIN} alt="" width={"80px"} />
                       <p className="text-center mt-2"
                         style={{
                           fontSize: "14px",
                         }}
                       >500 <br /> VTE</p>
-                
+
                     </div>
                   </div>
                 </div>}
-        </div>
+              </div>
             </div>
             <div>
               <Modal
@@ -575,13 +575,13 @@ const UpgradePageCopy = () => {
                 </Modal.Body>
               </Modal>
             </div>
-      {/* {clicked &&
+            {/* {clicked &&
         <PaymentPop
         openPopup={clicked}
         setClicked={setClicked}
       />
       } */}
-      {/* <div
+            {/* <div
         style={{
           backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
           backgroundRepeat: "no-repeat",
@@ -597,17 +597,17 @@ const UpgradePageCopy = () => {
       >
 
       </div> */}
-    </>:
-    
-    <div
-      className='d-flex justify-content-center align-items-center'
-      style={{ height: "100vh", width: "100vw", color: "white" }}
-    >
-      <Spinner />
-    </div>
-    }
+          </> :
+
+          <div
+            className='d-flex justify-content-center align-items-center'
+            style={{ height: "100vh", width: "100vw", color: "white" }}
+          >
+            <Spinner />
+          </div>
+      }
     </>
-    
+
   );
 };
 
