@@ -45,6 +45,8 @@ export const callbackFromServer = async (req: any, res: any) => {
             console.log("Get Temp getTempTransactionData--->", getTempTransactionData.id);
           }
         } else {
+          await firestore()
+            .collection("callbackHistory").add({ data: { ...getResponseFromOrderId.data }, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
           console.log("Already given to parent", getResponseFromOrderId.data.id);
         }
       }
@@ -111,6 +113,8 @@ export const callbackFromServer = async (req: any, res: any) => {
             data: [],
           });
         } else {
+          await firestore()
+            .collection("callbackHistory").add({ data: { ...getResponseFromOrderId.data }, intentId: req.body.order.intentId, event: req.body.order.status, walletType: "ACME_PAYMENT_MODE", timestamp: Timestamp.now() });
           console.log("Already Actual Transaction Done");
         }
       } else {
@@ -755,12 +759,14 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
         await addIsUpgradedValue(userId)
       }
 
+      let blockChainHash = getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash ? getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash : `INTENT-ID-${getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.intentId}`;
+
       await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).set({
         paymentDetails
           : {
           ...getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data,
-          hash: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash,
-          orderId: `ACME-${userId.slice(0, 4)}-${getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.data.blockchainTransactionHash.slice(0, 4)}`
+          hash: blockChainHash,
+          orderId: `ACME-${userId.slice(0, 4)}-${blockChainHash.slice(0, 4)}`
         },
         event: getTransactionFromAcme[getTransactionFromAcme.length - 1].callbackDetails.event,
         userId,
@@ -825,7 +831,7 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
       chainId: req.body.chainId,
       amount: req.body.amount,
       intentLimit: req.body.intentLimit ? req.body.intentLimit : 0,
-      redirectUrl: `${env.BASE_SITE_URL}?userId=${req.body.userId}`,
+      redirectUrl: `${env.BASE_SITE_URL}/paymentList?userId=${req.body.userId}`,
       memo: "INITIATED"
     };
 
