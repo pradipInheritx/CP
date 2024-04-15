@@ -557,9 +557,9 @@ const VotingPaymentCopy: React.FC<{
     if ((userIdcurrent != null && userInfo?.uid != undefined) && userIdcurrent == userInfo?.uid)
       {      
       // @ts-ignore 
-      const cardPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
-      console.log(cardPaymentData, "carPaymentData")
-      cardPaymentDone(cardPaymentData[1])
+      const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
+      console.log(carPaymentData, "carPaymentData")
+      cardPaymentDone(carPaymentData[1])
     }
     return () => {
       
@@ -1674,8 +1674,8 @@ const VotingPaymentCopy: React.FC<{
                                 <br />
                                 <span>TIME OFFER</span>
                               </div>
-                              <u>$199</u>
-                              <p>$99</p>
+                              <u>$200</u>
+                              <p>$100</p>
                             </div>
                           </button>
                         </ButttonDivSec>

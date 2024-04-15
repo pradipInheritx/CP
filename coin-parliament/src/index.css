@@ -1197,15 +1197,13 @@ html[dir="rtl"] .accordion-button {
 }
 
 .tada {
-    /* -webkit-animation-name: tada;
+    -webkit-animation-name: tada;
     animation-name: tada;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
-    animation: tada 2s ease 0s 3 normal forwards; */
-    -webkit-animation: tada 2s ease 0s infinite; 
-    animation: tada 2s ease 0s infinite;
+    animation: tada 2s ease 0s 3 normal forwards;
 }
 
 @-webkit-keyframes tada {
@@ -1791,21 +1789,6 @@ border-top-left-radius: 0px !important;
     }
 }
 
-
-  .custom-container {
-    padding-right: calc(var(--bs-gutter-x) * 0.5);
-    padding-left: calc(var(--bs-gutter-x) * 0.5);
-  }
-  
-  @media only screen 
-    and (device-width: 414px) 
-    and (device-height: 896px) 
-    and (-webkit-device-pixel-ratio: 2) {
-    .custom-container {
-      padding-right: 0;
-      padding-left: 0; 
-    }
-  }
 .HomeImage {
     width: 100%;
     height: auto;
@@ -1819,8 +1802,8 @@ border-top-left-radius: 0px !important;
   }
 
   .HomeText {
-    z-index: 0;
-    font-weight: "400";
+    zIndex: 0;
+    fontWeight: "400";
     position: "relative";
   }
 
