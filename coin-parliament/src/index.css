@@ -1802,8 +1802,8 @@ border-top-left-radius: 0px !important;
   }
 
   .HomeText {
-    zIndex: 0;
-    fontWeight: "400";
+    z-index: 0;
+    font-weight:"400";
     position: "relative";
   }
 

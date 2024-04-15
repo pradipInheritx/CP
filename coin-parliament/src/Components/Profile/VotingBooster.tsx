@@ -289,7 +289,7 @@ const [comingSoon, setComingSoon] = useState(false)
           >
             <img src={votingbooster} alt="" className="" />
           </div>}
-          {window.screen.width > 766 && PaytypeValue?.map((item,index) => {
+          {window.screen.width > 766 && PaytypeValue?.map((item, index) => {            
             return <div
               className="d-flex justify-content-center upgrade_items"
               style={{
@@ -344,7 +344,9 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "40px",
                     lineHeight: 1.1
                   }}
-                >$ {(item?.value)?.toString()?.includes(".") ? item?.value : item?.value + ".00"}</NumberText>
+                >
+                  $ {(item?.value)?.toString()?.includes(".") ? item?.value : item?.value + ".00"}
+                </NumberText>
                 <div className="d-flex mt-3 stars_items">
                   {/* @ts-ignore */}
                   {Array(item?.star).fill().map(() => {
@@ -452,7 +454,7 @@ const [comingSoon, setComingSoon] = useState(false)
                     fontSize: "30px",
                     lineHeight: 1.1
                   }}
-                >$ {item?.value}</NumberText>
+                >$ {(item?.value)?.toString()?.includes(".") ? item?.value : item?.value + ".00"}</NumberText>
                 <div className="d-flex justify-content-center"
                   style={{
                 }}
