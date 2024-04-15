@@ -125,7 +125,7 @@ function UserTableHead({
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={onSortOrderChange(headCell.id)}
-              className={classes.headerWidth}
+              className={classes.headerLable}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -136,7 +136,9 @@ function UserTableHead({
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell align="center">Actions</TableCell>
+        <TableCell align="center" className={classes.headerLable}>
+          Actions
+        </TableCell>
       </TableRow>
     </TableHead>
   );
