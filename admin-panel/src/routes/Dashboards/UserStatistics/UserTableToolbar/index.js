@@ -156,7 +156,7 @@ const UserTableToolbar = ({
         const tempLink = document.createElement("a");
         tempLink.href = fileURL;
         const currentDate = new Date();
-        tempLink.download = `user-list-${dateTimeFormat(
+        tempLink.download = `User-statistics-${dateTimeFormat(
           currentDate,
           "DD/MM/yyyy"
         )}.xlsx`;

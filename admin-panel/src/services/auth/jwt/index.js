@@ -69,6 +69,7 @@ const JWTAuth = {
     };
   },
   onLogout: () => {
+    const localToken = localStorage.getItem("token");
     return dispatch => {
       axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
       dispatch(fetchStart());

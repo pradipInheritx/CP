@@ -92,7 +92,7 @@ const dashboardsMenus = [
     name: <IntlMessages id={"sidebar.dashboard.userstatistics"} />,
     icon: <People />,
     type: "item",
-    link: "/dashboard/usersstatistics"
+    link: "/dashboard/userstatistics"
   }
 
   // {
