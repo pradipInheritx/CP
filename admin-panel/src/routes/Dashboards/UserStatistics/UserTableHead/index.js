@@ -8,7 +8,7 @@ import React from "react";
 
 const headCells = [
   {
-    id: "useName",
+    id: "userName",
     numeric: false,
     disablePadding: false,
     label: "User Name"
