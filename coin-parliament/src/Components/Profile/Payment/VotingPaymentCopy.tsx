@@ -422,8 +422,7 @@ line-height: 101.5%;
 `;
 
 
-const VotingPaymentCopy: React.FC<{
-  checkAndPay: Function,
+const VotingPaymentCopy: React.FC<{  
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
   paymentStatus: { type: string, message: string },
   coinInfo: any,
@@ -434,9 +433,7 @@ const VotingPaymentCopy: React.FC<{
   setSelectCoin: React.Dispatch<React.SetStateAction<string>>,
   showOptionList: boolean,
   setShowOptionList: React.Dispatch<React.SetStateAction<boolean>>,
-  cardPayment: Function,
-}> = ({
-  checkAndPay,
+ }> = ({  
   setPaymentStatus,
   paymentStatus,
   coinInfo,
@@ -446,8 +443,7 @@ const VotingPaymentCopy: React.FC<{
   selectCoin,
   setSelectCoin,
   showOptionList,
-  setShowOptionList,
-  cardPayment,
+  setShowOptionList, 
 }) => {
 
   const translate = useTranslation();  
@@ -699,8 +695,7 @@ const VotingPaymentCopy: React.FC<{
     useEffect(() => {
       // let CoinPay = localStorage.getItem("CoinPay")
       if (chainId && isConnected) {
-        const data = mainnet?.find((network?: any) => network?.chainId == chainId)
-        console.log(data, "datafrommetamask")
+        const data = mainnet?.find((network?: any) => network?.chainId == chainId)        
         if (!data) return
         if (data && selectCoin == "none") {
           setSelectCoin(data?.chainId == 1 && localStorage.getItem("CoinPay") == "USDT ERC20" ? "USDT ERC20" : data?.currency)
@@ -1674,8 +1669,8 @@ const VotingPaymentCopy: React.FC<{
                                 <br />
                                 <span>TIME OFFER</span>
                               </div>
-                              <u>$200</u>
-                              <p>$100</p>
+                              <u>$199</u>
+                              <p>$99</p>
                             </div>
                           </button>
                         </ButttonDivSec>
