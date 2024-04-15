@@ -15,7 +15,8 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
-  sendEmailVerificationLink
+  sendEmailVerificationLink,
+  addNewKeysInCollection
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/sportparliament.json";
 import { getPrice } from "./common/models/Rate";
@@ -153,7 +154,7 @@ exports.getAccessToken = () =>
     });
   });
 
-  // user verification link
+// user verification link
 app.get("/user/verified", async (req: any, res: any) => {
   try {
     const { token } = req.query;
@@ -206,7 +207,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Check if the user registered with Google
     if (userRecord.providerData.some(provider => provider.providerId === 'google.com')) {
       console.log("User registered with Google. Skipping verification email.");
-      return { skipped: true }; 
+      return { skipped: true };
     }
 
     // Create a JWT token with user data
@@ -236,7 +237,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
 });
 
 
-exports.onCreateUser = functions.auth.user().onCreate(async (user:any) => {
+exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
   console.log("create user");
   const status: UserTypeProps = {
     name: "Member",
@@ -287,23 +288,23 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user:any) => {
       .firestore()
       .collection("users")
       .doc(user.uid)
-      .set(userData,{merge: true});
+      .set(userData, { merge: true });
 
-      const getUser: any = (
-        await admin.firestore().collection("users").doc(user.uid).get()
-      ).data();
-      console.log("new user email  : ", getUser.email);
-      console.log("getUser.isVoteToEarn : ",getUser.isVoteToEarn)
-      if (getUser.isVoteToEarn == false) {
-        // Send Welcome Mail To User
-        await sendEmail(
-          userData.email,
-          "Welcome To Sport Parliament!",
-          userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
-        );
+    const getUser: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUser.email);
+    console.log("getUser.isVoteToEarn : ", getUser.isVoteToEarn)
+    if (getUser.isVoteToEarn == false) {
+      // Send Welcome Mail To User
+      await sendEmail(
+        userData.email,
+        "Welcome To Sport Parliament!",
+        userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+      );
 
-        await sendEmailVerificationLink(getUser.email);
-      }
+      await sendEmailVerificationLink(getUser.email);
+    }
 
     return newUser;
 
@@ -311,7 +312,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user:any) => {
     return false;
   }
 });
-import { addNewKeysInCollection } from "./common/models/User";
+
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
