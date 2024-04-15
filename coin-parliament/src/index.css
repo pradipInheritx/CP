@@ -1197,13 +1197,15 @@ html[dir="rtl"] .accordion-button {
 }
 
 .tada {
-    -webkit-animation-name: tada;
+    /* -webkit-animation-name: tada;
     animation-name: tada;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
-    animation: tada 2s ease 0s 3 normal forwards;
+    animation: tada 2s ease 0s 3 normal forwards; */
+    -webkit-animation: tada 2s ease 0s infinite; 
+    animation: tada 2s ease 0s infinite;
 }
 
 @-webkit-keyframes tada {
@@ -1788,3 +1790,19 @@ border-top-left-radius: 0px !important;
         margin: 3px !important;
     }
 }
+
+
+  .custom-container {
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+  }
+  
+  @media only screen 
+    and (device-width: 414px) 
+    and (device-height: 896px) 
+    and (-webkit-device-pixel-ratio: 2) {
+    .custom-container {
+      padding-right: 0;
+      padding-left: 0; 
+    }
+  }

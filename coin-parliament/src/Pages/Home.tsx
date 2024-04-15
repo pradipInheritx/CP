@@ -179,8 +179,9 @@ const Home = () => {
                   fontWeight: "400",
                   position: "relative",
                   // marginTop: "200px",
-                  fontSize: "30px",
-                  marginTop: window?.screen?.width < 768 ? '100px' : "222px",
+                  fontSize: "30px",                  
+                  marginTop: window?.screen?.width < 768 ? '100px' : window?.screen?.width >= 1024 && window?.screen?.width <= 1366 ? '-40px' : "222px",
+
                 }}
 
               className="mb-4"
