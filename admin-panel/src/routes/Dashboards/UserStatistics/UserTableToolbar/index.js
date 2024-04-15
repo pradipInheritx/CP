@@ -51,7 +51,8 @@ const UserTableToolbar = ({
   searchTerm,
   setSearchTerm,
   setFilter,
-  filter
+  filter,
+  setPage
 }) => {
   const classes = useStyles();
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
@@ -124,7 +125,13 @@ const UserTableToolbar = ({
       if (!selectedOption) {
         setFilterTypeError(true);
       } else {
-        setFilter({ ...filter, ...values, filterFields: selectedOption });
+        setPage(0);
+        setFilter({
+          ...filter,
+          ...values,
+          page: 1,
+          filterFields: selectedOption
+        });
         handleClose();
       }
     }

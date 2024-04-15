@@ -169,6 +169,7 @@ const UsersModule = () => {
           setSearchTerm={setSearchTerm}
           setFilter={setFilter}
           filter={filter}
+          setPage={setPage}
         />
         <TableContainer className={classes.container}>
           <Table
