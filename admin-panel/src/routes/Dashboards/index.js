@@ -15,7 +15,7 @@ const Dashboards = ({ match }) => {
         <Redirect
           exact
           from={`${requestedUrl}/`}
-          to={`${requestedUrl}/usersstatistics`}
+          to={`${requestedUrl}/userstatistics`}
         />
         <Route
           path={`${requestedUrl}/crypto`}
@@ -38,8 +38,8 @@ const Dashboards = ({ match }) => {
           component={lazy(() => import("./Users"))}
         />
         <Route
-          path={`${requestedUrl}/usersstatistics`}
-          component={lazy(() => import("./UsersStatistics"))}
+          path={`${requestedUrl}/userstatistics`}
+          component={lazy(() => import("./UserStatistics"))}
         />
         <Route
           path={`${requestedUrl}/usertypesetting`}

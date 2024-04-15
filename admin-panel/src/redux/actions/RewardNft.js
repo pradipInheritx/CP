@@ -15,7 +15,8 @@ import {
   DELETE_REWARDCARD
 } from "../../@jumbo/constants/ActionTypes";
 
-//   "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
+//   "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/"; staging
+// "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/generic/admin/uploadFiles/" live
 const ForVideoImg =
   "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
 export const getRewardAlbum = (

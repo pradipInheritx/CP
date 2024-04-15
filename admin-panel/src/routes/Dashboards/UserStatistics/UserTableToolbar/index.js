@@ -28,6 +28,13 @@ import * as yup from "yup";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { DatePicker } from "@material-ui/pickers";
 import { TextField } from "@material-ui/core";
+import { allUserDataExport } from "../../../../redux/actions/Users";
+import moment from "moment";
+import {
+  fetchError,
+  fetchStart,
+  fetchSuccess
+} from "../../../../redux/actions/Common";
 
 const filterOptionsList = [
   { label: "SignUp Time", value: "signUpTime" },
@@ -65,6 +72,10 @@ const UserTableToolbar = ({
   });
 
   const dispatch = useDispatch();
+
+  const dateTimeFormat = (value, DateFormat = "DD/MM/yyyy HH:mm") => {
+    return moment(value).format(DateFormat);
+  };
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -136,6 +147,33 @@ const UserTableToolbar = ({
 
   const numSelected = selected.length;
 
+  const onHandleExportData = async () => {
+    dispatch(fetchStart());
+    await allUserDataExport()
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(response);
+
+        const tempLink = document.createElement("a");
+        tempLink.href = fileURL;
+        const currentDate = new Date();
+        tempLink.download = `User-statistics-${dateTimeFormat(
+          currentDate,
+          "DD/MM/yyyy"
+        )}.xlsx`;
+
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+
+        // Release the allocated blob URL
+        dispatch(fetchSuccess("File exported successfully"));
+        window.URL.revokeObjectURL(fileURL);
+      })
+      .catch(error => {
+        dispatch(fetchError(error.message));
+      });
+  };
+
   return (
     <React.Fragment>
       <Toolbar
@@ -203,7 +241,14 @@ const UserTableToolbar = ({
                 <FilterListIcon />
               </IconButton>
             </Tooltip>
-            {/* <Button variant="">Export</Button> */}
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              onClick={() => onHandleExportData()}
+            >
+              Export
+            </Button>
             <Menu
               transformOrigin={{
                 vertical: "top",

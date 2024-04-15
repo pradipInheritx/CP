@@ -190,3 +190,11 @@ export const getAllUersData = (payloadObj, callbackFun) => {
       });
   };
 };
+
+export const allUserDataExport = async () => {
+  let response = await axios.get(
+    `https://us-central1-coin-parliament-staging.cloudfunctions.net/exportUserStatisticsData`,
+    { responseType: "blob" }
+  );
+  return response.data;
+};
