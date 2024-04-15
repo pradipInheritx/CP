@@ -2557,6 +2557,10 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
     if (!orderBy) orderBy = "userName";
     if (!sort) sort = 'asc';
     limit = parseInt(limit);
+    console.log("page ---> ", page);
+    console.log("limit ---> ", limit);
+    console.log("orderBy ---> ", orderBy);
+    console.log("sort ---> ", sort);
 
     let query: any = admin.firestore().collection("userStatistics");
 
@@ -2602,10 +2606,20 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
       return user;
     });
 
+    // Nan values handled
+    result.forEach((obj: any) => {
+      Object.keys(obj).forEach(key => {
+        // Check if the field value is a number and NaN
+        if (typeof obj[key] === 'number' && isNaN(obj[key])) {
+          obj[key] = 0;
+        }
+      });
+    });
+
     console.log("orderby--->", orderBy);
     // Sort result asc/desc acc to orderBy field
     result.sort(function (a: any, b: any) {
-      if (orderBy.includes('Day') || orderBy.includes('Time')) {
+      if (orderBy !== 'noOfVotesDays' && (orderBy.includes('Day') || orderBy.includes('Time'))) {
         const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
         const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
         return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
@@ -2614,8 +2628,8 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
         if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
           const valueA = a[orderBy] || ''; // Default value if undefined
           const valueB = b[orderBy] || ''; // Default value if undefined
-          console.log("valueA--->", valueA);
-          console.log("valueB--->", valueB);
+          // console.log("valueA--->", valueA);
+          // console.log("valueB--->", valueB);
           return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
 
           // Handle sorting for numeric field values
