@@ -1818,3 +1818,18 @@ border-top-left-radius: 0px !important;
       margin-top: unset;
     }
   }
+
+  .custom-container {
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+  }
+  
+  @media only screen 
+    and (device-width: 414px) 
+    and (device-height: 896px) 
+    and (-webkit-device-pixel-ratio: 2) {
+    .custom-container {
+      padding-right: 0;
+      padding-left: 0; 
+    }
+  }
