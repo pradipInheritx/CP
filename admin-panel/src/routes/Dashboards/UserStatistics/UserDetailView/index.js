@@ -40,8 +40,22 @@ const UserDetailView = ({ open, onCloseDialog }) => {
     TotalAmbassadorRewards,
     source,
     signUpTime,
-    starred
+    starred,
+    lastLoginDay
   } = currentUserDetelis;
+
+  function convertToDateOnly(dateString) {
+    if (!dateString || dateString == undefined || typeof dateString == "object")
+      return "-";
+    const date = new Date(dateString);
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`;
+    return formattedDate;
+  }
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
@@ -70,7 +84,7 @@ const UserDetailView = ({ open, onCloseDialog }) => {
         </Box>
       </Box>
       <Box px={6} py={5}>
-        <Box mb={5} component="h6" color="common.dark">
+        <Box mb={5} component="h2" color="common.dark">
           User Detail
         </Box>
 
@@ -104,7 +118,9 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {Country || "-"}
+            {currentUserDetelis?.Country.trim()
+              ? currentUserDetelis?.Country
+              : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
@@ -127,6 +143,17 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             className="pointer d-block"
           >
             {lastVoteDay || "-"}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
+          Last Login Day :
+          <Box
+            ml={5}
+            color="primary.main"
+            component="p"
+            className="pointer d-block"
+          >
+            {lastLoginDay ? convertToDateOnly(lastLoginDay) : "-"}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>

@@ -190,7 +190,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
         if (error?.response?.data?.result?.name == "TokenExpiredError") {
           localStorage.clear();
         }
-        dispatch(fetchError("There was something issue in responding server"));
+        dispatch(fetchError(error.response.data.error.message));
       });
   };
 };
