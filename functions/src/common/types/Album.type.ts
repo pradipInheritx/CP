@@ -1,15 +1,15 @@
-interface Sets {
+type SetsProps = {
     setName: string;
     sequence: string
 }
-interface Album {
+type AlbumProps = {
     albumName: string;
     albumImageUrl: string;
     albumVideoUrl: string;
-    setQunatity: number;
+    setQuantity: number;
 }
 
-type Card = {
+type CardProps = {
     albumId: string;
     setId: string;
     albumName: string;

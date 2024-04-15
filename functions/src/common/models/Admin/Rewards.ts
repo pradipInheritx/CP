@@ -69,14 +69,14 @@ export const createAlbum = async (req: any, res: any) => {
     try {
         const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
-        const newAlbum: Album = {
+        const newAlbum: AlbumProps = {
             albumName,
-            setQunatity,
+            setQuantity: setQunatity,
             // setDetails,
             albumImageUrl,
             albumVideoUrl
         }
-        const newSets: Sets[] = setDetails
+        const newSets: SetsProps[] = setDetails
 
         const checkAlbums = await firestore()
             .collection("nftGallery")
@@ -148,7 +148,7 @@ export const createCard = async (req: any, res: any) => {
             });
         }
 
-        const newCard: Card = {
+        const newCard: CardProps = {
 
             albumId,
             setId,
@@ -349,9 +349,9 @@ export const updateAlbums = async (req: any, res: any) => {
         const { albumId } = req.params
         const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
-        const updatedAlbum: Album = {
+        const updatedAlbum: AlbumProps = {
             albumName,
-            setQunatity,
+            setQuantity: setQunatity,
             // setDetails,
             albumImageUrl,
             albumVideoUrl
@@ -437,7 +437,7 @@ export const updateCard = async (req: any, res: any) => {
         }
 
 
-        const updatedCard: Card = {
+        const updatedCard: CardProps = {
             albumId,
             setId,
             albumName: getAlbum?.albumName,

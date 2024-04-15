@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import Timestamp = admin.firestore.Timestamp;
-import {UserTypeProps} from "./User.interface";
+import {UserTypeProps} from "./User.type";
 export type VoteStatistics = {
     total: number;
     successful: number;

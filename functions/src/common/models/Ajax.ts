@@ -1,6 +1,6 @@
 import env from "../../env/env.json";
 //import requestPromise from "request-promise";
-import { VoteResultProps } from "../interfaces/Vote.interface";
+import { VoteResultProps } from "../types/Vote.type";
 import { messaging } from "firebase-admin";
 import axios from "axios";
 

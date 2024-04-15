@@ -17,7 +17,7 @@ import constants from "../../config/constants.json";
 import { sendEmail } from "../../services/emailServices";
 import { adminSignupTemplate } from "../../emailTemplates/adminSignupTemplate";
 import { adminForgotPasswordTemplate } from "../../emailTemplates/adminForgotPassword";
-import { adminUserProps } from "../../interfaces/Admin.interface"
+import { adminUserProps } from "../../types/Admin.type"
 
 
 

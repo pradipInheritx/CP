@@ -1,7 +1,7 @@
-import { UserProps } from "../interfaces/User.interface";
+import { UserProps } from "../types/User.type";
 import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
-import { paxTransactionObj } from "../interfaces/Pax.interface";
+import { paxTransactionObj } from "../types/Pax.type";
 import * as constants from "../consts/payment.const.json";
 import { sendPaxPendingNotification } from "./SendCustomNotification";
 
