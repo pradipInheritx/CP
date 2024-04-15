@@ -28,7 +28,7 @@ import NoRecordFound from "./NoRecordFound";
 
 const UsersModule = () => {
   const classes = useStyles();
-  const { allUserData, totalCount } = useSelector(
+  const { allUserData = [], totalCount } = useSelector(
     ({ usersReducer }) => usersReducer
   );
   const [orderBy, setOrderBy] = React.useState("");
@@ -184,7 +184,7 @@ const UsersModule = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={allUserData.length}
+              rowCount={allUserData?.length}
             />
             <TableBody>
               {!!allUserData.length ? (

@@ -48,7 +48,7 @@ const headCells = [
     id: "totalVotes",
     numeric: false,
     disablePadding: false,
-    label: "Total Vote"
+    label: "Total Votes"
   },
   {
     id: "averageVotes",
@@ -78,7 +78,7 @@ const headCells = [
     id: "TotalAmbassadorRewards",
     numeric: false,
     disablePadding: false,
-    label: "TotalAmbassadorRewards"
+    label: "Total Ambassador Rewards"
   },
   {
     id: "userId",

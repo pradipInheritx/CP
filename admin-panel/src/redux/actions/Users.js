@@ -169,11 +169,15 @@ export const getAllUersData = (payloadObj, callbackFun) => {
       )
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
-          dispatch(fetchSuccess());
-          dispatch({
-            type: GET_ALL_USER_DATA,
-            payload: data.data.result
-          });
+          if (data.data.result.status) {
+            dispatch(fetchSuccess());
+            dispatch({
+              type: GET_ALL_USER_DATA,
+              payload: data.data.result
+            });
+          } else {
+            dispatch(fetchError(data.data.result.message));
+          }
 
           if (callbackFun) callbackFun(data.data);
         } else {
@@ -183,7 +187,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
         }
       })
       .catch(error => {
-        if (error.response.data.result.name == "TokenExpiredError") {
+        if (error?.response?.data?.result?.name == "TokenExpiredError") {
           localStorage.clear();
         }
         dispatch(fetchError("There was something issue in responding server"));
