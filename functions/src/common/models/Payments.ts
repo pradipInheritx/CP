@@ -822,11 +822,11 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 
       const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).get()).data();
 
-      console.info("Get Updated data", getUpdatedData);
+      console.info("Get Updated data-->", getUpdatedData);
 
       const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: Timestamp.now() });
 
-      console.info("addNewPayment", addNewPayment);
+      console.info("addNewPayment-->", addNewPayment);
 
       // if (addNewPayment.id) {
       //   firestore().collection("callbackHistory").doc(getTransactionFromAcme[getTransactionFromAcme.length - 1].id).delete().then(() => {
@@ -873,7 +873,7 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
       chainId: req.body.chainId,
       amount: req.body.amount,
       intentLimit: req.body.intentLimit ? req.body.intentLimit : 0,
-      redirectUrl: `${env.BASE_SITE_URL}/paymentList?userId=${req.body.userId}`,
+      redirectUrl: `${env.BASE_SITE_URL}/votepayment?userId=${req.body.userId}`,
       memo: "INITIATED"
     };
 
@@ -901,17 +901,17 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
         });
 
 
-      console.info("Redirect URL", JSON.stringify(redirectUrl));
+      console.info("Redirect URL--->", JSON.stringify(redirectUrl));
 
       res.status(200).send({
         status: true,
-        message: "Payment transaction link created successfully",
+        message: parentConst.ACME_REDIRECT_URL_CREATED_SUCCESSFULLY,
         redirectUrl
       });
     } else {
       res.status(500).send({
         status: false,
-        message: "Something went wrong while create the payment link from acme",
+        message: parentConst.ACME_REDIRECT_URL_SOMETHING_WENT_WRONG,
         redirectUrl: ""
       });
     }
@@ -919,7 +919,7 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
     console.info("Error", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong",
+      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
       result: error,
     });
   }
