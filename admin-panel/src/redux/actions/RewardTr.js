@@ -29,7 +29,7 @@ export const getRewardTr = (
     // https://us-central1-coin-parliament-staging.cloudfunctions.net
     axios
       .post(
-        `https://us-central1-coinparliament-51ae1.cloudfunctions.net/getRewardTransactions`,
+        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getRewardTransactions`,
         id
       )
       .then(data => {

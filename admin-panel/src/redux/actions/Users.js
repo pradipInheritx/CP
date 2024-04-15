@@ -164,7 +164,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
     dispatch(fetchStart());
     axios
       .post(
-        `https://us-central1-coinparliament-51ae1.cloudfunctions.net/getAllUserStatistics`,
+        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getAllUserStatistics`,
         { ...payloadObj }
       )
       .then(data => {

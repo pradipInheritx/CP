@@ -17,7 +17,7 @@ import {
 
 //   "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
 const ForVideoImg =
-  "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
+  "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
 export const getRewardAlbum = (
   filterOptions = [],
   searchTerm = "",
