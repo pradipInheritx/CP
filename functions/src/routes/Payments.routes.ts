@@ -7,7 +7,7 @@ import {
     getParentPayment,
     updateUserAfterPayment,
     getInstantReferalAmount,
-    callbackFromServer,
+    // callbackFromServer,
     paymentStatusOnUserFromCreditCard,
     getAllPendingPaxByUser,
     createPaymentOnTempTransactionOnCreditCard
@@ -16,7 +16,7 @@ import { getPendingPaymentbyUserId, collectPendingParentPayment, updateParentRef
 
 const paymentRouter = Router();
 
-paymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
+//paymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
 paymentRouter.post("/update/user/afterPayment", updateUserAfterPayment);
 paymentRouter.post("/update/paymentStatusOnTransaction/fromUser/onCreditCard", paymentStatusOnUserFromCreditCard);
 paymentRouter.post("/make/createTempPaymentTransaction/onCreditCard", createPaymentOnTempTransactionOnCreditCard);
