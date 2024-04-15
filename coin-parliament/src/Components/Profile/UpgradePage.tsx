@@ -183,17 +183,14 @@ const UpgradePageCopy = () => {
     let payvalue = [amount, "UPGRADE", extravote]
     let PayValuestring = JSON.stringify(payvalue)
     localStorage.setItem("PayAmount", PayValuestring);
-    navigate("/paymentList")
+    navigate("/votepayment")
   }
 
 
   return (
     <>
       {
-
-
         userInfo ?
-
           <>
             <div
               className='p-0 m-0 w-100 d-flex justify-content-center'
@@ -406,7 +403,7 @@ const UpgradePageCopy = () => {
                         <button
                           onClick={() => {
                             handleSoundClick()
-                            upgradeProfile(100, 25)
+                            upgradeProfile(99, 25)
                             // showModal(<Upgrade />)
                             // setComingSoon(true)
                           }}
@@ -426,8 +423,8 @@ const UpgradePageCopy = () => {
                               <br />
                               <span>TIME OFFER</span>
                             </div>
-                            <u>$200</u>
-                            <p>$100</p>
+                            <u>$199</u>
+                            <p>$99</p>
                           </div>
 
 

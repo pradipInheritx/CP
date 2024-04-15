@@ -2204,7 +2204,7 @@ const handleAcceptAll = () => {
                                               element={<CoinsList />}
                                           /> */}
 
-                                            <Route path='/paymentList'
+                                            {/* <Route path='/paymentList'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
                                               element={
 
@@ -2212,7 +2212,7 @@ const handleAcceptAll = () => {
                                                   isVotingPayment={false}
                                                 />
                                               }
-                                            />
+                                            /> */}
                                             <Route path='/VotePayment'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
                                               element={<PaymentFun
