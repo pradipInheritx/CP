@@ -2216,7 +2216,7 @@ const handleAcceptAll = () => {
                                             <Route path='/VotePayment'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
                                               element={<PaymentFun
-                                                isVotingPayment={true}
+                                                isVotingPayment={false}
                                               />}
                                             />
                                             <Route
