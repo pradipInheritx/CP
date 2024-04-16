@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import UserContext, { AddAllUserName, getReferUser, getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
@@ -117,6 +117,12 @@ import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import ProtectedRoutes from "routes/ProtectedRoutes";
 import PageNotFound from "Pages/PageNotFound";
 import Routes from "routes/Routes";
+import SelectBio from "Components/LoginComponent/SelectBio";
+import votingParliament from "firebaseVotingParliament";
+import sportParliament from "firebaseSportParliament";
+import stockParliament from "firebaseStockParliament";
+import coinParliament from "firebaseCoinParliament";
+import LandingPage from "Pages/LandingPage";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -133,11 +139,9 @@ const localhost = window.location.hostname === "localhost";
 //   .transaction("firebaseLocalStorage")
 //   .objectStore("firebaseLocalStorage").getAll().onsuccess = (event:any) => {
 //     userData=event.target.result[0]?.value?.uid
-//     console.log('Got all customers:', event.target.result[0]?.value?.uid);
 
 //   }
 // //   .get("444-44-4444").onsuccess = (event) => {
-// //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
 // // };
 // };
 
@@ -193,7 +197,6 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-    // console.log("scrollTo");
   }, [pathname])
 
   const showToast = useCallback(
@@ -292,6 +295,7 @@ function App() {
   const [singalCardData, setSingalCardData] = useState<any>([]);
   const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   // const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
@@ -349,6 +353,7 @@ function App() {
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
   const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -357,11 +362,13 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
   const [userUid, setUserUid] = useState("");
   const [chosenUserType, setChosenUserType] = useState<string>("");
+  const [parentEmailId, setParentEmailId] = useState<string>("");
   const [lang, setLang] = useState<string>(
     getLangByKey(new URLSearchParams(search).get("lang") + "")
   );
@@ -376,6 +383,7 @@ function App() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer, setRemainingTimer] = useState(0)
   const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [avatarImage, setAvatarImage] = useState<any>(null)  
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -392,7 +400,6 @@ function App() {
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
-      console.log("we are being triggered :D");
       setSupportsPWA(true);
       setPromptInstall(e);
     };
@@ -405,7 +412,6 @@ function App() {
   //   const isMFAPassed = window.localStorage.getItem('mfa_passed')
   //   if (isMFAPassed == 'true' && !login) {
 
-  //     console.log('2faCalled')
   //     // @ts-ignore
   //     Logout(setUser)
   //   }
@@ -414,7 +420,6 @@ function App() {
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
-    console.log('not supported', promptInstall)
     if (!promptInstall) {
       return;
     }
@@ -422,7 +427,7 @@ function App() {
     else promptInstall.prompt();
   };
   if (!supportsPWA) {
-    console.log('not supported')
+
   }
   // useEffect(() => {
   //   if (user?.email && userInfo?.displayName === undefined) {
@@ -433,7 +438,6 @@ function App() {
   //     // }, 2000);
   //   }
   // }, [user, userInfo]);
-
 
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
@@ -456,7 +460,6 @@ function App() {
 
   useEffect(() => {
     // const buttons = document.getElementsByTagName('button');
-    // console.log('buttondata',buttons);
     // for (let i = 0; i < buttons.length; i++) {
     //   buttons[i].addEventListener('click', handleSoundClick);
     // }
@@ -468,7 +471,6 @@ function App() {
     } else {
       const isMFAPassed = window.localStorage.getItem('mfa_passed')
       if (!user && isMFAPassed !== 'true') {
-        console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
       }
@@ -479,7 +481,10 @@ function App() {
     //     buttons[i].removeEventListener('click', handleSoundClick);
     //   }
     // }
-  }, [location, search]);
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -492,6 +497,7 @@ function App() {
     // @ts-ignore
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
+      setShowMenuBar(true);
     }
 
   }, [userInfo]);
@@ -527,14 +533,12 @@ function App() {
     );
   }
 
-  console.log('fmctoken', fcmToken)
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
     if (localStorageLang && languages.includes(localStorageLang)) {
       setMounted(true);
     }
   }, [languages]);
-  // console.log('user', userInfo)
   useEffect(() => {
     if (user?.uid) {
       setDoc(doc(db, "users", user?.uid), { lang }, { merge: true }).then(
@@ -559,7 +563,7 @@ function App() {
         setLoginRedirectMessage("");
 
 
-        // await updateUser(user);
+        await updateUser(user);
         setUserUid(user?.uid);
         onSnapshot(doc(db, "users", user.uid), async (doc) => {
           await setUserInfo(doc.data() as UserProps);
@@ -574,13 +578,11 @@ function App() {
                 { token: fcmToken },
                 { merge: true }
               );
-              console.log("push enabled");
             } catch (e) {
               console.log(e);
             }
           }
         } catch (e) {
-          console.log("An error occurred while retrieving token. ", e);
         }
       } else {
         // await updateUser();
@@ -588,6 +590,13 @@ function App() {
     });
     // }
   }, [user, fcmToken, coins, JSON.stringify(auth?.currentUser)]);
+
+
+  const getpraintId = async () => {
+    // let refVale = await getReferUser(V2EParliament.firestore())
+    let refVale = await getReferUser(votingParliament.firestore())
+  }
+  getpraintId()
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -616,8 +625,13 @@ function App() {
       localStorage.removeItem('parentEmail');
     }
   }, []);
-  // console.log(auth?.currentUser, userInfo, loader, 'pkk');
 
+useEffect(()=>{
+  if (userInfo) {
+    setFirstTimeAvatarSelection(!userInfo?.avatar)      
+  }
+},[JSON.stringify(userInfo)])
+  console.log((window.screen.width < 767  && sessionStorage.getItem("landing")!='true'),'loading');
   return loader ? (
     <Spinner />
   ) : (
@@ -644,7 +658,15 @@ function App() {
             }}
           >
             <AppContext.Provider
-              value={{
+                value={{
+                  setBackgrounHide,
+                  backgrounHide,
+                  avatarImage,
+                  setAvatarImage,
+                  selectBioEdit,
+                  setSelectBioEdit,
+                parentEmailId,
+                setParentEmailId,
                 setLoader,
                 firstTimeAvatarSlection,
                 setFirstTimeAvatarSelection,
@@ -678,6 +700,8 @@ function App() {
                 setSignup,
                 firstTimeLogin,
                 setFirstTimeLogin,
+                showMenubar,
+                setShowMenuBar,
                 menuOpen,
                 setMenuOpen,
                 fcmToken,
@@ -784,33 +808,88 @@ function App() {
 
                         {/* <Background pathname={pathname} /> */}
                         <AppContainer
+                        style={{backgroundColor:pathname.includes("HomePage") ? ("white") : ""}}
                           fluid
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
                         // width={width}
                         >
-
-
-
                           <Container
                             fluid
                             style={{
-                              background: "#160133",
+                              // background: "#160133",
                               whiteSpace: "normal",
                               wordWrap: "break-word",
                               flexGrow: 1,
                               padding: '0px 0px 0px 0px'
                             }}
                           >
-                            <Header />
-                            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                              <Login2fa
-                                setLogin={setLogin}
-                                setMfaLogin={setMfaLogin}
+                            {
+                            // (window.screen.width < 767 ? sessionStorage.getItem("landing") == 'true': "false") &&
+                            // landing === "true" &&
+                            <Header
+                            setMfaLogin={setMfaLogin}
+                            />}
+                            {user && firstTimeLogin && (
+                              <FirstTimeLogin
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
+                                }
+                                generate={generateUsername}
+                                
+                                saveUsername={async (username: any, DisplayName: any) => {  
+                                  // @ts-ignore
+                                  const allAppUid = JSON.parse(localStorage.getItem("userId"))
+                                  console.log(allAppUid,"allAppUid")
+                                  if (user?.uid) {                                    
+                                    await saveUsername(user?.uid, username, "");
+                                    await saveDisplayName(user?.uid, DisplayName, "");                                    
+                                    
+                                    await AddAllUserName(coinParliament.firestore(), allAppUid?.coin, username, DisplayName);
+                                    await AddAllUserName(sportParliament.firestore(), allAppUid?.sport,username,DisplayName);
+                                    await AddAllUserName(votingParliament.firestore(), allAppUid?.voting,username,DisplayName);
+                                    await AddAllUserName(stockParliament.firestore(), allAppUid?.stock,username,DisplayName);
+
+                                    setFirstTimeAvatarSelection(true);
+                                    // setFirstTimeFoundationSelection(true);
+                                    setFirstTimeLogin(false);
+                                  }
+                                }}
                               />
                             )}
 
-                            <Routes>
+                            {!firstTimeLogin && firstTimeAvatarSlection && (
+                              <FirstTimeAvatarSelection
+                                user={user}
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
+                                }
+                                setSelectBioEdit={
+                                  setSelectBioEdit
+                                }
+                              />
+                            )}
+                            {!firstTimeLogin && !firstTimeAvatarSlection && selectBioEdit && (
+                              <SelectBio
+                                userData={user}
+                                setSelectBioEdit={
+                                  setSelectBioEdit
+                                }
+                              // setFirstTimeAvatarSelection={
+                              //   setFirstTimeAvatarSelection
+                              // }
+                              />
+                            )}
+
+                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
+                                />
+                              )}
+                            {!firstTimeLogin && <Routes>
+                              <Route path='/HomePage' element={<LandingPage/>} />
+                              {(window.screen.width < 767 && sessionStorage.getItem("landing")!='true') && <Route path='/' element={<LandingPage/>} />}
                               <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
                                   {...{
@@ -820,7 +899,11 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-                              <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
+                              {!login &&
+                                !firstTimeAvatarSlection &&
+                                !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
+                              <>
+                              <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} /> 
                               <Route path="/" element={<ProtectedRoutes />}>
                                 <Route path='/' element={<Home />} />
                                 <Route path={'profile/share'} element={<Pool />} />
@@ -830,8 +913,9 @@ function App() {
                                   <Route path={ProfileTabs.password} element={<Security />} />
                                   <Route path={ProfileTabs.wallet} element={<Wallet />} />
                                 </Route>
-                              </Route>
-                            </Routes>
+                                </Route>
+                              </>}
+                            </Routes>}
                           </Container>
                           {/* <Footer /> */}
                         </AppContainer>

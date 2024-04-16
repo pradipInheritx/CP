@@ -9,11 +9,13 @@ export enum AvatarType {
   Hodler = "Hodler",
   Investor = "Investor",
   Trader = "Trader",
+  Custom = "Custom",
 }
+
 export const defaultAvatar = AvatarType.Founder;
 
 type AvatarsProps = {
-  type: AvatarType | string;
+  type: AvatarType;
   width?: number;
   style?: object;
 };
@@ -46,8 +48,9 @@ const Avatars = ({
 }: AvatarsProps) => {
   const src = (type && !type.includes('http')) ? importFile(`./The${type && avatarArray?.includes(type) ? type : defaultAvatar}`).default : type;
   // console.log(src, 'importFile');
-  // @ts-ignore
-  return <img style={{ height: '35px', width: '35px', borderRadius: '50px' }} src={src} alt="Logo" referrerPolicy="no-referrer" />;
+
+  return <Image width={width} roundedCircle={true} src={src} style={style} referrerPolicy="no-referrer" />;
+
 };
 
 export default Avatars;

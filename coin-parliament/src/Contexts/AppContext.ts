@@ -26,6 +26,14 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  setBackgrounHide?: any,
+  backgrounHide?: any,
+  avatarImage?: any,
+  setAvatarImage?: any,
+  selectBioEdit?: any,
+  setSelectBioEdit?: any,
+  parentEmailId?: any;
+  setParentEmailId?: any;
   followerUserId?: string;
   setFollowerUserId?: (lang: string) => void;
   remainingTimer?: any;
@@ -70,6 +78,8 @@ export type AppContextProps = {
   setSignup: (s: boolean) => void;
   firstTimeLogin: boolean;
   setFirstTimeLogin: (s: boolean) => void;
+  showMenubar: boolean;
+  setShowMenuBar: (s: boolean) => void;
   menuOpen: boolean;
   setMenuOpen: (o: boolean) => void;
   profileTab: ProfileTabs;

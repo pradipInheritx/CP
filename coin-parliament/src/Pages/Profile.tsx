@@ -243,7 +243,7 @@ const Profile = () => {
       )}
       <div
         className='p-0'
-        style={{ minHeight: window.screen.width < 979 ? "68vh" : "77vh" }}
+        style={{ minHeight: window.screen.width < 979 ? "77vh" : "77vh" }}
       >
         <div className="w-100" style={{ color: "var(--black)" }}>
           <div className='p-0 col'>

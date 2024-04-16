@@ -1404,7 +1404,6 @@ html[dir="rtl"] .accordion-button {
 
 /* //modal */
 .modal-content{
-    
     border-radius: 100px 0px 100px 100px !important;
 }
 .modal-backdrop.fade{
@@ -1452,4 +1451,20 @@ animation: blinker 1s linear infinite;
     >a:focus {
         color:white;
     }
+  }
+
+  .vte-landing img  {
+max-width: 100%;
+vertical-align: top;
+  }
+
+  .vte-landing .logo{
+    max-width: 75px;
+    margin: 0px auto;
+  }
+
+  @media only screen and (max-width: 767px) {
+  .vte-landing .title-sec{
+    font-size: 20px
+  }
   }

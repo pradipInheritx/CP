@@ -1,16 +1,21 @@
-import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
-import firebaseStockParliament, { db } from "firebaseStockParliament"
+import { SignupPayload, assignRef, validateSignup, verifySportEmail } from "./Login";
+import firebaseStockParliament, { db, assignStock } from "firebaseStockParliament"
 
 import { Callback } from "./utils";
 import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData } from "Contexts/User";
 import stockParliament from "firebaseStockParliament";
+import { generateUsername } from "common/utils/strings";
+
+import { useContext } from "react";
 export const SignupRegularForStockParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: any }
+    userData?: { [key: string]: any },
+    parentEmailId?: any
 ) => {
+    
     try {
         console.log('stock');
         validateSignup(payload);
@@ -21,13 +26,17 @@ export const SignupRegularForStockParliament = async (
         );
         if (auth?.currentUser) {
             // await sendEmailVerification(auth?.currentUser);
-            const referUser = await getReferUser(stockParliament.firestore());
+            const referUser = await getReferUser(stockParliament.firestore(), parentEmailId);
             await saveUserData((auth?.currentUser?.uid || ''), db, {
+                // displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
+                isVoteToEarn: true,
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            // await assignStock({ parent: referUser?.uid, child: auth?.currentUser?.uid })
+            await assignRef(referUser?.uid, auth?.currentUser?.uid, process.env.REACT_APP_STOCK_API || '')
             await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_STOCK_API || ''));
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });

@@ -10,7 +10,7 @@ const Spinner = () => {
         style={{ height: "100vh", width: "100vw", color: "white" }}
       >
 
-        <div className="tada m-2">{translate("Wait for it")}</div>
+        <div className="tada m-2">{translate("Wait for it".toUpperCase())}</div>
       </div>
       {/* <div className="tada m-2"> <img src={BigLogo}></img></div> */}
     </React.Fragment>

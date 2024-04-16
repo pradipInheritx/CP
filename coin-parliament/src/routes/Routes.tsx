@@ -1,12 +1,20 @@
+import AppContext from 'Contexts/AppContext';
 import PageNotFound from 'Pages/PageNotFound';
-import React, { PropsWithChildren } from 'react'
+import React, { FC, PropsWithChildren, useContext } from 'react'
 import { Routes as DefaultRoutes, Route } from "react-router-dom";
-const Routes: React.FC = ({ children }: PropsWithChildren<{}>) => {
+interface MyComponentProps {
+    children: (false | React.ReactElement)[]; 
+  }
+  
+  const Routes: FC<MyComponentProps> = ({ children }) => {
+    const { firstTimeAvatarSlection, selectBioEdit } = useContext(AppContext);
     return (
-        <>
-            <DefaultRoutes>
+        <>            
+            <DefaultRoutes>                
                 {children}
-                <Route path='*' element={<PageNotFound />} />
+                {(!firstTimeAvatarSlection && selectBioEdit) && (firstTimeAvatarSlection && !selectBioEdit)  &&
+                    <Route path='*' element={<PageNotFound />} />
+                }
             </DefaultRoutes>
         </>
     )

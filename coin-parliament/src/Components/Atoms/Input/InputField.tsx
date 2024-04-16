@@ -4,6 +4,7 @@ import { Input } from "../../LoginComponent/styles";
 
 export type InputProps = Partial<FormControlProps> & {
   name: string;
+  placeholder?: string;
   required: boolean;
   fullWidth?: boolean;
   maxlength?: string  | number;

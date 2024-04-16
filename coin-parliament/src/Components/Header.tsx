@@ -172,12 +172,14 @@ const Header = ({
   title,
   logo = true,
   pathname,
-  remainingTimer
+  remainingTimer,
+  setMfaLogin,
 }: {
   title?: React.ReactNode;
   logo?: boolean;
   pathname: string;
   remainingTimer: number;
+  setMfaLogin:any;
 }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
@@ -328,6 +330,7 @@ const Header = ({
   return (
 
     <MenuContainer
+      setMfaLogin={setMfaLogin}
       pathname={pathname}
       onSelect={onSelect}
 
@@ -446,8 +449,9 @@ const Header = ({
                   >
                     <Avatars
                       type={(userInfo?.avatar || defaultAvatar) as AvatarType}
-                      style={{
-                        width: "45px",
+                      style={{                        
+                        width: "60px",
+                        height: "60px",
                         boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
 
                       }}
@@ -506,6 +510,7 @@ const Header = ({
                       type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
                       style={{
                         width: "60px",
+                        height: "60px",
                         boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
                       }}
                     />

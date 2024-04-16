@@ -19,7 +19,17 @@
   border:1px solid red;
   width :730px;
 } */
+.AvatarModal{
+  background: none !important;
+  border: none !important;
+  width: 100% !important;
+  padding: 0px !important;
+  margin: 15% 0px 0px 0px !important;
+}
 
+.AvatarModalTop{
+  margin: 40% 0px 0px 0px !important;
+}
 
 .card-container{ 
   max-width: 250px !important; 
@@ -68,10 +78,31 @@
   display: flex;
   justify-content: center;
 }
-
+.HomeshareBox{
+    padding-top:1em;
+    position:absolute;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width: 12rem;
+    /* height: 5rem; */
+    flex-shrink: 0;
+    background-image: url("../assets/images/tooltip.svg"); 
+    background-size: 193px 146px;    
+background-repeat: no-repeat;
+    /* background-color: white; */
+}
 
 @media screen and (max-width: 450px) {
   .card-container{ 
     max-width: 310px;
   }
+}
+
+.buttonHover:hover {
+  background-color: #6352e8; 
+}
+
+.buttonHover:hover a {
+  color: #ffffff;
 }

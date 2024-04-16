@@ -47,6 +47,7 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import axios from 'axios';
+import Spinner from "Components/Spinner";
 // import QRCode from "qrcode";
 
 const title = {
@@ -81,8 +82,8 @@ const Login2fa = ({
   const [copied, setCopied] = useState(false)
 
 
-  const url = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`
-  const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`
+  const url = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/generateGoogleAuthOTP`
+  const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/verifyGoogleAuthOTP`;
 
   // const createPost = async (id:string) => {
   //   const data ={
@@ -102,26 +103,56 @@ const Login2fa = ({
   //   }
   // };
 
+  // const verifyOtp = async (token: string) => {
+  //   try {
+  //     const response = await axios.post(otpurl, {
+  //       "userId": userInfo?.uid,
+  //       "token": token,
+  //       "userType": "USER"
+  //     });
+  //     // console.log(response.data);
+  //     // const newUserInfo = {
+  //     //   ...(userInfo as UserProps),
+  //     //   mfa: true as boolean,
+  //     // };
+  //     window.localStorage.setItem('mfa_passed', 'false')
+  //     setLogin(false)
+  //     setMfaLogin(false)
+  //   } catch (error: any) {
+  //     showToast(
+  //       error.response.data.message, ToastType.ERROR
+  //     );
+  //     console.error(error.response);
+  //   }
+  // };
+
   const verifyOtp = async (token: string) => {
     try {
       const response = await axios.post(otpurl, {
-        "userId": userInfo?.uid,
-        "token": token,
-        "userType": "USER"
+        data: {
+          userId: userInfo?.uid,
+          token: token,
+          userType: "USER",
+        }
       });
-      // console.log(response.data);
-      // const newUserInfo = {
-      //   ...(userInfo as UserProps),
-      //   mfa: true as boolean,
-      // };
-      window.localStorage.setItem('mfa_passed', 'false')
-      setLogin(false)
-      setMfaLogin(false)
-    } catch (error: any) {
-      showToast(
-        error.response.data.message, ToastType.ERROR
-      );
-      console.error(error.response);
+
+ 
+      if (response?.data?.result?.status) {
+        window.localStorage.setItem('mfa_passed', 'false')
+     
+        setLogin(false)
+        setMfaLogin(false)
+         const newUserInfo = {
+        ...(userInfo as UserProps),
+        mfa: true as boolean,
+      };
+      
+    }else{
+      showToast(response.data?.result?.message, ToastType.ERROR);
+   
+    }
+  } catch (error: any) {
+    console.error(error.response);
     }
   };
 
@@ -134,15 +165,18 @@ const Login2fa = ({
       console.log('2facalled2')
       return
     }
-    else { setMfaLogin(true) }
+    else { 
+      setMfaLogin(true)
+     }
     window.localStorage.setItem('mfa_passed', 'true')
     // createPost(u?.uid as string)
     return () => setCopied(false)
+    
   }, [])
-
+  
   if (u?.photoURL !== 'mfa') {
     setLogin(false)
-    return <>wait</>
+    return <Spinner/>
   }
 
   return (

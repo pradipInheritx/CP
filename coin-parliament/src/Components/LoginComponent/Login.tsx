@@ -70,8 +70,11 @@ export type LoginProps = {
       content: ToastContent,
       type?: ToastType,
       options?: ToastOptions | undefined
-    ) => void
+    ) => void,
+    setSmsVerification?: (s: string) => void,
+    callback?: (s: any) => void,    
   ) => Promise<void>;
+  
   login: (
     e: FormEvent<HTMLFormElement>,
     callback: Callback<AuthUser>
@@ -81,7 +84,7 @@ export type LoginProps = {
 const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage, setLoader } = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLoader,setLogin } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
@@ -105,10 +108,11 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
               onClick={() => {
                 if (setLoader) {
                   setLoader(true);
-                }
-                // @ts-ignore
-                authProvider(setUser, providers[provider], showToast, setSmsVerification, () => {
+                }                
+                authProvider(setUser, providers[provider], showToast, setSmsVerification,() => {
+                  console.log("it is calling")
                   if (setLoader) {
+                    
                     setLoader(false);
                   }
                 })
@@ -124,7 +128,10 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
         <LoginForm
           callback={{
             successFunc: (params) => {
+              console.log('user successFunc');
+              
               setUser(params);
+              setLogin(false);
               navigate('/');
             },
             errorFunc: (e) => showToast(e.message, ToastType.ERROR),

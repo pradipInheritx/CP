@@ -23,9 +23,6 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 
 
-
-
-
 export type SignupProps = {
   setUser: (user?: User | undefined) => void;
   setSignup: (s: boolean) => void;
