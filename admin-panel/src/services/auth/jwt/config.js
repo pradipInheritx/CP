@@ -7,7 +7,7 @@ export default axios.create({
   // baseURL: `https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/admin/`, //YOUR_API_URL HERE
   // https://us-central1-coin-parliament-staging.cloudfunctions.net
   // https://us-central1-coinparliament-51ae1.cloudfunctions.net
-  baseURL: `https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/admin`, //YOUR_API_URL HERE
+  baseURL: `https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/admin`, //YOUR_API_URL HERE
   headers: {
     "Content-Type": "application/json"
   }

@@ -164,7 +164,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
     dispatch(fetchStart());
     axios
       .post(
-        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getAllUserStatistics`,
+        `https://us-central1-coinparliament-51ae1.cloudfunctions.net/getAllUserStatistics`,
         { ...payloadObj }
       )
       .then(data => {
@@ -197,7 +197,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
 
 export const allUserDataExport = async () => {
   let response = await axios.get(
-    `https://us-central1-coin-parliament-staging.cloudfunctions.net/exportUserStatisticsData`,
+    `https://us-central1-coinparliament-51ae1.cloudfunctions.net/exportUserStatisticsData`,
     { responseType: "blob" }
   );
   return response.data;
