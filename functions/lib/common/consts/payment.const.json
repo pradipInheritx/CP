@@ -112,6 +112,8 @@
     "UPGRADE_USER_VOTE": 25,
     "UPGRADE_USER_COIN": 500,
     "PAYMENT_UPDATE_SUCCESS": "Transaction update successfully",
+    "ACME_REDIRECT_URL_CREATED_SUCCESSFULLY": "Payment transaction link created successfully",
+    "ACME_REDIRECT_URL_SOMETHING_WENT_WRONG": "Something went wrong while create the payment link from acme",
     "WELLDAPP_TRANSACTION_NOT_FOUND": "WellDApp Transaction Not Found",
     "ACME_TRANSACTION_NOT_FOUND": "ACME Transaction Not Found",
     "ADMIN_UID": "Zd5mFlq1xPg7TJ97DVlZnILSrVq1",
