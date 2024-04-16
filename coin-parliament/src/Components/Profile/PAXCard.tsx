@@ -5,7 +5,7 @@ import CountUp from "react-countup";
 import AppContext from "../../Contexts/AppContext";
 import styled, { css } from "styled-components";
 import { Modal, Ratio } from "react-bootstrap";
-import { Buttons } from "../Atoms/Button/Button";
+import { Buttons, Props } from "../Atoms/Button/Button";
 import coinBg from "../../assets/images/coin_bg.png";
 import coin_bgVET from "../../assets/images/coin_bgVET.png";
 import { ZoomCss as ZoomCss2 } from "../App/App";
@@ -107,12 +107,79 @@ border:none;
   }
 `;
 
+const size = css`
+  min-width: 100px;
+  height: 76px;
+`;
+
+const Option = css`
+  flex-grow: 1;
+  flex-basis: 0;
+  min-width: 0;
+  // box-shadow: 0 3px 6px #00000029;
+  box-shadow: rgb(67 47 229) 0px 4px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  transition: all .2s ease;
+
+  & svg g path {    
+  }
+`;
+
+const Option0 = styled(Buttons.RadiusTopRight)`
+  ${size};
+  ${Option};
+  flex-direction: column;
+  &:active{
+    position: relative;
+top: 2px;
+  box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  }
+  &:disabled {
+    pointer-events: none;  
+    cursor:pointer;
+  }
+  &:not([disabled]) {
+    animation: bull_shake_left 2s ease 2s infinite;
+  }
+//   &:hover {
+//   background:#6352E8;
+//   color:white;
+//  box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+//   }
+  `;
+
+const Option1 = styled(Buttons.RadiusBottomLeft)`
+  ${size};
+  ${Option};
+  flex-direction: column;
+  &:disabled {
+    pointer-events: none;  
+    cursor:pointer;
+}
+//  &:active{
+//     position: relative;
+//     top: 2px;
+//       box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+//   }
+  &:not([disabled]) {
+    animation: bull_shake_right 2s ease 2s infinite ;
+  }
+  // &:hover {
+  //   background:#6352E8;
+  //   color:white;
+  //      box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+  //   }
+  //   &:hover .svg-path {
+  //     stroke: white !important;
+  //   }
+`;
+
 
 const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCardProps) => {
   // const prevCountRef = useRef(PAX)
   //coin calculation
   const [prevCountRef, setPrevCountRef] = useState<number>(0);
   const [latestRewardCoins, setLatestRewardCoins] = useState<number>(0);
+  const [showButtonMove, setShowButtonMove] = useState<boolean>(true);
   useEffect(() => {
     setLatestRewardCoins((rewardTimer?.data?.thirdRewardDiamonds || 0));
   }, [rewardTimer?.data?.thirdRewardDiamonds]);
@@ -124,35 +191,40 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   }, [PAX, latestRewardCoins]);
 
 
-  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide } = useContext(AppContext);
+  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide, extraVoteModule, setExtraVoteModule } = useContext(AppContext);
   // console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const [videoShow, setVideoShow] = React.useState(false);
-  const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);  
+  const handleClose = () => setExtraVoteModule(false);
+  const handleShow = () => setExtraVoteModule(true);  
   const translate = useTranslation();
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
   const [showCountUp, setShowCountUp] = useState<number>(0); //1 =show 1>=hide
   const [sliverCoin, setSliverCoin] = useState(false);
   const [claimRewardSoundplay, { pause: claimRewardSoundpause }] = useSound(claimSound);
-  const [handleSoundWinCmpplay, { pause: handleSoundWinCmppause }] = useSound(WinCmp)
+  const [handleSoundWinCmpplay, { pause: handleSoundWinCmppause }] = useSound(WinCmp)  
   //1 =show 1>=hide
   useEffect(() => {
-    if (inOutReward === 1 && !modalShow && !showCoinIncrement) {      
-        setShowCoinIncrement(1);  
-      setBackgrounHide(true)
-     var timer = setTimeout(() => {
-        setShowCountUp(1)
-      }, 3000);
+    if (inOutReward === 1 && !extraVoteModule && !showCoinIncrement) {      
+      //   setShowCoinIncrement(1);  
+      // setBackgrounHide(true)
+    //  var timer = setTimeout(() => {
+    //     setShowCountUp(1)
+    //   }, 3000);
       // setSliverCoin(true)      
     }
+    if (extraVoteModule) {      
+      setTimeout(() => {
+        setShowButtonMove(false);
+      }, 7000);
+    }
     return () => {
-      clearTimeout(timer)
+      // clearTimeout(timer)
     }
 
-  }, [inOutReward, modalShow]);
+  }, [extraVoteModule]);
 
-  // console.log(inOutReward, showReward, rewardExtraVote, "rewardExtraVote")
+  console.log(extraVoteModule, "rewardExtraVote")
 
   return (
     <ForZoom2 {...{ showCoinIncrement }} style={{
@@ -198,7 +270,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 onEnd={() => {
                   
                   // handleExtraCoin.pause();
-                  handleShow();
+                  handleShow();            
                   setShowCountUp(0);
                   setShowCoinIncrement(2);
                   setPrevCountRef(PAX);
@@ -276,7 +348,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
           {/* reward modal 3 */}
           <Modal
             show={
-              modalShow
+              extraVoteModule
             } onHide={handleClose}
             // size="sm"
             backdrop="static"
@@ -292,48 +364,68 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 height: "400px"
               }}
             >
-
+              {!showButtonMove ?<>              
               <Popuphead>Congrats!</Popuphead>
               {/* @ts-ignore */}
               <div className=''>
                 <p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {rewardExtraVote} votes</p>
-              </div>
-
-
-
+              </div>              
               {/* <Modal.Footer> */}
               <div className="d-flex justify-content-center ">
                 <Buttons.Primary className="mx-2" onClick={() => {
                   handleSoundWinCmppause()
                   setCountShow(false)
-                  setShowReward((prev: number) => {
-                    return 2;
-                    // return prev == 1 ? 2 : prev
-                  });
-                  setInOutReward((prev: number) => {
-                    return 2;
-                  });
+                  // setShowReward((prev: number) => {
+                  //   return 2;
+                  //   // return prev == 1 ? 2 : prev
+                  // });
+                  // setInOutReward((prev: number) => {
+                  //   return 2;
+                  // });
                   setTimeout(() => {
                     setShowCoinIncrement(0);
                   }, 2000);
                   handleClose();
-                  setTimeout(() => {
-                    setHeaderExtraVote((prev: any) => {
-                      return {
-                        ...prev,
-                        collect: true
-                      }
-                    })
-                  }, 2800)
+                  // setTimeout(() => {
+                  //   setHeaderExtraVote((prev: any) => {
+                  //     return {
+                  //       ...prev,
+                  //       collect: true
+                  //     }
+                  //   })
+                  // }, 2800)
+
+
+                  setInOutReward((prev: number) => {
+                    // return prev == 2 ? 3 : prev
+                    claimRewardSound.play();
+                    return 3
+                  });                  
+                    setShowReward((prev: number) => {
+                      return 3;
+                    });                  
+                  setHeaderExtraVote({
+                    vote: 0,
+                    collect: false
+                  });
                   // setTimeout(() => {
                   //   setHeaderExtraVote({
                   //     vote: 0,
                   //     collect: false
                   //   });
                   // }, 3500)
-                }}>Collect your Vote</Buttons.Primary>
+                }}>Collect your Vote</Buttons.Primary>                
                 {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
               </div>
+              </> :
+                <div className="w-100 d-flex justify-content-between align-items-center m-auto">
+                <Option0>
+                  <p className="opacity-0">hello</p>
+                </Option0>
+                <Option1>
+                  <p className="opacity-0">hello</p>
+                </Option1>
+              </div>}
             </Modal.Body>
             {/* </Modal.Footer>       */}
           </Modal>
