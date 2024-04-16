@@ -23,7 +23,7 @@ import votingbooster from "../../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { auth, db, firestore } from "../../../firebase";
 import Swal from "sweetalert2";
@@ -35,7 +35,7 @@ import VoteBg from '../../../assets/images/VoteBg.png';
 import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, limit, query, where } from "firebase/firestore";
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError, useWeb3ModalEvents, useDisconnect } from '@web3modal/ethers5/react';
 import { ethers } from "ethers";
 import { showToast } from "../../../App";
@@ -546,10 +546,11 @@ const VotingPaymentCopy: React.FC<{
     }, [])
 
   
+   const location = useLocation()
   useEffect(() => {
-    const currentUrl = window.location.href;
-    const params = new URLSearchParams(currentUrl);
-    const userIdcurrent = params.get('userId');            
+    // const currentUrl = window.location.href;
+    const params = new URLSearchParams(location.search);
+    const userIdcurrent = params.get('userId');       
     if ((userIdcurrent != null && userInfo?.uid != undefined) && userIdcurrent == userInfo?.uid)
       {      
       // @ts-ignore 
@@ -557,40 +558,41 @@ const VotingPaymentCopy: React.FC<{
       console.log(carPaymentData, "carPaymentData")
       cardPaymentDone(carPaymentData[1])
     }
-    return () => {
-      
+    return () => {      
     };
   }, [userInfo?.uid, localStorage.getItem(`${userInfo?.uid}_IntentId`)]);
 
 
-  const cardPaymentDone = (intentId:any) => {
-    if (userInfo?.uid && intentId) {
-      const colRef = collection(db, "callbackHistory")
-      //real time update    
-      console.log(userInfo, "userInfodata")
+   const cardPaymentDone = (intentId: any) => {     
+    if (userInfo?.uid && intentId) {    
+      const q = query(collection(db, "callbackHistory"), where("userId", "==", user?.uid || ""),limit(3));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        try {          
+          querySnapshot.forEach((doc) => {
 
-      onSnapshot(colRef, (snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          // setTestData((prev) => [...prev, doc.data()])
-          console.log(doc.data()?.data?.userId == userInfo?.uid ? doc.data()?.data?.intentId : "", "useralldata")
-          if (doc.data()?.data?.userId == userInfo?.uid && doc.data()?.data?.intentId == intentId) {
-            console.log(doc.data()?.data, "livepaymentdata")
-            if (doc.data()?.data?.status == "ProcessingFiatProviderOrder" || doc.data()?.data?.status == "BlockchainTransactionSubmission") {
-              setIsLoading(false)
-              // window.scrollTo({ top: 650, behavior: 'smooth' });
-              setPaymentStatus({ type: "success", message: '' });
+            if (doc.data()?.userId == userInfo?.uid && doc.data()?.intentId == intentId) {
+              console.log(doc.data()?.data, "livepaymentdata")
+              if (doc.data()?.event == "ProcessingFiatProviderOrder" || doc.data()?.event == "BlockchainTransactionSubmission" || doc.data()?.event == "Completed") {
+                setIsLoading(false)
+                // window.scrollTo({ top: 650, behavior: 'smooth' });
+                setPaymentStatus({ type: "success", message: '' });
+              }
+              if (doc.data()?.event == "Failed") {
+                console.log(doc.data()?.data, "DeclinedData")
+                // window.scrollTo({ top: 650, behavior: 'smooth' });
+                setIsLoading(false)
+                setPaymentStatus({ type: "error", message: 'Payment failed, please try again' });
+              }
+            } else {
+              // console.log(doc.data(),"doc.data()")
             }
-            if (doc.data()?.data?.status == "Failed") {
-              console.log(doc.data()?.data, "DeclinedData")
-              // window.scrollTo({ top: 650, behavior: 'smooth' });
-              setIsLoading(false)
-              setPaymentStatus({ type: "error", message: '' });
-            }
-          } else {
-            // console.log(doc.data(),"doc.data()")
-          }
-        })
-      })
+          });
+          
+        } catch (error) {
+          console.log(error,"payment Snapshot")
+        }
+      });
+      console.log(userInfo?.uid, intentId, "getbothid")    
     }
   }
 
@@ -679,8 +681,13 @@ const VotingPaymentCopy: React.FC<{
       }
     };
 
-    const startAgainAction = () => {
-      navigate(-1)
+   const startAgainAction = () => {
+      
+     if (payType == "UPGRADE") {       
+       navigate("/upgrade")
+      } else {
+       navigate("/votingbooster")       
+     }      
       setSelectCoin("none");
     }
 
@@ -946,7 +953,7 @@ const VotingPaymentCopy: React.FC<{
 
           if (match) {            
             // setIntentId(match)
-            localStorage.setItem(`${userInfo?.uid}_IntentId`,JSON.stringify([userInfo?.uid, match]));
+            localStorage.setItem(`${userInfo?.uid}_IntentId`, JSON.stringify([userInfo?.uid, match]));
             console.log("P2 value", match)
           }
         })
