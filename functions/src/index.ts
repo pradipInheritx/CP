@@ -2229,11 +2229,11 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
     });
 
     // Nan values handled
-    result.forEach((obj:any) => {
+    result.forEach((obj: any) => {
       Object.keys(obj).forEach(key => {
         // Check if the field value is a number and NaN
         if (typeof obj[key] === 'number' && isNaN(obj[key])) {
-            obj[key] = 0;
+          obj[key] = 0;
         }
       });
     });
@@ -2376,7 +2376,10 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) =>
     // Set content disposition and type
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
-
+    // Set CORS headers
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
     // Write workbook to response
     await workbook.xlsx.write(res);
 
