@@ -131,6 +131,7 @@ const UserTableToolbar = ({
           page: 0,
           filterFields: selectedOption
         });
+        setPage(0);
         handleClose();
       }
     }
