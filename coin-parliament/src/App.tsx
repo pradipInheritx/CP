@@ -162,13 +162,16 @@ import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Co
 import Swal from "sweetalert2";
 import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
-import { afterpaxDistributionToUser } from "common/utils/helper";
+import { ReloadPop, afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ethers } from "ethers";
 import InfluencersList from "Components/InfluencersList";
 import NewUrlFram from "Components/NewUrlFram";
 import CookieConsent from "react-cookie-consent";
+
+let wsReConnectThrottle: any;
+let wsConnectRetry: number = 0 
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
@@ -993,11 +996,12 @@ function App() {
   }, [lang, rtl, user?.uid]);
 
   const [enabled, enable] = useState(true);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");  
   function connect() {
     if (Object.keys(coins).length === 0) return
     console.log('Browser window called')
-    ws = new WebSocket('wss://stream.binance.com:9443/ws');
+    
+    ws = new WebSocket("wss://stream.binance.com:9443/ws");
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
@@ -1022,6 +1026,26 @@ function App() {
       throttleReconnectWebSocket(event)      
     };      
   }    
+  
+// useEffect(() => {
+//     wsReConnectThrottle = setInterval(() => {
+//       console.log("useEffect--******------> ", socketConnect, "--", wsConnectRetry, "--", socketUrl)
+//       if (socketConnect || wsConnectRetry > 5) {
+//         console.log("CLEAR--**--**")
+        
+//         clearInterval(wsReConnectThrottle)
+//         // ReloadPop('https://www.google.com/', 600, 400);            
+//         return
+//       }
+//       wsConnectRetry++
+//       // setWsConnectRetry(5)
+
+//       connect()
+
+//     }, 3000)
+
+//   }, [socketConnect])
+
 
   function croConnect() {
     const connectWebSocket = () => {
@@ -1593,9 +1617,7 @@ const handleAcceptAll = () => {
         // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
-      >  
-
-        
+      >                
         {showPopup && ( 
         <>
         <div style={{width:"100%",height:"100%",backgroundColor:"rgba(0, 0, 0, 0.6)",position:"fixed",zIndex:"99995"}}></div>

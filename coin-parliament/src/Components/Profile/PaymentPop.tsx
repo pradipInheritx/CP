@@ -91,7 +91,7 @@ useEffect(() => {
           <Buttons.Primary
             disabled={selectPayment==0}
             className="mx-2" onClick={() => {            
-            navigate("/paymentList")
+              navigate("/votePayment")
             }}>Submit</Buttons.Primary>
           </div >
         </Modal>  
