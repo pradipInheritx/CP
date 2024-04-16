@@ -4,6 +4,7 @@ import { UserProps } from "common/models/User";
 import { VoteResultProps } from "common/models/Vote";
 import { type } from "os";
 import React from "react";
+import Swal from 'sweetalert2';
 
 export type calculateDiffBetweenCoinsType = { firstCoin: string, secondCoin: string, difference: string };
 export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpirationTime: number[], direction: number) => {
@@ -121,6 +122,22 @@ export const afterpaxDistributionToUser = (pax:number) => {
         console.log(err,"afterpaxDistributionToUser")        
     })
     
+}
+
+
+export function ReloadPop() {
+    Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong! Please reload your page",
+        confirmButtonText: "Reload page",
+        allowOutsideClick: false
+        // footer: '<a href="#">Why do I have this issue?</a>'
+    }).then((result) => {
+        if (result.isConfirmed) { 
+            window.location.reload();
+        }        
+     });
 }
 
 export const removeVote = (
