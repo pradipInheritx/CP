@@ -20,6 +20,7 @@ export const callbackFromServer = async (req: any, res: any) => {
     console.info("req.body", typeof req.body, req.body);
 
     const getResponseOfRateLimit = await getCheckAndUpdateRateLimitOfIntent(req.body.order.intentId)
+    console.log("getResponseOfRateLimit--->", getResponseOfRateLimit)
 
     if (getResponseOfRateLimit.status) {
       if (req.body.order && req.body.order.id) {
@@ -109,7 +110,6 @@ export const callbackFromServer = async (req: any, res: any) => {
             if (getResponseFromAcmeCreditCard.status) {
               await getTempTransactionByIdUpdateAndDeleteFromTransaction(getTempAcmeData[getTempAcmeData.length - 1].id, getResponseFromOrderId.data.status)
             }
-
             res.status(200).send({
               status: true,
               message: "Transaction logged in DB on transaction details",
@@ -134,11 +134,15 @@ export const callbackFromServer = async (req: any, res: any) => {
       }
     } else {
       console.log("Your rate limit is exhaust for this intent Id:", req.body.order.intentId);
+      res.status(200).send({
+        status: false,
+        message: `Your rate limit is exhaust for ${req.body.order.intentId}`,
+        data: [],
+      });
     }
   } catch (error: any) {
     console.log("Error while call callback URL payment to Acme app server", error);
   }
-
 };
 
 export const getCheckAndUpdateRateLimitOfIntent = async (intentId: any) => {
@@ -158,7 +162,7 @@ export const getCheckAndUpdateRateLimitOfIntent = async (intentId: any) => {
       rateLimit: updateRateLimit
     });
 
-    console.log("Rate limit decremented successfully.");
+    console.log("Rate limit decremented successfully...");
 
     return {
       status: true,
@@ -819,7 +823,10 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
   try {
     console.log("requestBody--------->", requestBody)
     const { userId, transactionType, numberOfVotes, initiated, intentId, initiatedTransactionDetails, calculatedAmount } = requestBody;
-    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+
+    const currentTime = Timestamp.now();
+    const oneHoursAgo = new Date(currentTime.toMillis() - 1 * 60 * 60 * 1000);
+    const getAllTransactions = (await firestore().collection("callbackHistory").where('timestamp', '>', oneHoursAgo).get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
     const getTransactionFromAcme: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.intentId === intentId && (transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED || transaction.callbackDetails.event === parentConst.CREDITCARD_PAYMENT_EVENT_FIAT_PROVIDER || transaction.callbackDetails.event === parentConst.PAYMENT_STATUS_APPROVED));
     console.log("getTransactionFromAcme : ", getTransactionFromAcme);
     if (!getTransactionFromAcme) {
@@ -917,7 +924,6 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
       amount: req.body.amount,
       intentLimit: req.body.intentLimit ? req.body.intentLimit : 0,
       redirectUrl: `${env.BASE_SITE_URL}/votepayment?userId=${req.body.userId}`,
-      rateLimit: 10,
       memo: "INITIATED"
     };
 
@@ -941,6 +947,7 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
           uniquePaymentLink: redirectUrl,
           intentId: getIntentId,
           walletType: "ACME_PAYMENT_MODE",
+          rateLimit: 10,
           serverTimestamp: Timestamp.now()
         });
 
