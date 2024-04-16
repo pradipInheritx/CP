@@ -18,17 +18,18 @@ import {
   UPDATE_MAIL_FOLDER,
   UPDATE_MAIL_LABEL,
   UPDATE_READ_STATUS,
-  UPDATE_SELECTED_MAIL,
-} from '../../@jumbo/constants/ActionTypes';
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
+  UPDATE_SELECTED_MAIL
+} from "../../@jumbo/constants/ActionTypes";
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "axios";
+import { endpoint } from "redux/endpoint";
 
 //For expanding sidebar
 export const toggleExpandSidebar = value => {
   return dispatch => {
     dispatch({
       type: TOGGLE_SIDEBAR_COLLAPSED,
-      payload: value,
+      payload: value
     });
   };
 };
@@ -37,7 +38,7 @@ export const toggleExpandSidebar = value => {
 export const setFilterType = filterType => {
   return {
     type: SET_FILTER_TYPE,
-    payload: filterType,
+    payload: filterType
   };
 };
 
@@ -45,14 +46,14 @@ export const setFilterType = filterType => {
 export const getMailCounts = () => {
   return dispatch => {
     axios
-      .get('/counter')
+      .get(endpoint.mailCount)
       .then(data => {
         if (data.status === 200) {
           dispatch({ type: GET_MAIL_COUNTS, payload: data.data });
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -62,17 +63,17 @@ export const getLabelsList = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/labels')
+      .get(endpoint.mailLables)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_LABELS_LIST, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -82,17 +83,17 @@ export const addNewLabel = label => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/labels', { label })
+      .post(endpoint.mailLables, { label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: ADD_LABEL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -102,17 +103,17 @@ export const deleteLabel = labelId => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/labels/delete', { labelId })
+      .put(endpoint.lableDelete, { labelId })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: DELETE_LABEL_ITEM, payload: labelId });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -122,17 +123,17 @@ export const updateLabel = label => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/labels', { label })
+      .put(endpoint.mailLables, { label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_LABEL_ITEM, payload: label });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -142,17 +143,17 @@ export const getConnectionsList = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/connections')
+      .get(endpoint.connections)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_CONNECTIONS_LIST, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -161,17 +162,17 @@ export const addNewConnection = connection => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/connections', { connection })
+      .post(endpoint.connections, { connection })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: ADD_CONNECTION, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -180,17 +181,17 @@ export const removeConnection = connection => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete('/connections', { params: { connection } })
+      .delete(endpoint.connections, { params: { connection } })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: REMOVE_CONNECTION, payload: connection });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -200,17 +201,17 @@ export const getMailsList = params => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/mails', { params })
+      .get(endpoint.mails, { params })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_MAILS_LIST, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -220,17 +221,17 @@ export const updateMailsFolder = (mailIds, folder) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mailApp/update-folder', { mailIds, folder })
+      .put(endpoint.updateFolder, { mailIds, folder })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_MAIL_FOLDER, payload: mailIds });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -240,17 +241,17 @@ export const updateMailsLabel = (mailIds, label) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mailApp/update-label', { mailIds, label })
+      .put(endpoint.mailUpdateLabel, { mailIds, label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_MAIL_LABEL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -260,17 +261,20 @@ export const updateFvrtStatus = (mailIds, status) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mailApp/update-favorite', { mailIds, status })
+      .put(endpoint.updateFavorite, { mailIds, status })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
-          dispatch({ type: UPDATE_FAVORITE_STATUS, payload: { mailIds, status } });
+          dispatch({
+            type: UPDATE_FAVORITE_STATUS,
+            payload: { mailIds, status }
+          });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -280,17 +284,17 @@ export const updateReadStatus = (mailIds, status) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mailApp/update-read', { mailIds, status })
+      .put(endpoint.updateRead, { mailIds, status })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_READ_STATUS, payload: { mailIds, status } });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -300,17 +304,20 @@ export const updateImprtntStatus = (mailIds, status) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mailApp/update-important', { mailIds, status })
+      .put(endpoint.updateImportant, { mailIds, status })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
-          dispatch({ type: UPDATE_IMPORTANT_STATUS, payload: { mailIds, status } });
+          dispatch({
+            type: UPDATE_IMPORTANT_STATUS,
+            payload: { mailIds, status }
+          });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -320,17 +327,17 @@ export const composeMail = mail => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/mail', { mail })
+      .post(endpoint.composeMail, { mail })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: COMPOSE_MAIL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -340,17 +347,17 @@ export const onGetSelectedMail = mailId => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/mail', { params: { mailId } })
+      .get(endpoint.commonMail, { params: { mailId } })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_SELECTED_MAIL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -360,17 +367,17 @@ export const onUpdateMail = mail => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/mail', { mail })
+      .put(endpoint.commonMail, { mail })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_SELECTED_MAIL, payload: mail });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -380,17 +387,17 @@ export const onReplyToMail = (id, mail) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put(`/mail/reply`, { id, mail })
+      .put(endpoint.mailReply, { id, mail })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_SELECTED_MAIL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -398,6 +405,6 @@ export const onReplyToMail = (id, mail) => {
 //for nullifying mail details and showing mail list
 export const onNullifyMail = () => {
   return {
-    type: NULLIFY_SELECTED_MAIL,
+    type: NULLIFY_SELECTED_MAIL
   };
 };

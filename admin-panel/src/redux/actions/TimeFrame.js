@@ -8,6 +8,7 @@ import {
   DELETE_TIMEFRAME,
   DELETE_BULK_TIMEFRAME
 } from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
 
 export const localToken = localStorage.getItem("token");
 
@@ -20,11 +21,14 @@ export const getTimeFrame = (
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .get(`voteSetting/getTimeframe`)
+      .get(endpoint.timeframe)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_TIMEFRAME, payload: data.data.result.timeframes });
+          dispatch({
+            type: GET_TIMEFRAME,
+            payload: data.data.result.timeframes
+          });
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(
@@ -52,7 +56,7 @@ export const addNewTimeFrame = (timeFrameDetail, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .post("/voteSetting/createTimeframe", { ...timeFrameDetail })
+      .post(endpoint.createTimefr, { ...timeFrameDetail })
       .then(data => {
         if (data.status === 200 || data.status === 201) {
           dispatch(fetchSuccess(data.data.massges));
@@ -81,7 +85,7 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .put(`voteSetting/updateTimeframe/timeFrames`, {timeframes:timeFrame})
+      .put(endpoint.updateTimeframes, { timeframes: timeFrame })
       .then(response => {
         if (
           response.status === 200 ||
@@ -109,7 +113,7 @@ export const updateTimeFrameStatus = (id, data, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .put(`voteSetting/updateTimeframe/${id}`, data)
+      .put(`${endpoint.updateTimefr}/${id}`, data)
       .then(response => {
         if (
           response.status === 200 ||
@@ -136,7 +140,7 @@ export const deleteBulkTimeFrame = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("users/bulk-delete", { userIds })
+      .put(endpoint.bulkDeleteTimeFr, { userIds })
       .then(response => {
         if (response.status === 200) {
           dispatch(fetchSuccess("Selected users were deleted successfully."));
@@ -158,7 +162,7 @@ export const deleteTimeFrame = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete(`voteSetting/deleteTimeframeById/${userId}`)
+      .delete(`${endpoint.deleteTimefrById}/${userId}`)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess(data.data.message));

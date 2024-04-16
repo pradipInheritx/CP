@@ -9,7 +9,8 @@ import {
   DELETE_REWARDTR,
   DELETE_BULK_REWARDTR
 } from "../../@jumbo/constants/ActionTypes";
-
+import { endpoint } from "redux/endpoint";
+import { baseURL } from "../../services/auth/jwt/config";
 export const localToken = localStorage.getItem("token");
 
 export const getRewardTr = (
@@ -28,10 +29,7 @@ export const getRewardTr = (
     // https://us-central1-coinparliament-51ae1.cloudfunctions.net live
     // https://us-central1-coin-parliament-staging.cloudfunctions.net
     axios
-      .post(
-        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getRewardTransactions`,
-        id
-      )
+      .post(`${baseURL}${endpoint.getRewardTransactions}`, id)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
@@ -66,7 +64,7 @@ export const addNewRewardTr = (timeFrameDetail, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .post("voteSetting/createPerUserVote", { ...timeFrameDetail })
+      .post(endpoint.createPerUserVote, { ...timeFrameDetail })
       .then(data => {
         if (data.status === 200 || data.status === 201) {
           dispatch(fetchSuccess(data.data.massges));
@@ -96,7 +94,7 @@ export const updateRewardTr = (timeFrame, callbackFun) => {
     dispatch(fetchStart());
     axios
       .put(
-        `voteSetting/updatePerUserVoteById/${timeFrame.perUserVoteId}`,
+        `${endpoint.updatePerUserVoteById}/${timeFrame.perUserVoteId}`,
         timeFrame
       )
       .then(response => {
@@ -126,7 +124,7 @@ export const updateRewardTrStatus = (id, data, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .put(`voteSetting/updateTimeframe/${id}`, data)
+      .put(`${endpoint.rewordUpdateTimeframe}/${id}`, data)
       .then(response => {
         if (
           response.status === 200 ||
@@ -173,7 +171,7 @@ export const deleteRewardTr = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete(`voteSetting/deletePerUserVoteById/${userId}`)
+      .delete(`${endpoint.rewordDeletePerUserVoteById}/${userId}`)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess(data.data.message));

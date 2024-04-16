@@ -9,12 +9,14 @@ import {
   SET_USER_DETAILS,
   GET_ALL_USER_DATA
 } from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
+import { baseURL } from "../../services/auth/jwt/config";
 
 export const getUsers = (filterOptions = [], searchTerm = "", callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get("/users", { params: { filterOptions, searchTerm } })
+      .get(endpoint.users, { params: { filterOptions, searchTerm } })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
@@ -45,7 +47,7 @@ export const addNewUser = (user, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post("/users", user)
+      .post(endpoint.users, user)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess("New user was added successfully."));
@@ -73,7 +75,7 @@ export const updateUser = (user, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("/users", user)
+      .put(endpoint.users, user)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess("Selected user was updated successfully."));
@@ -95,7 +97,7 @@ export const updateUserStatus = (data, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("/users/update-status", data)
+      .put(endpoint.updateUserStatus, data)
       .then(response => {
         if (response.status === 200) {
           dispatch(fetchSuccess("User status was updated successfully."));
@@ -117,7 +119,7 @@ export const deleteBulkUsers = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("/users/bulk-delete", { userIds })
+      .put(endpoint.bulkDeleteUsers, { userIds })
       .then(response => {
         if (response.status === 200) {
           dispatch(fetchSuccess("Selected users were deleted successfully."));
@@ -139,7 +141,7 @@ export const deleteUser = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete("/users", { params: { id: userId } })
+      .delete(endpoint.users, { params: { id: userId } })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess("Selected user was deleted successfully."));
@@ -163,10 +165,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post(
-        `https://us-central1-coin-parliament-staging.cloudfunctions.net/getAllUserStatistics`,
-        { ...payloadObj }
-      )
+      .post(`${baseURL}${endpoint.getAllUserStatistics}`, { ...payloadObj })
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           if (data.data.result.status) {
@@ -187,7 +186,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
         }
       })
       .catch(error => {
-        if (error?.response?.data?.result?.name == "TokenExpiredError") {
+        if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }
         dispatch(fetchError(error.response.data.error.message));
@@ -197,7 +196,7 @@ export const getAllUersData = (payloadObj, callbackFun) => {
 
 export const allUserDataExport = async () => {
   let response = await axios.get(
-    `https://us-central1-coin-parliament-staging.cloudfunctions.net/exportUserStatisticsData`,
+    `${baseURL}${endpoint.exportUserStatisticsData}`,
     { responseType: "blob" }
   );
   return response.data;

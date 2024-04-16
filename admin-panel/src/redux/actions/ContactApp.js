@@ -13,17 +13,18 @@ import {
   UPDATE_CONTACT,
   UPDATE_CONTACT_LABEL,
   UPDATE_LABEL_ITEM,
-  UPDATE_STARRED_STATUS,
-} from '../../@jumbo/constants/ActionTypes';
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
+  UPDATE_STARRED_STATUS
+} from "../../@jumbo/constants/ActionTypes";
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "axios";
+import { endpoint } from "redux/endpoint";
 
 //For expanding sidebar
 export const toggleExpandSidebar = value => {
   return dispatch => {
     dispatch({
       type: TOGGLE_SIDEBAR_COLLAPSED,
-      payload: value,
+      payload: value
     });
   };
 };
@@ -32,7 +33,7 @@ export const toggleExpandSidebar = value => {
 export const setFilterType = filterType => {
   return {
     type: SET_FILTER_TYPE,
-    payload: filterType,
+    payload: filterType
   };
 };
 
@@ -41,17 +42,17 @@ export const getLabelsList = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/contact/labels')
+      .get(endpoint.labels)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_LABELS_LIST, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -61,17 +62,17 @@ export const addNewLabel = label => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/contact/labels', { label })
+      .post(endpoint.labels, { label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: ADD_LABEL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -81,17 +82,17 @@ export const deleteLabel = labelId => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact/labels/delete', { labelId })
+      .put(endpoint.deleteLabels, { labelId })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: DELETE_LABEL_ITEM, payload: labelId });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -101,17 +102,17 @@ export const updateLabel = label => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact/labels', { label })
+      .put(endpoint.labels, { label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_LABEL_ITEM, payload: label });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -121,17 +122,17 @@ export const getContactsList = params => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/contact', { params })
+      .get(endpoint.contact, { params })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_CONTACTS_LIST, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -140,7 +141,7 @@ export const setCurrentContact = contact => {
   return dispatch => {
     dispatch({
       type: SET_CURRENT_CONTACT,
-      payload: contact,
+      payload: contact
     });
   };
 };
@@ -150,17 +151,17 @@ export const createContact = contact => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/contact', { contact })
+      .post(endpoint.contact, { contact })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: CREATE_CONTACT, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -170,17 +171,17 @@ export const onUpdateContact = contact => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact', { contact })
+      .put(endpoint.contact, { contact })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_CONTACT, payload: contact });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -190,20 +191,20 @@ export const updateStarredStatus = (contactIds, status) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact/update-starred', { contactIds, status })
+      .put(endpoint.updateStarred, { contactIds, status })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({
             type: UPDATE_STARRED_STATUS,
-            payload: { contactIds, status },
+            payload: { contactIds, status }
           });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -213,17 +214,17 @@ export const deleteContact = contactIds => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact/delete', { contactIds })
+      .put(endpoint.deleteContact, { contactIds })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: DELETE_CONTACT, payload: contactIds });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -233,17 +234,17 @@ export const updateContactsLabel = (contactIds, label) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/contact/update-label', { contactIds, label })
+      .put(endpoint.updateLabel, { contactIds, label })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: UPDATE_CONTACT_LABEL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };
@@ -252,14 +253,14 @@ export const updateContactsLabel = (contactIds, label) => {
 export const getContactCounts = () => {
   return dispatch => {
     axios
-      .get('/contact/counter')
+      .get(endpoint.getContactCount)
       .then(data => {
         if (data.status === 200) {
           dispatch({ type: GET_CONTACT_COUNTS, payload: data.data });
         }
       })
       .catch(error => {
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };

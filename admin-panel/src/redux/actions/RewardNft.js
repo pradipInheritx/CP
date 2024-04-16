@@ -14,11 +14,12 @@ import {
   EDIT_REWARDCARDIMG,
   DELETE_REWARDCARD
 } from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
+import { baseURL } from "../../services/auth/jwt/config";
 
 //   "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/"; staging
 // "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/generic/admin/uploadFiles/" live
-const ForVideoImg =
-  "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/admin/uploadFiles/";
+const ForVideoImg = `${baseURL}${endpoint.ForVideoImg}`;
 export const getRewardAlbum = (
   filterOptions = [],
   searchTerm = "",
@@ -27,7 +28,7 @@ export const getRewardAlbum = (
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get("rewards/getAllAlbums", { params: { filterOptions, searchTerm } })
+      .get(endpoint.getAllAlbums, { params: { filterOptions, searchTerm } })
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
@@ -67,7 +68,7 @@ export const addNewRewardAlbum = (albumData, videoUrl, callbackFun) => {
     };
     dispatch(fetchStart());
     axios
-      .post("rewards/createAlbum", albumData)
+      .post(endpoint.createAlbum, albumData)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           // dispatch(fetchSuccess('New user was added successfully.'));
@@ -120,7 +121,7 @@ export const updateRewardAlbum = (
     };
     dispatch(fetchStart());
     axios
-      .put(`rewards/updateAlbum/${Albumid}`, AlbumData)
+      .put(`${endpoint.updateAlbum}/${Albumid}`, AlbumData)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           if (callbackFun && !videoUrl) {
@@ -158,7 +159,7 @@ export const updateRewardAlbumStatus = (data, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("/users/update-status", data)
+      .put(endpoint.updateStatus, data)
       .then(response => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess("User status was updated successfully."));
@@ -180,7 +181,7 @@ export const deleteRewardAlbum = (albumId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete(`rewards/deleteAlbum/${albumId}`)
+      .delete(`${endpoint.deleteAlbum}/${albumId}`)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess("Selected user was deleted successfully."));
@@ -213,7 +214,7 @@ export const getRewardCard = (
     dispatch(fetchStart());
     axios
       .get(
-        `rewards/getCardListing?page=${page +
+        `${endpoint.getCardListing}?page=${page +
           1}&limit=${rowsPerPage}&orderBy=${orderBy}&sort=${order}&search=${searchTerm}`
       )
       .then(data => {
@@ -248,7 +249,7 @@ export const addNewRewardCard = (CardDetail, cardImage, callbackFun) => {
     };
     dispatch(fetchStart());
     axios
-      .post("rewards/createCard", CardDetail)
+      .post(endpoint.createCard, CardDetail)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           // dispatch(fetchSuccess('New card was added successfully.'));
@@ -310,7 +311,7 @@ export const updateRewardCard = (
     };
     dispatch(fetchStart());
     axios
-      .put(`rewards/updateCard/${cardId}`, CardDetail)
+      .put(`${endpoint.updateCard}/${cardId}`, CardDetail)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch({ type: EDIT_REWARDCARD, payload: data.data.result });
@@ -351,7 +352,7 @@ export const updateRewardCardStatus = (data, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("/users/update-status", data)
+      .put(endpoint.updateStatus, data)
       .then(response => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess("User status was updated successfully."));
@@ -373,7 +374,7 @@ export const deleteRewardCard = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete(`/rewards/deleteCard/${userId}`)
+      .delete(`${endpoint.deleteCard}/${userId}`)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess("Selected Card was deleted successfully."));

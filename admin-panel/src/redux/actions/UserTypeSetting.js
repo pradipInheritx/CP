@@ -1,51 +1,57 @@
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from '../../services/auth/jwt/config';
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "../../services/auth/jwt/config";
 import {
   GET_USERTYPESETTING,
-  EDIT_USERTYPESETTING,
-} from '../../@jumbo/constants/ActionTypes';
-
+  EDIT_USERTYPESETTING
+} from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
 
 export const getUserSetting = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('userTypeSettings/getUserTypeSettings')
+      .get(endpoint.getUserTypeSettings)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
-          console.log(data.data.result,"data.data.result")
+          console.log(data.data.result, "data.data.result");
           dispatch(fetchSuccess());
-          dispatch({ type: GET_USERTYPESETTING, payload: data.data.result});          
+          dispatch({ type: GET_USERTYPESETTING, payload: data.data.result });
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
         if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
 
-export const updateUserSetting = (userdetiles) => {
-  console.log(userdetiles,"userdetiles")
+export const updateUserSetting = userdetiles => {
+  console.log(userdetiles, "userdetiles");
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('userTypeSettings/update/userTypeSettings',userdetiles)
+      .put(endpoint.userTypeSettings, userdetiles)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess(data.data.message));
-          dispatch({ type: EDIT_USERTYPESETTING, payload: data.data.result.data.userTypes });
-          
+          dispatch({
+            type: EDIT_USERTYPESETTING,
+            payload: data.data.result.data.userTypes
+          });
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -69,5 +75,3 @@ export const updateUserSetting = (userdetiles) => {
 //       });
 //   };
 // };
-
-

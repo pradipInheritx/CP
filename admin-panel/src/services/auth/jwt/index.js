@@ -6,6 +6,7 @@ import {
 } from "../../../redux/actions/Auth";
 import React from "react";
 import axios from "./config";
+import { endpoint } from "redux/endpoint";
 
 const localToken = localStorage.getItem("token");
 
@@ -14,7 +15,7 @@ const JWTAuth = {
     return dispatch => {
       dispatch(fetchStart());
       axios
-        .post("auth/createAdminUser", {
+        .post(endpoint.authCreateAdminUser, {
           ...userDetail
         })
         .then(({ data }) => {
@@ -40,7 +41,7 @@ const JWTAuth = {
       try {
         dispatch(fetchStart());
         axios
-          .post("auth/login", {
+          .post(endpoint.authLogin, {
             email: email,
             password: password
           })
@@ -74,7 +75,7 @@ const JWTAuth = {
       axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
       dispatch(fetchStart());
       axios
-        .post("auth/logout")
+        .post(endpoint.authlogout)
         .then(({ data }) => {
           if (data) {
             dispatch(fetchSuccess());
@@ -101,7 +102,7 @@ const JWTAuth = {
       dispatch(updateLoadUser(loaded));
       const authToken = JSON.parse(localStorage.getItem("userData"));
       axios
-        .post("auth/getAuthToken", {
+        .post(endpoint.getAuthToken, {
           refreshToken: authToken?.refreshToken
         })
         .then(({ data }) => {
@@ -122,7 +123,7 @@ const JWTAuth = {
     return dispatch => {
       dispatch(fetchStart());
       axios
-        .post("auth/forgot-password", { email: email })
+        .post(endpoint.forgotPassword, { email: email })
         .then(({ data }) => {
           if (data) {
             dispatch(setForgetPassMailSent(true));
@@ -146,7 +147,7 @@ const JWTAuth = {
     return dispatch => {
       dispatch(fetchStart());
       axios
-        .post("auth/reset-password", { ...data })
+        .post(endpoint.resetPassword, { ...data })
         .then(({ data }) => {
           if (data) {
             dispatch(setForgetPassMailSent(true));

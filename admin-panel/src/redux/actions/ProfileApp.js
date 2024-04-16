@@ -1,26 +1,27 @@
 //for getting  mail detail
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
-import { GET_USER_DETAIL } from '../../@jumbo/constants/ActionTypes';
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "axios";
+import { GET_USER_DETAIL } from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
 
 export const getUserDetail = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/profile')
+      .get(endpoint.profile)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_USER_DETAIL, payload: data.data });
         } else {
-          dispatch(fetchError('Something went wrong'));
+          dispatch(fetchError("Something went wrong"));
         }
       })
       .catch(error => {
         if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }
-        dispatch(fetchError('Something went wrong'));
+        dispatch(fetchError("Something went wrong"));
       });
   };
 };

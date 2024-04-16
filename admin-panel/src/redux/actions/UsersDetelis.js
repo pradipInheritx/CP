@@ -1,54 +1,63 @@
-import { fetchError, fetchStart, fetchSuccess } from './Common';
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
 import axios from "../../services/auth/jwt/config";
 import {
-GET_USERDETELIS,
-ADD_USERDETELIS,
-SET_USERDETELIS_DETAILS,
-EDIT_USERDETELIS,
-DELETE_USERDETELIS,
-DELETE_BULK_USERDETELIS,
-} from '../../@jumbo/constants/ActionTypes';
+  GET_USERDETELIS,
+  ADD_USERDETELIS,
+  SET_USERDETELIS_DETAILS,
+  EDIT_USERDETELIS,
+  DELETE_USERDETELIS,
+  DELETE_BULK_USERDETELIS
+} from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
 
-export const getUsers = (filterOptions = [], searchTerm = '', callbackFun) => {
+export const getUsers = (filterOptions = [], searchTerm = "", callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('auth/getUserList')
+      .get(endpoint.getUserList)
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_USERDETELIS, payload: data.data.result });
-          
+
           if (callbackFun) callbackFun(data.data.result);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
         if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
 
-export const getUserSetting = (filterOptions = [], searchTerm = '', callbackFun) => {
+export const getUserSetting = (
+  filterOptions = [],
+  searchTerm = "",
+  callbackFun
+) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/users', { params: { filterOptions, searchTerm } })
+      .get(endpoint.userSetting, { params: { filterOptions, searchTerm } })
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_USERDETELIS, payload: data.data });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -63,25 +72,27 @@ export const addNewUser = (user, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/users', user)
+      .post(endpoint.userSetting, user)
       .then(data => {
         if (data.status === 200) {
-          dispatch(fetchSuccess('New user was added successfully.'));
+          dispatch(fetchSuccess("New user was added successfully."));
           dispatch({ type: ADD_USERDETELIS, payload: data.data });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
 
 export const sentMailToUser = () => {
   return dispatch => {
-    dispatch(fetchSuccess('Email has been sent to user successfully'));
+    dispatch(fetchSuccess("Email has been sent to user successfully"));
   };
 };
 
@@ -89,18 +100,20 @@ export const updateUser = (user, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users', user)
+      .put(endpoint.userSetting, user)
       .then(data => {
         if (data.status === 200) {
-          dispatch(fetchSuccess('Selected user was updated successfully.'));
+          dispatch(fetchSuccess("Selected user was updated successfully."));
           dispatch({ type: EDIT_USERDETELIS, payload: data.data });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -109,18 +122,20 @@ export const updateUserStatus = (data, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users/update-status', data)
+      .put(endpoint.userUpdateStatus, data)
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('User status was updated successfully.'));
+          dispatch(fetchSuccess("User status was updated successfully."));
           dispatch({ type: EDIT_USERDETELIS, payload: response.data });
           if (callbackFun) callbackFun(response.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -129,18 +144,20 @@ export const deleteBulkUsers = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users/bulk-delete', { userIds })
+      .put(endpoint.userBulkDelete, { userIds })
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('Selected users were deleted successfully.'));
+          dispatch(fetchSuccess("Selected users were deleted successfully."));
           dispatch({ type: DELETE_BULK_USERDETELIS, payload: userIds });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -149,18 +166,20 @@ export const deleteUser = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete('/users', { params: { id: userId } })
+      .delete(endpoint.userSetting, { params: { id: userId } })
       .then(data => {
         if (data.status === 200) {
-          dispatch(fetchSuccess('Selected user was deleted successfully.'));
+          dispatch(fetchSuccess("Selected user was deleted successfully."));
           dispatch({ type: DELETE_USERDETELIS, payload: userId });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };

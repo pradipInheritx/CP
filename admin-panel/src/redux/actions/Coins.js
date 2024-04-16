@@ -1,38 +1,41 @@
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from '../../services/auth/jwt/config';
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "../../services/auth/jwt/config";
 import {
-GET_COIN,
-ADD_COIN,
-SET_COIN_DETAILS,
-EDIT_COIN,
-DELETE_COIN,
-DELETE_BULK_COIN,
-} from '../../@jumbo/constants/ActionTypes';
+  GET_COIN,
+  ADD_COIN,
+  SET_COIN_DETAILS,
+  EDIT_COIN,
+  DELETE_COIN,
+  DELETE_BULK_COIN
+} from "../../@jumbo/constants/ActionTypes";
+import { endpoint } from "redux/endpoint";
 
-export const getCoins = (filterOptions = [], searchTerm = '', callbackFun) => {
+export const getCoins = (filterOptions = [], searchTerm = "", callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
-    const userId = JSON.parse(localStorage.getItem('userData'));
+    const userId = JSON.parse(localStorage.getItem("userData"));
     // .get('/sub-admin/subAdminList/2PGCYzgpyLILzWywdC2p?limit=10&page=1', { params: { filterOptions, searchTerm } })
     // .get(`/sub-admin/subAdminList/${userId.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
-    
+
     axios
-      .get(`coins/getAllCoins`)
+      .get(endpoint.getAllCoins)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          console.log(data.data.result.coins,"allCoin")
-          dispatch({ type: GET_COIN, payload: data.data.result.coins});
+          console.log(data.data.result.coins, "allCoin");
+          dispatch({ type: GET_COIN, payload: data.data.result.coins });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
         if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -47,18 +50,20 @@ export const addNewCoin = (user, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .post('/auth/createAdminUser', user)
+      .post("/auth/createAdminUser", user)
       .then(data => {
-        if (data.status === 200 || data.status === 201) {          
-          dispatch(fetchSuccess('New user was added successfully.'));
+        if (data.status === 200 || data.status === 201) {
+          dispatch(fetchSuccess("New user was added successfully."));
           dispatch({ type: ADD_COIN, payload: data.data.result });
           if (callbackFun) callbackFun(data.data.result);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -69,44 +74,48 @@ export const addNewCoin = (user, callbackFun) => {
 //   };
 // };
 
-export const updateCoin = (coin,VoteBarUpdate, callbackFun) => {
+export const updateCoin = (coin, VoteBarUpdate, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .patch(`coins/updateCoin/voteBarRange/${coin.id}`, VoteBarUpdate)
+      .patch(`${endpoint.voteBarRange}/${coin.id}`, VoteBarUpdate)
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('Selected coin was updated successfully.'));
-          dispatch({ type: EDIT_COIN, payload: response.data.result});
+          dispatch(fetchSuccess("Selected coin was updated successfully."));
+          dispatch({ type: EDIT_COIN, payload: response.data.result });
           if (callbackFun) callbackFun(response.data.result);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
 
 export const updateCoinStatus = (id, data, callbackFun) => {
-  console.log(id,data,"check all data")
+  console.log(id, data, "check all data");
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .patch(`coins/updateCoinStatus/${id}`, data)
+      .patch(`${endpoint.updateCoinStatus}/${id}`, data)
       .then(response => {
         if (response.status === 200 || response.status === 201) {
-          console.log(response.data.result.data,"successfully")
-          dispatch(fetchSuccess('User status was updated successfully.'));
+          console.log(response.data.result.data, "successfully");
+          dispatch(fetchSuccess("User status was updated successfully."));
           dispatch({ type: EDIT_COIN, payload: response.data.result });
           if (callbackFun) callbackFun(response.data.result);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -115,18 +124,20 @@ export const deleteBulkCoin = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users/bulk-delete', { userIds })
+      .put(endpoint.bulkDelete, { userIds })
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('Selected users were deleted successfully.'));
+          dispatch(fetchSuccess("Selected users were deleted successfully."));
           dispatch({ type: DELETE_BULK_COIN, payload: userIds });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -135,18 +146,20 @@ export const deleteCoin = (userId, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .delete(`sub-admin/deleteSubAdmin/${userId}`)
+      .delete(`${endpoint.deleteSubAdmin}/${userId}`)
       .then(data => {
         if (data.status === 200) {
-          dispatch(fetchSuccess('Selected user was deleted successfully.'));
+          dispatch(fetchSuccess("Selected user was deleted successfully."));
           dispatch({ type: DELETE_COIN, payload: userId });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
