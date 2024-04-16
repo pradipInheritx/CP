@@ -31,6 +31,9 @@ const Header = (setMfaLogin?:any) => {
   const logOutHandler = async () => {
     const result = await Logout(setUser);
     if (result) {
+      if (window.screen.width < 767) {
+        sessionStorage.clear();
+      }
       setUserInfo();
       navigate('/login');
     } else {

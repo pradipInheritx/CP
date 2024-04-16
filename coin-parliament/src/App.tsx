@@ -122,6 +122,7 @@ import votingParliament from "firebaseVotingParliament";
 import sportParliament from "firebaseSportParliament";
 import stockParliament from "firebaseStockParliament";
 import coinParliament from "firebaseCoinParliament";
+import LandingPage from "Pages/LandingPage";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -438,7 +439,6 @@ function App() {
   //   }
   // }, [user, userInfo]);
 
-
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
 
@@ -631,7 +631,7 @@ useEffect(()=>{
     setFirstTimeAvatarSelection(!userInfo?.avatar)      
   }
 },[JSON.stringify(userInfo)])
-
+  console.log((window.screen.width < 767  && sessionStorage.getItem("landing")!='true'),'loading');
   return loader ? (
     <Spinner />
   ) : (
@@ -808,6 +808,7 @@ useEffect(()=>{
 
                         {/* <Background pathname={pathname} /> */}
                         <AppContainer
+                        style={{backgroundColor:pathname.includes("HomePage") ? ("white") : ""}}
                           fluid
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
@@ -816,16 +817,19 @@ useEffect(()=>{
                           <Container
                             fluid
                             style={{
-                              background: "#160133",
+                              // background: "#160133",
                               whiteSpace: "normal",
                               wordWrap: "break-word",
                               flexGrow: 1,
                               padding: '0px 0px 0px 0px'
                             }}
                           >
+                            {
+                            // (window.screen.width < 767 ? sessionStorage.getItem("landing") == 'true': "false") &&
+                            // landing === "true" &&
                             <Header
                             setMfaLogin={setMfaLogin}
-                            />
+                            />}
                             {user && firstTimeLogin && (
                               <FirstTimeLogin
                                 setFirstTimeAvatarSelection={
@@ -883,8 +887,9 @@ useEffect(()=>{
                                   setMfaLogin={setMfaLogin}
                                 />
                               )}
-
                             {!firstTimeLogin && <Routes>
+                              <Route path='/HomePage' element={<LandingPage/>} />
+                              {(window.screen.width < 767 && sessionStorage.getItem("landing")!='true') && <Route path='/' element={<LandingPage/>} />}
                               <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
                                   {...{
@@ -898,7 +903,7 @@ useEffect(()=>{
                                 !firstTimeAvatarSlection &&
                                 !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
                               <>
-                              <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
+                              <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} /> 
                               <Route path="/" element={<ProtectedRoutes />}>
                                 <Route path='/' element={<Home />} />
                                 <Route path={'profile/share'} element={<Pool />} />
