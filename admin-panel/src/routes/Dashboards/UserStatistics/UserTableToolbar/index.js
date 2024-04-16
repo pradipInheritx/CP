@@ -125,11 +125,10 @@ const UserTableToolbar = ({
       if (!selectedOption) {
         setFilterTypeError(true);
       } else {
-        setPage(0);
         setFilter({
           ...filter,
           ...values,
-          page: 1,
+          page: 0,
           filterFields: selectedOption
         });
         handleClose();
@@ -143,6 +142,7 @@ const UserTableToolbar = ({
     setFilterTypeError(false);
     setSelectedOption(null);
     setFilter("");
+    setPage(0);
     handleClose();
   };
 
@@ -150,7 +150,10 @@ const UserTableToolbar = ({
     setFilterOptions(filterOptions.filter(item => item !== option.value));
   };
 
-  const onSearchChipDelete = () => setSearchTerm("");
+  const onSearchChipDelete = () => {
+    setPage(0);
+    setSearchTerm("");
+  };
 
   const numSelected = selected.length;
 
@@ -220,7 +223,10 @@ const UserTableToolbar = ({
         ) : (
           <React.Fragment>
             <CmtSearch
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                setPage(0);
+                setSearchTerm(e.target.value);
+              }}
               value={searchTerm}
               border={false}
               onlyIcon
