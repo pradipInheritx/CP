@@ -125,6 +125,8 @@ import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEma
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
+import { clearAllGarbageCallbackHistory } from "./common/models/Payments";
+
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
@@ -973,7 +975,6 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
-
     // console.info("after", after)
     // const beforeTotal: number = before.rewardStatistics?.total || 0;
     // const afterTotal: number = after.rewardStatistics?.total || 0;
@@ -2086,7 +2087,7 @@ exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 60 minutes")
   .onRun(async () => {
 
-    //await clearAllGarbageCallbackHistory();
+    await clearAllGarbageCallbackHistory();
 
     await updateAllPendingTransactionByUsingOrderAPI();
 

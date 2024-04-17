@@ -265,35 +265,35 @@ export const getStatusFromOrderStatusAPI = async (orderId: any) => {
   }
 }
 
-// export const clearAllGarbageCallbackHistory = async () => {
-//   try {
-//     const currentTime = Timestamp.now();
-//     const oneHoursAgo = new Date(currentTime.toMillis() - 1 * 60 * 60 * 1000);
+export const clearAllGarbageCallbackHistory = async () => {
+  try {
+    const currentTime = Timestamp.now();
+    const oneHoursAgo = new Date(currentTime.toMillis() - 6 * 60 * 60 * 1000);
 
-//     const callbackRef = await firestore().collection('callbackHistory');
-//     const queryOfCallback = callbackRef
-//       .where('timestamp', '<=', oneHoursAgo);
+    const callbackRef = await firestore().collection('callbackHistory');
+    const queryOfCallback = callbackRef
+      .where('timestamp', '<=', oneHoursAgo);
 
-//     const callbackBatch = firestore().batch();
-//     await queryOfCallback.get()
-//       .then(async (callbackSnapshot: any) => {
-//         if (callbackSnapshot.empty) {
-//           console.log('No callback created in the last 1 hour from ACME.');
-//           return;
-//         }
-//         callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
-//           console.log("callbackAcmeDoc-->", callbackAcmeDoc.id)
-//           const docRef = firestore().collection('callbackHistory').doc(callbackAcmeDoc.id);
-//           callbackBatch.delete(docRef);
-//         })
-//       })
-//     await callbackBatch.commit();
-//     console.log("Batch delete operation successful");
-//   } catch (error: any) {
-//     console.error("Error while delete the document from callback: ", error);
-//   }
+    const callbackBatch = firestore().batch();
+    await queryOfCallback.get()
+      .then(async (callbackSnapshot: any) => {
+        if (callbackSnapshot.empty) {
+          console.log('No callback created in the last 1 hour from ACME.');
+          return;
+        }
+        callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
+          console.log("callbackAcmeDoc-->", callbackAcmeDoc.id)
+          const docRef = firestore().collection('callbackHistory').doc(callbackAcmeDoc.id);
+          callbackBatch.delete(docRef);
+        })
+      })
+    await callbackBatch.commit();
+    console.log("Batch delete operation successful");
+  } catch (error: any) {
+    console.error("Error while delete the document from callback: ", error);
+  }
 
-// }
+}
 
 export const updateAllPendingTransactionByUsingOrderAPI = async () => {
   try {
