@@ -278,7 +278,7 @@ export const clearAllGarbageCallbackHistory = async () => {
     await queryOfCallback.get()
       .then(async (callbackSnapshot: any) => {
         if (callbackSnapshot.empty) {
-          console.log('No callback created in the last 1 hour from ACME.');
+          console.log('No callback created in the last 6 hour from ACME.');
           return;
         }
         callbackSnapshot.forEach(async (callbackAcmeDoc: any) => {
