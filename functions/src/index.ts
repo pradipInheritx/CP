@@ -2419,7 +2419,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
 
       let keepFetching = true;
       while (keepFetching) {
-        let query = admin.firestore().collection("userStatistics").orderBy("userName").limit(batchSize);
+        let query = admin.firestore().collection("userStatistics").limit(batchSize);
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
         const batchData = snapshot.docs.map((doc) => doc.data());
