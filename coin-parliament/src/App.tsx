@@ -485,20 +485,20 @@ function App() {
     else promptInstall.prompt();
   };
   if (!supportsPWA) {
-    console.log('not supported')
+    // console.log('not supported')
   }
   useEffect(() => {            
     if (user?.email && userInfo?.displayName === undefined && !login) {            
-      console.log("lodding true")
+      // console.log("lodding true")
       setLoader(true);
     } else if (!Object.keys(coins).length && !socketConnect){      
-      console.log("lodding true")
+      // console.log("lodding true")
       setLoader(true);      
     } else if (!!user?.email && !userInfo) {
-      console.log("lodding true")
+      // console.log("lodding true")
       setLoader(true);
     } else {    
-      console.log("lodding false")
+      // console.log("lodding false")
       setLoader(false);            
     }
   }, [user, userInfo, login, socketConnect, JSON.stringify(Object.keys(coins).length)]);
@@ -614,7 +614,7 @@ function App() {
 
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
-    console.log(messagingResolve,"messagingResolve")
+    // console.log(messagingResolve,"messagingResolve")
     if (messagingResolve) {
       getToken(messagingResolve, {
         vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
@@ -970,7 +970,7 @@ function App() {
         );
         // If you need the data separately
         const data = querySnapshot.docs.map((doc:any) => doc.data() as unknown as VoteResultProps);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error('Error fetching votes in the last 24 hours:', error);
       }
@@ -999,13 +999,10 @@ function App() {
   const [password, setPassword] = useState("");  
   function connect() {
     if (Object.keys(coins).length === 0) return
-    console.log('Browser window called')
     
     ws = new WebSocket("wss://stream.binance.com:9443/ws");
-    console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
-      console.log('WebSocket Open');
       if (ws.readyState === WebSocket.OPEN) {        
         setSocketConnect(true)
         ws.send(JSON.stringify({
@@ -1351,7 +1348,7 @@ function App() {
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
   useEffect(()=>{
-    console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
+    // console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
     
   },[JSON.stringify({voteDetails,lessTimeVoteDetails,completedVotes})])
   useEffect(() => {

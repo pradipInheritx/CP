@@ -1820,12 +1820,46 @@ border-top-left-radius: 0px !important;
   }
 
   .VoteBanner {
+    max-width: 749px;
+    margin: 0px auto;
+    padding: 0px 10px;
+  }
+
+  .VoteBanner .VoteBannerInner {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    font-size: 25px;
+    font-size: 20px;
     background-color:white;
+    text-align: center;
     margin : 0 auto;
-    border-radius:35px;
+    border-radius:10px;
     color:rgb(22, 1, 63);
     padding: 10px;
   }
+
+  @media only screen and (max-width: 979px) {
+    .VoteBanner {
+        max-width: 100%;
+    width: 100%;    
+    }
+  }
+  @media only screen and (max-width: 767px) {
+      .VoteBanner .VoteBannerInner {
+        font-size: 14px;
+      }
+  }
+
+  @media only screen and (max-width: 575px) {
+      .VoteBanner .VoteBannerInner {
+        font-size: 12px;
+        padding: 10px 5px;
+      }
+  }
+
+  @media only screen and (max-width: 320px) {
+    .VoteBanner .VoteBannerInner {
+      font-size: 11px;
+      padding: 10px 5px;
+    }
+}
