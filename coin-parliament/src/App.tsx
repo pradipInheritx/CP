@@ -267,7 +267,7 @@ function App() {
 
     if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
       // console.log("yes i am working")
-      localStorage.removeItem("PayAmount");
+      // localStorage.removeItem("PayAmount");
     }
   }, [JSON.stringify(location.pathname)]);
 
