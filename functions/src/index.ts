@@ -2290,26 +2290,111 @@ function paginateArray(result: any, page: number, limit: number) {
 }
 
 // Export User Statistics data
-exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) => {
+// exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) => {
+//   try {
+//     // Query Firestore data
+//     const snapshot = await admin.firestore().collection('userStatistics').get();
+//     let data = snapshot.docs.map(doc => doc.data());
+
+//     // Format some data
+//     data = data.map((user: any) => {
+//       if (user.signUpTime && user.signUpTime.trim() !== "") {
+//         const signUpDate = new Date(user.signUpTime);
+//         const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+//         user.signUpTime = signUpDateFormatted;
+//       } else {
+//         user.signUpTime = "";
+//       }
+//       user.averageVotes = Math.round(user.averageVotes);
+//       user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+//       return user;
+//     });
+
+//     const headerMappings = [
+//       { customHeader: 'User Name', dbKey: 'userName' },
+//       { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
+//       { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
+//       { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
+//       { customHeader: 'Email', dbKey: 'email' },
+//       { customHeader: 'Game Title', dbKey: 'GameTitle' },
+//       { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
+//       { customHeader: 'Total Votes', dbKey: 'totalVotes' },
+//       { customHeader: 'Average Votes', dbKey: 'averageVotes' },
+//       { customHeader: 'No of Vote Days', dbKey: 'noOfVotesDays' },
+//       { customHeader: 'Extra Vote Purchased', dbKey: 'extraVotePurchased' },
+//       { customHeader: 'Source', dbKey: 'source' },
+//       { customHeader: 'Total Ambassador Rewards', dbKey: 'TotalAmbassadorRewards' },
+//       { customHeader: 'User ID', dbKey: 'userId' }
+//     ];
+
+//     // Create a new Excel workbook
+//     const workbook = new excel.Workbook();
+//     const worksheet = workbook.addWorksheet('User Statistics Data');
+
+//     // Add headers to the worksheet
+//     const headers = headerMappings.map(mapping => mapping.customHeader);
+//     worksheet.addRow(headers);
+
+//     // Add data to the worksheet
+//     data.forEach(userData => {
+//       const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
+//       worksheet.addRow(rowValues);
+//     });
+
+//     // Apply styles to the headers
+//     const headerRow = worksheet.getRow(1);
+//     headerRow.eachCell((cell, colNumber) => {
+//       cell.fill = {
+//         type: 'pattern',
+//         pattern: 'solid',
+//         fgColor: { argb: 'FFFF00' } // Yellow color
+//       };
+//       cell.border = {
+//         top: { style: 'thin' },
+//         left: { style: 'thin' },
+//         bottom: { style: 'thin' },
+//         right: { style: 'thin' }
+//       };
+//       cell.font = { bold: true }; // Make text bold
+//       cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
+//     });
+
+//     // Apply styles to the data cells
+//     worksheet.eachRow((row, rowNum) => {
+//       if (rowNum > 1) { // Skip header row
+//         row.eachCell((cell, colNumber) => {
+//           cell.border = {
+//             top: { style: 'thin' },
+//             left: { style: 'thin' },
+//             bottom: { style: 'thin' },
+//             right: { style: 'thin' }
+//           };
+//         });
+//       }
+//     });
+
+//     // Set content disposition and type
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+//     // Set CORS headers
+//     res.set('Access-Control-Allow-Origin', '*');
+//     res.set('Access-Control-Allow-Methods', 'GET, POST');
+//     res.set('Access-Control-Allow-Headers', 'Content-Type');
+//     // Write workbook to response
+//     await workbook.xlsx.write(res);
+
+//     // End response
+//     res.end();
+//   } catch (error) {
+//     console.error('Error exporting data:', error);
+//     res.status(500).send('Error exporting User Statistics data');
+//   }
+// });
+
+
+exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) => {
   try {
-    // Query Firestore data
-    const snapshot = await admin.firestore().collection('userStatistics').get();
-    let data = snapshot.docs.map(doc => doc.data());
-
-    // Format some data
-    data = data.map((user: any) => {
-      if (user.signUpTime && user.signUpTime.trim() !== "") {
-        const signUpDate = new Date(user.signUpTime);
-        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-        user.signUpTime = signUpDateFormatted;
-      } else {
-        user.signUpTime = "";
-      }
-      user.averageVotes = Math.round(user.averageVotes);
-      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
-      return user;
-    });
-
+    const batchSize = 100; // Set your desired batch size
     const headerMappings = [
       { customHeader: 'User Name', dbKey: 'userName' },
       { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
@@ -2327,64 +2412,52 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) =>
       { customHeader: 'User ID', dbKey: 'userId' }
     ];
 
-    // Create a new Excel workbook
-    const workbook = new excel.Workbook();
-    const worksheet = workbook.addWorksheet('User Statistics Data');
+    // Function to fetch data in batches
+    const fetchDataInBatches = async () => {
+      let lastDoc = null;
+      const allData = [];
 
-    // Add headers to the worksheet
-    const headers = headerMappings.map(mapping => mapping.customHeader);
-    worksheet.addRow(headers);
-
-    // Add data to the worksheet
-    data.forEach(userData => {
-      const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
-      worksheet.addRow(rowValues);
-    });
-
-    // Apply styles to the headers
-    const headerRow = worksheet.getRow(1);
-    headerRow.eachCell((cell, colNumber) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFF00' } // Yellow color
-      };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
-      cell.font = { bold: true }; // Make text bold
-      cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
-    });
-
-    // Apply styles to the data cells
-    worksheet.eachRow((row, rowNum) => {
-      if (rowNum > 1) { // Skip header row
-        row.eachCell((cell, colNumber) => {
-          cell.border = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' }
-          };
-        });
+      let keepFetching = true;
+      while (keepFetching) {
+        let query = admin.firestore().collection("userStatistics").orderBy("userName").limit(batchSize);
+        if (lastDoc) query = query.startAfter(lastDoc);
+        const snapshot = await query.get();
+        const batchData = snapshot.docs.map((doc) => doc.data());
+        allData.push(...batchData);
+        lastDoc = snapshot.docs[snapshot.size - 1];
+        if (!snapshot.empty) {
+          if (snapshot.size < batchSize) {
+            keepFetching = false; // Stop fetching if there's no more data
+          }
+        } else {
+          keepFetching = false; // Stop fetching if the snapshot is empty
+        }
       }
-    });
+      return allData;
+    };
 
-    // Set content disposition and type
+    // Stream data directly to response
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
-    // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'GET, POST');
     res.set('Access-Control-Allow-Headers', 'Content-Type');
-    // Write workbook to response
-    await workbook.xlsx.write(res);
 
-    // End response
-    res.end();
+    const workbook = new excel.stream.xlsx.WorkbookWriter({ stream: res });
+
+    const worksheet = workbook.addWorksheet('User Statistics Data');
+    worksheet.addRow(headerMappings.map(mapping => mapping.customHeader));
+
+    const dataStream = await fetchDataInBatches();
+
+    for (const userData of dataStream) {
+      const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
+      worksheet.addRow(rowValues);
+    }
+
+    await workbook.commit();
+
+    console.log('Data export successful');
   } catch (error) {
     console.error('Error exporting data:', error);
     res.status(500).send('Error exporting User Statistics data');
