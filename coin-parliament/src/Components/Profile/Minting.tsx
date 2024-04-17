@@ -232,7 +232,7 @@ const Minting = ({
   const handleShow = () => {
     setModalShow(true)
     // claimRewardSound.play();
-    claimRewardSoundplay()
+    // claimRewardSoundplay()
     // handleSoundWinCmp.play()
   };
   const [handleSoundClick] = useSound(buttonClick);
@@ -258,15 +258,10 @@ const Minting = ({
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
-    }    
-    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
-      data: {}
-    }).then((res:any) => {
-      console.log(res.data.result, "resultdata")
-      setPaxDistribution(res?.data?.result?.paxDistribution)
-    }).catch((err:any) => {
-      console.log(err, "resultdata")
-    })   
+    }  
+    if (paxDistribution == 0) {
+      getPaxDistribution()
+    }      
     
     if (userInfo?.uid) {      
       axios.post("payment/getAllPendingPaxByUserId", {        
@@ -280,7 +275,16 @@ const Minting = ({
 
   }, [modalShow, CmpPopupShow]);
   
-  
+  const getPaxDistribution = () => {    
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+      data: {}
+    }).then((res: any) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res?.data?.result?.paxDistribution)
+    }).catch((err: any) => {
+      console.log(err, "resultdata")
+    }) 
+  }
 
   useEffect(() => {
     
@@ -365,6 +369,7 @@ const Minting = ({
         handleShow();
           setTimeout(() => {
             setShowCoinMove(false);
+            claimRewardSoundplay()
           }, 8000);
         setResultData(result);
         setRewardTimer(result);
@@ -542,6 +547,7 @@ const Minting = ({
           contentClassName={"modulebackground ForBigDiv"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
+          animation={false}
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           id="popupid"
         >
@@ -562,11 +568,14 @@ const Minting = ({
 
             <div className="d-flex justify-content-center ">
               <Buttons.Primary className="mx-2" onClick={() => {
-                setTimeout(() => {
+                // setTimeout(() => {
                   updateState()
-                }, 1000);
-                claimRewardSoundpause()
-                handleClose()
+                  // }, 1000);
+                    claimRewardSoundpause()                    
+                  setTimeout(() => {
+                    handleClose()
+                    setShowCoinMove(true)
+                }, 50);
               }}>COLLECT YOUR COIN</Buttons.Primary>
             </div>
             </>

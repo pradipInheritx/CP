@@ -72,6 +72,11 @@ animation: blinker 1s linear infinite;
   /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/commonBG.png"); */
     background-position: center,center;
 }
+.sameBG{
+  background:url("../../assets/images/popupbg2.png");
+  /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/commonBG.png"); */
+    background-position: center,center;
+}
 
 .btn-close{
   color: white !important;

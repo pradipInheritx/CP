@@ -18,6 +18,8 @@ import Wildwest from '../../assets/avatars/videos/Winter.mp4';
 import useSound from "use-sound";
 // @ts-ignore
 import claimSound from '../../assets/sounds/claimReward.m4a';
+import Bear from "../icons/Bear";
+import Bull from "../icons/Bull";
 
 type PAXCardProps = {
   walletId: string;
@@ -64,6 +66,16 @@ font-weight: 700;
 line-height: normal;
 letter-spacing: 2px;
 text-transform: uppercase;
+`;
+
+const Icon = styled.div`
+  width: 41px;
+  height: 37px;
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+  
 `;
 
 
@@ -147,6 +159,27 @@ top: 2px;
 //   }
   `;
 
+const PopupButton = styled(Buttons.RadiusTopRight)`
+  ${Option};
+  flex-direction: column;
+  justify-content: center;
+  border-radius:0 ;
+  &:active{
+    position: relative;
+    top: 2px;
+    box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+    }
+    &:disabled {
+      pointer-events: none;  
+      cursor:pointer;
+    }
+    &:hover {
+    background:#6352E8;
+    color:white;
+    box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+  }
+`;
+
 const Option1 = styled(Buttons.RadiusBottomLeft)`
   ${size};
   ${Option};
@@ -216,6 +249,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
     if (extraVoteModule) {      
       setTimeout(() => {
         setShowButtonMove(false);
+        claimRewardSoundplay();
       }, 7000);
     }
     return () => {
@@ -224,7 +258,6 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
   }, [extraVoteModule]);
 
-  console.log(extraVoteModule, "rewardExtraVote")
 
   return (
     <ForZoom2 {...{ showCoinIncrement }} style={{
@@ -357,6 +390,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
             aria-labelledby="contained-modal-title-vcenter"
             centered
             style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+            animation={false}
           >
             <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
               style={{
@@ -372,8 +406,12 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
               </div>              
               {/* <Modal.Footer> */}
               <div className="d-flex justify-content-center ">
-                <Buttons.Primary className="mx-2" onClick={() => {
-                  handleSoundWinCmppause()
+                  <PopupButton className="mx-2"
+                    
+                    
+                    onClick={() => {
+                    // handleSoundWinCmppause()
+                    claimRewardSoundpause()
                   setCountShow(false)
                   // setShowReward((prev: number) => {
                   //   return 2;
@@ -382,10 +420,12 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   // setInOutReward((prev: number) => {
                   //   return 2;
                   // });
-                  setTimeout(() => {
                     setShowCoinIncrement(0);
-                  }, 2000);
-                  handleClose();
+                    claimRewardSoundpause();
+                  setTimeout(() => {
+                    handleClose();
+                    setShowButtonMove(true)
+                    }, 50);
                   // setTimeout(() => {
                   //   setHeaderExtraVote((prev: any) => {
                   //     return {
@@ -414,16 +454,20 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   //     collect: false
                   //   });
                   // }, 3500)
-                }}>Collect your Vote</Buttons.Primary>                
+                }}>Collect your Vote</PopupButton>                
                 {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
               </div>
               </> :
                 <div className="w-100 d-flex justify-content-between align-items-center m-auto">
-                <Option0>
-                  <p className="opacity-0">hello</p>
+                <Option0>                    
+                    <Icon>
+                      <Bull />
+                    </Icon>
                 </Option0>
                 <Option1>
-                  <p className="opacity-0">hello</p>
+                    <Icon>
+                       <Bear />
+                    </Icon>
                 </Option1>
               </div>}
             </Modal.Body>

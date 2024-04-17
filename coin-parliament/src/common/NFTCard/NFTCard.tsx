@@ -52,6 +52,7 @@ type MintingProps = {
   befornotShow?: any;
   setCardsDetails?: any;
   setAddPaxWalletPop?: any;
+  setChangeBG?: any;
 };
 
 
@@ -87,7 +88,7 @@ const ScratchCard = styled.canvas`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails, setAddPaxWalletPop }: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails, setAddPaxWalletPop, setChangeBG }: MintingProps) {
 
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
@@ -124,7 +125,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const cardDiv = useRef()
   const forwidth = document.getElementById("card-animation")
 
-  console.log(forwidth, "forwidth")
   // const WIDTH =  window.screen.width > 767 ? 500 : window.screen.width - 10 ;
   // const HEIGHT = 460;
   const WIDTH = 252;
@@ -205,7 +205,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
   // console.log(mintedTime,"getMIntedTime")
-  console.log(rewardTimer,"rewardTimer")
   
   const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const rewardTransactionsCollectionRef = collection(firestore, 'reward_transactions');
@@ -304,7 +303,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       context.globalCompositeOperation = "destination-out";
       context.lineWidth = 50;
     };
-    foregroundImage.src = allColor[`${cardType.toLowerCase()}`].backgroundimg;
+    // foregroundImage.src = allColor[`${cardType.toLowerCase()}`].backgroundimg;
+    foregroundImage.src = allColor[`common`].backgroundimg;
     //   context.fillStyle = "#000";
     // context.font = "15px Helvetica";
     // context.fillText("Scratch", WIDTH /3 , 160);
@@ -314,8 +314,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       // second
     }
   }, [])
-
-  console.log(befornotShow, "befornotShow")
+  
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -386,6 +385,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
+    if (setChangeBG) {      
+      setChangeBG(percentage)
+    }
     if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true);
@@ -480,6 +482,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
+    if (setChangeBG) {
+      setChangeBG(percentage)
+    }
     if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
@@ -700,6 +705,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           setCountShow(false)
           claimRewardSoundpause()
           setCardsDetails(rewardTimer?.data)
+          setChangeBG(0)
         }}
           style={{
             backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
@@ -717,9 +723,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           localStorage.setItem('filterCollection', JSON.stringify({ name: rewardTimer?.data?.firstRewardCardCollection }));
           navigate("/profile/Album");
           claimRewardSoundpause();
+          setChangeBG(0)
         }}
           style={{
-            backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
+            backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,            
             width: `${"120px"}`
           }}
         >
