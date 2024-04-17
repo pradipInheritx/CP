@@ -425,6 +425,7 @@ function App() {
   const [avatarImage, setAvatarImage] = useState<any>(null)
   const [connectCall, setConnectCall] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+  const [extraVoteModule, setExtraVoteModule] = useState<any>(false)
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
   const isFirstTimeLoginSetTimestamp = httpsCallable(functions, "isFirstTimeLoginSetTimestamp");
@@ -1704,6 +1705,8 @@ const handleAcceptAll = () => {
             >
               <AppContext.Provider
                   value={{
+                    extraVoteModule,
+                    setExtraVoteModule,
                     loader,
                     setLoader,
                     addPaxWalletPop,

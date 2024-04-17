@@ -84,6 +84,7 @@ const Mine = () => {
   const [shareModalShow, setShareModalShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
+  const [changeBG, setChangeBG] = React.useState(0);
 
   let navigate = useNavigate();
 
@@ -264,6 +265,8 @@ const Mine = () => {
 
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
+  console.log(changeBG,"getchangeBG")
+
   return (
     <div className="border">
       <Container >
@@ -412,8 +415,9 @@ const Mine = () => {
           aria-labelledby="contained-modal-title-vcenter"
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          animation={false}
           // @ts-ignore
-          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${changeBG < 82 ? "sameBG" : `${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}` : `card-contentMob modulebackground ForBigNft ${changeBG < 82 ? "sameBG" : `${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
@@ -429,7 +433,7 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setCardsDetails={setCardsDetails} setAddPaxWalletPop={setAddPaxWalletPop} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setCardsDetails={setCardsDetails} setAddPaxWalletPop={setAddPaxWalletPop} setChangeBG={setChangeBG} />
           </Modal.Body>
         </Modal>
       </CardDiv>

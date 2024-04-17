@@ -28,8 +28,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
 import useSound from "use-sound";
+
+import coinGif from "../../assets/images/coinGif.gif";
+
 // @ts-ignore
 import buttonClick from '../../assets/sounds/buttonClick.mp3';
+
 // @ts-ignore
 import claimSound from '../../assets/sounds/claimReward.m4a';
 // @ts-ignore
@@ -210,9 +214,9 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, rewardExtraVote, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab, setWalletTab, setAddPaxWalletPop, addPaxWalletPop } = useContext(AppContext);
+  const { showReward, setShowReward, rewardExtraVote, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab, setWalletTab, setAddPaxWalletPop, addPaxWalletPop, setExtraVoteModule, extraVoteModule } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = React.useState(false);  
   const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const [upgraeShow, setUpgraeShow] = React.useState(false);
@@ -221,13 +225,14 @@ const Minting = ({
   const [pendingPax, setPendingPax] = React.useState(0);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const [paxAddShow, setPaxAddShow] = React.useState(false);
+  const [showCoinMove, setShowCoinMove] = React.useState(true);
   const [claimRewardSoundplay ,{ pause: claimRewardSoundpause }] = useSound(claimSound);
   const [handleSoundWinCmpplay, { pause: handleSoundWinCmppause }] = useSound(WinCmp)
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
     // claimRewardSound.play();
-    claimRewardSoundplay()
+    // claimRewardSoundplay()
     // handleSoundWinCmp.play()
   };
   const [handleSoundClick] = useSound(buttonClick);
@@ -253,15 +258,10 @@ const Minting = ({
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
-    }    
-    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
-      data: {}
-    }).then((res:any) => {
-      console.log(res.data.result, "resultdata")
-      setPaxDistribution(res?.data?.result?.paxDistribution)
-    }).catch((err:any) => {
-      console.log(err, "resultdata")
-    })   
+    }  
+    if (paxDistribution == 0) {
+      getPaxDistribution()
+    }      
     
     if (userInfo?.uid) {      
       axios.post("payment/getAllPendingPaxByUserId", {        
@@ -275,7 +275,16 @@ const Minting = ({
 
   }, [modalShow, CmpPopupShow]);
   
-  
+  const getPaxDistribution = () => {    
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+      data: {}
+    }).then((res: any) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res?.data?.result?.paxDistribution)
+    }).catch((err: any) => {
+      console.log(err, "resultdata")
+    }) 
+  }
 
   useEffect(() => {
     
@@ -358,6 +367,10 @@ const Minting = ({
         uid: user?.uid,
         isVirtual: false,    }).then((result: any) => {        
         handleShow();
+          setTimeout(() => {
+            setShowCoinMove(false);
+            claimRewardSoundplay()
+          }, 8000);
         setResultData(result);
         setRewardTimer(result);
         setIsVirtualCall(false);
@@ -396,11 +409,12 @@ const Minting = ({
 
   // console.log(inOutReward, "inOutReward")
   const updateState = () => {
-    setShowReward(1);
+    // setShowReward(1);
     // console.log(inOutReward, "inOutReward2")
-    setInOutReward(1);
+    // setInOutReward(1);
 
-    setCountShow(true)
+    // setCountShow(true)
+    setExtraVoteModule(true)
     // @ts-ignore
     setAlbumOpen(resultData?.data?.firstRewardCardCollection);
     // @ts-ignore
@@ -533,6 +547,7 @@ const Minting = ({
           contentClassName={"modulebackground ForBigDiv"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
+          animation={false}
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           id="popupid"
         >
@@ -544,30 +559,35 @@ const Minting = ({
               height: "400px"
             }}
           >
-            <Popuphead>Congrats!</Popuphead>
+            {!showCoinMove ?
+              <>
+              <Popuphead> Congrats!</Popuphead>
             {/* @ts-ignore*/}
             <div className=''><p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
 
 
             <div className="d-flex justify-content-center ">
               <Buttons.Primary className="mx-2" onClick={() => {
-                setTimeout(() => {
-                  // setShowReward(1);                  
-                  // setInOutReward(1);
-
-                  // setCountShow(true)
-                  // // @ts-ignore
-                  // setAlbumOpen(resultData?.data?.firstRewardCardCollection);
-                  // // @ts-ignore
-                  // setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                  // // setRewardTimer(resultData); i commented here because i set this when i get result 
+                // setTimeout(() => {
                   updateState()
-                }, 1000);
-                claimRewardSoundpause()
-                handleClose()
+                  // }, 1000);
+                    claimRewardSoundpause()                    
+                  setTimeout(() => {
+                    handleClose()
+                    setShowCoinMove(true)
+                }, 50);
               }}>COLLECT YOUR COIN</Buttons.Primary>
-              {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
             </div>
+            </>
+              : <>
+                <div className="d-flex justify-content-center align-items-center m-auto">
+                  {/* <video autoPlay loop muted style={{ width: '40%' }}>
+                    <source src={coinVideo} type="video/mp4" />                    
+                  </video> */}
+                  <img src={coinGif} alt=""  width={"200px"}/>
+              </div>
+              
+              </>}
           </Modal.Body>
           {/* </Modal.Footer>       */}
         </Modal>
