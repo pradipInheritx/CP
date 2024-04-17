@@ -11,7 +11,6 @@ import {
   SET_REWARDCARD_DETAILS,
   ADD_REWARDCARD,
   EDIT_REWARDCARD,
-  EDIT_REWARDCARDIMG,
   DELETE_REWARDCARD
 } from "../../@jumbo/constants/ActionTypes";
 import { endpoint } from "redux/endpoint";
@@ -44,7 +43,7 @@ export const getRewardAlbum = (
         }
       })
       .catch(error => {
-        if (error.response.data.result.name == "TokenExpiredError") {
+        if (error.response.data.result.name === "TokenExpiredError") {
           localStorage.clear();
         }
         dispatch(fetchError("There was something issue in responding server"));

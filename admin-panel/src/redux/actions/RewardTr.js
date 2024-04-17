@@ -6,8 +6,7 @@ import {
   SET_REWARDTR_DETAILS,
   ADD_REWARDTR,
   EDIT_REWARDTR,
-  DELETE_REWARDTR,
-  DELETE_BULK_REWARDTR
+  DELETE_REWARDTR
 } from "../../@jumbo/constants/ActionTypes";
 import { endpoint } from "redux/endpoint";
 import { baseURL } from "../../services/auth/jwt/config";
@@ -45,7 +44,7 @@ export const getRewardTr = (
       })
       .catch(error => {
         console.log(error, "data.data.resultget");
-        if (error.response.data.result.name == "TokenExpiredError") {
+        if (error.response.data.result.name === "TokenExpiredError") {
           localStorage.clear();
         }
         dispatch(fetchError("There was something issue in responding server"));
