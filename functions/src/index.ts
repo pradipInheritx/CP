@@ -993,7 +993,7 @@ exports.onUpdateUser = functions.firestore
 
       // Update name and country fields in userStatistics collection
       const updateData = {
-        name: updatedUsername,
+        userName: updatedUsername,
         Country: updatedCountry // Assuming the field name in userStatistics is also 'country'
       };
 
@@ -2463,3 +2463,37 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
     res.status(500).send('Error exporting User Statistics data');
   }
 });
+
+export const updateUserStatisticsFirestoreCollection = functions.https.onRequest(async (_req, res) => {
+  try {
+    await updateCollection();
+    res.status(200).send('All documents updated successfully.');
+  } catch (error: any) {
+    console.error('Error updating collection:', error);
+    res.status(500).send('Error updating collection: ' + error.message);
+  }
+});
+
+async function updateCollection(): Promise<void> {
+  const db = admin.firestore();
+  const userStatisticsRef = db.collection('userStatistics');
+
+  const snapshot = await userStatisticsRef.get();
+
+  snapshot.forEach(async doc => {
+    const data = doc.data() as { name?: string };
+
+    if (data.name !== undefined) {
+      const updatedData: any = {
+        userName: data.name
+      };
+
+      delete updatedData.name;
+
+      await userStatisticsRef.doc(doc.id).update(updatedData);
+      console.log(`Document ${doc.id} updated successfully.`);
+    } else {
+      console.log(`Document ${doc.id} does not have the 'name' field.`);
+    }
+  });
+}
