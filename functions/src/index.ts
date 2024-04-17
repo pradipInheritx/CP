@@ -2794,16 +2794,23 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
     // Function to fetch data in batches
     const fetchDataInBatches = async () => {
       let lastDoc = null;
-      let allData = [];
+      const allData = [];
 
-      while (true) {
-        let query = admin.firestore().collection('userStatistics').orderBy('userName').limit(batchSize);
+      let keepFetching = true;
+      while (keepFetching) {
+        let query = admin.firestore().collection("userStatistics").orderBy("userName").limit(batchSize);
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
-        const batchData = snapshot.docs.map(doc => doc.data());
+        const batchData = snapshot.docs.map((doc) => doc.data());
         allData.push(...batchData);
-        if (snapshot.size < batchSize) break;
         lastDoc = snapshot.docs[snapshot.size - 1];
+        if (!snapshot.empty) {
+          if (snapshot.size < batchSize) {
+            keepFetching = false; // Stop fetching if there's no more data
+          }
+        } else {
+          keepFetching = false; // Stop fetching if the snapshot is empty
+        }
       }
       return allData;
     };
