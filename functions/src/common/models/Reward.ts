@@ -4,6 +4,7 @@ import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
+import { Timestamp } from 'firebase-admin/firestore';
 
 
 // import axios from "axios";
@@ -35,12 +36,12 @@ const distribution: { [key: string]: { [key: string]: number[] } } = {
   "MINISTER": {
     cardTierPickingChanceInPercent: [75, 12, 6, 4, 3],
     extraVotePickFromRange: [1, 15],
-    diamondsPickFromRange: [10, 10],
+    diamondsPickFromRange: [1, 10],
   },
   "CHAIRMAN": {
     cardTierPickingChanceInPercent: [70, 14, 7, 5, 4],
     extraVotePickFromRange: [1, 15],
-    diamondsPickFromRange: [10, 10],
+    diamondsPickFromRange: [1, 10],
   }
   // 0: {
   //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
@@ -221,7 +222,7 @@ export const addRewardTransaction: (
       user,
       winningTime,
       winData,
-      transactionTime: firestore.Timestamp.now(),
+      transactionTime: Timestamp.now()
     };
     console.log("addRewardTransaction.......", obj);
     await firestore().collection("reward_transactions").add(obj);
@@ -314,7 +315,7 @@ export const claimReward: (uid: string, isVirtual: boolean
 
       const userProps = await userRef.get();
       const userData: any = userProps.data();
-
+      const userType = userData.status.name ? userData.status.name.toUpperCase() : "MEMBER"; // Added For Get The UserType For Pick The Rewards
       const { total, claimed } = userData?.rewardStatistics || {
         total: 0,
         claimed: 0,
@@ -330,10 +331,12 @@ export const claimReward: (uid: string, isVirtual: boolean
 
 
         //Current User Extra Vote + winning extra vote and then set in the user reward
-        console.info("userData", userData);
-        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
+        //console.info("userData", userData);
+        console.log("distribution[userType]--->", distribution[userType])
+        console.log("userType--->", userType)
+        // const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100; // Not Required
         const getRewardExtraVotes = getRandomNumber(
-          distribution[cmp].extraVotePickFromRange
+          distribution[userType].extraVotePickFromRange
         );
         console.info("getRewardExtraVotes", getRewardExtraVotes);
         getVirtualRewardStatistic.rewardObj.extraVote = userData.rewardStatistics.extraVote + getVirtualRewardStatistic.winData.secondRewardExtraVotes;
@@ -352,8 +355,8 @@ export const claimReward: (uid: string, isVirtual: boolean
 
       if (total - claimed > 0) {
         // ----- Start preparing reward data -----
-        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
-        const userType = userData.status.name ? userData.status.name.toUpperCase() : "MEMBER";
+        // const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100; // Not Required Now Using UserType
+
         const tierPickupArray = createArrayByPercentageForPickingTier(userType);
         const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
         console.log("pickedTierArray : ", tierPickupArray);
@@ -366,10 +369,10 @@ export const claimReward: (uid: string, isVirtual: boolean
         console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId);
 
         const secondRewardExtraVotes = getRandomNumber(
-          distribution[cmp].extraVotePickFromRange
+          distribution[userType].extraVotePickFromRange
         );
         const thirdRewardDiamonds = getRandomNumber(
-          distribution[cmp].diamondsPickFromRange
+          distribution[userType].diamondsPickFromRange
         );
 
         // get the transaction details
