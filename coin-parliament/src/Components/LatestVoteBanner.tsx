@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { db, firestore } from '../firebase';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
+import { Image } from 'react-bootstrap';
 type banner = {
     coin: string,
     CPMRangePercentage: number,
@@ -37,7 +38,7 @@ const LatestVoteBanner = () => {
     useEffect(() => {
         const getCoinData = async () => {
             const q = query(collection(db, "votes"), orderBy("voteTime", "desc"), limit(1));
-            const votesData = onSnapshot(q, async (querySnapshot) => {
+            onSnapshot(q, async (querySnapshot) => {
                 let votes = {};
                 querySnapshot.forEach((doc) => {
                     votes = doc.data();
@@ -80,9 +81,39 @@ const LatestVoteBanner = () => {
                     />
                 </div>
                 <p> {aboutUser?.userName ? `User Name : ${aboutUser.userName}` : `Display Name : ${aboutUser?.displayName}`}{'  '}</p>
-                <p> {`Coin Name : ${data?.coin}`} {'  '}</p>
-                <p> {`Vote direction : ${data?.coin?.includes("-") ? data?.coin?.split("-")?.[data?.direction] : data?.direction == 0 ? "BULL" : "BEAR"}`} {'  '}</p>
-                <p> {data?.status?.name ? `User Type : ${data?.status?.name}` : ""}</p>
+
+                <div>
+                    <p>
+                        {`Coin - Pairs : `} {'  '}&nbsp;
+
+                        {data?.coin?.includes("-") && (<Image
+                            src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[0] : data?.coin.toUpperCase()}.svg`}
+                            style={{
+                                margin: "0 auto",
+                                width: "40px",
+                                height: "40px",
+                            }}
+                        />)}
+
+                        {" "}
+                        {data?.coin}
+                        {" "}
+
+                        {(<Image
+                            src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[1] : data?.coin.toUpperCase()}.svg`}
+                            style={{
+                                margin: "0 auto",
+                                width: "40px",
+                                height: "40px",
+                            }}
+                        />)}
+                    </p>
+
+                </div>
+                <p> {`Vote : ${data?.coin?.includes("-") ? data?.coin?.split("-")?.[data?.direction] : data?.direction == 0 ? "BULL" : "BEAR"}`} {'  '}</p>
+                <p> {data?.status?.name ? `Level :  ${data?.status?.name}` : ""}</p>
+                <p>{`Time : ${data?.voteTime ? new Date(data?.voteTime).toLocaleString() : ''}`}</p>
+
             </div>
         </div>
 
