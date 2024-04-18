@@ -11,68 +11,98 @@ import { getCardDetails } from "./Admin/Rewards";
 import { sendCPMToFoundationOfUser } from "./Admin/Foundation";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-const distribution: { [key: number]: { [key: string]: number[] } } = {
-  0: {
+const distribution: { [key: string]: { [key: string]: number[] } } = {
+  "MEMBER": {
     cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    extraVotePickFromRange: [1, 5],
+    diamondsPickFromRange: [1, 3],
   },
-  100: {
+  "SPEAKER": {
     cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    extraVotePickFromRange: [1, 5],
+    diamondsPickFromRange: [1, 3],
   },
-  200: {
-    cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+  "COUNCIL": {
+    cardTierPickingChanceInPercent: [85, 8, 4, 2, 1],
+    extraVotePickFromRange: [1, 7],
+    diamondsPickFromRange: [1, 5],
   },
-  300: {
+  "AMBASSADOR": {
     cardTierPickingChanceInPercent: [80, 10, 5, 3, 2],
     extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    diamondsPickFromRange: [1, 7],
   },
-  400: {
-    cardTierPickingChanceInPercent: [75, 10, 5, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+  "MINISTER": {
+    cardTierPickingChanceInPercent: [75, 12, 6, 4, 3],
+    extraVotePickFromRange: [1, 15],
+    diamondsPickFromRange: [10, 10],
   },
-  500: {
-    cardTierPickingChanceInPercent: [70, 15, 5, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  600: {
-    cardTierPickingChanceInPercent: [65, 15, 10, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  700: {
-    cardTierPickingChanceInPercent: [50, 20, 15, 10, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  800: {
-    cardTierPickingChanceInPercent: [40, 20, 20, 10, 10],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  900: {
-    cardTierPickingChanceInPercent: [30, 15, 15, 20, 20],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  1000: {
-    cardTierPickingChanceInPercent: [20, 15, 15, 25, 25],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
+  "CHAIRMAN": {
+    cardTierPickingChanceInPercent: [70, 14, 7, 5, 4],
+    extraVotePickFromRange: [1, 15],
+    diamondsPickFromRange: [10, 10],
+  }
+  // 0: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 100: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 200: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 300: {
+  //   cardTierPickingChanceInPercent: [80, 10, 5, 3, 2],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 400: {
+  //   cardTierPickingChanceInPercent: [75, 10, 5, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 500: {
+  //   cardTierPickingChanceInPercent: [70, 15, 5, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 600: {
+  //   cardTierPickingChanceInPercent: [65, 15, 10, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 700: {
+  //   cardTierPickingChanceInPercent: [50, 20, 15, 10, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 800: {
+  //   cardTierPickingChanceInPercent: [40, 20, 20, 10, 10],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 900: {
+  //   cardTierPickingChanceInPercent: [30, 15, 15, 20, 20],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 1000: {
+  //   cardTierPickingChanceInPercent: [20, 15, 15, 25, 25],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
 };
 
-function createArrayByPercentageForPickingTier(cmp: number) {
+function createArrayByPercentageForPickingTier(userType: string) {
   const array = [];
   const pickedPercentageArray =
-    distribution[cmp].cardTierPickingChanceInPercent;
+    distribution[userType].cardTierPickingChanceInPercent;
 
   let tier = 0;
   for (let i = 0; i < pickedPercentageArray[i]; i++) {
@@ -323,7 +353,8 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (total - claimed > 0) {
         // ----- Start preparing reward data -----
         const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
-        const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
+        const userType = userData.status.name ? userData.status.name.toUpperCase() : "MEMBER";
+        const tierPickupArray = createArrayByPercentageForPickingTier(userType);
         const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
         console.log("pickedTierArray : ", tierPickupArray);
 
