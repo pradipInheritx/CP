@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  extraVoteModule?: any,
+  setExtraVoteModule?: any,
   loader?:boolean,
   setLoader?:any,
   paymentCoinList?:any,
