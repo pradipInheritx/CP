@@ -326,10 +326,13 @@ export const claimReward: (uid: string, isVirtual: boolean
       }
       // add reward_transaction here
       if (isVirtual === false && total - claimed > 0) {
-        const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
+        let getVirtualRewardStatistic: any;
+
+        while (!getVirtualRewardStatistic) {
+          getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
+        }
+
         console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic);
-
-
         //Current User Extra Vote + winning extra vote and then set in the user reward
         //console.info("userData", userData);
         console.log("distribution[userType]--->", distribution[userType])
