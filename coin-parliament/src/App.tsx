@@ -396,6 +396,7 @@ function App() {
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [retryCountWS, setRetryCountWS] = useState(0);
   const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
@@ -667,6 +668,7 @@ function App() {
       if (userDocSnapshot.exists()) {
         // setDBCoins(userDocSnapshot.data());
         // console.log(userDocSnapshot.data(),"userDocSnapshot.data()")
+        console.log("Browser window called 0",userDocSnapshot.data())
         setCoins(userDocSnapshot.data());
       } else {
         console.log("Document does not exist");
@@ -998,54 +1000,88 @@ function App() {
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");  
-  function connect() {
+  // const [socketUrl, setSocketUrl] = useState("wss://stream.binance.com:9443/wss");  
+  const socketUrl = useRef("wss://stream.binance.com:9443/ws")
+  const errorCount = useRef(0)
+
+function connect() {
+    console.log('Browser window called', wsConnectRetry ,"---run count", Object.keys(coins).length,coins)
     if (Object.keys(coins).length === 0) return
-    console.log('Browser window called')
+    console.log('Browser window called 2.0')
     
-    ws = new WebSocket("wss://stream.binance.com:9443/ws");
+    ws = new WebSocket(socketUrl.current);
     console.log('websocket connected first time')
-    const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
+  const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)  
+  
     ws.onopen = () => {
       console.log('WebSocket Open');
       if (ws.readyState === WebSocket.OPEN) {        
         setSocketConnect(true)
+        setRetryCountWS(0);
         ws.send(JSON.stringify({
           method: 'SUBSCRIBE',
           params: coinTikerList,
           id: 1
         }));
       }
-    };    
-    ws.onclose = async (event: any) => {
+    };       
+    ws.onclose = async (event: any) => {      
       setSocketConnect(false);
-      console.log('WebSocket connection closed', event);   
-      throttleReconnectWebSocket(event)
+      setTimeout(() => {
+        handleError();
+      }, 10000);
     };
     ws.onerror = (event: any) => {  
-      setSocketConnect(false);      
-      console.log('WebSocket connection occurred',event);
-      throttleReconnectWebSocket(event)      
+      setSocketConnect(false);
+      // setTimeout(() => {
+      //   handleError();
+      // }, 10000);
     };      
   }    
+
+
+  // let errorCount = 0;
+  let hasReopened = false;
+  console.log(errorCount.current, socketUrl, socketConnect ,"errorCount.current")
+  const handleError = () => {
+    if (!hasReopened) {      
+      errorCount.current++;
+    }        
+    if (errorCount.current >= 5 && !hasReopened) {
+      hasReopened = true;
+      ReloadPop()
+    }    
+    else if (errorCount.current < 5) {
+      connect();
+    }
+    else {
+      console.log('Error count exceeds 5, not reconnecting.');
+    }
+  };
   
-// useEffect(() => {
-//     wsReConnectThrottle = setInterval(() => {
-//       console.log("useEffect--******------> ", socketConnect, "--", wsConnectRetry, "--", socketUrl)
-//       if (socketConnect || wsConnectRetry > 5) {
-//         console.log("CLEAR--**--**")
+  // console.log("useEffect-- ****** ------>123",socketUrl)
+  // useEffect(() => {
+  //   if (Object.keys(coins).length === 0) return
+  //   wsReConnectThrottle = setInterval(() => {
+  //     console.log("useEffect--******------> ", socketConnect, "--", wsConnectRetry, "--", socketUrl)
+  //     if (wsConnectRetry > 4) {
+  //       setSocketUrl("wss://stream.binance.com:9443/ws")
+  //     }
+  //     if (socketConnect || wsConnectRetry > 5) {
+  //       console.log("CLEAR--**--**")
         
-//         clearInterval(wsReConnectThrottle)
-//         // ReloadPop('https://www.google.com/', 600, 400);            
-//         return
-//       }
-//       wsConnectRetry++
-//       // setWsConnectRetry(5)
+  //       clearInterval(wsReConnectThrottle)
+  //       // ReloadPop('https://www.google.com/', 600, 400);            
+  //       return
+  //     }
+  //     wsConnectRetry++
+  //     // setWsConnectRetry(5)
 
-//       connect()
+  //     connect()
 
-//     }, 3000)
+  //   }, 3000)
 
-//   }, [socketConnect])
+  // }, [socketConnect, Object.keys(coins).length])
 
 
   function croConnect() {
@@ -1065,14 +1101,6 @@ function App() {
         setRetryCount(0);
         // setError(null);
       };
-
-    //  socket.onmessage = (event) => {
-    //     const data = JSON.parse(event.data);
-    //     if (data.method === "ticker") {
-    //       // setPrice(data.data[0].a); // 'a' represents the best ask price
-    //     }
-    //   };
-
      socket.onerror = (error:any) => {
        console.error('WebSocket error:', error);
        setTimeout(() => {
@@ -1097,70 +1125,72 @@ function App() {
   }
 
   
-  async function reconnectWebSocket () {
-    if(socketConnect) return
-    // @ts-ignore
-    if (Object.keys(coins)?.length) {
-      // @ts-ignore
-      // const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
-      const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
-      const afterErrorPrice = {}
-      try {
-        const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
-        Object.keys(response.data)?.map((symblaName) => {
-          if (coinTikerList.includes(symblaName)) {            
-            Object.assign(afterErrorPrice,
-              {
-                [symblaName]: {
-                  id: coins[symblaName]?.id,
-                  name: coins[symblaName]?.name,
-                  price: response.data[symblaName]?.USD,
-                  symbol: symblaName,
-                  trend: coins[symblaName]?.trend
+  // async function reconnectWebSocket () {
+  //   if(socketConnect) return
+  //   // @ts-ignore
+  //   if (Object.keys(coins)?.length) {
+  //     // @ts-ignore
+  //     // const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
+  //     const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
+  //     const afterErrorPrice = {}
+  //     try {
+  //       const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
+  //       Object.keys(response.data)?.map((symblaName) => {
+  //         if (coinTikerList.includes(symblaName)) {            
+  //           Object.assign(afterErrorPrice,
+  //             {
+  //               [symblaName]: {
+  //                 id: coins[symblaName]?.id,
+  //                 name: coins[symblaName]?.name,
+  //                 price: response.data[symblaName]?.USD,
+  //                 symbol: symblaName,
+  //                 trend: coins[symblaName]?.trend
   
-                }
-              }
-            )
-          }
-          setCoins(afterErrorPrice)
-          localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
-        })
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        localStorage.setItem('CoinsPrice', JSON.stringify(coins));
-      }
-    }
+  //               }
+  //             }
+  //           )
+  //         }
+  //         setCoins(afterErrorPrice)
+  //         localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
+  //       })
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       localStorage.setItem('CoinsPrice', JSON.stringify(coins));
+  //     }
+  //   }
     
     
-    connect();
-      // setTimeout(() => {
-      //   console.log("i am calling again and again ")
-      // }, 10000); // reconnect after 3 seconds                
-  }
+  //   connect();
+  //     // setTimeout(() => {
+  //     //   console.log("i am calling again and again ")
+  //     // }, 10000); // reconnect after 3 seconds                
+  // }
 
-  let reconnectTimeout:any;  
+  // let reconnectTimeout:any;  
   
-  async function throttleReconnectWebSocket(event:any) {
-    // If there's already a reconnect attempt scheduled, do nothing
-    if (reconnectTimeout || socketConnect) {
-      return;
-    }
+  // async function throttleReconnectWebSocket(event:any) {
+  //   // If there's already a reconnect attempt scheduled, do nothing
+  //   if (reconnectTimeout || socketConnect) {
+  //     return;
+  //   }
 
-    console.log('Attempting to reconnect...', event);
+  //   console.log('Attempting to reconnect...', event);
 
-    if (!socketConnect) {      
-      reconnectWebSocket()
-      reconnectTimeout = setTimeout(() => {
-        reconnectTimeout = null; // Reset the timeout after it's executed
-        throttleReconnectWebSocket(event); // Trigger another reconnect attempt
-      }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
-    }
-  }
+  //   if (!socketConnect) {      
+  //     reconnectWebSocket()
+  //     reconnectTimeout = setTimeout(() => {
+  //       reconnectTimeout = null; // Reset the timeout after it's executed
+  //       throttleReconnectWebSocket(event); // Trigger another reconnect attempt
+  //     }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
+  //   }
+  // }
 
 
   useEffect(() => {
     if (Object.keys(coins).length) {      
-      if(socketConnect) return
+      if (socketConnect) return
+      
+      console.log("yes i am calling")
       connect();
       croConnect();
     }

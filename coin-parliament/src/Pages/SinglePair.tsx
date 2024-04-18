@@ -108,6 +108,7 @@ const SinglePair = () => {
       
     ));
     if (Object.keys(pairLivePrice.current).length && coins != pairLivePrice.current) {
+      console.log("Browser window called 3", pairLivePrice.current)
       setCoins(pairLivePrice.current)
     }
   }
