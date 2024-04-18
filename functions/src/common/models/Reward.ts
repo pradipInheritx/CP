@@ -308,6 +308,8 @@ export const claimReward: (uid: string, isVirtual: boolean
     try {
       console.log("Beginning execution claimReward function");
 
+      let maxTryInWhile = 5;
+
       const userRef = firestore()
         .collection("users")
         .doc(uid)
@@ -328,11 +330,21 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (isVirtual === false && total - claimed > 0) {
         let getVirtualRewardStatistic: any;
 
-        while (!getVirtualRewardStatistic) {
+        while (!getVirtualRewardStatistic && maxTryInWhile > 0) {
+          maxTryInWhile = maxTryInWhile - 1;
           getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         }
 
-        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic);
+        if (!getVirtualRewardStatistic) {
+          console.log("Somehow reward is not added in the virtual rewards collection.", maxTryInWhile)
+          return {
+            firstRewardCard: "",
+            secondRewardExtraVotes: 0,
+            thirdRewardDiamonds: 0
+          };
+        }
+
+        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic, "maxTryInWhile Check", maxTryInWhile);
         //Current User Extra Vote + winning extra vote and then set in the user reward
         //console.info("userData", userData);
         console.log("distribution[userType]--->", distribution[userType])
@@ -353,8 +365,6 @@ export const claimReward: (uid: string, isVirtual: boolean
         console.log("isVirtual Result : ", result);
         return result.winData;
       }
-
-
 
       if (total - claimed > 0) {
         // ----- Start preparing reward data -----
