@@ -308,7 +308,7 @@ export const claimReward: (uid: string, isVirtual: boolean
     try {
       console.log("Beginning execution claimReward function");
 
-      let maxTryInWhile = 5;
+      let maxTryInWhile = 0;
 
       const userRef = firestore()
         .collection("users")
@@ -330,8 +330,8 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (isVirtual === false && total - claimed > 0) {
         let getVirtualRewardStatistic: any;
 
-        while (!getVirtualRewardStatistic && maxTryInWhile > 0) {
-          maxTryInWhile = maxTryInWhile - 1;
+        while (!getVirtualRewardStatistic) {
+          maxTryInWhile = maxTryInWhile + 1;
           getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         }
 
