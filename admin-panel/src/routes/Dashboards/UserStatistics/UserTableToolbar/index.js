@@ -128,7 +128,7 @@ const UserTableToolbar = ({
         setFilter({
           ...filter,
           ...values,
-          page: 0,
+          page: 1,
           filterFields: selectedOption
         });
         setPage(0);

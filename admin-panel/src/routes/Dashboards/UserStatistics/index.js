@@ -31,8 +31,8 @@ const UsersModule = () => {
   const { allUserData = [], totalCount } = useSelector(
     ({ usersReducer }) => usersReducer
   );
-  const [orderBy, setOrderBy] = React.useState("");
-  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("signUpTime");
+  const [order, setOrder] = React.useState("desc");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selected, setSelected] = React.useState([]);
@@ -43,9 +43,7 @@ const UsersModule = () => {
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
-  const [filter, setFilter] = useState({
-    page: 0
-  });
+  const [filter, setFilter] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -119,6 +117,7 @@ const UsersModule = () => {
   };
 
   const handlePageChange = (event, newPage) => {
+    if (filter) setFilter({ ...filter, page: newPage + 1 });
     setPage(newPage);
   };
 
