@@ -163,6 +163,7 @@ const Carousel = ({
     // setCoinUpdated(livePrice.current)
     // console.log(livePrice.current,"livePrice.current")
     if (Object.keys(livePrice.current).length && coins != livePrice.current) {            
+      console.log("Browser window called 1",livePrice.current)
       setCoins(livePrice.current)
     }
   }
