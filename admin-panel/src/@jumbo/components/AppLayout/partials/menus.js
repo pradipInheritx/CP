@@ -37,56 +37,56 @@ import {
 import React from "react";
 
 const dashboardsMenus = [
-  {
-    name: <IntlMessages id={"sidebar.dashboard.subadmin"} />,
-    icon: <Group />,
-    type: "item",
-    link: "/dashboard/subadmin"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/voteperuser"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.votebooster"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/votebooster"
-  },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.subadmin"} />,
+  //   icon: <Group />,
+  //   type: "item",
+  //   link: "/dashboard/subadmin",
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/voteperuser",
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.votebooster"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/votebooster",
+  // },
 
-  {
-    name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/votingpass"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.transactiontypes"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/transactiontypes"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.statustype"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/statustype"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.paxgeneraldata"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/paxgeneral"
-  },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/votingpass",
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.transactiontypes"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/transactiontypes",
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.statustype"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/statustype",
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.paxgeneraldata"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/paxgeneral",
+  // },
 
-  {
-    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/rewardnft"
-  },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
+  //   icon: <People />,
+  //   type: "item",
+  //   link: "/dashboard/rewardnft",
+  // },
 
   {
     name: <IntlMessages id={"sidebar.dashboard.userstatistics"} />,
@@ -1516,27 +1516,27 @@ export const sidebarNavs = [
     name: <IntlMessages id={"sidebar.dashboards"} />,
     type: "section",
     children: dashboardsMenus
-  },
-  {
-    name: "All Lists",
-    type: "section",
-    children: AllList
-  },
-  {
-    name: "All Tables",
-    type: "section",
-    children: AllTables
-  },
-  {
-    name: "All Settings",
-    type: "section",
-    children: AllSettings
-  },
-  {
-    name: "All Transactions",
-    type: "section",
-    children: AllTransactions
   }
+  // {
+  //   name: "All Lists",
+  //   type: "section",
+  //   children: AllList
+  // },
+  // {
+  //   name: "All Tables",
+  //   type: "section",
+  //   children: AllTables
+  // },
+  // {
+  //   name: "All Settings",
+  //   type: "section",
+  //   children: AllSettings
+  // },
+  // {
+  //   name: "All Transactions",
+  //   type: "section",
+  //   children: AllTransactions
+  // }
   // {
   //   name: <IntlMessages id={"sidebar.components"} />,
   //   type: "section",
