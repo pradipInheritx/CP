@@ -123,6 +123,7 @@ const SingleCoin = () => {
       },
     }));
     if (Object.keys(singleLivePrice.current).length && coins != singleLivePrice.current) {
+      console.log("Browser window called 2", singleLivePrice.current)
       setCoins(singleLivePrice.current)
     }
   }
@@ -437,7 +438,6 @@ const SingleCoin = () => {
       }
     })
   }, [allActiveVotes]);
-  console.log(voteDetails,"allsetVoteDetails")
   useEffect(() => {
     setVoteDetails((prev) => {
       return {

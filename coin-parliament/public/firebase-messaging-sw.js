@@ -53,7 +53,7 @@ self.addEventListener('push', (event) => {
         self.clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(function (clientList) {
                 const isForeground = clientList.some(function (client) {
-                    return client.visibilityState === 'visible';
+                    return client.visibilityState === 'hidden';
                 });
                 if (isForeground && false) {
                     // Handle foreground push notification event

@@ -9,13 +9,13 @@ import styled from "styled-components";
 const responsive = ({ gutter = false, items }: { gutter: boolean, items: number }) => {
   return {
     desktop: {
-      breakpoint: { max: 3000, min: 969 },
+      breakpoint: { max: 3000, min: 800 },
       items,
       slidesToSlide: items,
       partialVisibilityGutter: gutter ? 30 : undefined,
     },
     mobile: {
-      breakpoint: { max: 969, min: 0 },
+      breakpoint: { max: 800, min: 0 },
       items,
       slidesToSlide: items,
       partialVisibilityGutter: gutter ? 60 : undefined,
@@ -94,23 +94,28 @@ display: flex;
   }
 `
 
-const MyCarousel = ({
+const MyCarousel = ({  
   children,
   centerMode,
   items = 3,
   quotes,
   coin,
   cursorShow,
-  transitionDuration
-}: { children: React.ReactNode, centerMode?: boolean, items?: number, quotes?: boolean, coin?: boolean, cursorShow?: boolean, transitionDuration?: number }) => {
+  transitionDuration,
+  type,
+}: { children: React.ReactNode, centerMode?: boolean, items?: number, quotes?: boolean, coin?: boolean, cursorShow?: boolean, transitionDuration?: number, type?:any }) => {
   // const {width} = useWindowSize();
-
 
   const ButtonGroup = ({ next, previous, goToSlide, ...rest }: any) => {
     const { carouselState: { currentSlide } } = rest;
     return (
       <>
-        {window.screen.width > 767 ? <SwiperButton className=''>
+        {window.screen.width > 767 ? <SwiperButton
+          style={{
+            width: `${type == "coins" ? "98%" : window.screen.width < 850 && type == undefined ? "85%":"98%"}`,
+          
+        }}
+        >
           <button className='' onClick={() => previous()}>
             {" "}
             {"<"}{" "}

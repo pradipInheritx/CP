@@ -20,6 +20,7 @@ import { divideArray, divideArray1 } from "common/utils/helper";
 import SetsScreen from "Pages/SetsScreen";
 import { firestore } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import NftLodding from "Pages/NftLodding";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -603,7 +604,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }
         }>
-            <div className='d-flex justify-content-center pt-5 flex-wrap' >
+            <div className='d-flex justify-content-center flex-wrap w-100 py-2 ipad_row_gap'>
                 <input
                     type='text'
                     onChange={e => {
@@ -721,30 +722,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
             </div>
-            {isLoading && collectionType !== "" &&<div style={{
-                position: 'fixed',
-                height: '68%',
-                display: 'flex',
-                textAlign: 'center',
-                justifyContent: 'center',
-                // top: '0px',
-                right: '0px',
-                bottom: '0px',
-                zIndex: '9999',
-                overflow: 'hidden',
-                width: '100%',
-                alignItems: 'center',
-
-            }}>
-                <span className="loading" style={{
-                    color: "#7767f7", zIndex: "2220px", fontSize: '1.5em',
-                    // marginTop: `${window.screen.width > 767 ? "50px" : "240px"}`
-                }}
-                
-                >
-                    {texts.waitForIt}
-                </span>
-            </div>}
+            {isLoading && collectionType !== "" && <NftLodding />}
             {
                 collectionValue !== "none" && collectionSetValue == "none" && collectionCardValue == "none" && collectionTypeValue == "all" && !displayMyCards && searchValue == "" &&  <>
                     <div className="w-100 d-flex">
@@ -888,12 +866,12 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     
                     :
                     <>
-                        {collectionValue == "none" ?<GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
+                        {collectionValue == "none" ?<GalleryType className='d-flex galleryRow' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
                         {
                             collectionType?.map((data: any, index: number) => {
                                 return (
-                                    <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
+                                    <div className="galleryCol" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
                                     } key={index}
                                         style={{
                                             width: "380px",

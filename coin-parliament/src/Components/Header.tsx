@@ -249,6 +249,7 @@ const Header = ({
 	const [textBlink, setTextBlink] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
+	const [userRank, setUserRank] = React.useState(0);
 
 	var urlName = window.location.pathname.split('/');
 	const followerPage = urlName.includes("followerProfile")
@@ -308,6 +309,22 @@ const Header = ({
 			getFollowerData()
 		}
 	}, [followerUserId])
+
+	useEffect(() => {
+		if (followerUserId) {     
+		  console.log(followerUserId, leaders ,"userId1")
+		  const ourUser = leaders.filter((item) => item?.userId == followerUserId)     
+		  console.log(ourUser,"ouerdata");
+		   
+		  if (ourUser && ourUser[0]?.rank) {
+			setUserRank(ourUser[0]?.rank)
+		  }
+		}
+	
+		return () => {
+	
+		}
+	  }, [followerUserId])
 
 	useEffect(() => {
 		// @ts-ignore
@@ -572,6 +589,7 @@ const Header = ({
 												transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 												transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
 												transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+												left: `${window.screen.width < 575  && followerPage && followerInfo != "" ? "0px" :""}`
 												// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
 
 											}}
@@ -717,7 +735,7 @@ const Header = ({
 													className='text-center'
 													style={{ marginLeft: "35px", marginTop: "3px" }}
 												>												
-													<div className="custom-circle-progress"
+													{followerPage && followerInfo != "" ? "" : <div className="custom-circle-progress"
 														style={{
 															cursor: "pointer"	,
 															borderRadius: "50%",
@@ -728,9 +746,9 @@ const Header = ({
 														}}
 													>															
 														<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />														
-													</div>
+													</div>}
 
-													<div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
+													{followerPage && followerInfo != "" ? "" : <div className="d-flex align-items-center shaped-btn-row"style={{margin:"4px"}}>
 														<button className="btn-shaped me-1"
 															onClick={() => {
 																navigate("/coins")
@@ -742,7 +760,7 @@ const Header = ({
 																navigate("/pairs")
 															}}
 														>PAIRS VOTE</button>
-													</div>
+													</div>}
 													<div className="d-none">
 														{
 															(followerPage && followerInfo != "") ?
@@ -764,9 +782,9 @@ const Header = ({
 															>{userInfo?.status?.name}</MemberText>}
 														</span>
 													</div>
-													{!!followerInfo && <div className="d-flex"
+													{!!followerInfo && <div className="d-flex justify-content-center " 
 													>
-														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}{userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</MemberText>}
 														{
 															(!!followerInfo?.bio && followerPage) && <>
 																<div className='mx-2 '>
@@ -1040,7 +1058,7 @@ const Header = ({
 																</div>
 
 															}
-															<div className="custom-circle-progress"
+															{followerPage && followerInfo != ""  ? "" :<div className="custom-circle-progress"
 																style={{
 																	cursor: "pointer",
 																	borderRadius: "50%",
@@ -1049,48 +1067,17 @@ const Header = ({
 																onClick={() => {
 																	navigate("/profile/mine")
 															}}
-															>
-																{/* <div
-																	style={{
-																		width: 55, height: 55,																		
-																	}}
-																>
-
-																	<CircularProgressbarWithChildren
-																		background={true}
-																	value={85}
-																	strokeWidth={8}
-																	styles={buildStyles({
-																		pathColor: "#6352e8",
-																		pathTransition: "none",																		
-																		strokeLinecap: "butt",
-																		trailColor: ('white'),																	
-																		backgroundColor: "white",
-																	})}
-																>
-
-																		<img src={giftIcon} alt='' className="gift-icon" width="20px" />
-
-																</CircularProgressbarWithChildren>
-																</div> */}
+															>																
 																<HeaderProgressbar percentage={(remainingCMP?.toFixed(3) || 0)} remainingReward={remainingReward} />
-															</div>
+															</div>}
 														</HeaderCenter>
 														{
 															// !(followerPage && followerInfo != "") &&
 															<div
 																className=''
 																style={{ width: "170px", marginLeft: "138px", marginTop: "5px", textAlign: "center", fontWeight: "100px", }}
-															>
-																{/* {userInfo?.displayName &&
-														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-															{userInfo?.displayName && userInfo?.displayName}
-														</span>
-													}													 */}
-
-
-
-																<div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
+															>													
+																{ followerPage && followerInfo != "" ? "" : <div className="d-flex align-items-center shaped-btn-row" style={{marginBottom:"4px"}}	>
 																	<button className="btn-shaped me-1"
 																		onClick={() => {
 																			navigate("/coins")
@@ -1101,7 +1088,7 @@ const Header = ({
 																			navigate("/pairs")
 																		}}
 																	>PAIRS VOTE</button>
-																</div>
+																</div>}
 
 																<div className="d-none">
 																	{
@@ -1124,13 +1111,14 @@ const Header = ({
 																	</span>
 																</div>
 
-																{!!followerInfo && <div className="d-flex"
+																{!!followerInfo && <div className="d-flex justify-content-center"
 																>
-																	{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+																	{(!!followerInfo?.status?.name && followerPage) && <MemberText className="mt-1 ml-1">{followerInfo?.status?.name}{userRank > 0 ? <>&nbsp; #{userRank}</> : ""}</MemberText>}
 																	{
 																		(!!followerInfo?.bio && followerPage) && <>
 																			<div className='mx-2 '>
 																				<I className='bi bi-info-circle'
+																				style={{paddingTop: '3px'}}
 																					onMouseDown={(e) => {
 																						setTooltipShow(false)
 																					}}

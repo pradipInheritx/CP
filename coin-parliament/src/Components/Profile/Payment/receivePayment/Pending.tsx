@@ -162,20 +162,20 @@ const Pending: React.FC = () => {
                         <OverlayTrigger
                             trigger={['hover', 'focus']}
                             placement="bottom"
-                            overlay={<Tooltip id={`tooltip-name-${childData?.childUserId + childData?.docId}`}
+                            overlay={<Tooltip id={`tooltip-name-${childData?.childUserName || childData?.childUserId  + childData?.docId}`}
                                 style={{
                                     marginTop: "-85px"
                                 }}
-                            >{childData?.childUserId}</Tooltip>}
+                            >{childData?.childUserName ? childData?.childUserName : childData?.childUserId || "NA"}</Tooltip>}
 
                         >
                             <RewardList>
 
                                 {window.screen.width > 767 ?
 
-                                    childData?.childUserId || "NA"
+                                    childData?.childUserName ? childData?.childUserName : childData?.childUserId || "NA"
                                     :
-                                    childData?.childUserId.slice(0, 7) + "..." || 'NA'
+                                    childData?.childUserName ? childData?.childUserName.slice(0, 7) + "..." : childData?.childUserId.slice(0, 7) + "..." || 'NA'
 
                                 }
                             </RewardList>

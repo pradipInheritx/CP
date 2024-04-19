@@ -132,6 +132,11 @@ function ModalForResult({
       setShowComplete100CMP(true);
     }
     console.log(remainingCMP, score ,"remainingCMP")
+    setAnimateBox(true);
+    setTimeout(() => {
+      setAnimateBox(false);
+      setShow(false);
+  }, 10000)
   };
 
   const removeVote = () => {
@@ -168,7 +173,7 @@ function ModalForResult({
 
 
   const { coins } = useContext(CoinsContext);
-  const { showBack, setShowBack, setAfterVotePopup } = useContext(AppContext);
+  const { showBack, setShowBack, setAfterVotePopup,setAnimateBox } = useContext(AppContext);
   const winner = calculateWinner(vote);
   // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");

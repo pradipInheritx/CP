@@ -29,51 +29,7 @@ const RemoveButton = styled.button`
     color: white;  
     
 `;
-const I = styled.i`
-  border-radius: 50%;
-  font-size: 13px;  
-position: absolute;
-  font-weight: 300;
-  top:-27px;
-  left:${window.screen.width >767 ? "375px":"70px"};
-  color: #6352e8;
-//   width: 16px;
-//   height: 16px;
-  text-align: center;
-`;
 
-const IconValue = styled.i`
-  border-radius: 50%;
-  font-size: 13px;  
-position: absolute;
-  font-weight: 300;
-  top:-27px;
-  left:262px;
-  color: #6352e8;
-  text-align: center;
-`;
-
-const Icon2 = styled.i`
-  border-radius: 50%;
-  font-size: 13px;  
-position: absolute;
-  font-weight: 300;
-  top:-27px;
-  left:290px;
-  color: #6352e8;
-  text-align: center;
-`;
-
-const Icon3 = styled.i`
-  border-radius: 50%;
-  font-size: 13px;  
-position: absolute;
-  font-weight: 300;
-  top:-27px;
-  left:${window.screen.width >767 ? "430px":"125px"};
-  color: #6352e8;
-  text-align: center;
-`;
 
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
@@ -372,12 +328,16 @@ function WalletInfo() {
             const { error } = response.data;
             console.log(response,"geterror")
             
-            if (!error &&checktype == "forWallet") {                
+            if (!error &&checktype == "forWallet") {
                 setWalletDetails({ coin: "", address: "" })
                 setWalletDetailsObj([...walletDetailsObj, {
                         address: inputAddress,
                         coin: type,
-                }])
+                }])         
+                // @ts-ignore
+                const coinsLists = coinList.filter(item => item?.symbol !== type)                
+                setCoinsList(coinsLists);
+                // @ts-ignore
                 // if (auth?.currentUser) {
                 //     const allwalletData = [...walletDetailsObj, {
                 //         address: inputAddress,
@@ -404,6 +364,7 @@ function WalletInfo() {
                         paxAddress: allwalletData
                     }, { merge: true });
                 }
+                setEditPaxAddress(false)
                 showToast("PAX Adderss Add Successfully", ToastType.SUCCESS);
             }
 
@@ -418,6 +379,7 @@ function WalletInfo() {
                         cardAddress: allwalletData
                     }, { merge: true });
                 }
+                setEditCardAddress(false)
                 showToast("Card Adderss Add Successfully", ToastType.SUCCESS);
             }
             if (error) {
@@ -655,7 +617,9 @@ function WalletInfo() {
                
                {userInfo?.isUserUpgraded && <SelectTextfield
                     label={"Add your address to receive the converted collectible card "}
-                    name={"Add your address to receive the converted collectible card "}                
+                    name={"Add your address to receive the converted collectible card "}  
+                    icon={'true'}              
+                    iconFunction={setTooltipShowCard}
                 >                    
                     <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100 text-uppercase`}  >
                         {/* <select
@@ -704,18 +668,7 @@ function WalletInfo() {
                                 </div>
                             </div>
                         }
-                        <div className=''>
-                            <Icon3 className='bi bi-info-circle'
-                                onMouseDown={(e) => {
-                                    setTooltipShowCard(false)
-                                }}
-                                onMouseUp={(e) => {
-                                    setTooltipShowCard(true)
-                                }}
-                                onMouseEnter={() => setTooltipShowCard(true)}
-                                onMouseLeave={() => setTooltipShowCard(false)}
-                            ></Icon3>
-                        </div>
+                       
 
                         <div className='form-inline-flex'>
                             <div className='col-field'>
@@ -785,7 +738,7 @@ function WalletInfo() {
                             onClick={() => {                                
                                 setEditCardAddress(true)
                             }}>
-                            {<span className="">Edit</span>}
+                            {<span className="">EDIT</span>}
                         </RemoveButton>}
                         </div>
                     </div>
@@ -800,7 +753,9 @@ function WalletInfo() {
                 {userInfo?.isUserUpgraded && <SelectTextfield
                     label={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}
                     name={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}                
-                >                    
+                    icon={'true'}
+                    iconFunction={setTooltipShowPax}
+               >                    
                     <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100 text-uppercase`}  >
                         {/* <select
                             name="coin"
@@ -848,18 +803,7 @@ function WalletInfo() {
                                 </div>
                             </div>
                         }
-                        <div className=''>
-                            <Icon2 className='bi bi-info-circle'
-                                onMouseDown={(e) => {
-                                    setTooltipShowPax(false)
-                                }}
-                                onMouseUp={(e) => {
-                                    setTooltipShowPax(true)
-                                }}
-                                onMouseEnter={() => setTooltipShowPax(true)}
-                                onMouseLeave={() => setTooltipShowPax(false)}
-                            ></Icon2>
-                        </div>
+                      
 
                         <div className='form-inline-flex'>
                             <div className='col-field'>
@@ -945,7 +889,8 @@ function WalletInfo() {
                 {walletDetailsObj.length > 0 && <SelectTextfield
                     label={`${("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS ").toLocaleUpperCase()}`}
                     name="ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS "
-
+                    icon="true"
+                    iconFunction={setTooltipShow}
                 >
                     {
                         walletDetailsObj.length > 0 && tooltipShow &&
@@ -972,23 +917,12 @@ function WalletInfo() {
                             </div>
                         </div>
                     }
-                    <div className=''>
-                        <I className='bi bi-info-circle'
-                            onMouseDown={(e) => {
-                                setTooltipShow(false)
-                            }}
-                            onMouseUp={(e) => {
-                                setTooltipShow(true)
-                            }}
-                            onMouseEnter={() => setTooltipShow(true)}
-                            onMouseLeave={() => setTooltipShow(false)}
-                        ></I>
-                    </div>
+                  
                     
                 {walletDetailsObj?.map((item,index) => {                                            
                     return <>
-                        <div className={`${window.screen.width > 350 ? '' : ''} mt-3 form-inline-flex flex-auto`}
-                            key={index}
+                        <div className={`${window.screen.width > 350 ? '' : ''} mt-3 form-inline-flex flex-auto py-2`}
+                            key={index}                        
                         >
 
                         <div className='col-field'>
@@ -1041,10 +975,11 @@ function WalletInfo() {
                 })}
                 </SelectTextfield>}
                 
-                <SelectTextfield
+                {coinList.length > 0 && <SelectTextfield
                     label={`${walletDetailsObj.length < 1 ? ("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"):""}`}
                     name={`${walletDetailsObj.length < 1 &&  "ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"}`}
-                
+                    icon="true"
+                    iconFunction={setTooltipShow}
                 >      
                     
                     {
@@ -1068,19 +1003,9 @@ function WalletInfo() {
                             </div>
                         </div>
                     }
-                    {walletDetailsObj.length < 1 && <div className=''                        
-                    >                    
-                    <I className='bi bi-info-circle'
-                        onMouseDown={(e) => {
-                            setTooltipShow(false)
-                        }}
-                        onMouseUp={(e) => {
-                            setTooltipShow(true)
-                        }}
-                        onMouseEnter={() => setTooltipShow(true)}
-                        onMouseLeave={() => setTooltipShow(false)}
-                    ></I> 
-                    </div>  }  
+                    {walletDetailsObj.length < 1 && <></>
+                 
+                    }  
 
                     <div className={`${window.screen.width > 350 ? '' : ''} form-inline-flex flex-auto`}>
                         <div className='col-field'>
@@ -1104,6 +1029,7 @@ function WalletInfo() {
                                 return <option className='text-uppercase' key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
                         </select>
+                        {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                         </div>
                         <div className='col-field'>
                         <input
@@ -1144,10 +1070,9 @@ function WalletInfo() {
                             {saveAddress ? <span className="loading">+</span> : '+'}
                         </RemoveButton>
                     </div>
-                    {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                     
 
-                    </SelectTextfield>
+                    </SelectTextfield>}
                     
                 
                 
@@ -1170,6 +1095,8 @@ function WalletInfo() {
                 <SelectTextfield
                     label={`${("Choose your preferred payment time").toLocaleLowerCase()}`}
                     name="Choose your preferred payment time"
+                    icon='true'
+                    iconFunction={setTooltipShow2}
                 >
                     {
                         tooltipShow2 &&
@@ -1196,18 +1123,7 @@ function WalletInfo() {
                             </div>
                         </div>
                     }
-                    <div className=''>
-                        <IconValue className='bi bi-info-circle'
-                            onMouseDown={(e) => {
-                                setTooltipShow2(false)
-                            }}
-                            onMouseUp={(e) => {
-                                setTooltipShow2(true)
-                            }}
-                            onMouseEnter={() => setTooltipShow2(true)}
-                            onMouseLeave={() => setTooltipShow2(false)}
-                        ></IconValue>
-                    </div>
+               
                     
                     <div className="w-100" >
                         <div className="d-flex  justify-content-start align-items-center ">

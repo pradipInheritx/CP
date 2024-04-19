@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  extraVoteModule?: any,
+  setExtraVoteModule?: any,
   loader?:boolean,
   setLoader?:any,
   paymentCoinList?:any,
@@ -118,6 +120,8 @@ export type AppContextProps = {
   setAppStats: (s: AppStats) => void;
   paxData: PaxData;
   setPaxData: (s: PaxData) => void;
+  animateBox?:any;
+  setAnimateBox?:any;
   setLoginRedirectMessage: (s: string) => void;
   loginRedirectMessage: string;
   isWLDPEventRegistered: boolean,

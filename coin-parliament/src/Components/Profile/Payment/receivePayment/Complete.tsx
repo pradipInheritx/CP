@@ -362,7 +362,7 @@ const Complete: React.FC = () => {
                     {texts.Prev}
                 </Button>
                 <Button
-                    // disabled={pageIndex * 5 >= totalData}
+                    disabled={pageIndex * 5 >= totalRecord}
                     onClick={() => setPageIndex(prev => prev + 1)}
                 >
                     {texts.Next}

@@ -3,8 +3,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import bkgnd4 from "../assets/images/bkgnd4.png";
-import MyCarousel from "../Components/Carousel/Carousel";
 
 import NftOneCard from "./NftOneCard";
 // @ts-ignore
@@ -14,13 +12,12 @@ import lock from '../assets/images/lock.png';
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
-import firebase from "firebase/compat/app";
-import { Ratio } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
 import SetsScreen from "./SetsScreen";
 import { firestore } from "../firebase";
 import { doc, getDocs, query, where, collection } from "firebase/firestore";
+import NftLodding from "./NftLodding";
 
 
 const GalleryType = styled.div`
@@ -58,25 +55,10 @@ font-size:15px;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
-
-const Video = styled.video`
-  width: 100%;
-  
-  height: auto;
-  margin: 0 auto;
-  // border-radius: 20px;
-`;
 const NFTGallery = () => {
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
-  const [collectionTypeNew, setCollectionTypeNew] = useState<any>()
-  const [allTypeofCard, setAllTypeofCard] = useState<any>([])
-  const [allTypeofCardNew, setAllTypeofCardNew] = useState<any>([])
-  const [allCardArray, setAllCardArray] = useState<any>([])
-  const { albumOpen, setAlbumOpen } = useContext(AppContext);
-  const [searchedCard, setSearchedCard] = useState<any>([])
-  const [searchedCardNew, setSearchedCardNew] = useState<any>([])
-  const [allCard, setAllCard] = useState<any>([])
+  const { albumOpen, setAlbumOpen } = useContext(AppContext);  
   const [allCardArrayNew, setAllCardArrayNew] = useState<any>([])
   const [allCardNew, setAllCardNew] = useState<any>([])
   const [cardType, setCardType] = useState<any>('all')
@@ -84,20 +66,12 @@ const NFTGallery = () => {
   const [selectCollection, setSelectCollection] = useState<any>('none')
   const [backCards, setBackCards] = useState<any>([]);
   const [equalPart, setEqualPart] = useState<any>([]);
-  const [cardShow, setCardShow] = useState<any>(false);
-  // const [collection, setCollection] = useState<any>()
+  const [cardShow, setCardShow] = useState<any>(false);  
   const [setsCardId, setSetsCardId] = useState<any>('none')
   const [setsValue, setSetsValue] = useState<any>([])
   const [setsCardName, setSetsCardName] = useState<any>('none')
-  const [cardName, setCardName] = useState<any>([])
   const [cardNameNew, setCardNameNew] = useState<any>([])
   const [isLoading, setIsLoading] = useState(false);
-  const [allVideo, setAllVideo] = useState<any>({
-    Wildwest: Wildwest,
-    Winter: Winter,
-    Summer: Summer,
-    Space: Space,
-  })
   const [TypeWather, setTypeWather] = useState<any>(
     [
       { name: "Partly Cloudy", image: PartlyCloudy },
@@ -136,36 +110,6 @@ const NFTGallery = () => {
     }
   }, [albumOpen]);
 
-
-  // useEffect(() => {
-  //   // if (albumOpen != "") {      
-  //   //   const getCollectionType = firebase
-  //   //     .firestore()
-  //   //     .collection("nftGallery")
-  //   //   getCollectionType.get()
-  //   //     .then((snapshot) => {
-
-  //   //       const data: any = []
-  //   //       snapshot.forEach((doc) => {
-  //   //         data.push({ id: doc.id, ...doc.data() });
-  //   //       });
-
-  //   //       setCollectionType(data)
-  //   //       setSelectCollection(albumOpen)
-  //   //       setSetsValue([])
-  //   //       setCardShow(false)
-
-  //   //     }).catch((error) => {
-  //   //       console.log(error, "error");
-  //   //     });
-  //   //   setAlbumOpen("")
-  //   // }
-  // }, [albumOpen])
-
-
-
-
-  
   const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const getNftCardNew = () => {
     const fetchData = async () => {
@@ -198,25 +142,7 @@ const NFTGallery = () => {
     }
 
     if (collectionName === 'none') {
-      setIsLoading(true);
-      // const getCollectionType = firebase
-      //   .firestore()
-      //   .collection("nftGallery")
-      // getCollectionType.get()
-      //   .then((snapshot) => {
-      //     setIsLoading(false);
-
-      //     const data: any = []
-      //     snapshot.forEach((doc) => {
-      //       data.push({ id: doc.id, ...doc.data() });
-      //     });
-      //     setCollectionType(data)
-      //     // setAllCardArray(data)
-      //     setSetsValue([])
-      //     setCardShow(false)
-      //   }).catch((error) => {
-      //     console.log(error, "error");
-      //   });
+      setIsLoading(true);      
       try {
         const snapshot = await getDocs(nftGalleryCollectionRef);
         const data = snapshot.docs.map((doc:any) => ({
@@ -233,51 +159,7 @@ const NFTGallery = () => {
       }
     
     }
-    else {
-      // setIsLoading(true);
-      // const getCollectionType = firebase
-      //   .firestore()
-      //   .collection("cardsDetails")
-      //   // .where("albumId", "==", collectionName)
-      //   .where("albumName", "==", collectionName)
-      // getCollectionType.get()
-      //   .then((snapshot) => {
-      //     console.log(collectionName, "collectionName")
-      //     setIsLoading(false);
-      //     const data: any = []
-      //     snapshot.forEach((doc) => {
-      //       data.push({ id: doc.id, ...doc.data() });
-      //     });
-      //     const serchresult = data.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      //     serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
-      //     setCardNameNew(serchresult)
-          
-      //     setAllCardNew(serchresult)
-      //     setCardShow(true)
-      //   }).catch((error) => {
-      //     setIsLoading(false);
-      //     console.log(error, "error");
-      //   });
-      // const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
-      // const getSetsType = firebase
-      //   .firestore()
-      //   .collection("nftGallery")
-      //   // .doc(collectionName)
-      //   .doc(getAlbumId && getAlbumId[0]?.id)
-      //   .collection("setDetails")
-      // getSetsType.get()
-      //   .then((snapshot) => {
-      //     console.log(collectionName, "collectionName")
-      //     const data: any = []
-      //     snapshot.forEach((doc) => {
-      //       data.push({ id: doc.id, ...doc.data() });
-      //     });
-      //     setSetsValue(data)
-      //     console.log("setsdata", data)
-      //     setCardType("all")
-      //   }).catch((error) => {
-      //     console.log(error, "error");
-      //   });
+    else {      
       try {
         setIsLoading(true);
 
@@ -495,7 +377,7 @@ const NFTGallery = () => {
       <h5 className="mt-4 text-center ">        
         <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Wall of fame</strong>
       </h5>
-      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
+      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2 ipad_row_gap'
       // style={{background:"#6352e8"}}
       >
         <input
@@ -528,10 +410,7 @@ const NFTGallery = () => {
 
             {collectionType?.map((data: any, index: number) => {
               return <option selected value={data?.albumName} key={index} style={{textTransform:"uppercase"}} >{data?.albumName}</option>
-            })}
-            {/* <option value='Summer'>SUMMER</option>
-                <option value='Winter'>WINTER</option>
-                <option value='Monsoon'>Monsoon</option> */}
+            })}            
           </select>
           <select
             className='color-back py-2 mx-2'
@@ -588,34 +467,12 @@ const NFTGallery = () => {
       </div>
 
       {/* @ts-ignore */}      
-      {isLoading && collectionType !=="" && <div style={{
-        position: 'fixed',
-        height: '68%',
-        // border: "2px solid red",
-        display: 'flex',
-        textAlign: 'center',
-        justifyContent: 'center',
-        // top: '0px',
-        right: '0px',
-        bottom: '0px',
-        zIndex: '9999',
-        overflow: 'hidden',
-        width: '100%',
-        alignItems: 'center',
-
-      }}>
-        <span className="loading" style={{
-          color: "White", zIndex: "2220px", fontSize: '1.5em',
-          // marginTop: "50px"
-        }}>
-          {texts.waitForIt}
-        </span>
-      </div>}
+      {isLoading && collectionType !== "" && <NftLodding/>}
 
       
-      <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
+      <GalleryType className='d-flex galleryRow' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
         {(!cardShow && selectCollection === 'none') && collectionType?.map((data: any, index: number) => {
-          return <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
+          return <div className="galleryCol" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
             style={{
               width: "380px",
               overflow: "hidden",
@@ -641,7 +498,7 @@ const NFTGallery = () => {
               borderRadius: "10px",
               backgroundSize: "cover",
             }}
-            className="d-flex justify-content-center align-items-center flex-column"
+            className="d-flex justify-content-center align-items-center flex-column diff_item_Col"
           >
             {/* <i className="bi bi-lock-fill"
           style={{fontSize:"50px"}}

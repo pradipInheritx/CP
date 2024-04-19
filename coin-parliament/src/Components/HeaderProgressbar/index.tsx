@@ -18,6 +18,7 @@ import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "Contexts/User";
 import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import styled from "styled-components";
+import AppContext from "Contexts/AppContext";
 
 export const TotalCmpDiv = styled.div`
   background: red;
@@ -27,7 +28,7 @@ export const TotalCmpDiv = styled.div`
   height:11px;  
   font-size:7px;
   position:absolute;
-  right:7px;
+  right:10px;
   top:9px;
   z-index:1000;
 `;
@@ -51,6 +52,7 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
     const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+    const { animateBox,setAnimateBox,setShow } = useContext(AppContext);
     // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');    
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
@@ -72,21 +74,15 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
             setProgressBarValue(percentage);
         }, [800]);
     }, [percentage]);
-    const [animateBox, setAnimateBox] = useState(false);
+   
     const [calledCount, setCalledCount] = useState(0);
     useEffect(() => {
-        if (calledCount) {
-            setAnimateBox(true);
-            setTimeout(() => {
-                setAnimateBox(false);
-            }, 5000)
-        }
         setCalledCount((prev) => prev + 1)
     }, [percentage])
     // currentScore=localStorage.getItem('')
     return (
         <div style={{
-            width: w > 767 ? "55px" : "45px", height: w > 767 ? "55px" : "45px",
+            width: w > 979 ? "55px" : "45px", height: w > 979 ? "55px" : "45px",
         }}
         >
 
@@ -139,7 +135,7 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
                 >
                     <div
                         style={{
-                            width: w > 767 ? "47px" : "38px", height: w > 767 ? "47px" : "38px",
+                            width: w > 979 ? "47px" : "38px", height: w > 979 ? "47px" : "38px",
                             border: "1px solid #160133",
                             borderRadius: "50%",
                         }}

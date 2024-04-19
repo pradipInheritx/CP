@@ -123,8 +123,8 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 // import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
-import UpgradePageCopy from "./Components/Profile/UpgradePageCopy";
-import VotingBoosterCopy from "./Components/Profile/VotingBoosterCopy";
+import UpgradePageCopy from "./Components/Profile/UpgradePage";
+import VotingBoosterCopy from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import Ambassador from "./Pages/Ambassador/Ambassador";
@@ -162,10 +162,16 @@ import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Co
 import Swal from "sweetalert2";
 import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
-import { afterpaxDistributionToUser } from "common/utils/helper";
+import { ReloadPop, afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ethers } from "ethers";
+import InfluencersList from "Components/InfluencersList";
+import NewUrlFram from "Components/NewUrlFram";
+import CookieConsent from "react-cookie-consent";
+
+let wsReConnectThrottle: any;
+let wsConnectRetry: number = 0 
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
@@ -242,7 +248,7 @@ function App() {
 
   // document.body.style.zIndex = "400";
   const location = useLocation();
-  const search = location.search;
+  const search = location.search;  
   const pathname = location.pathname;
   const langDetector = useRef(null);
   let navigate = useNavigate();
@@ -261,7 +267,7 @@ function App() {
 
     if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
       // console.log("yes i am working")
-      localStorage.removeItem("PayAmount");
+      // localStorage.removeItem("PayAmount");
     }
   }, [JSON.stringify(location.pathname)]);
 
@@ -390,6 +396,7 @@ function App() {
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  
   const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
@@ -417,7 +424,9 @@ function App() {
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [isVirtualCall, setIsVirtualCall] = useState<any>(false)
   const [avatarImage, setAvatarImage] = useState<any>(null)
+  const [connectCall, setConnectCall] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+  const [extraVoteModule, setExtraVoteModule] = useState<any>(false)
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
   const isFirstTimeLoginSetTimestamp = httpsCallable(functions, "isFirstTimeLoginSetTimestamp");
@@ -439,6 +448,8 @@ function App() {
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+  const [animateBox, setAnimateBox] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
 
   // console.log(coins, "allcoinsCheck")
 
@@ -657,6 +668,7 @@ function App() {
       if (userDocSnapshot.exists()) {
         // setDBCoins(userDocSnapshot.data());
         // console.log(userDocSnapshot.data(),"userDocSnapshot.data()")
+        console.log("Browser window called 0",userDocSnapshot.data())
         setCoins(userDocSnapshot.data());
       } else {
         console.log("Document does not exist");
@@ -987,35 +999,90 @@ function App() {
   }, [lang, rtl, user?.uid]);
 
   const [enabled, enable] = useState(true);
-  const [password, setPassword] = useState("");
-  function connect() {
+  const [password, setPassword] = useState("");  
+  // const [socketUrl, setSocketUrl] = useState("wss://stream.binance.com:9443/wss");  
+  const socketUrl = useRef("wss://stream.binance.com:9443/ws")
+  const errorCount = useRef(0)
+
+function connect() {
+    // console.log('Browser window called', wsConnectRetry ,"---run count", Object.keys(coins).length,coins)
     if (Object.keys(coins).length === 0) return
-    console.log('Browser window called')
-    ws = new WebSocket('wss://stream.binance.com:9443/ws');
+    console.log('Browser window called 2.0')
+    
+    ws = new WebSocket(socketUrl.current);
     console.log('websocket connected first time')
-    const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
+  const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)  
+  
     ws.onopen = () => {
       console.log('WebSocket Open');
       if (ws.readyState === WebSocket.OPEN) {        
-        setSocketConnect(true)
+        setSocketConnect(true)        
+        errorCount.current = 0
         ws.send(JSON.stringify({
           method: 'SUBSCRIBE',
           params: coinTikerList,
           id: 1
         }));
       }
-    };    
-    ws.onclose = async (event: any) => {
+    };       
+    ws.onclose = async (event: any) => {      
       setSocketConnect(false);
-      console.log('WebSocket connection closed', event);   
-      reconnectWebSocket()
+      setTimeout(() => {
+        handleError();
+      }, 10000);
     };
-    ws.onerror = () => {  
+    ws.onerror = (event: any) => {  
       setSocketConnect(false);
-      console.log('WebSocket connection occurred');
-      reconnectWebSocket()
+      // setTimeout(() => {
+      //   handleError();
+      // }, 10000);
     };      
   }    
+
+
+  // let errorCount = 0;
+  let hasReopened = false;
+  console.log(errorCount.current, socketUrl, socketConnect ,"errorCount.current")
+  const handleError = () => {
+    if (!hasReopened) {      
+      errorCount.current++;
+    }        
+    if (errorCount.current >= 5 && !hasReopened) {
+      hasReopened = true;
+      ReloadPop()
+    }    
+    else if (errorCount.current < 5) {
+      connect();
+    }
+    else {
+      console.log('Error count exceeds 5, not reconnecting.');
+    }
+  };
+  
+  // console.log("useEffect-- ****** ------>123",socketUrl)
+  // useEffect(() => {
+  //   if (Object.keys(coins).length === 0) return
+  //   wsReConnectThrottle = setInterval(() => {
+  //     console.log("useEffect--******------> ", socketConnect, "--", wsConnectRetry, "--", socketUrl)
+  //     if (wsConnectRetry > 4) {
+  //       setSocketUrl("wss://stream.binance.com:9443/ws")
+  //     }
+  //     if (socketConnect || wsConnectRetry > 5) {
+  //       console.log("CLEAR--**--**")
+        
+  //       clearInterval(wsReConnectThrottle)
+  //       // ReloadPop('https://www.google.com/', 600, 400);            
+  //       return
+  //     }
+  //     wsConnectRetry++
+  //     // setWsConnectRetry(5)
+
+  //     connect()
+
+  //   }, 3000)
+
+  // }, [socketConnect, Object.keys(coins).length])
+
 
   function croConnect() {
     const connectWebSocket = () => {
@@ -1034,14 +1101,6 @@ function App() {
         setRetryCount(0);
         // setError(null);
       };
-
-    //  socket.onmessage = (event) => {
-    //     const data = JSON.parse(event.data);
-    //     if (data.method === "ticker") {
-    //       // setPrice(data.data[0].a); // 'a' represents the best ask price
-    //     }
-    //   };
-
      socket.onerror = (error:any) => {
        console.error('WebSocket error:', error);
        setTimeout(() => {
@@ -1066,49 +1125,76 @@ function App() {
   }
 
   
-  async function reconnectWebSocket () {
-    console.log('Attempting to reconnect...');
-    // @ts-ignore
-    if (coins) {
-      // @ts-ignore
-      const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
-      const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
-      const afterErrorPrice = {}
-      try {
-        const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
-        Object.keys(response.data)?.map((symblaName) => {
-          Object.assign(afterErrorPrice,
-            {
-              [symblaName]: {
-                id: coins[symblaName]?.id,
-                name: coins[symblaName]?.name,
-                price: response.data[symblaName]?.USD,
-                symbol: symblaName,
-                trend: coins[symblaName]?.trend
+  // async function reconnectWebSocket () {
+  //   if(socketConnect) return
+  //   // @ts-ignore
+  //   if (Object.keys(coins)?.length) {
+  //     // @ts-ignore
+  //     // const localCoinData = JSON.parse(localStorage.getItem('CoinsPrice'))
+  //     const coinTikerList = Object.keys(coins)?.map(item => `${item}`)
+  //     const afterErrorPrice = {}
+  //     try {
+  //       const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${coinTikerList.join(',')}&tsyms=USD`);
+  //       Object.keys(response.data)?.map((symblaName) => {
+  //         if (coinTikerList.includes(symblaName)) {            
+  //           Object.assign(afterErrorPrice,
+  //             {
+  //               [symblaName]: {
+  //                 id: coins[symblaName]?.id,
+  //                 name: coins[symblaName]?.name,
+  //                 price: response.data[symblaName]?.USD,
+  //                 symbol: symblaName,
+  //                 trend: coins[symblaName]?.trend
+  
+  //               }
+  //             }
+  //           )
+  //         }
+  //         setCoins(afterErrorPrice)
+  //         localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
+  //       })
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       localStorage.setItem('CoinsPrice', JSON.stringify(coins));
+  //     }
+  //   }
+    
+    
+  //   connect();
+  //     // setTimeout(() => {
+  //     //   console.log("i am calling again and again ")
+  //     // }, 10000); // reconnect after 3 seconds                
+  // }
 
-              }
-            }
-          )
-          setCoins(afterErrorPrice)
-          localStorage.setItem('CoinsPrice', JSON.stringify(afterErrorPrice));
-        })
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        localStorage.setItem('CoinsPrice', JSON.stringify(coins));
-      }
-    }
-    setTimeout(() => {
-      connect();
-    }, 10000); // reconnect after 3 seconds
-  }
+  // let reconnectTimeout:any;  
+  
+  // async function throttleReconnectWebSocket(event:any) {
+  //   // If there's already a reconnect attempt scheduled, do nothing
+  //   if (reconnectTimeout || socketConnect) {
+  //     return;
+  //   }
+
+  //   console.log('Attempting to reconnect...', event);
+
+  //   if (!socketConnect) {      
+  //     reconnectWebSocket()
+  //     reconnectTimeout = setTimeout(() => {
+  //       reconnectTimeout = null; // Reset the timeout after it's executed
+  //       throttleReconnectWebSocket(event); // Trigger another reconnect attempt
+  //     }, 10000); // Adjust the interval as needed (e.g., 10 seconds)
+  //   }
+  // }
+
 
   useEffect(() => {
-
-    connect();
-    croConnect();
-    return () => {
-      console.log('close websocket connection');
-
+    if (Object.keys(coins).length) {      
+      if (socketConnect) return
+      
+      console.log("yes i am calling")
+      connect();
+      croConnect();
+    }
+    return () => {     
       if (ws) ws.close();
       if (socket) socket.close();
       window.localStorage.removeItem('firstTimeloading')
@@ -1190,6 +1276,33 @@ function App() {
       }
     })
   }
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia('(display-mode: standalone)');
+    
+    const handleChange = (event:any) => {
+      // @ts-ignore
+      if (event.matches && (!userInfo?.isPWAinstalled || userInfo?.isPWAinstalled == undefined)) {        
+        // @ts-ignore
+        const userRef = doc(db, "users", userInfo?.uid);
+        setDoc(userRef, { isPWAinstalled: true }, { merge: true }); 
+      }
+    };
+
+    // Initially check if the PWA is already open
+    if (userInfo?.uid) {      
+      handleChange(mediaQueryList);
+    }
+
+    // Listen for changes in display mode
+    mediaQueryList.addListener(handleChange);
+
+    // Clean up the listener
+    return () => {
+      mediaQueryList.removeListener(handleChange);
+    };
+  }, [userInfo?.uid]);
+
   const getVotes = useCallback(
     async () => {
       if (user?.uid) {
@@ -1507,6 +1620,18 @@ useEffect(() => {
   }
 }, []);
 
+useEffect(() => {
+  const acceptedCookies = localStorage.getItem('acceptedCookies');
+  if (acceptedCookies) {
+    setShowPopup(false);
+  }
+}, []);
+
+const handleAcceptAll = () => {
+  localStorage.setItem('acceptedCookies', 'true');
+  setShowPopup(false);
+};
+
 
 
   return loader ? (
@@ -1523,7 +1648,26 @@ useEffect(() => {
         // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
-      >  
+      >                
+        {showPopup && ( 
+        <>
+        <div style={{width:"100%",height:"100%",backgroundColor:"rgba(0, 0, 0, 0.6)",position:"fixed",zIndex:"99995"}}></div>
+        <CookieConsent
+          debug={true}
+          cookieName="myAwesomeCookieName2"
+          style={{ background: "white", color: "#7767f7", alignItems: "center",padding:"16px",margin:"about",zIndex:99999,justifyContent:"center",flex:"none"}}
+          buttonText="Accept All"
+          buttonStyle={{ width: "100px", borderRadius: "50px", background: "#7767f7", color: "white" }}
+          onAccept={handleAcceptAll}
+          
+        >
+          <span className="CookieConsent" style={{ justifyContent: "center",  fontSize: "15px" }}>
+            We use cookies to personalise content and ads, to provide social media features.{" "} <Link to="/terms-and-condition">Learn More</Link>
+          </span>
+        </CookieConsent>
+        </>
+      )}
+        
 
         {!login &&
           !firstTimeAvatarSlection &&
@@ -1547,7 +1691,7 @@ useEffect(() => {
             aria-label="Install app"
             title="Install app"
             onClick={onClick}
-            style={{ zIndex: 99999 }}
+            style={{ zIndex: 99991 }}
           >
             {texts.Install}
           </button>}
@@ -1557,7 +1701,7 @@ useEffect(() => {
             aria-label="Install app"
             title="Install app"
             onClick={e => setPwaPopUp('none')}
-            style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
+            style={{ zIndex: 99991, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
           >
             x
             </span>
@@ -1591,6 +1735,8 @@ useEffect(() => {
             >
               <AppContext.Provider
                   value={{
+                    extraVoteModule,
+                    setExtraVoteModule,
                     loader,
                     setLoader,
                     addPaxWalletPop,
@@ -1666,6 +1812,8 @@ useEffect(() => {
                   fcmToken,
                   setFcmToken,
                   lang,
+                  animateBox,
+                  setAnimateBox,
                   setLang,
                   rtl,
                   setRtl,
@@ -1855,10 +2003,10 @@ useEffect(() => {
                                   }
                                   generate={generateUsername}
                                   
-                                  saveUsername={async (username:any, DisplayName:any) => {
+                                  saveUsername={async (username: any, DisplayName: any, country:any) => {
                                     if (user?.uid) {
                                       await saveUsername(user?.uid, username, "");
-                                      await saveDisplayName(user?.uid, DisplayName, "");
+                                      await saveDisplayName(user?.uid, DisplayName, country, "");
                                       setFirstTimeAvatarSelection(true);
                                       // setFirstTimeFoundationSelection(true);
                                       setFirstTimeLogin(false);
@@ -1965,6 +2113,10 @@ useEffect(() => {
                                             <Route
                                               path='nftAlbum'
                                               element={<NFTGallery />}
+                                            />
+                                            <Route
+                                            path='iframeUrl'
+                                              element={<NewUrlFram />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
@@ -2100,14 +2252,14 @@ useEffect(() => {
                                             <Route
                                               path='/upgrade'
 
-                                              element={<UpgradePageCopy />}
+                                              element={<UpgradePage />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
                                               element={<CoinsList />}
                                           /> */}
 
-                                            <Route path='/paymentList'
+                                            {/* <Route path='/paymentList'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
                                               element={
 
@@ -2115,20 +2267,24 @@ useEffect(() => {
                                                   isVotingPayment={false}
                                                 />
                                               }
-                                            />
+                                            /> */}
                                             <Route path='/VotePayment'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
                                               element={<PaymentFun
-                                                isVotingPayment={true}
+                                                isVotingPayment={false}
                                               />}
                                             />
                                             <Route
                                               path='/votingbooster'
-                                              element={<VotingBoosterCopy />}
+                                              element={<VotingBooster />}
                                             />
                                             <Route
                                               path='influencers'
                                               element={<Influencers />}
+                                            />
+                                            <Route
+                                              path='influencers/:type'
+                                            element={<InfluencersList />}
                                             />
 
                                             {/* <Route path="signup" element={<LoginAndSignup/>}/> */}

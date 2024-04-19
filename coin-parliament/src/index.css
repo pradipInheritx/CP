@@ -143,7 +143,7 @@ html[dir="rtl"] .offcanvas-start.show {
     font-weight: bold;
 }
 .pwaPopup{
-    z-index: 99999;
+    z-index: 99991;
     position: fixed;
     bottom: 0px;
     background: white;
@@ -1587,7 +1587,7 @@ border-top-left-radius: 0px !important;
 .custom-circle-progress .gift-icon {
     position: absolute;
     top: 50%;
-    left: 14px;
+    left: 13px;
     width: 30px;
     z-index: 2;
     transform: translateY(-50%);
@@ -1597,7 +1597,7 @@ border-top-left-radius: 0px !important;
     position: relative;
     top: initial;
     left: initial;
-    width: initial;
+    width: 30px;
     z-index: 2;
     transform: initial;
 }
@@ -1611,7 +1611,7 @@ border-top-left-radius: 0px !important;
 }
 
 .gift_animation-css {
-    animation:bull_shake_left 2s ease 2s infinite;
+    animation:bull_shake_left 2s ease 0s infinite;
 }
 
 .custom-circle-progress .progress-cs {
@@ -1712,7 +1712,7 @@ border-top-left-radius: 0px !important;
         border-radius: 100px 0px 0px 100px;
         }
         .mobileHeader .custom-circle-progress {
-            right: -34px;
+            right: -30px;
             top: 7px;
         }
 
@@ -1724,6 +1724,14 @@ border-top-left-radius: 0px !important;
             font-size: 8px;
         }
 }
+
+@media only screen and (max-width: 767px) {
+    .CookieContainer {
+      justify-content: center;
+      /* display: flex; */
+      font-size: 15px;
+    }
+  }
 
 @media only screen and (max-width: 575px) {
     .mobileHeader .mobile-centered-element {
@@ -1742,7 +1750,8 @@ border-top-left-radius: 0px !important;
 
 .form-inline-flex {
     display: flex;
-    margin: 0px -10px !important;
+    width: 100%;
+    /* margin: 0px -10px !important; */
 }
 
 .form-inline-flex .col-field {
@@ -1764,3 +1773,48 @@ border-top-left-radius: 0px !important;
     color: #160133 !important;
     height: 44px;
 }
+
+.CookieConsent>div:first-child {
+    flex: none !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .CookieConsent>div:first-child {
+        flex: 0 0 100% !important;
+        text-align: center;
+        margin: 0px !important;
+    }
+    .CookieConsent>div button {
+        margin: 3px !important;
+    }
+}
+
+.HomeImage {
+    width: 100%;
+    height: auto;
+    /* position: absolute; */
+  }
+  
+  @media screen and (min-width: 820px) and (max-width: 1180px) {
+    .HomeImage {
+      margin-top: 50px !important;
+    }
+  }
+
+  .HomeText {
+    z-index: 0;
+    font-weight:"400";
+    position: "relative";
+  }
+
+  @media screen and (min-width: 820px) and (max-width: 1180px) {
+    .HomeText {
+      margin-top: 182px;
+    }
+  }
+
+  @media screen and (min-width: 1024px) and (max-width: 1366px) {
+    .ipadProText {
+      margin-top: unset;
+    }
+  }

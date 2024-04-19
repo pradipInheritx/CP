@@ -84,8 +84,8 @@ const Home = () => {
             updateAllUsers()
         }}
         >Run Croin</button> */}
-        <div style={{ background: "#160133" }}>
-          <HomeContainer width={width} className='mb-4 p-0 '>
+        <div className= "HomeImage" style={{ background: "#160133" }}>
+          <HomeContainer width={width} className='mb-4 p-0  '>
             {!(login || firstTimeLogin) && (
               <>
                 <Image
@@ -118,16 +118,8 @@ const Home = () => {
             )}
           </HomeContainer>
         </div>
-        <div className='mb-4 mx-0'>
-          <TextContainer
-            className='mt-2 d-xl-none'
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              maxWidth: "250px",
-            }}
-          >
-             {/* <h2
+        <div className='mb-4 mx-0 HomeText'>
+           {/* <h2
                     style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
                     className=' d-block text-center mb-2'
                   >
@@ -142,21 +134,7 @@ const Home = () => {
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
                     {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-            <H2
-              style={{
-                zIndex: 0,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "130px",
-              }}
-
-              className="mb-4"
-            >
-              {texts.HereYourChance}
-              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
+          {window.screen.width > 979 ? (
             <>
               {/* <h2
              style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
@@ -180,7 +158,9 @@ const Home = () => {
                   position: "relative",
                   // marginTop: "200px",
                   fontSize: "30px",
-                  marginTop: window?.screen?.width < 768 ? '100px' : "222px",
+                  marginTop:
+                    window?.screen?.width < 768 ? '100px' :
+                    window?.screen?.width >= 1024 && window?.screen?.width <= 1366 ? '-40px' : "222px",
                 }}
 
               className="mb-4"
@@ -189,7 +169,29 @@ const Home = () => {
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
             </>
-          )}
+          ): <TextContainer
+          className='mt-2 d-xl-none'
+          style={{
+            textTransform: "none",
+            fontWeight: "400",
+            maxWidth: "250px",
+          }}
+        >
+     
+          <H2
+            style={{
+              zIndex: 0,
+              fontWeight: "400",
+              position: "relative",
+              marginTop: "130px",
+            }}
+
+            className="mb-4"
+          >
+            {texts.HereYourChance}
+            {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
+          </H2>
+        </TextContainer>}
           <Pairs
             onFavClick={async (...args) => {
               if (user) {

@@ -163,6 +163,7 @@ const Carousel = ({
     // setCoinUpdated(livePrice.current)
     // console.log(livePrice.current,"livePrice.current")
     if (Object.keys(livePrice.current).length && coins != livePrice.current) {            
+      // console.log("Browser window called 1",livePrice.current)
       setCoins(livePrice.current)
     }
   }
@@ -292,8 +293,9 @@ const Carousel = ({
       onSubmit={(e) => e.preventDefault()}
     >
       <CPCarousel
+        type={"coins"}
         coin={!(window.screen.width && window.screen.width > 969)}
-        items={window.screen.width && window.screen.width > 969 ? 6 : 3}
+        items={window.screen.width && window.screen.width > 767 ? 6 : 3}
         cursorShow={true}
       >
         {Object.keys(coins)

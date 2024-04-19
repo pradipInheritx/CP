@@ -37,6 +37,7 @@ export type Leader = {
   successful?: number;
   total?: number;
   influencersScore?: number;
+  rank?: number;
 
 };
 

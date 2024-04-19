@@ -82,8 +82,10 @@ const getHeight = (props: Pathname) => {
   return "100vh";
 };
 
-export const isHomeBg = (pathname: string) =>
-  ["/", "/influencers", "/coins", "/pairs", "/nftAlbum"].includes(pathname);
+export const isHomeBg = (pathname: string) => {    
+  const pathArray = pathname.split('/');  
+  return ["/", "/influencers", `/influencers/${pathArray[2]}`, "/coins", "/pairs", "/nftAlbum"].includes(pathname);
+}
 
 export const AppContainer = styled(Container)`
   ${(props: Pathname) =>

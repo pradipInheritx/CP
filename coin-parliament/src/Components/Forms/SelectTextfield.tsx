@@ -1,16 +1,25 @@
 import React, { ChangeEvent, Children } from "react";
-import { Col, Container, Form, FormControlProps, Row ,InputGroup} from "react-bootstrap";
+import { Col, Container, Form, FormControlProps, Row, InputGroup } from "react-bootstrap";
 import styled from "styled-components";
 import { Input } from "../Atoms/styles";
 
 export type TextFieldProps = {
-  
+  icon?: any;
+  iconFunction?: any;
   pattern?: string;
   label?: string;
   name?: string;
   color?: string;
   children?: React.ReactNode;
 };
+
+const Icon3 = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+  font-weight: 300;
+  color: #6352e8;
+  text-align: center;
+`;
 
 export const Label = styled(Form.Label)`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -53,30 +62,41 @@ const SelectTextfield = ({
   label,
   name,
   color,
-
+  icon,
+  iconFunction,
   children,
 }: TextFieldProps) => {
-  
 
-  
+
+
 
   return (
     <Form.Group className="mb-2 d-flex" controlId={name}>
-      <Container>
-        <Row style={{justifyContent:'center'}}>
-          <Col style={{maxWidth:window.screen.width>979?'40%':''}}>
+      <Container >
+        <Row style={{ justifyContent: 'center', padding: '0 10px' }}>
+          <Col style={{ maxWidth: window.screen.width > 979 ? '40%' : '' }}>
             {label && (
               <Label sm="3" color={color}>
                 {label}
+                {icon && <span style={{ marginLeft: '4px' }}><Icon3 className='bi bi-info-circle'
+                  onMouseDown={(e) => {
+                    iconFunction(false)
+                  }}
+                  onMouseUp={(e) => {
+                    iconFunction(true)
+                  }}
+                  onMouseEnter={() => iconFunction(true)}
+                  onMouseLeave={() => iconFunction(false)}
+                ></Icon3></span>}
               </Label>
             )}
           </Col>
         </Row>
-        <Row style={{justifyContent:'center'}}>
-          <Col style={{maxWidth:window.screen.width>979&& name !== "Stay on the safe side"?'40%':''}}>
-          <GroupInput className="mb-3">
+        <Row style={{ justifyContent: 'center' }}>
+          <Col style={{ maxWidth: window.screen.width > 979 && name !== "Stay on the safe side" ? '40%' : '' }}>
+            <GroupInput className="mb-3">
               {children}
-          </GroupInput>
+            </GroupInput>
           </Col>
         </Row>
       </Container>

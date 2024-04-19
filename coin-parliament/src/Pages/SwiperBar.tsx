@@ -8,7 +8,8 @@ export type SliderItems = {
 
 };
 function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | string, slideSize?: number }) {
-  console.log(children,"children")
+  
+  
   var settings = {
     dots: true,
     infinite: false,
@@ -31,11 +32,15 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
         }
       },
       {
-        breakpoint: 800,
+        breakpoint: 850,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
+          centerMode: true,
+          // @ts-ignore
+          slidesToShow: children?.length == 1 ? 1 :2,
+          // @ts-ignore
+          slidesToScroll: children?.length == 1 ? 1 :2,
+          // @ts-ignore
+          initialSlide: children?.length == 1 ? 1 :2,
           infinite: true,
         }
       },
@@ -62,6 +67,8 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
       // }
     ]
   };
+
+  console.log(children,"children")
   return (
     <div className=''
       style={{ overflow: "hidden" }}
