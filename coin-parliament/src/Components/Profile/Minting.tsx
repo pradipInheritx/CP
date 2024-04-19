@@ -507,14 +507,14 @@ const Minting = ({
             <Option0
               style={{ marginTop: "10px" }}
               {...{              
-                onClick: !!claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
+                onClick: !!claim && claim > 0 && !userInfo?.isUserUpgraded ? handleUpgraeShow : claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
-                disabled: (loading || rewardTimer)
+                disabled: (loading || rewardTimer || (claim != undefined && claim < 0))
               }}
             >
-              {(!!claim) && <Dot>{claim}</Dot>
+              {(!!claim) && claim > 0 && <Dot>{claim}</Dot>
               }
               {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
               

@@ -127,7 +127,7 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
           const opacity = userInfo?.status && userInfo?.status?.name === userType?.name ? "" : " opacity-50";
           return (
             <Badge className={"rounded-pill mt-1 d-flex justify-content-around " + opacity} key={i} >
-              <span className="opacity-0">{opacity == "" ? <>&nbsp; #{userRank}</> : ""}</span><span> {userType?.name}</span> <span>{opacity == "" ? <>&nbsp; #{userRank}</> : ""}</span> 
+              <span className="opacity-0">{opacity == "" ? <>&nbsp; {userRank > 0 ? `#${userRank}` : ""}</> : ""}</span><span> {userType?.name}</span> <span>{opacity == "" ? <>&nbsp; {userRank > 0 ? `#${userRank}`:""}</> : ""}</span> 
             </Badge>
           );
         })}
