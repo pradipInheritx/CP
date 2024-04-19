@@ -1819,47 +1819,165 @@ border-top-left-radius: 0px !important;
     }
   }
 
-  .VoteBanner {
-    max-width: 749px;
+
+  .voteDetails {
+    position: relative;
+    background-color: #ffffff;
+    padding: 20px 26px;
+    border-radius: 10px;
+    max-width: 720px;
+    width: 100%;
     margin: 0px auto;
-    padding: 0px 10px;
+    color: #160133;
+  }
+  .voteDetails .voteDetailRow {
+   margin: 0px -8px;
+   display: flex;
+   align-items: center;
+   flex-wrap: wrap;
+  }
+  .voteDetails .voteDetailRow .voteCol{
+    padding: 0px 8px;
+  }
+  .voteDetails .voteDetailRow .voteAvtar{
+flex: 0 0 80px;
+max-width: 80px;
+border-radius: 9999px;
+height: 80px;
+overflow: hidden;
+box-shadow: rgb(250, 228, 129) 1px 0px 5px;
+outline: 0.5px solid #D2CC2E;
+  }
+  .voteDetails .voteDetailRow .voteAvtar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left bottom;
+    border-radius: 0px !important;
   }
 
-  .VoteBanner .VoteBannerInner {
+
+  .voteDetails .voteDetailRow  .voteDtl {
+flex: 0 0 calc(100% - 80px);
+max-width: calc(100% - 80px);
+  }
+
+  .voteDetails .voteDtl .voteHead {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 15px;
+    padding-left: 10px;
+ }
+
+ .voteDtl .voteHead .userName {
     font-size: 20px;
-    background-color:white;
-    text-align: center;
-    margin : 0 auto;
-    border-radius:10px;
-    color:rgb(22, 1, 63);
-    padding: 10px;
-  }
+    line-height: 24px;
+    font-weight: 500;
+    color: #160133;
+    padding-right: 10px;
+    border-right: 1px solid #160133;
+    flex: 0 0 auto;
+ }
 
-  @media only screen and (max-width: 979px) {
-    .VoteBanner {
+ .voteDtl .voteHead .coinCompare {
+display: flex;
+align-items: center;
+padding-left: 0px;
+flex: auto;
+ }
+
+ .voteDtl .voteHead .coinCompare .coinSub {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 0px 10px;
+flex: 0 0 auto;
+ }
+
+ .coinCompare .coinSub .coinName {
+    color: #160133;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
+ }
+
+ .coinCompare .coinSub .coinLogo {
+    flex: 0 0 30px;
+    max-width: 30px;
+ }
+ .coinCompare .coinSub .coinLogo img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+ }
+
+ .coinCompare .sp-line {
+flex: 0 0 60px;
+max-width: 60px;
+border-top: 1px dashed #160133;
+ }
+
+ .voteDtl .coinDetailsPara h4 {
+    color: #160133;
+    font-size: 14px;
+    font-weight: 400;
+ }
+ .voteDtl .coinDetailsPara h4 span {
+    color: #160133;
+    opacity: 0.5;
+ }
+ .voteDtl .coinDetailsPara {display: flex;align-items: center;gap: 15px;padding-left: 10px;}
+
+
+ @media only screen and (max-width: 767px) {
+    .voteDtl .voteHead .userName {
+        font-size: 18px;
+        line-height: 22px;
+     }
+    
+    .voteDtl .coinDetailsPara h4 {
+        font-size: 13px;
+     } 
+     .coinCompare .coinSub .coinName {
+        font-size: 13px;
+     }
+     .coinCompare .sp-line {
+        flex: 0 0 30px;
+        max-width: 30px;
+    }
+    .voteDtl .coinDetailsPara {
+        gap: 10px;
+    }
+    .voteDtl .coinDetailsPara {
+        flex-wrap: wrap;
+    }
+ }
+
+ @media only screen and (max-width: 484px) {
+    .voteDetails .voteDtl .voteHead {
+        flex-wrap: wrap;
+    }
+    .voteDetails .voteDtl .voteHead>div {
+        flex: 0 0 100%;
         max-width: 100%;
-    width: 100%;    
     }
-  }
-  @media only screen and (max-width: 767px) {
-      .VoteBanner .VoteBannerInner {
-        font-size: 14px;
-      }
-  }
-
-  @media only screen and (max-width: 575px) {
-      .VoteBanner .VoteBannerInner {
-        font-size: 12px;
-        padding: 10px 5px;
-      }
-  }
-
-  @media only screen and (max-width: 320px) {
-    .VoteBanner .VoteBannerInner {
-      font-size: 11px;
-      padding: 10px 5px;
+    .voteDtl .voteHead .userName {
+        margin-bottom: 5px;
+        border: 0px;
     }
-}
+    .voteDtl .voteHead .coinCompare {
+        margin-left: -10px;
+    }
+    .coinCompare .sp-line {
+        flex: 0 0 20px;
+        max-width: 20px;
+    }
+    .voteDtl .voteHead .coinCompare .coinSub {
+        gap: 6px;
+        padding: 0px 5px;
+    }
+    .voteDetails .voteDetailRow {
+        align-items: flex-start;
+    }
+ }

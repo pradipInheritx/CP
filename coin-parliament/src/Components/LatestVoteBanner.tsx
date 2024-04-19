@@ -67,56 +67,60 @@ const LatestVoteBanner = () => {
     }, []);
 
     return (
-        <div className='VoteBanner'>
-            <div className="VoteBannerInner">
-                <div className='d-flex justify-content-center'>
-                    <Avatars
-                        type={(aboutUser?.avatar || defaultAvatar) as AvatarType}
-                        style={{
-                            width: "60px",
-                            height: "60px",
-                            boxShadow: "rgb(250, 228, 129) 1px 0px 5px",
-                            backgroundColor: "rgb(250, 228, 129)",
-                        }}
-                    />
+        <>
+            <div className='px-2'>
+                <div className='voteDetails'>
+                    <div className='voteDetailRow'>
+                        <div className='voteCol voteAvtar'>
+                            <Avatars type={(aboutUser?.avatar || defaultAvatar) as AvatarType} />
+                        </div>
+                        <div className='voteCol voteDtl'>
+                            <div className='voteHead'>
+                                <h2 className='userName'>{aboutUser?.userName ? `${aboutUser.userName}` : `${aboutUser?.displayName}`}</h2>
+                                <div className='coinCompare'>
+
+
+
+                                    <div className='coinSub'>
+                                        <h3 className='coinName'>{data?.coin?.split("-")[0]}</h3>
+                                        <div className='coinLogo'>
+                                            {(<Image
+                                                src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[0] : data?.coin.toUpperCase()}.svg`}
+                                                style={{
+                                                    margin: "0 auto"
+                                                }}
+                                            />)}
+                                        </div>
+                                    </div>
+
+                                    {data?.coin?.includes("-") && <><div className='sp-line'></div>
+
+                                        <div className='coinSub'>
+                                            <div className='coinLogo'>
+                                                {(<Image
+                                                    src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[1] : data?.coin.toUpperCase()}.svg`}
+                                                    style={{
+                                                        margin: "0 auto",
+                                                    }}
+                                                />)}
+                                            </div>
+                                            <h3 className='coinName'>{data?.coin?.split("-")[1]}</h3>
+                                        </div></>}
+
+                                </div>
+                            </div>
+
+
+                            <div className='coinDetailsPara'>
+                                <h4>{data?.status?.name ? <><span>Level :</span> {data?.status?.name}</> : ""}</h4>
+                                <h4>{<><span>Vote :</span> {data?.coin?.includes("-") ? data?.coin?.split("-")?.[data?.direction] : data?.direction == 0 ? "BULL" : "BEAR"}</>}</h4>
+                                <h4>{<><span>Time :</span> {data?.voteTime ? new Date(data?.voteTime).toLocaleString() : ''}</>}</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p> {aboutUser?.userName ? `User Name : ${aboutUser.userName}` : `Display Name : ${aboutUser?.displayName}`}{'  '}</p>
-
-                <div>
-                    <p>
-                        {`Coin - Pairs : `} {'  '}&nbsp;
-
-                        {data?.coin?.includes("-") && (<Image
-                            src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[0] : data?.coin.toUpperCase()}.svg`}
-                            style={{
-                                margin: "0 auto",
-                                width: "40px",
-                                height: "40px",
-                            }}
-                        />)}
-
-                        {" "}
-                        {data?.coin}
-                        {" "}
-
-                        {(<Image
-                            src={process.env.PUBLIC_URL + `/images/logos/${data?.coin?.includes("-") ? data?.coin?.split("-")[1] : data?.coin.toUpperCase()}.svg`}
-                            style={{
-                                margin: "0 auto",
-                                width: "40px",
-                                height: "40px",
-                            }}
-                        />)}
-                    </p>
-
-                </div>
-                <p> {`Vote : ${data?.coin?.includes("-") ? data?.coin?.split("-")?.[data?.direction] : data?.direction == 0 ? "BULL" : "BEAR"}`} {'  '}</p>
-                <p> {data?.status?.name ? `Level :  ${data?.status?.name}` : ""}</p>
-                <p>{`Time : ${data?.voteTime ? new Date(data?.voteTime).toLocaleString() : ''}`}</p>
-
             </div>
-        </div>
-
+        </>
     )
 }
 
