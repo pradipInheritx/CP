@@ -2779,6 +2779,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
       { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
       { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
       { customHeader: 'Email', dbKey: 'email' },
+      { customHeader: 'Country', dbKey: 'Country' },
       { customHeader: 'Game Title', dbKey: 'GameTitle' },
       { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
       { customHeader: 'Total Votes', dbKey: 'totalVotes' },
