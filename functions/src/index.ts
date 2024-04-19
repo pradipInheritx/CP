@@ -23,7 +23,6 @@ import {
 } from "./common/interfaces/User.interface";
 import { VoteResultProps } from "./common/interfaces/Vote.interface";
 import { Leader } from "./common/interfaces/Coin.interface";
-
 // function import
 import "./common/models/scheduleFunction";
 import {
@@ -2798,10 +2797,24 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
 
       let keepFetching = true;
       while (keepFetching) {
-        let query = admin.firestore().collection("userStatistics").orderBy("userName").limit(batchSize);
+        let query = admin.firestore().collection("userStatistics").limit(batchSize);
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
-        const batchData = snapshot.docs.map((doc) => doc.data());
+        
+        const batchData = snapshot.docs.map((doc) => {
+          const user = doc.data();
+          if (user.signUpTime && user.signUpTime.trim() !== "") {
+            const signUpDate = new Date(user.signUpTime);
+            const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+            user.signUpTime = signUpDateFormatted;
+          } else {
+            user.signUpTime = "";
+          }
+          user.averageVotes = Math.round(user.averageVotes);
+          user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+          return user;
+        });
+
         allData.push(...batchData);
         lastDoc = snapshot.docs[snapshot.size - 1];
         if (!snapshot.empty) {
@@ -2818,6 +2831,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
     // Stream data directly to response
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+    // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'GET, POST');
     res.set('Access-Control-Allow-Headers', 'Content-Type');
@@ -2827,11 +2841,38 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
     const worksheet = workbook.addWorksheet('User Statistics Data');
     worksheet.addRow(headerMappings.map(mapping => mapping.customHeader));
 
+    // // Apply styles to the header row
+    // headerRow.eachCell((cell, colNumber) => {
+    //   cell.fill = {
+    //     type: 'pattern',
+    //     pattern: 'solid',
+    //     fgColor: { argb: 'FFFF00' } // Yellow color
+    //   };
+    //   cell.border = {
+    //     top: { style: 'thin' },
+    //     left: { style: 'thin' },
+    //     bottom: { style: 'thin' },
+    //     right: { style: 'thin' }
+    //   };
+    //   cell.font = { bold: true }; // Make text bold
+    //   cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
+    // });
+
     const dataStream = await fetchDataInBatches();
 
     for (const userData of dataStream) {
       const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
       worksheet.addRow(rowValues);
+
+      // Apply styles to data row
+      // row.eachCell((cell, colNumber) => {
+      //   cell.border = {
+      //     top: { style: 'thin' },
+      //     left: { style: 'thin' },
+      //     bottom: { style: 'thin' },
+      //     right: { style: 'thin' }
+      //   };
+      // });
     }
 
     await workbook.commit();
