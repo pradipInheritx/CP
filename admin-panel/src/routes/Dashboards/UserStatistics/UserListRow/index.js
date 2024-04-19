@@ -116,7 +116,9 @@ const UserListRow = ({
         {convertToDateOnly(row?.lastLoginDay)}
       </TableCell>
       <TableCell align="center">{row?.email || "-"}</TableCell>
-      <TableCell align="center">{row?.Country.trim() || "-"}</TableCell>
+      <TableCell align="center">
+        {row?.Country ? row?.Country.trim() || "-" : "-"}
+      </TableCell>
       <TableCell align="center">{row?.GameTitle || "-"}</TableCell>
       <TableCell align="center">{row?.TotalCPM || "-"}</TableCell>
       <TableCell>{row?.totalVotes || "-"}</TableCell>
