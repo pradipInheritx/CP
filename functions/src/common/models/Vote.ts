@@ -9,9 +9,6 @@ import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 import { errorLogging } from "../helpers/commonFunction.helper";
 import { getUserAndCalculatePax } from "./CmpCalculation";
 
-export const calculateOffset: (timeframe: TimeFrame) => number = (
-  timeframe: TimeFrame
-) => timeframe.seconds * 1000;
 
 export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
   toFirestore(modelObject: VoteResultProps): FirebaseFirestore.DocumentData {
@@ -24,6 +21,12 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
     return data as VoteResultProps;
   },
 };
+
+
+
+export const calculateOffset: (timeframe: TimeFrame) => number = (
+  timeframe: TimeFrame
+) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
   console.log("Beginning execution of updateVotesTotal 2 --->");
@@ -73,6 +76,7 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
   return;
 };
+
 
 export const getResultAfterVote = async (requestBody: any) => {
   try {

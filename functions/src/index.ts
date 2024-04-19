@@ -9,6 +9,7 @@ import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
+
 import multer from "multer";
 import moment from 'moment';
 import * as excel from 'exceljs';
@@ -30,7 +31,7 @@ import {
   userConverter,
   // sendEmailVerificationLink,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
 import {
   getLeaderUsers,
@@ -48,11 +49,11 @@ import {
 import {
   getAllCoins,
   getAllPairs,
-  prepareCPVI,
-  fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // prepareCPVI,
+  // fetchAskBidCoin,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import Refer from "./common/models/Refer";
 import {
@@ -114,7 +115,7 @@ import {
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
 
-import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+// import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // import sendGrid Email function and templates
@@ -136,7 +137,7 @@ import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 // initialize express server
@@ -223,6 +224,7 @@ app.get("/user/verified", async (req: any, res: any) => {
             )
           );
           res.send(successTemplate);
+
         }
       });
   } catch (error: any) {
@@ -1021,7 +1023,6 @@ exports.onVote = functions.firestore
     console.log("data =>", data);
 
     const voteTime = admin.firestore.Timestamp.now().toMillis();
-
     console.log("voteTime =>", voteTime);
 
     await updateVotesTotalForSingleCoin(data.coin);
@@ -1081,7 +1082,8 @@ exports.onVote = functions.firestore
     await updateUserStatistics(vote.userId, voteStatistics);
 
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
-    await addVoteResultForCPVI(data); // add cpvi here
+
+    await addVoteResultForCPVI(data);
   });
 
 const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
@@ -1666,207 +1668,15 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// Function to get payment details
-// async function getPaymentDetailsForUser() {
-//   try {
-//     const getAllPaymentsQuery = await admin
-//       .firestore()
-//       .collection("payments")
-//       .get();
-//     const paymentDetails: any = [];
-
-//     getAllPaymentsQuery.docs.forEach((payment: any) => {
-//       let paymentData = payment.data();
-//       let extraVotePurchased = paymentData.transactionType === "EXTRAVOTES";
-//       let userId = paymentData.userId;
-
-//       if (extraVotePurchased) {
-//         let obj = { userId: userId, extraVotePurchased: "yes" };
-//         paymentDetails.push(obj);
-//       } else {
-//         let obj = { userId: userId, extraVotePurchased: "no" };
-//         paymentDetails.push(obj);
-//       }
-//     });
-
-//     return paymentDetails;
-//   } catch (error) {
-//     console.error("Error fetching payment details:", error);
-//     return false;
-//   }
-// }
-
-// Function to get user details
-// async function getUsersDetails() {
-//   try {
-//     const getAllUserData = (
-//       await admin.firestore().collection("users").get()
-//     ).docs.map((user: any) => {
-//       let userData = user.data();
-//       return {
-//         userId: user.id,
-//         name: userData?.userName || "",
-//         email: userData?.email || "",
-//         totalVotes: userData?.voteStatistics?.total || 0,
-//         accountUpgrade: userData?.isUserUpgraded || false,
-//       };
-//     });
-
-//     console.log("TOTAL USER LENGTH : ", getAllUserData.length);
-
-//     const getAuthUserSignUpTime: any = [];
-//     const allUsers = await admin.auth().listUsers();
-//     allUsers.users.forEach((userRecord: any) => {
-//       //console.log("User signupDate added:", userRecord.uid);
-
-//       getAuthUserSignUpTime.push({
-//         userId: userRecord.uid,
-//         signUpTime: userRecord.metadata.creationTime,
-//       });
-//     });
-
-//     //console.log("getAuthUserSignUpTime : ", getAuthUserSignUpTime);
-
-//     const userDetailsWithSignUpDate = getAllUserData.map((userData: any) => {
-//       const signUpData = getAuthUserSignUpTime.find(
-//         (data: any) => data.userId === userData.userId
-//       );
-//       if (signUpData) {
-//         userData.signUpTime = signUpData.signUpTime;
-//       }
-//       return userData;
-//     });
-
-//     return {
-//       status: true,
-//       message: "Users fetched successfully",
-//       data: userDetailsWithSignUpDate,
-//     };
-//   } catch (error) {
-//     console.error("Error while fetching user data:", error);
-//     return {
-//       status: false,
-//       message: "Error while fetching user data",
-//       data: {},
-//     };
-//   }
-// }
-
-// async function getVoteList() {
-//   try {
-//     let voteDetails = (
-//       await admin
-//         .firestore()
-//         .collection("votes")
-//         .where("voteTime", ">=", Date.now() - 60 * 24 * 60 * 60 * 1000)
-//         .get()
-//     ).docs.map((vote: any) => {
-//       let voteData = vote.data();
-//       return {
-//         userId: voteData.userId,
-//         voteTime: voteData.voteTime,
-//       };
-//     });
-
-//     console.log("Votes fetched successfully", voteDetails);
-//     return voteDetails;
-//   } catch (error) {
-//     console.error("Error:", error);
-//     return null;
-//   }
-// }
-
-// async function getCombinedDetails() {
-//   try {
-//     // Fetch payment details
-//     const paymentDetails = await getPaymentDetailsForUser();
-
-//     console.log("paymentDetails", paymentDetails);
-
-//     // Fetch user details
-//     let userDetails = await getUsersDetails();
-
-//     let userData: any = userDetails.data;
-
-//     userData.forEach((element: any) => {
-//       let userId = element.userId;
-
-//       // Key and value to filter
-//       const keyToFilter = "userId";
-//       const valueToFilter = userId;
-
-//       // Filtering the array based on the key and value
-//       const filteredObj = paymentDetails.find(
-//         (obj: any) => obj[keyToFilter] === valueToFilter
-//       );
-//       //console.log(filteredObj);
-
-//       if (filteredObj !== undefined) {
-//         element.extraVotePurchased = filteredObj.extraVotePurchased;
-//       } else {
-//         element.extraVotePurchased = "no";
-//       }
-//     });
-
-//     return userDetails;
-//   } catch (error) {
-//     console.error("Error fetching combined details:", error);
-//     return false;
-//   }
-// }
-
-// async function getCoinParliamentAllUsersDeatils() {
-//   try {
-//     // Fetch payment details
-//     const voteList: any = await getVoteList();
-
-//     console.log("voteList", voteList);
-
-//     // Fetch user details
-//     let userList: any = await getCombinedDetails();
-
-//     //console.log("userList", userList)
-
-//     userList = userList.data;
-
-//     userList.map((user: any) => {
-//       let userVote = voteList.filter(
-//         (vote: any) => vote.userId === user.userId
-//       );
-//       console.log("UserVote : ", userVote);
-
-//       const voteTimes = userVote.map((doc: any) => new Date(doc.voteTime));
-//       console.log("voteTimes>>>>>>>", voteTimes);
-
-//       const uniqueDates = [
-//         ...new Set(voteTimes.map((date: Date) => date.toDateString())),
-//       ];
-//       let numberOfDaysVoted = uniqueDates.length;
-
-//       user["noOfVotesDays"] = numberOfDaysVoted;
-
-//       let averageVotes =
-//         numberOfDaysVoted !== 0 ? userVote.length / numberOfDaysVoted : 0;
-
-//       user["averageVotes"] = averageVotes;
-//     });
-
-//     return userList;
-//   } catch (error) {
-//     console.error("Error fetching combined details:", error);
-//     return false;
-//   }
-// }
-
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
-exports.pendingPaymentSettlement = functions.pubsub
-  .schedule("0 0 */1 * *")
-  .onRun(async () => {
-    console.log("pendingPaymentSettlement start");
-    const currentTimeStamp = Date.now();
-    await setPaymentSchedulingByCronJob(currentTimeStamp);
-  });
+// exports.pendingPaymentSettlement = functions.pubsub
+//   .schedule("0 0 */1 * *")
+//   .onRun(async () => {
+//     console.log("pendingPaymentSettlement start");
+//     const currentTimeStamp = Date.now();
+//     await setPaymentSchedulingByCronJob(currentTimeStamp);
+//   });
 
 exports.updateLeadersCron = functions.pubsub
   .schedule("0 0 * * *")
@@ -1878,18 +1688,18 @@ exports.updateLeadersCron = functions.pubsub
     }
   });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 10 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 10 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 15 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 15 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
 // cron for the changed event field from approved  to confirmed in payments collection(payment which are approved within 24hours)
 export const pendingPaymentSettlement = functions.pubsub
@@ -1960,38 +1770,6 @@ export const pendingPaymentSettlement = functions.pubsub
     }
   });
 
-// exports.storeCPUsersDetailsIntoDB = functions.pubsub
-//   .schedule("0 0 * * *")
-//   .onRun(async () => {
-//     console.log("storeCPUsersDetailsIntoDB Cron starting---------------------");
-//     try {
-//       console.log("Starting");
-//       const userList = await getCoinParliamentAllUsersDeatils();
-//       console.log("userList", userList);
-
-//       const usersRef = admin.firestore().collection("userStatistics");
-//       console.log("usersRef: created");
-
-//       for (const user of userList) {
-//         try {
-//           await usersRef.doc(user.userId).set(user);
-//           console.log(`User data stored successfully for user ${user.userId}`);
-//         } catch (error) {
-//           console.error(
-//             `Error storing user data for user ${user.userId}:`,
-//             error
-//           );
-//         }
-//       }
-
-//       console.log("User data stored successfully in users collection.");
-//       return true;
-//     } catch (error) {
-//       console.error("Error storing user data in users collection:", error);
-//       return false;
-//     }
-//   });
-
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
   .schedule("0 0 * * *")
@@ -2046,35 +1824,35 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 //----------End Notifications scheduler-------------
 
 //----------Start CPVI scheduler-------------
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
+// exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+//   .schedule("*/3 * * * *")
+//   .onRun(async () => {
+//     await Promise.all([await fetchAskBidCoin()]);
+//   });
 
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
+// exports.prepareHourlyCPVI = functions.pubsub
+//   .schedule("0 * * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(1, "hourly");
+//   });
 
-exports.prepare4HourlyCPVI = functions.pubsub
-  .schedule("0 */4 * * *")
-  .onRun(async () => {
-    await prepareCPVI(4, "fourHourly");
-  });
+// exports.prepare4HourlyCPVI = functions.pubsub
+//   .schedule("0 */4 * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(4, "fourHourly");
+//   });
 
-exports.prepare24HourlyCPVI = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    await prepareCPVI(24, "daily");
-  });
+// exports.prepare24HourlyCPVI = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(24, "daily");
+//   });
 
-exports.prepareWeeklyCPVI = functions.pubsub
-  .schedule("0 0 * * 0")
-  .onRun(async () => {
-    await prepareCPVI(24 * 7, "weekly");
-  });
+// exports.prepareWeeklyCPVI = functions.pubsub
+//   .schedule("0 0 * * 0")
+//   .onRun(async () => {
+//     await prepareCPVI(24 * 7, "weekly");
+//   });
 //----------END CPVI scheduler-------------
 
 /**

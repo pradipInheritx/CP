@@ -37,12 +37,11 @@ export enum PaxTransactionType {
 }
 
 export const addPaxTransactionWithPendingStatus = async (paxTransactionData: any) => {
-  console.log("Time stamp : ",firestore.Timestamp.now())
   const getParentPendingPaymentReference = await firestore().collection("paxTransaction").add(
     {
       ...paxTransactionData,
       isVirtual: true,
-      timestamp: firestore.Timestamp.now(),
+      timestamp: firestore.FieldValue.serverTimestamp(),
       status: "PENDING"
     });
   if (getParentPendingPaymentReference) {
@@ -91,7 +90,7 @@ export const addCpmTransaction: (
     type: CpmTransactionType.REWARD,
     blocks: Math.floor(amount / 100),
     totalBlocksGivenUntilNow: paxData.data()?.blocksGiven || 0,
-    transactionTime: firestore.Timestamp.now(),
+    transactionTime: firestore.FieldValue.serverTimestamp(),
     user,
   };
   await firestore().collection("cpm_transactions").doc().set(obj);

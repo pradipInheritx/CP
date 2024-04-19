@@ -368,7 +368,7 @@ class Calculation {
       const { pctReferralActivity } = CPMSettings;
       const commission = Number(score * pctReferralActivity) / 100;
       const refereeScrore: Number = parseFloat(
-        ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(4)
+        ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(6)
       );
       console.log("child data : ", voteStatistics)
 

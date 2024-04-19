@@ -1,7 +1,7 @@
 import { firestore } from "firebase-admin";
 
 import * as parentConst from "../../consts/payment.const.json";
-import { Timestamp } from 'firebase-admin/firestore';
+//import { Timestamp } from 'firebase-admin/firestore';
 import { errorLogging } from "../../helpers/commonFunction.helper";
 
 export const getAdminPayment = async (req: any, res: any) => {
@@ -231,7 +231,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
           transactionType: transactionType,
           type: null,
           address: paymentToken,
-          timestamp: Timestamp.now(),
+          timestamp: firestore.Timestamp.now(),
           walletType: null,
           paymentDetails: null
         });
@@ -262,7 +262,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
               makeAllInitiatedTransaction.push({
                 event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
                 ...getPaymentDetails,
-                timestamp: Timestamp.now(),
+                timestamp: firestore.Timestamp.now(),
               });
               console.info("makeAllInitiatedTransaction--->IF", makeAllInitiatedTransaction)
               await docRef.update({ status: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED, address: getAddressFromUser, parentPendingPaymentId: getParentClaimedWholePayment.id });
@@ -271,7 +271,7 @@ export const collectPendingParentPayment = async (req: any, res: any) => {
               makeAllInitiatedTransaction.push({
                 event: parentConst.PARENT_REFFERAL_PAYMENT_EVENT_STATUS_CLAIMED,
                 ...getPaymentDetails,
-                timestamp: Timestamp.now(),
+                timestamp: firestore.Timestamp.now(),
               });
               console.info("makeAllInitiatedTransaction--->ELSE", makeAllInitiatedTransaction)
 
