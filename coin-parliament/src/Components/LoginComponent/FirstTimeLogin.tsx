@@ -86,7 +86,7 @@ const[userNameErr,setUserNameErr]=useState(false);
   useEffect(() => {
     setDisplayValue(userInfo?.displayName || '');
     setUsername(userInfo?.isVoteName || '');
-  }, [JSON.stringify(userInfo?.displayName)]);
+  }, [userInfo]);
 
 
   const triggerSaveUsername = async () => {
