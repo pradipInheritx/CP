@@ -831,8 +831,7 @@ const VotingPaymentCopy: React.FC<{
           const transaction = {
             chainId: coinInfo?.chainId,
             to: toAddress,
-            // value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
-            value: ethers.utils.parseUnits("0.0001"), // Sending 0.0001 MATIC
+            value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
           };
           console.log("transaction Data : ", transaction, amountInCrypto)
           const txResponse = await wallet.sendTransaction(transaction);
