@@ -31,7 +31,7 @@ import {
   userConverter,
   // sendEmailVerificationLink,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 import {
   getLeaderUsers,
@@ -137,7 +137,7 @@ import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com"
 });
 
 // initialize express server
@@ -2591,6 +2591,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
           }
           user.averageVotes = Math.round(user.averageVotes);
           user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+          user.Country = user.Country?.trim() || "";
           return user;
         });
 
