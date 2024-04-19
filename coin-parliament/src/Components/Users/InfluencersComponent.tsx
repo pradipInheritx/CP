@@ -58,7 +58,7 @@ const InfluencersComponent = ({
         />
       </div>
       <div className="text-center mb-2">
-      <p>TOP 10 {chosen}</p>
+      <p>TOP 25 {chosen}</p>
       </div>
       <Leaderboard
         {...{
