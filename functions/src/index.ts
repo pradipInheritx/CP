@@ -2663,6 +2663,8 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
 function paginateArray(result: any, page: number, limit: number) {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
+  console.log("start index: ", startIndex);
+  console.log("end index: ", endIndex);
   const paginatedResult = result.slice(startIndex, endIndex);
   return paginatedResult;
 }
