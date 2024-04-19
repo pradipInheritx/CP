@@ -32,6 +32,7 @@ const headCells = [
     label: "Last login Day"
   },
   { id: "email", numeric: false, disablePadding: false, label: "Email" },
+  { id: "Country", numeric: false, disablePadding: false, label: "Country" },
   {
     id: "GameTitle",
     numeric: false,
