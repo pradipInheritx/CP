@@ -4,6 +4,7 @@ import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
+import { Timestamp } from 'firebase-admin/firestore';
 
 
 // import axios from "axios";
@@ -11,68 +12,98 @@ import { getCardDetails } from "./Admin/Rewards";
 import { sendCPMToFoundationOfUser } from "./Admin/Foundation";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-const distribution: { [key: number]: { [key: string]: number[] } } = {
-  0: {
+const distribution: { [key: string]: { [key: string]: number[] } } = {
+  "MEMBER": {
     cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    extraVotePickFromRange: [1, 5],
+    diamondsPickFromRange: [1, 3],
   },
-  100: {
+  "SPEAKER": {
     cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    extraVotePickFromRange: [1, 5],
+    diamondsPickFromRange: [1, 3],
   },
-  200: {
-    cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+  "COUNCIL": {
+    cardTierPickingChanceInPercent: [85, 8, 4, 2, 1],
+    extraVotePickFromRange: [1, 7],
+    diamondsPickFromRange: [1, 5],
   },
-  300: {
+  "AMBASSADOR": {
     cardTierPickingChanceInPercent: [80, 10, 5, 3, 2],
     extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+    diamondsPickFromRange: [1, 7],
   },
-  400: {
-    cardTierPickingChanceInPercent: [75, 10, 5, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
+  "MINISTER": {
+    cardTierPickingChanceInPercent: [75, 12, 6, 4, 3],
+    extraVotePickFromRange: [1, 15],
+    diamondsPickFromRange: [1, 10],
   },
-  500: {
-    cardTierPickingChanceInPercent: [70, 15, 5, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  600: {
-    cardTierPickingChanceInPercent: [65, 15, 10, 5, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  700: {
-    cardTierPickingChanceInPercent: [50, 20, 15, 10, 5],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  800: {
-    cardTierPickingChanceInPercent: [40, 20, 20, 10, 10],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  900: {
-    cardTierPickingChanceInPercent: [30, 15, 15, 20, 20],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
-  1000: {
-    cardTierPickingChanceInPercent: [20, 15, 15, 25, 25],
-    extraVotePickFromRange: [1, 10],
-    diamondsPickFromRange: [10, 100],
-  },
+  "CHAIRMAN": {
+    cardTierPickingChanceInPercent: [70, 14, 7, 5, 4],
+    extraVotePickFromRange: [1, 15],
+    diamondsPickFromRange: [1, 10],
+  }
+  // 0: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 100: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 200: {
+  //   cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 300: {
+  //   cardTierPickingChanceInPercent: [80, 10, 5, 3, 2],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 400: {
+  //   cardTierPickingChanceInPercent: [75, 10, 5, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 500: {
+  //   cardTierPickingChanceInPercent: [70, 15, 5, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 600: {
+  //   cardTierPickingChanceInPercent: [65, 15, 10, 5, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 700: {
+  //   cardTierPickingChanceInPercent: [50, 20, 15, 10, 5],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 800: {
+  //   cardTierPickingChanceInPercent: [40, 20, 20, 10, 10],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 900: {
+  //   cardTierPickingChanceInPercent: [30, 15, 15, 20, 20],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
+  // 1000: {
+  //   cardTierPickingChanceInPercent: [20, 15, 15, 25, 25],
+  //   extraVotePickFromRange: [1, 10],
+  //   diamondsPickFromRange: [10, 100],
+  // },
 };
 
-function createArrayByPercentageForPickingTier(cmp: number) {
+function createArrayByPercentageForPickingTier(userType: string) {
   const array = [];
   const pickedPercentageArray =
-    distribution[cmp].cardTierPickingChanceInPercent;
+    distribution[userType].cardTierPickingChanceInPercent;
 
   let tier = 0;
   for (let i = 0; i < pickedPercentageArray[i]; i++) {
@@ -191,7 +222,7 @@ export const addRewardTransaction: (
       user,
       winningTime,
       winData,
-      transactionTime: firestore.FieldValue.serverTimestamp(),
+      transactionTime: Timestamp.now()
     };
     console.log("addRewardTransaction.......", obj);
     await firestore().collection("reward_transactions").add(obj);
@@ -277,6 +308,8 @@ export const claimReward: (uid: string, isVirtual: boolean
     try {
       console.log("Beginning execution claimReward function");
 
+      let maxTryInWhile = 0;
+
       const userRef = firestore()
         .collection("users")
         .doc(uid)
@@ -284,7 +317,7 @@ export const claimReward: (uid: string, isVirtual: boolean
 
       const userProps = await userRef.get();
       const userData: any = userProps.data();
-
+      const userType = userData.status.name ? userData.status.name.toUpperCase() : "MEMBER"; // Added For Get The UserType For Pick The Rewards
       const { total, claimed } = userData?.rewardStatistics || {
         total: 0,
         claimed: 0,
@@ -295,15 +328,30 @@ export const claimReward: (uid: string, isVirtual: boolean
       }
       // add reward_transaction here
       if (isVirtual === false && total - claimed > 0) {
-        const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
-        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic);
+        let getVirtualRewardStatistic: any;
 
+        while (!getVirtualRewardStatistic) {
+          maxTryInWhile = maxTryInWhile + 1;
+          getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
+        }
 
+        if (!getVirtualRewardStatistic) {
+          console.log("Somehow reward is not added in the virtual rewards collection.", maxTryInWhile)
+          return {
+            firstRewardCard: "",
+            secondRewardExtraVotes: 0,
+            thirdRewardDiamonds: 0
+          };
+        }
+
+        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic, "maxTryInWhile Check", maxTryInWhile);
         //Current User Extra Vote + winning extra vote and then set in the user reward
-        console.info("userData", userData);
-        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
+        //console.info("userData", userData);
+        console.log("distribution[userType]--->", distribution[userType])
+        console.log("userType--->", userType)
+        // const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100; // Not Required
         const getRewardExtraVotes = getRandomNumber(
-          distribution[cmp].extraVotePickFromRange
+          distribution[userType].extraVotePickFromRange
         );
         console.info("getRewardExtraVotes", getRewardExtraVotes);
         getVirtualRewardStatistic.rewardObj.extraVote = userData.rewardStatistics.extraVote + getVirtualRewardStatistic.winData.secondRewardExtraVotes;
@@ -318,12 +366,11 @@ export const claimReward: (uid: string, isVirtual: boolean
         return result.winData;
       }
 
-
-
       if (total - claimed > 0) {
         // ----- Start preparing reward data -----
-        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
-        const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
+        // const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100; // Not Required Now Using UserType
+
+        const tierPickupArray = createArrayByPercentageForPickingTier(userType);
         const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
         console.log("pickedTierArray : ", tierPickupArray);
 
@@ -335,10 +382,10 @@ export const claimReward: (uid: string, isVirtual: boolean
         console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId);
 
         const secondRewardExtraVotes = getRandomNumber(
-          distribution[cmp].extraVotePickFromRange
+          distribution[userType].extraVotePickFromRange
         );
         const thirdRewardDiamonds = getRandomNumber(
-          distribution[cmp].diamondsPickFromRange
+          distribution[userType].diamondsPickFromRange
         );
 
         // get the transaction details
