@@ -11,6 +11,8 @@ import { JWT } from "google-auth-library";
 import * as jwt from "jsonwebtoken"; // For JSON Web Token
 
 import multer from "multer";
+import moment from 'moment';
+import * as excel from 'exceljs';
 
 //import { firestore } from "firebase-admin";
 
@@ -22,7 +24,6 @@ import {
 } from "./common/interfaces/User.interface";
 import { VoteResultProps } from "./common/interfaces/Vote.interface";
 import { Leader } from "./common/interfaces/Coin.interface";
-
 // function import
 import "./common/models/scheduleFunction";
 import {
@@ -124,11 +125,13 @@ import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEma
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
+import { clearAllGarbageCallbackHistory } from "./common/models/Payments";
+
 // Routers files
 import Routers from "./routes/index";
 import { errorLogging } from "./common/helpers/commonFunction.helper";
 import { checkAndUpdateRewardTotal } from "./common/models/CmpCalculation";
-import { checkTransactionStatus } from "./common/models/Payments";
+import { checkTransactionStatus, updateAllPendingTransactionByUsingOrderAPI } from "./common/models/Payments";
 import { adminSignupTemplate } from "./common/emailTemplates/adminSignupTemplate";
 import { sendBulkEmail } from "./common/services/bulkEmailService";
 
@@ -297,7 +300,6 @@ app.get("/calculateCoinCPVI", async (req, res) => {
 app.get("/calculatePairCPVI", async (req, res) => {
   await cpviTaskPair((result) => res.status(200).json(result));
 });
-//app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -584,7 +586,7 @@ async function createUserStatistics(userData: any, userId: any) {
       extraVotePurchased: false,
       noOfVotesDays: 0,
       lastVoteDay: "",
-      source: userData.parent ? "Referral" : "Self",
+      source: userData?.parent ? "Referral" : "Self",
       GameTitle: userData?.status?.name || "",
       TotalCPM: userData?.voteStatistics?.score || "",
       TotalAmbassadorRewards: 0
@@ -974,7 +976,6 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
-
     // console.info("after", after)
     // const beforeTotal: number = before.rewardStatistics?.total || 0;
     // const afterTotal: number = after.rewardStatistics?.total || 0;
@@ -992,7 +993,7 @@ exports.onUpdateUser = functions.firestore
 
       // Update name and country fields in userStatistics collection
       const updateData = {
-        name: updatedUsername,
+        userName: updatedUsername,
         Country: updatedCountry // Assuming the field name in userStatistics is also 'country'
       };
 
@@ -1862,6 +1863,11 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 exports.sendEmailOnTimeForAcknowledge = functions.pubsub
   .schedule("every 60 minutes")
   .onRun(async () => {
+
+    await clearAllGarbageCallbackHistory();
+
+    await updateAllPendingTransactionByUsingOrderAPI();
+
     await sendEmailForVoiceMatterInLast24Hours();
 
     await sendEmailForUserUpgradeInLast48Hours();
@@ -2029,7 +2035,7 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
   const { user } = data;
 
   try {
-    let commission = 0;
+
 
     const getChildAllUsers = await admin
       .firestore()
@@ -2037,9 +2043,8 @@ exports.correctCommission = functions.https.onCall(async (data: any) => {
       .where("uid", "in", user.children)
       .get();
 
-    await getChildAllUsers.docs.map((user: any) => {
-      commission += user.refereeScrore;
-    });
+    const allChildren = await getChildAllUsers.docs.map((user: any) => user.data());
+    const commission = await allChildren.reduce((total: any, user: any) => total + Number(user.refereeScrore))
 
     console.log("commission : ", commission);
     await admin
@@ -2161,5 +2166,499 @@ exports.isFirstTimeLoginSetTimestamp = functions.https.onCall(async (data) => {
       message: "User Not Created ",
       data: null,
     };
+  }
+});
+
+
+// exports.getAllUserStatisticsData = functions.https.onCall(async (data) => {
+//   try {
+
+//     let {
+//       page = 1,
+//       limit = 10,
+//       orderBy,
+//       sort = "asc",
+//       search = "",
+//       startDate = "",
+//       endDate = "",
+//       filterFields = ""
+//     } = data;
+
+//     limit = parseInt(limit);
+//     if (!orderBy) orderBy = "userName";
+//     let orderByConsolidate = orderBy;
+//     console.log("---orderByConsolidate: ", orderByConsolidate)
+//     let result: any;
+
+//     if (search) {
+//       console.log("----Cond 1----")
+
+//       // const final = await admin.firestore()
+//       //   .collection("userStatistics")
+//       //   .limit(10)
+//       //   .get();
+//       // console.log("final: ",final.docs)
+
+//       result = await admin.firestore()
+//         .collection("userStatistics")
+//         .where("userName", ">=", search)
+//         .where("userName", "<=", search + "\uf8ff")
+//         .get();
+
+//       result = result.docs.map((doc: any) => {
+//         const userData = doc.data();
+//         console.log("userData", userData);
+//         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+//           const signUpDate = new Date(userData.signUpTime);
+//           const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+//           userData.signUpTime = signUpDateFormatted;
+//         } else {
+//           userData.signUpTime = "";
+//         }
+//         return userData;
+//       });
+//     } else if (startDate && endDate && filterFields) {
+
+//       console.log("----Cond 2----")
+//       const startDateTime = new Date(startDate).getTime() / 1000;
+//       const endDateTime = new Date(endDate).getTime() / 1000;
+
+//       // const parsedFilterFields = filterFields.split(",");
+
+//       result = (
+//         await admin
+//           .firestore()
+//           .collection("userStatistics")
+//           .get()
+//       ).docs.map((user) => user.data());
+
+//       let filteredData = result.filter((doc: any) => {
+//         const fieldValue = doc[filterFields];
+//         console.log("fieldValue---->", fieldValue)
+//         let finalCondition = null
+//         if (filterFields == "signUpTime") {
+//           const signUpTime = new Date(fieldValue).getTime() / 1000;
+//           finalCondition = signUpTime >= startDateTime && signUpTime <= endDateTime;
+//         } else if (filterFields == "lastLoginDay") {
+//           const lastLoginDay = new Date(fieldValue).getTime() / 1000;
+//           finalCondition = lastLoginDay >= startDateTime && lastLoginDay <= endDateTime;
+//         } else if (filterFields == "lastVoteDay") {
+//           const lastVoteDay = new Date(fieldValue).getTime() / 1000;
+//           finalCondition = lastVoteDay >= startDateTime && lastVoteDay <= endDateTime;
+//         }
+//         console.log("finalCondition---->", finalCondition)
+
+//         return finalCondition;
+//       }
+//       );
+
+//       filteredData = filteredData.map((userData: any) => {
+//         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+//           const signUpDate = new Date(userData.signUpTime);
+//           const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+//           userData.signUpTime = signUpDateFormatted;
+//         } else {
+//           userData.signUpTime = "";
+//         }
+//         return userData;
+//       })
+
+//       result = filteredData;
+//     } else {
+//       console.log("----Cond 3----")
+//       result = await admin.firestore()
+//         .collection("userStatistics")
+//         .orderBy(orderByConsolidate, sort)
+//         .get();
+//       // console.log("====>",result.docs);
+//       result = result.docs.map((doc: any) => {
+//         const userData = doc.data();
+//         console.log("userData", userData);
+//         if (userData.signUpTime && userData.signUpTime.trim() !== "") {
+//           const signUpDate = new Date(userData.signUpTime);
+//           const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+//           userData.signUpTime = signUpDateFormatted;
+//         } else {
+//           userData.signUpTime = "";
+//         }
+//         return userData;
+//       });
+//     }
+//     console.log("result length>>>>>>>>>>>>>", result.length)
+
+//     // Sorting by signUpTime as Date object
+//     if (orderBy === "signUpTime") {
+//       result.sort((a: any, b: any) => {
+//         // Handle cases where signUpTime might be an empty string
+//         if (!a.signUpTime) return -1;
+//         if (!b.signUpTime) return 1;
+
+//         if (sort === "asc") {
+//           return a.signUpTime.localeCompare(b.signUpTime);
+//         } else {
+//           return b.signUpTime.localeCompare(a.signUpTime);
+//         }
+//       });
+//     }
+//     console.log("result length: ", result.length);
+//     return {
+//       status: true,
+//       message: "users fetched successfully",
+//       result: { data: paginateArray(result, page, limit), totalCount: result.length },
+//     };
+
+//   } catch (error) {
+//     console.error("User Statistics List", error);
+//     return {
+//       status: false,
+//       message: "Internal Server error",
+//       data: null,
+//     };
+//   }
+// });
+
+exports.getAllUserStatistics = functions.https.onCall(async (data) => {
+  try {
+    let {
+      page,
+      limit,
+      orderBy,
+      sort,
+      search,
+      startDate,
+      endDate,
+      filterFields
+    } = data;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+    if (!orderBy) orderBy = "userName";
+    if (!sort) sort = 'asc';
+    limit = parseInt(limit);
+    console.log("page ---> ", page);
+    console.log("limit ---> ", limit);
+    console.log("orderBy ---> ", orderBy);
+    console.log("sort ---> ", sort);
+
+    let query: any = admin.firestore().collection("userStatistics");
+
+    // Search through the given field
+    if (search) {
+      query = query
+        .where("userName", ">=", search)
+        .where("userName", "<=", search + "\uf8ff")
+    }
+
+    const snapshot = await query.get();
+    let result: any = [];
+    snapshot.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+
+    // Filter the data through the filterFields to be between start and end date
+    if (startDate && endDate && filterFields && ['signUpTime', 'lastLoginDay', 'lastVoteDay'].includes(filterFields)) {
+
+      startDate = new Date(startDate).getTime() / 1000;
+      endDate = new Date(endDate).getTime() / 1000;
+
+      console.log("startDate--->", startDate);
+      console.log("endDate--->", endDate);
+
+      result = result.filter(function (item: any) {
+        let fieldDate = moment(item[filterFields]).toDate().getTime() / 1000;
+        return startDate <= fieldDate && endDate >= fieldDate;
+      });
+
+    }
+
+    result = result.map((user: any) => {
+      if (user.signUpTime && user.signUpTime.trim() !== "") {
+        const signUpDate = new Date(user.signUpTime);
+        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+        user.signUpTime = signUpDateFormatted;
+      } else {
+        user.signUpTime = "";
+      }
+      user.averageVotes = Math.round(user.averageVotes);
+      user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+      return user;
+    });
+
+    // Nan values handled
+    result.forEach((obj: any) => {
+      Object.keys(obj).forEach(key => {
+        // Check if the field value is a number and NaN
+        if (typeof obj[key] === 'number' && isNaN(obj[key])) {
+          obj[key] = 0;
+        }
+      });
+    });
+
+    console.log("orderby--->", orderBy);
+    // Sort result asc/desc acc to orderBy field
+    result.sort(function (a: any, b: any) {
+      if (orderBy !== 'noOfVotesDays' && (orderBy.includes('Day') || orderBy.includes('Time'))) {
+        const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
+        const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
+        return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+      } else {
+        // Handle sorting for string field values
+        if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+          const valueA = a[orderBy] || ''; // Default value if undefined
+          const valueB = b[orderBy] || ''; // Default value if undefined
+          // console.log("valueA--->", valueA);
+          // console.log("valueB--->", valueB);
+          return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
+
+          // Handle sorting for numeric field values
+        } else {
+          const valueA = typeof a[orderBy] === 'number' ? a[orderBy] : (a[orderBy] || Number.NEGATIVE_INFINITY);
+          const valueB = typeof b[orderBy] === 'number' ? b[orderBy] : (b[orderBy] || Number.NEGATIVE_INFINITY);
+          return sort.toLowerCase() === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+
+      }
+    });
+
+    console.log("result length: ", result.length);
+    return {
+      status: true,
+      message: "users fetched successfully",
+      data: paginateArray(result, page, limit),
+      totalCount: result.length
+    };
+
+  } catch (error) {
+    console.error("User Statistics List", error);
+    return {
+      status: false,
+      message: "Internal Server error",
+      data: null,
+    };
+  }
+});
+
+function paginateArray(result: any, page: number, limit: number) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedResult = result.slice(startIndex, endIndex);
+  return paginatedResult;
+}
+
+// Export User Statistics data
+// exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) => {
+//   try {
+//     // Query Firestore data
+//     const snapshot = await admin.firestore().collection('userStatistics').get();
+//     let data = snapshot.docs.map(doc => doc.data());
+
+//     // Format some data
+//     data = data.map((user: any) => {
+//       if (user.signUpTime && user.signUpTime.trim() !== "") {
+//         const signUpDate = new Date(user.signUpTime);
+//         const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+//         user.signUpTime = signUpDateFormatted;
+//       } else {
+//         user.signUpTime = "";
+//       }
+//       user.averageVotes = Math.round(user.averageVotes);
+//       user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+//       return user;
+//     });
+
+//     const headerMappings = [
+//       { customHeader: 'User Name', dbKey: 'userName' },
+//       { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
+//       { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
+//       { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
+//       { customHeader: 'Email', dbKey: 'email' },
+//       { customHeader: 'Game Title', dbKey: 'GameTitle' },
+//       { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
+//       { customHeader: 'Total Votes', dbKey: 'totalVotes' },
+//       { customHeader: 'Average Votes', dbKey: 'averageVotes' },
+//       { customHeader: 'No of Vote Days', dbKey: 'noOfVotesDays' },
+//       { customHeader: 'Extra Vote Purchased', dbKey: 'extraVotePurchased' },
+//       { customHeader: 'Source', dbKey: 'source' },
+//       { customHeader: 'Total Ambassador Rewards', dbKey: 'TotalAmbassadorRewards' },
+//       { customHeader: 'User ID', dbKey: 'userId' }
+//     ];
+
+//     // Create a new Excel workbook
+//     const workbook = new excel.Workbook();
+//     const worksheet = workbook.addWorksheet('User Statistics Data');
+
+//     // Add headers to the worksheet
+//     const headers = headerMappings.map(mapping => mapping.customHeader);
+//     worksheet.addRow(headers);
+
+//     // Add data to the worksheet
+//     data.forEach(userData => {
+//       const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
+//       worksheet.addRow(rowValues);
+//     });
+
+//     // Apply styles to the headers
+//     const headerRow = worksheet.getRow(1);
+//     headerRow.eachCell((cell, colNumber) => {
+//       cell.fill = {
+//         type: 'pattern',
+//         pattern: 'solid',
+//         fgColor: { argb: 'FFFF00' } // Yellow color
+//       };
+//       cell.border = {
+//         top: { style: 'thin' },
+//         left: { style: 'thin' },
+//         bottom: { style: 'thin' },
+//         right: { style: 'thin' }
+//       };
+//       cell.font = { bold: true }; // Make text bold
+//       cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
+//     });
+
+//     // Apply styles to the data cells
+//     worksheet.eachRow((row, rowNum) => {
+//       if (rowNum > 1) { // Skip header row
+//         row.eachCell((cell, colNumber) => {
+//           cell.border = {
+//             top: { style: 'thin' },
+//             left: { style: 'thin' },
+//             bottom: { style: 'thin' },
+//             right: { style: 'thin' }
+//           };
+//         });
+//       }
+//     });
+
+//     // Set content disposition and type
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+//     // Set CORS headers
+//     res.set('Access-Control-Allow-Origin', '*');
+//     res.set('Access-Control-Allow-Methods', 'GET, POST');
+//     res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+//     // Write workbook to response
+//     await workbook.xlsx.write(res);
+
+//     // End response
+//     res.end();
+//   } catch (error) {
+//     console.error('Error exporting data:', error);
+//     res.status(500).send('Error exporting User Statistics data');
+//   }
+// });
+
+exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) => {
+  try {
+    const batchSize = 100; // Set your desired batch size
+    const headerMappings = [
+      { customHeader: 'User Name', dbKey: 'userName' },
+      { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
+      { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
+      { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
+      { customHeader: 'Email', dbKey: 'email' },
+      { customHeader: 'Country', dbKey: 'Country' },
+      { customHeader: 'Game Title', dbKey: 'GameTitle' },
+      { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
+      { customHeader: 'Total Votes', dbKey: 'totalVotes' },
+      { customHeader: 'Average Votes', dbKey: 'averageVotes' },
+      { customHeader: 'No of Vote Days', dbKey: 'noOfVotesDays' },
+      { customHeader: 'Extra Vote Purchased', dbKey: 'extraVotePurchased' },
+      { customHeader: 'Source', dbKey: 'source' },
+      { customHeader: 'Total Ambassador Rewards', dbKey: 'TotalAmbassadorRewards' },
+      { customHeader: 'User ID', dbKey: 'userId' }
+    ];
+
+    // Function to fetch data in batches
+    const fetchDataInBatches = async () => {
+      let lastDoc = null;
+      const allData = [];
+
+      let keepFetching = true;
+      while (keepFetching) {
+        let query = admin.firestore().collection("userStatistics").limit(batchSize);
+        if (lastDoc) query = query.startAfter(lastDoc);
+        const snapshot = await query.get();
+        
+        const batchData = snapshot.docs.map((doc) => {
+          const user = doc.data();
+          if (user.signUpTime && user.signUpTime.trim() !== "") {
+            const signUpDate = new Date(user.signUpTime);
+            const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
+            user.signUpTime = signUpDateFormatted;
+          } else {
+            user.signUpTime = "";
+          }
+          user.averageVotes = Math.round(user.averageVotes);
+          user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+          return user;
+        });
+
+        allData.push(...batchData);
+        lastDoc = snapshot.docs[snapshot.size - 1];
+        if (!snapshot.empty) {
+          if (snapshot.size < batchSize) {
+            keepFetching = false; // Stop fetching if there's no more data
+          }
+        } else {
+          keepFetching = false; // Stop fetching if the snapshot is empty
+        }
+      }
+      return allData;
+    };
+
+    // Stream data directly to response
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
+    // Set CORS headers
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+    const workbook = new excel.stream.xlsx.WorkbookWriter({ stream: res });
+
+    const worksheet = workbook.addWorksheet('User Statistics Data');
+    worksheet.addRow(headerMappings.map(mapping => mapping.customHeader));
+
+    // // Apply styles to the header row
+    // headerRow.eachCell((cell, colNumber) => {
+    //   cell.fill = {
+    //     type: 'pattern',
+    //     pattern: 'solid',
+    //     fgColor: { argb: 'FFFF00' } // Yellow color
+    //   };
+    //   cell.border = {
+    //     top: { style: 'thin' },
+    //     left: { style: 'thin' },
+    //     bottom: { style: 'thin' },
+    //     right: { style: 'thin' }
+    //   };
+    //   cell.font = { bold: true }; // Make text bold
+    //   cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
+    // });
+
+    const dataStream = await fetchDataInBatches();
+
+    for (const userData of dataStream) {
+      const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
+      worksheet.addRow(rowValues);
+
+      // Apply styles to data row
+      // row.eachCell((cell, colNumber) => {
+      //   cell.border = {
+      //     top: { style: 'thin' },
+      //     left: { style: 'thin' },
+      //     bottom: { style: 'thin' },
+      //     right: { style: 'thin' }
+      //   };
+      // });
+    }
+
+    await workbook.commit();
+
+    console.log('Data export successful');
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    res.status(500).send('Error exporting User Statistics data');
   }
 });

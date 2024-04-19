@@ -231,7 +231,7 @@ export async function generateAuthTokens(req: any, res: any) {
 
 export async function adminForgotPassword(req: any, res: any) {
   const { email } = req.body;
-
+  console.log("Admin Email--->", email);
   try {
     const query = await admin
       .firestore()
@@ -269,10 +269,11 @@ export async function adminForgotPassword(req: any, res: any) {
     await admin.firestore().collection("admin").doc(adminUserId).set(userData);
 
     const url =
-      "https://coinparliamentstaging.firebaseapp.com/" +
+      env.ADMIN_BASE_SITE_URL +
       "/reset-password?token=" +
       reset_password_token;
 
+    console.log("Forgot Password URL: ", url);
     await sendEmail(
       email,
       "Forgot Password",

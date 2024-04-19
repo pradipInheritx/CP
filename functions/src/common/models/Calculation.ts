@@ -574,225 +574,245 @@ function influencersScoreCalculation(totalSuccessVotes: number, totalVotes: numb
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
-    // get already existing Leader 
-    let getLeadersResponse: any = await getLeaders();
-    // get userTypes
-    const getStatusQuery: any = (await firestore().collection('settings').doc('userTypes').get()).data();
-    const getStatusList = getStatusQuery.userTypes;
-    console.log("getStatusList :  ", getStatusList);
-    let leaders = getLeadersResponse
-      .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
-      .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
-    leaders.sort((user_1: any, user_2: any) => user_1.total - user_2.total); // sort the users based on total 
-    console.log("Length With Leaders", leaders);
-    console.log("leader length : ", leaders.length);
-    const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
-    let leaderStatus: Leader[] = [];
-    console.info("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker, "getTotalNumberOfCouncil", getTotalNumberOfCouncil, "getTotalNumberOfAmbassador", getTotalNumberOfAmbassador, "getTotalNumberOfMinister", getTotalNumberOfMinister, "getTotalNumberOfChairman", getTotalNumberOfChairman)
+    try {
+      // get already existing Leader 
+      let getLeadersResponse: any = await getLeaders();
+      // get userTypes
+      const getStatusQuery: any = (await firestore().collection('settings').doc('userTypes').get()).data();
+      const getStatusList = getStatusQuery.userTypes;
+      console.log("getStatusList :  ", getStatusList);
+      let leaders = getLeadersResponse
+        .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
+        .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
+      leaders.sort((user_1: any, user_2: any) => user_1.total - user_2.total); // sort the users based on total 
+      // console.log("Length With Leaders", leaders);
+      console.log("leader length : ", leaders.length);
+      const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
+      let leaderStatus: Leader[] = [];
+      console.info("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker, "getTotalNumberOfCouncil", getTotalNumberOfCouncil, "getTotalNumberOfAmbassador", getTotalNumberOfAmbassador, "getTotalNumberOfMinister", getTotalNumberOfMinister, "getTotalNumberOfChairman", getTotalNumberOfChairman)
 
-    let leaderStatusForSpeaker: Leader[] = [];
-    console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
-    if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
-      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'speaker');
-      console.log("Status: " + status);
-      for (let leader = 0; leader < leaders.length; leader++) {
-        const eachUser: any = leaders[leader];
-        console.info("eachUser.total", eachUser.total)
-        if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
-          console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
-          if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
-            console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
-            eachUser.status = "Speaker";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForSpeaker.push(eachUser);
-          } else {
-            console.log("Come Here Total Else ", typeof eachUser.total, "Value", eachUser.total);
-            let tempArrayAfterSliced = leaderStatusForSpeaker.slice(1);
-            eachUser.status = "Speaker";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForSpeaker = [...tempArrayAfterSliced]
-            leaderStatusForSpeaker.push(eachUser);
+      let leaderStatusForSpeaker: Leader[] = [];
+      console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
+      if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
+        let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'speaker');
+        console.log("Status: " + status);
+        for (let leader = 0; leader < leaders.length; leader++) {
+          const eachUser: any = leaders[leader];
+          console.info("eachUser.total", eachUser.total)
+          if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+            console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
+            if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+              console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
+              eachUser.status = "Speaker";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForSpeaker.push(eachUser);
+            } else {
+              console.log("Come Here Total Else ", typeof eachUser.total, "Value", eachUser.total);
+              let tempArrayAfterSliced = leaderStatusForSpeaker.slice(1);
+              eachUser.status = "Speaker";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForSpeaker = [...tempArrayAfterSliced]
+              leaderStatusForSpeaker.push(eachUser);
+            }
+            await firestore()
+              .collection("users")
+              .doc(eachUser.userId)
+              .set({ "status": status[0] }, { merge: true });
+
+            // Call updateGametitleOfUser function
+            // await updateGametitleOfUser(eachUser.userId);
           }
-          await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .set({ "status": status[0] }, { merge: true });
-
-          // Call updateGametitleOfUser function
-          await updateGametitleOfUser(eachUser.userId);
         }
+
+        //console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
+        leaders.splice(0, getTotalNumberOfSpeaker);
+        // console.info("leaders In Speaker", leaders)
       }
 
-      console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
-      leaders.splice(0, getTotalNumberOfSpeaker);
-      // console.info("leaders In Speaker", leaders)
-    }
 
+      leaderStatusForSpeaker.sort((speakerOne: any, speakerTwo: any) => speakerTwo.influencersScore - speakerOne.influencersScore);
 
-    leaderStatusForSpeaker.sort((speakerOne: any, speakerTwo: any) => speakerTwo.influencersScore - speakerOne.influencersScore);
-
-    for (let speaker = 0; speaker < leaderStatusForSpeaker.length; speaker++) {
-      leaderStatus.push({ ...leaderStatusForSpeaker[speaker], rank: speaker + 1 });
-    }
-
-    // console.info("After Spliced Only leaders", leaders)
-    let leaderStatusForCouncil: Leader[] = [];
-    if (getTotalNumberOfCouncil && getTotalNumberOfCouncil > 0) {
-      // console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
-      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'council');
-      console.log("Status: " + status);
-      for (let leader = 0; leader < leaders.length; leader++) {
-        const eachUser: any = leaders[leader];
-        if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
-          if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
-            eachUser.status = "Council";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForCouncil.push(eachUser);
-          } else {
-            let tempArrayAfterSliced = leaderStatusForCouncil.slice(1);
-            eachUser.status = "Council";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForCouncil = [...tempArrayAfterSliced]
-            leaderStatusForCouncil.push(eachUser);
-          }
-          await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .set({ "status": status[0] }, { merge: true });
-
-          await updateGametitleOfUser(eachUser.userId);
-        }
+      for (let speaker = 0; speaker < leaderStatusForSpeaker.length; speaker++) {
+        leaderStatus.push({ ...leaderStatusForSpeaker[speaker], rank: speaker + 1 });
       }
-      leaders.splice(0, getTotalNumberOfCouncil);
-      // console.info("leaders In Council", leaders)
-    }
 
-    console.log("Council Data Only", leaderStatusForCouncil)
-    console.log("after Council ,Leader list ", leaders, leaders.length)
-    leaderStatusForCouncil.sort((councilOne: any, councilTwo: any) => councilTwo.influencersScore - councilOne.influencersScore);
-    for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
-      leaderStatus.push({ ...leaderStatusForCouncil[speaker], rank: speaker + 1 });
-    }
+      // console.info("After Spliced Only leaders", leaders)
+      let leaderStatusForCouncil: Leader[] = [];
+      if (getTotalNumberOfCouncil && getTotalNumberOfCouncil > 0) {
+        // console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
+        let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'council');
+        console.log("Status: " + status);
+        for (let leader = 0; leader < leaders.length; leader++) {
+          const eachUser: any = leaders[leader];
+          if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
+            if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
+              eachUser.status = "Council";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForCouncil.push(eachUser);
+            } else {
+              let tempArrayAfterSliced = leaderStatusForCouncil.slice(1);
+              eachUser.status = "Council";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForCouncil = [...tempArrayAfterSliced]
+              leaderStatusForCouncil.push(eachUser);
+            }
+            await firestore()
+              .collection("users")
+              .doc(eachUser.userId)
+              .set({ "status": status[0] }, { merge: true });
 
-    // console.info("After Spliced Council", leaderStatus)
-
-
-    let leaderStatusForAmbassador: Leader[] = [];
-    if (getTotalNumberOfAmbassador && getTotalNumberOfAmbassador > 0) {
-      // console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
-      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'ambassador');
-      console.log("Status: " + status);
-      for (let leader = 0; leader < leaders.length; leader++) {
-        const eachUser: any = leaders[leader];
-        if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
-          if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
-            eachUser.status = "Ambassador";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForAmbassador.push(eachUser);
-          } else {
-            let tempArrayAfterSliced = leaderStatusForAmbassador.slice(1);
-            eachUser.status = "Ambassador";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForAmbassador = [...tempArrayAfterSliced]
-            leaderStatusForAmbassador.push(eachUser);
+            //await updateGametitleOfUser(eachUser.userId);
           }
-          await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .set({ "status": status[0] }, { merge: true });
-
-          await updateGametitleOfUser(eachUser.userId);
         }
+        leaders.splice(0, getTotalNumberOfCouncil);
+        // console.info("leaders In Council", leaders)
       }
-      leaders.splice(0, getTotalNumberOfAmbassador);
-      console.log("Ambassador List : ", leaderStatusForAmbassador);
-      console.log("after Ambassador ,Leader list ", leaders, leaders.length)
-    }
-    leaderStatusForAmbassador.sort((ambassadorOne: any, ambassadorTwo: any) => ambassadorTwo.influencersScore - ambassadorOne.influencersScore);
-    for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
-      leaderStatus.push({ ...leaderStatusForAmbassador[speaker], rank: speaker + 1 });
-    }
 
-    let leaderStatusForMinister: Leader[] = [];
-    if (getTotalNumberOfMinister && getTotalNumberOfMinister > 0) {
-      // console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
-      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'minister');
-      console.log("Status: " + status);
-      for (let leader = 0; leader < leaders.length; leader++) {
-        const eachUser: any = leaders[leader];
-        if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
-          if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
-            eachUser.status = "Minister";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForMinister.push(eachUser);
-          } else {
-            let tempArrayAfterSliced = leaderStatusForMinister.slice(1);
-            eachUser.status = "Minister";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForMinister = [...tempArrayAfterSliced]
-            leaderStatusForMinister.push(eachUser);
+      //console.log("Council Data Only", leaderStatusForCouncil)
+      // console.log("after Council ,Leader list ", leaders, leaders.length)
+      leaderStatusForCouncil.sort((councilOne: any, councilTwo: any) => councilTwo.influencersScore - councilOne.influencersScore);
+      for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
+        leaderStatus.push({ ...leaderStatusForCouncil[speaker], rank: speaker + 1 });
+      }
+
+      // console.info("After Spliced Council", leaderStatus)
+
+
+      let leaderStatusForAmbassador: Leader[] = [];
+      if (getTotalNumberOfAmbassador && getTotalNumberOfAmbassador > 0) {
+        // console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
+        let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'ambassador');
+        console.log("Status: " + status);
+        for (let leader = 0; leader < leaders.length; leader++) {
+          const eachUser: any = leaders[leader];
+          if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+            if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+              eachUser.status = "Ambassador";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForAmbassador.push(eachUser);
+            } else {
+              let tempArrayAfterSliced = leaderStatusForAmbassador.slice(1);
+              eachUser.status = "Ambassador";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForAmbassador = [...tempArrayAfterSliced]
+              leaderStatusForAmbassador.push(eachUser);
+            }
+            await firestore()
+              .collection("users")
+              .doc(eachUser.userId)
+              .set({ "status": status[0] }, { merge: true });
+
+            //await updateGametitleOfUser(eachUser.userId);
           }
-          await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .set({ "status": status[0] }, { merge: true });
-
-          await updateGametitleOfUser(eachUser.userId);
         }
+        leaders.splice(0, getTotalNumberOfAmbassador);
+        console.log("Ambassador List : ", leaderStatusForAmbassador);
+        //console.log("after Ambassador ,Leader list ", leaders, leaders.length)
       }
-      leaders.splice(0, getTotalNumberOfMinister);
-      console.log("Minister List : ", leaderStatusForMinister);
-      console.log("after Minister ,Leader list ", leaders, leaders.length)
-    }
-    leaderStatusForMinister.sort((ministerOne: any, ministerTwo: any) => ministerTwo.influencersScore - ministerOne.influencersScore);
-    for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
-      leaderStatus.push({ ...leaderStatusForMinister[speaker], rank: speaker + 1 });
-    }
+      leaderStatusForAmbassador.sort((ambassadorOne: any, ambassadorTwo: any) => ambassadorTwo.influencersScore - ambassadorOne.influencersScore);
+      for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
+        leaderStatus.push({ ...leaderStatusForAmbassador[speaker], rank: speaker + 1 });
+      }
 
-    let leaderStatusForChairman: Leader[] = [];
-    if (getTotalNumberOfChairman && getTotalNumberOfChairman > 0) {
-      console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
-      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'chairman');
-      console.log("Status: " + status);
-      for (let leader = 0; leader < leaders.length; leader++) {
-        const eachUser: any = leaders[leader];
-        if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
-          if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
-            eachUser.status = "Chairman";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForChairman.push(eachUser);
-          } else {
-            let tempArrayAfterSliced = leaderStatusForChairman.slice(1);
-            eachUser.status = "Chairman";
-            eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
-            leaderStatusForChairman = [...tempArrayAfterSliced]
-            leaderStatusForChairman.push(eachUser);
+      let leaderStatusForMinister: Leader[] = [];
+      if (getTotalNumberOfMinister && getTotalNumberOfMinister > 0) {
+        // console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
+        let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'minister');
+        console.log("Status: " + status);
+        for (let leader = 0; leader < leaders.length; leader++) {
+          const eachUser: any = leaders[leader];
+          if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+            if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
+              eachUser.status = "Minister";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForMinister.push(eachUser);
+            } else {
+              let tempArrayAfterSliced = leaderStatusForMinister.slice(1);
+              eachUser.status = "Minister";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForMinister = [...tempArrayAfterSliced]
+              leaderStatusForMinister.push(eachUser);
+            }
+            await firestore()
+              .collection("users")
+              .doc(eachUser.userId)
+              .set({ "status": status[0] }, { merge: true });
+
+            //await updateGametitleOfUser(eachUser.userId);
           }
-          await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .set({ "status": status[0] }, { merge: true });
-
-          await updateGametitleOfUser(eachUser.userId);
         }
+        leaders.splice(0, getTotalNumberOfMinister);
+        //console.log("Minister List : ", leaderStatusForMinister);
+        //console.log("after Minister ,Leader list ", leaders, leaders.length)
       }
-      leaders.splice(0, getTotalNumberOfChairman);
-      console.log("Chairman List : ", leaderStatusForChairman);
-    }
-    leaderStatusForChairman.sort((chairmanOne: any, chairmanTwo: any) => chairmanTwo.influencersScore - chairmanOne.influencersScore);
-    for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
-      leaderStatus.push({ ...leaderStatusForChairman[speaker], rank: speaker + 1 });
-    }
-    console.info("leaders", leaders)
-    console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
-    console.log("leaderStatus Final", leaderStatus);
+      leaderStatusForMinister.sort((ministerOne: any, ministerTwo: any) => ministerTwo.influencersScore - ministerOne.influencersScore);
+      for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
+        leaderStatus.push({ ...leaderStatusForMinister[speaker], rank: speaker + 1 });
+      }
 
-    leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
+      let leaderStatusForChairman: Leader[] = [];
+      if (getTotalNumberOfChairman && getTotalNumberOfChairman > 0) {
+        console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
+        let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'chairman');
+        console.log("Status: " + status);
+        for (let leader = 0; leader < leaders.length; leader++) {
+          const eachUser: any = leaders[leader];
+          if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+            if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
+              eachUser.status = "Chairman";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForChairman.push(eachUser);
+            } else {
+              let tempArrayAfterSliced = leaderStatusForChairman.slice(1);
+              eachUser.status = "Chairman";
+              eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
+              leaderStatusForChairman = [...tempArrayAfterSliced]
+              leaderStatusForChairman.push(eachUser);
+            }
+            await firestore()
+              .collection("users")
+              .doc(eachUser.userId)
+              .set({ "status": status[0] }, { merge: true });
 
-    return await firestore()
-      .collection("stats")
-      .doc("leaders")
-      .set({ leaders: leaderStatus }, { merge: true });
+            //await updateGametitleOfUser(eachUser.userId);
+          }
+        }
+        leaders.splice(0, getTotalNumberOfChairman);
+        // console.log("Chairman List : ", leaderStatusForChairman);
+      }
+      leaderStatusForChairman.sort((chairmanOne: any, chairmanTwo: any) => chairmanTwo.influencersScore - chairmanOne.influencersScore);
+      for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
+        leaderStatus.push({ ...leaderStatusForChairman[speaker], rank: speaker + 1 });
+      }
+
+      //console.info("leaders", leaders)
+      //console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
+      //console.log("leaderStatus Final", leaderStatus);
+
+      leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
+
+      try {
+        console.log("Come Here To Update:", "TYPE OF", typeof leaderStatus, "Value", leaderStatus);
+
+        for (let record = 0; record < leaderStatus.length; record++) {
+          if (leaderStatus && leaderStatus[record].displayName) {
+            console.log("Get DisplayName", leaderStatus[record], "Record", record)
+          } else {
+            console.log("Get DisplayName", leaderStatus[record], "UserID---", leaderStatus[record].userId)
+          }
+        }
+
+        return await firestore()
+          .collection("stats")
+          .doc("leaders")
+          .set({ leaders: leaderStatus }, { merge: true });
+      } catch (error: any) {
+        console.log("Error in Catch After Sort::", error)
+      }
+    } catch (error: any) {
+      console.log("Error in Set Leaders", error);
+      return error;
+    }
   };
 
 //function which updates status/level/gametitle into userStatistics
