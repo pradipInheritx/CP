@@ -118,8 +118,10 @@ const UserDetailView = ({ open, onCloseDialog }) => {
             component="p"
             className="pointer d-block"
           >
-            {currentUserDetelis?.Country.trim()
-              ? currentUserDetelis?.Country
+            {currentUserDetelis?.Country
+              ? currentUserDetelis?.Country.trim()
+                ? currentUserDetelis?.Country
+                : "-"
               : "-"}
           </Box>
         </Box>
