@@ -21,6 +21,7 @@ import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
 import { firestore } from "../firebase";
 import { collection, doc, getDocs, query, setDoc, where, limit } from "firebase/firestore";
+import LatestVoteBanner from "../Components/LatestVoteBanner";
 
 
 const H2 = styled.h2`
@@ -247,6 +248,9 @@ const Home = () => {
               }
             }}
           />
+        </div>
+        <div>
+          <LatestVoteBanner/>
         </div>
         <div className='mb-5 mx-0'>
           <div className='mb-4'>
