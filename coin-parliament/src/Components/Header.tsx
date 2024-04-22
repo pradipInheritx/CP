@@ -376,7 +376,6 @@ const Header = ({
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
-		console.log(userInfo?.rewardStatistics?.extraVote, "userInfo")
 		prevCountRef.current = voteNumber;
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
