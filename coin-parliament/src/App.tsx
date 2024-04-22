@@ -1009,7 +1009,7 @@ function connect() {
     if (Object.keys(coins).length === 0) return
     console.log('Browser window called')
     
-    ws = new WebSocket("wss://stream.binance.com:9443/ws");
+  ws = new WebSocket(socketUrl.current);
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
