@@ -370,7 +370,7 @@ const Minting = ({
           setTimeout(() => {
             setShowCoinMove(false);
             claimRewardSoundplay()
-          }, 8000);
+          }, 5000);
         setResultData(result);
         setRewardTimer(result);
         setIsVirtualCall(false);
