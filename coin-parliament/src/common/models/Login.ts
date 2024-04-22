@@ -101,7 +101,6 @@ export const LoginAuthProvider = async (
       // console.log('callback called for refeer',user)
       callback({ parent: refer, child: user.uid })
     }
-
     if (isFirstLogin?.isNewUser) {
       // saveUsername(user.uid, '', '')
 
