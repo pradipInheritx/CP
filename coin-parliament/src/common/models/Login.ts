@@ -110,7 +110,10 @@ export const LoginAuthProvider = async (
 
       const firstTimeLogin: Boolean = true
 
-      await setDoc(userRef, { firstTimeLogin ,isVoteToEarn: false }, { merge: true });
+      await setDoc(userRef, { firstTimeLogin, isVoteToEarn: false }, { merge: true });
+      await sendEmailVerificationLink({
+        email: user.email,
+      })
       console.log('firsttimelogin success')
       setTimeout(() => {
 
