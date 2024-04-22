@@ -258,7 +258,7 @@ const WalletBalance = () => {
                                             style={{
                                                 color:"#6352E8",
                                         }}
-                                        >{pendingAmount[value] !=0 ? Number(pendingAmount[value]).toFixed(18):0}</p>
+                                        >{pendingAmount[value] !=0 ? Number(pendingAmount[value]).toFixed(4):0}</p>
                                     </div>
                                 </>
                         }

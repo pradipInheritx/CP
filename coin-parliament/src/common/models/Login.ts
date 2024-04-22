@@ -101,16 +101,15 @@ export const LoginAuthProvider = async (
       // console.log('callback called for refeer',user)
       callback({ parent: refer, child: user.uid })
     }
-    await sendEmailVerificationLink({
-      email: user.email,
-    })
-
     if (isFirstLogin?.isNewUser) {
       // saveUsername(user.uid, '', '')
 
       const firstTimeLogin: Boolean = true
 
-      await setDoc(userRef, { firstTimeLogin ,isVoteToEarn: false }, { merge: true });
+      await setDoc(userRef, { firstTimeLogin, isVoteToEarn: false }, { merge: true });
+      await sendEmailVerificationLink({
+        email: user.email,
+      })
       console.log('firsttimelogin success')
       setTimeout(() => {
 
