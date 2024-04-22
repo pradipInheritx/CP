@@ -1837,7 +1837,7 @@ border-top-left-radius: 0px !important;
    flex-wrap: wrap;
   }
   .voteDetails .voteDetailRow .voteCol{
-    padding: 0px 8px;
+    /* padding: 0px 8px; */
   }
   .voteDetails .voteDetailRow .voteAvtar{
 flex: 0 0 80px;
@@ -1851,7 +1851,7 @@ outline: 0.5px solid #D2CC2E;
   .voteDetails .voteDetailRow .voteAvtar img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    /* object-fit: contain; */
     object-position: left bottom;
     border-radius: 0px !important;
   }
