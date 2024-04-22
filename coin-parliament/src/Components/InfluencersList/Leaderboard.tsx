@@ -82,7 +82,7 @@ const Leaderboard = ({
             setChosenUserType(`${type}`)
             navigate(`/influencers`)
         }}
-        >BACK TO TOP 10</p>
+        >BACK TO TOP 25</p>
 {/* @ts-ignore */}
         {leaders?.slice(indexOfFirstItem, indexOfLastItem).sort((a, b) => (b?.influencersScore) - (a?.influencersScore))
           ?.map((leader ,index) => {

@@ -396,7 +396,7 @@ function App() {
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const [retryCountWS, setRetryCountWS] = useState(0);
+  
   const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
@@ -1005,7 +1005,7 @@ function App() {
   const errorCount = useRef(0)
 
 function connect() {
-    console.log('Browser window called', wsConnectRetry ,"---run count", Object.keys(coins).length,coins)
+    // console.log('Browser window called', wsConnectRetry ,"---run count", Object.keys(coins).length,coins)
     if (Object.keys(coins).length === 0) return
     console.log('Browser window called')
     
@@ -1014,8 +1014,8 @@ function connect() {
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
       if (ws.readyState === WebSocket.OPEN) {        
-        setSocketConnect(true)
-        setRetryCountWS(0);
+        setSocketConnect(true)        
+        errorCount.current = 0
         ws.send(JSON.stringify({
           method: 'SUBSCRIBE',
           params: coinTikerList,

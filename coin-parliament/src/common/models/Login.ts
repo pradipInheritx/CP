@@ -104,6 +104,7 @@ export const LoginAuthProvider = async (
     await sendEmailVerificationLink({
       email: user.email,
     })
+
     if (isFirstLogin?.isNewUser) {
       // saveUsername(user.uid, '', '')
 
@@ -126,6 +127,9 @@ export const LoginAuthProvider = async (
         setSmsVerification(true)
       }
       // setUser(user);
+      const lastLoginDay = new Date();
+      const userRefUpdate = doc(db, "userStatistics", user.uid);
+      await setDoc(userRefUpdate, { lastLoginDay }, { merge: true });
 
     }
 
