@@ -36,7 +36,6 @@ export const getCoinColor = (currentValue: number, prevValue: number) => {
 }
 export const getSingleCoinPriceColor = (votingPrice: number, currentPrice: number, direction: number) => {
     //0 bull,1 bear , 1 price will increase 
-    console.log(votingPrice, currentPrice, direction, 'colorTest');
 
     if (direction) {
         return votingPrice > currentPrice ? 'green' : votingPrice < currentPrice ? '#fa0202' : '#050505'
