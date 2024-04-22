@@ -210,7 +210,7 @@ const mainnet = [
 const metadata = {
   name: 'Coin parliament',
   description: 'Coin parliament',
-  url: 'https://coinparliamentstaging.firebaseapp.com',
+  url: 'https://coinparliament.com',
   icons: ['https://coinparliament.com/static/media/logoiconxbig2.7f0c3f73.png']
 }
 

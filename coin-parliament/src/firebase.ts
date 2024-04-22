@@ -8,7 +8,7 @@ import { getMessaging, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: `coin-parliament-staging.firebaseapp.com`,
+  authDomain: `coinparliament.com`,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}`,
   storageBucket: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com`,
