@@ -574,12 +574,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
 
 async function createUserStatistics(userData: any, userId: any) {
   try {
+    const timestamp = new Date(userData?.createdAt); // Replace this number with your timestamp
+    const signUpTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("signUpTimestamp--->", signUpTimestamp);
     const userStatisticsData = {
       userId: userData.uid,
       userName: userData?.userName || "",
       email: userData?.email || "",
       Country: userData?.country || " ",
-      signUpTime: userData?.createdAt || "",
+      signUpTime: signUpTimestamp || "",
       totalVotes: userData?.voteStatistics?.total || 0, //needs to be updated  for the old users
       averageVotes: 0,
       accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
