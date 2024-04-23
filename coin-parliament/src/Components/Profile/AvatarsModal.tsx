@@ -260,7 +260,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                     <AvatarRadio
                       key={i}
                       type={type}
-                      checked={type === (userInfo?.avatar || defaultAvatar)}
+                      checked={type === (userInfo?.avatar)}
                       name={"avatars"}
                       id={"avatar-" + type}
                       onSubmit={() => onSubmit(type)}
