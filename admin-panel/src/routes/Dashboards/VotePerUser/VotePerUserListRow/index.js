@@ -2,7 +2,7 @@ import React from "react";
 import TableCell from "@material-ui/core/TableCell";
 import Checkbox from "@material-ui/core/Checkbox";
 import TableRow from "@material-ui/core/TableRow";
-import {timeFromNow} from "../../../../@jumbo/utils/dateHelper";
+import { timeFromNow } from "../../../../@jumbo/utils/dateHelper";
 import {
   Block,
   CheckCircleOutline,
@@ -14,9 +14,9 @@ import {
 } from "@material-ui/icons";
 import CmtDropdownMenu from "../../../../@coremat/CmtDropdownMenu";
 import CmtAvatar from "../../../../@coremat/CmtAvatar";
-import {Box, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {useDispatch} from "react-redux";
+import { Box, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
 import {
   sentMailToSubAdmin,
   updateSubAdminStatus
@@ -32,9 +32,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getUserActions = user => {
-  
   const actions = [
-    {action: "view", label: "View", icon: <Visibility />},
+    { action: "view", label: "View", icon: <Visibility /> }
     // {action: "edit", label: "Edit", icon: <Edit />},
     // {action: "email", label: "Email", icon: <Mail />}
   ];
@@ -75,7 +74,7 @@ const VotePerUserListRow = ({
     // else if (menu.action === "email") {
     //   dispatch(sentMailToSubAdmin());
     // }
-    // else if (menu.action === false) {      
+    // else if (menu.action === false) {
     //   dispatch(updateSubAdminStatus(row?.id,{ status: "Inactive"}));
     //   onUserStatusUpdate(row)
     // } else if (menu.action === true) {
@@ -101,12 +100,6 @@ const VotePerUserListRow = ({
       key={row?.id}
       selected={isItemSelected}
     >
-      {/* <TableCell padding="checkbox">
-        <Checkbox
-          checked={isItemSelected}
-          inputProps={{"aria-labelledby": labelId}}
-        />
-      </TableCell> */}
       {/* <TableCell component="th" id={labelId} scope="row" padding="none">
         <Box display="flex" alignItems="center">          
           <div>
@@ -120,23 +113,11 @@ const VotePerUserListRow = ({
           </div>
         </Box>
       </TableCell> */}
-      <TableCell>{row?.displayName}</TableCell>
-      <TableCell>{row?.totalVote}</TableCell>
-      <TableCell>{row?.successVote}</TableCell>
-      
-      {/* <TableCell>{row?.phone}</TableCell> */}
-      {/* <TableCell>
-        {row?.chosen === "false" ? (
-          
-        `Inactive`
-        ) : (
-          
-            `Active`
-        )}
-      </TableCell> */}
-      <TableCell>{row?.userScore}</TableCell>
+      <TableCell>{row?.displayName || "-"}</TableCell>
+      <TableCell>{row?.totalVote || "-"}</TableCell>
+      <TableCell>{row?.successVote || "-"}</TableCell>
+      <TableCell>{row?.userScore || "-"}</TableCell>
       <TableCell>{row?.userRank}</TableCell>
-      {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu
           items={userActions}

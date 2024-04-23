@@ -93,7 +93,10 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
           response.status === 201
         ) {
           dispatch(fetchSuccess(response.data.message));
-          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result });
+          dispatch({
+            type: EDIT_TIMEFRAME,
+            payload: response.data.result.timeframes
+          });
           if (callbackFun) callbackFun(response.data.result);
         } else {
           dispatch(

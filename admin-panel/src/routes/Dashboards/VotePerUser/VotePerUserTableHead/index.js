@@ -1,7 +1,6 @@
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import Checkbox from "@material-ui/core/Checkbox";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,9 +12,19 @@ const headCells = [
     disablePadding: false,
     label: "Display Name"
   },
-  {id: "totalVote", numeric: false, disablePadding: false, label: "Total Vote"},  
-  { id: "successVote", numeric: false, disablePadding: false, label: "Success Vote" },
-  
+  {
+    id: "totalVote",
+    numeric: false,
+    disablePadding: false,
+    label: "Total Vote"
+  },
+  {
+    id: "successVote",
+    numeric: false,
+    disablePadding: false,
+    label: "Success Vote"
+  },
+
   {
     id: "userScore",
     numeric: false,
@@ -39,7 +48,7 @@ function VotePerUserTableHead({
   numSelected,
   rowCount,
   onRequestSort
-}){
+}) {
   const onSortOrderChange = property => event => {
     onRequestSort(event, property);
   };
@@ -66,6 +75,7 @@ function VotePerUserTableHead({
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={onSortOrderChange(headCell.id)}
+              className={classes.headerLable}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -76,7 +86,9 @@ function VotePerUserTableHead({
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell align="center">Actions</TableCell>
+        <TableCell align="center" className={classes.headerLable}>
+          Actions
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -87,7 +99,7 @@ VotePerUserTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf([ "asc", "desc" ]).isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired
 };

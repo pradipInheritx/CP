@@ -1,4 +1,4 @@
-import {alpha, makeStyles} from "@material-ui/core/styles";
+import { alpha, makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     padding: "4px 10px",
     borderRadius: 4,
     textTransform: "capitalize"
+  },
+  viewTitle: {
+    fontWeight: 600
   }
 }));
 

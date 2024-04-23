@@ -43,12 +43,12 @@ const dashboardsMenus = [
   //   type: "item",
   //   link: "/dashboard/subadmin",
   // },
-  // {
-  //   name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
-  //   icon: <People />,
-  //   type: "item",
-  //   link: "/dashboard/voteperuser",
-  // },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/voteperuser"
+  },
   // {
   //   name: <IntlMessages id={"sidebar.dashboard.votebooster"} />,
   //   icon: <People />,
@@ -1520,23 +1520,23 @@ export const sidebarNavs = [
   // {
   //   name: "All Lists",
   //   type: "section",
-  //   children: AllList
+  //   children: AllList,
   // },
   // {
   //   name: "All Tables",
   //   type: "section",
-  //   children: AllTables
+  //   children: AllTables,
   // },
   // {
   //   name: "All Settings",
   //   type: "section",
-  //   children: AllSettings
+  //   children: AllSettings,
   // },
   // {
   //   name: "All Transactions",
   //   type: "section",
-  //   children: AllTransactions
-  // }
+  //   children: AllTransactions,
+  // },
   // {
   //   name: <IntlMessages id={"sidebar.components"} />,
   //   type: "section",

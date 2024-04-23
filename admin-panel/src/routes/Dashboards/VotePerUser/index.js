@@ -184,6 +184,7 @@ const VotePerUserModule = () => {
           setFilterOptions={setFilterOptions}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          setPage={setPage}
         />
         <TableContainer className={classes.container}>
           <Table

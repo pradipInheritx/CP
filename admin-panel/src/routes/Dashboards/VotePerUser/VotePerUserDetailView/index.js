@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import CmtList from "../../../../@coremat/CmtList";
 import IconButton from "@material-ui/core/IconButton";
 import PropTypes from "prop-types";
@@ -16,12 +16,12 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import useStyles from "./index.style";
 import { Block, CheckCircleOutline } from "@material-ui/icons";
 
-import {Tooltip} from "@material-ui/core";
+import { Tooltip } from "@material-ui/core";
 import { timeFromNow } from "@jumbo/utils/dateHelper";
 
-const VotePerUserDetailView = ({open, onCloseDialog}) => {
-  const classes = useStyles();  
-const { currentVotePerUser } = useSelector(({ VotePerUser }) => VotePerUser);
+const VotePerUserDetailView = ({ open, onCloseDialog }) => {
+  const classes = useStyles();
+  const { currentVotePerUser } = useSelector(({ VotePerUser }) => VotePerUser);
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
@@ -32,9 +32,10 @@ const { currentVotePerUser } = useSelector(({ VotePerUser }) => VotePerUser);
           </Box> */}
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{`${currentVotePerUser?.displayName}`}</Typography>
+              <Typography
+                className={classes.titleRoot}
+              >{`${currentVotePerUser?.displayName}`}</Typography>
             </Box>
-            
           </Box>
         </Box>
         <Box ml="auto" mt={-2} display="flex" alignItems="center">
@@ -54,38 +55,42 @@ const { currentVotePerUser } = useSelector(({ VotePerUser }) => VotePerUser);
         </Box>
       </Box>
       <Box px={6} py={5}>
-        <Box mb={5} component="p" color="common.dark">
+        <Box
+          mb={5}
+          component="p"
+          color="common.dark"
+          className={classes.viewTitle}
+        >
           Vote Per User Details
         </Box>
-        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           {/* <EmailIcon /> */}
-          Total Vote : 
+          Total Vote :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentVotePerUser?.totalVote}
+            {currentVotePerUser?.totalVote || "-"}
           </Box>
         </Box>
-        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           {/* <EmailIcon /> */}
-          Success Vote : 
+          Success Vote :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentVotePerUser?.successVote}
+            {currentVotePerUser?.successVote || "-"}
           </Box>
         </Box>
-        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           {/* <EmailIcon /> */}
-        User Score : 
+          User Score :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentVotePerUser?.userScore}
+            {currentVotePerUser?.userScore || "-"}
           </Box>
         </Box>
-        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
           User Rank :
           <Box ml={5}>
-            
             <Box ml={5} color="primary.main" component="p" className="pointer">
-            {/* {timeFromNow(currentVotePerUser?.createdAt)} */}
-            {currentVotePerUser?.userRank}
-          </Box>
+              {/* {timeFromNow(currentVotePerUser?.createdAt)} */}
+              {currentVotePerUser?.userRank}
+            </Box>
           </Box>
         </Box>
       </Box>

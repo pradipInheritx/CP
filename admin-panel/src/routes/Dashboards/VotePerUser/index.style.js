@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: 20,
     width: 1
+  },
+  headerLable: {
+    fontWeight: 700
   }
 }));
 
