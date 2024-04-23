@@ -263,15 +263,12 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-    // console.log('scrollUp ');
 
     if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
-      // console.log("yes i am working")
       // localStorage.removeItem("PayAmount");
     }
   }, [JSON.stringify(location.pathname)]);
 
-  // console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -299,10 +296,8 @@ function App() {
   useEffect(() => {
 
     if ('serviceWorker' in navigator) {
-      // console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")
         //   showToast(
         //   <div>
         //     <h5>{title}</h5>
@@ -317,14 +312,12 @@ function App() {
         //   const FinalName = getPairName[getPairName.length - 1]          
         //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;
         //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;          
-        //   // console.log(makeUrl,"checkcoinpair")
         // }
         // else if (!typeName?.title.includes("-") && !typeName?.title.includes("mine")) {
         //   const getCoinName = typeName?.title.split(" ")
         //   const FinalName=getCoinName[getCoinName.length-1]          
         //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
         //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
-        //   // console.log(makeUrl,"checkcoinpair")
         // }
         // else if (typeName?.title.includes("mine")) {          
         //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/profile/mine';
@@ -377,7 +370,6 @@ function App() {
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>({});
   // const [dbCoins, setDBCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
-  // console.log(coins,"getallcoinvalue")
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -451,14 +443,11 @@ function App() {
   const [animateBox, setAnimateBox] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
 
-  // console.log(coins, "allcoinsCheck")
-
   // const Coinkeys = Object.keys(coins && coins) || []
 
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
-      console.log("we are being triggered :D");
       setSupportsPWA(true);
       setPromptInstall(e);
     };
@@ -471,7 +460,6 @@ function App() {
   //   const isMFAPassed = localStorage.getItem('mfa_passed')
   //   if (isMFAPassed == 'true' && !login) {
 
-  //     console.log('2faCalled')
   //     // @ts-ignore
   //     Logout(setUser)
   //   }
@@ -479,7 +467,6 @@ function App() {
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
-    console.log('not supported', promptInstall)
     if (!promptInstall) {
       return;
     }
@@ -491,21 +478,19 @@ function App() {
   }
   useEffect(() => {            
     if (user?.email && userInfo?.displayName === undefined && !login) {            
-      // console.log("lodding true")
+
       setLoader(true);
     } else if (!Object.keys(coins).length && !socketConnect){      
-      // console.log("lodding true")
+
       setLoader(true);      
     } else if (!!user?.email && !userInfo) {
-      // console.log("lodding true")
+
       setLoader(true);
     } else {    
-      // console.log("lodding false")
+
       setLoader(false);            
     }
   }, [user, userInfo, login, socketConnect, JSON.stringify(Object.keys(coins).length)]);
-
-  // console.log(Object.keys(coins).length, socketConnect, !Object.keys(coins).length && !socketConnect, !!user?.email && !userInfo, "forloader")
 
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
@@ -520,9 +505,6 @@ function App() {
   //   return Followerinfo
   // }
 
-  // console.log(remainingTimer, "remainingTimer")
-  // console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
-
   useEffect(() => {
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
@@ -531,7 +513,6 @@ function App() {
     } else {
       const isMFAPassed = window.localStorage.getItem('mfa_passed')
       if (!user && isMFAPassed !== 'true') {
-        // console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
       }
@@ -616,13 +597,11 @@ function App() {
 
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
-    // console.log(messagingResolve,"messagingResolve")
     if (messagingResolve) {
       getToken(messagingResolve, {
         vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
       }).then((token) => {
         setFcmToken(token);
-        // console.log('token', token);
       }).catch((e) => {
         console.log('token', e);
         // setLoader(false)
@@ -638,7 +617,6 @@ function App() {
       setMounted(true);
     }
   }, [languages]);
-  // console.log('user', userInfo)
   useEffect(() => {
     if (user?.uid) {
       setDoc(doc(db, "users", user?.uid), { lang }, { merge: true }).then(
@@ -666,8 +644,6 @@ function App() {
       const userDocSnapshot = await getDoc(coinData);
 
       if (userDocSnapshot.exists()) {
-        // setDBCoins(userDocSnapshot.data());
-        // console.log(userDocSnapshot.data(),"userDocSnapshot.data()")
         console.log("Browser window called 0",userDocSnapshot.data())
         setCoins(userDocSnapshot.data());
       } else {
@@ -1337,7 +1313,6 @@ function connect() {
             })
           }
 
-          // console.log('promisearray', promiseArray, allCoinsPair)
           if (!promiseArray?.length) return
           Promise.all(promiseArray)
             .then(responses => {
@@ -1380,7 +1355,6 @@ function connect() {
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
   useEffect(()=>{
-    // console.log(voteDetails?.activeVotes,lessTimeVoteDetails,completedVotes,'history');
     
   },[JSON.stringify({voteDetails,lessTimeVoteDetails,completedVotes})])
   useEffect(() => {
@@ -1412,7 +1386,6 @@ function connect() {
     if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId && !pathname.includes('profile/mine')) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
-      // setCalculateVote(false);
     }
 
     
@@ -1463,30 +1436,22 @@ function connect() {
       let voteTime = new Date(lessTimeVote?.expiration);      
       // finding the difference in total seconds between two dates      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      console.log(lessTimeVote,latestCoinsPrice.current,'timer1');
       const timer = setTimeout(async () => {
        try {
-        console.log(lessTimeVote,'timer2');
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,]
 
         const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
-        console.log(ExpriTime,getValue,"ravi123");
         // const ExpriTime = [
         //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin1 || null,
         //   latestCoinsPrice.current?.[`${lessTimeVote?.coin?.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`]?.coin2 || null,
         // ];
         
         // const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction);
-
-        console.log(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction, "valueVotingTime direction")
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ? 2 : 1 : voteImpact.current?.impact;
-
-        console.log(voteImpact.current?.impact,"voteImpact.current?.impact")
-        console.log(StatusValue, 'StatusValue');
         if (pathNameRef.current?.includes('profile/mine')) {
           return
         }
@@ -1519,9 +1484,7 @@ function connect() {
               {}
           )
         }
-        console.log(lessTimeVote,'timer3');
         await getResultAfterVote(request).then(async (response) => {
-          console.log(getResultAfterVote,"getvote");
           
         
           console.log(response?.data, "response?.data?.result?")
@@ -1718,8 +1681,6 @@ const handleAcceptAll = () => {
               id='lang-detector'
               ref={langDetector}
               onChange={(e) => {
-
-                // console.log(e.target.value)
               }
               }
             />
@@ -2378,7 +2339,6 @@ const handleAcceptAll = () => {
               onSubmit={async (e) => {
                 e.preventDefault();
                 const resp = await sendPassword({ password });
-                // console.log(resp.data);
                 if (resp.data === true) {
                   enable(true);
                 }

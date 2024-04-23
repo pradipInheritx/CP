@@ -72,12 +72,10 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
   const handleShow = () => setShow(true);
 
   const checkValidUsername = async (username: string) => {
-    console.log("firebasefun");
     const usersCollectionRef = collection(firestore, 'users');
     const usersSnapshot = await getDocs(usersCollectionRef);
 
     const usernames = usersSnapshot.docs.map((u) => u.data().userName).filter(u => u !== (userInfo?.userName || ''));
-    console.log("firebase", usernames);
 
     return !usernames.includes(username);
   };

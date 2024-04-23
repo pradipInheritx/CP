@@ -106,7 +106,6 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   //           snapshot.forEach((doc) => {
   //             data.push({ ...doc.data() });
   //           });
-  //           console.log(data,"alldat")
   //           data?.map((item: any, index: number) => {
   //             if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
   //               setPreantId(item.uid)
@@ -118,7 +117,6 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   //     } catch (err) {
   //       console.log( err, 'email');
   //     }
-  //     console.log(userdata,"userdata")
   //   }
   // }
 
@@ -156,7 +154,6 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
       } catch (err) {
         console.log(err, 'email');
       }
-      console.log(userdata, "userdata");
     }
   };
 
@@ -166,7 +163,6 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
     }
   }, [])  
 
-  console.log(preantId,"PreantId")
   var userAgent = navigator.userAgent.toLowerCase(); 
   const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   const strings = {
@@ -265,7 +261,6 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
           signup={signup}
           callback={{
             successFunc: async (params) => {
-              console.log('params', params.uid)
               if (preantId) await assign({ parent: preantId, child: params.uid });
               setSignup(false)
               setLogin(true)

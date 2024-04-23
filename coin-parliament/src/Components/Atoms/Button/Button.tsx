@@ -322,7 +322,6 @@ const TimeframeButton = ({
 };
 
 export const timeframeInitials = (timeframe: string | React.ReactNode) => {
-  // console.log(timeframe?.replace(/[^a-zA-Z]/g, ""), "onlynumber")
   return typeof timeframe === "string"
     ? timeframe
       .split(" ")

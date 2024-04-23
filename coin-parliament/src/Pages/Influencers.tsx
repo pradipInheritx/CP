@@ -14,7 +14,6 @@ const Influencers = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { chosenUserType, setChosenUserType } = useContext(AppContext);
 
-  console.log(chosenUserType,"chosenUserType")
   useEffect(() => {
     // setChosen(chosenUserType || "SPEAKER")
     setChosen(chosenUserType.toUpperCase() || userTypes[0]?.name.toUpperCase() || "SPEAKER")
@@ -23,9 +22,6 @@ const Influencers = () => {
       setChosenUserType('')
     }
   }, [/* chosenUserType */userTypes])
-  // @ts-ignore
-// console.log(isLoading,"leaderslist")
-  console.log(isLoading,"isLoading")
 
   return (
     <div>

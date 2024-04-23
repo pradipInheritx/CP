@@ -68,7 +68,6 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
     ]
   };
 
-  console.log(children,"children")
   return (
     <div className=''
       style={{ overflow: "hidden" }}

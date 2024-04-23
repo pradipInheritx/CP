@@ -102,7 +102,6 @@ export const divideArray1 = (arr: any, partSize: any) => {
         }
         res1 = { ...res1, [albumName]: albumWithSlice };
     });
-    console.log(res1, 'divideByAlbum');
     return res1;
 
 }

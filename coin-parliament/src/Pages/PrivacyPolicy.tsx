@@ -6,7 +6,6 @@ import GeneralPage from "../GeneralPage";
 const TermsAndConditions = () => {
 //     useEffect(() => {
 //       window.scrollTo(0, 0)
-//       console.log("hello I am ");
 //       return window.scrollTo(0, 0)
 // }, [])
   return (

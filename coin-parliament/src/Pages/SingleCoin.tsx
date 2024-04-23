@@ -123,7 +123,6 @@ const SingleCoin = () => {
       },
     }));
     if (Object.keys(singleLivePrice.current).length && coins != singleLivePrice.current) {
-      console.log("Browser window called 2", singleLivePrice.current)
       setCoins(singleLivePrice.current)
     }
   }
@@ -146,7 +145,6 @@ const SingleCoin = () => {
       const symbol = message?.s?.slice(0, -4)
       
       if (symbol && symbol == params?.id) {
-        // console.log('coinprice',message?.c)
         const dot = decimal[symbol]
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
@@ -228,8 +226,6 @@ const SingleCoin = () => {
       // const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
       const data2 = await getCPVIForVoteV2({ coinName: params?.id });      
 
-      console.log(data2,"data2")
-
       // return data.data as unknown as LineData[];
       return data2.data;
     }
@@ -266,7 +262,6 @@ const SingleCoin = () => {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
-        // console.log(v.data(), "checkallv.data")
         // if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
@@ -280,7 +275,6 @@ const SingleCoin = () => {
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
-        console.log(v.id, "checkallv.data")
         return v
       }
     }
@@ -428,7 +422,6 @@ const SingleCoin = () => {
       }
     });
 
-    console.log(allActiveVotes,'allActiveVotesabc');
     setVoteDetails((prev) => {
       
       return {

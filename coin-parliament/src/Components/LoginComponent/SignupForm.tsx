@@ -53,7 +53,6 @@ const SignupForm = ({
   };
 
   const handleReCaptcha = () => {
-    console.log("change")
     setrecaptcha(true)
   }
   

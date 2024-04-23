@@ -131,7 +131,6 @@ function ModalForResult({
     if (score > 99.98 && location.pathname !== "/profile/mine") {
       setShowComplete100CMP(true);
     }
-    console.log(remainingCMP, score ,"remainingCMP")
     setAnimateBox(true);
     setTimeout(() => {
       setAnimateBox(false);
@@ -175,7 +174,6 @@ function ModalForResult({
   const { coins } = useContext(CoinsContext);
   const { showBack, setShowBack, setAfterVotePopup,setAnimateBox } = useContext(AppContext);
   const winner = calculateWinner(vote);
-  // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");
   const pair = voteCoins?.length > 1;
 
@@ -191,7 +189,6 @@ function ModalForResult({
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
 
-  console.log(pairCoinResult.difference,"pairCoinResult")
   return (
     <div>
       <Modal show={show} onHide={handleClose}

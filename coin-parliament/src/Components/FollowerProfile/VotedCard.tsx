@@ -124,7 +124,6 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 
 const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
-  console.log(vote, " checkvoteid")
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
 
@@ -342,8 +341,6 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
   if (pair && isArray(vote?.valueVotingTime) && isArray(vote?.valueExpirationTime)) {
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
-
-  console.log(vote?.valueExpirationTime,"valueExpirationTime")
 
   return pair ? (
     <ProfilePairVote style={{ minWidth: window.screen.width < 979 ? '' : '480px', maxWidth: window.screen.width < 979 ? '' : '480px', }} >

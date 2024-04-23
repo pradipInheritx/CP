@@ -55,10 +55,6 @@ function foo() {
   setRewardTimer(null)
 }
 
-
-console.log('rewarditem',rewardTimer)
-
-
     return (
        <> <div className="boxHolder" style={{
         right: window?.screen?.width<767?'':'0px',

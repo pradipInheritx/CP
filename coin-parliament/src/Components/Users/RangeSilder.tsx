@@ -38,7 +38,6 @@ function Speed(props: SpeedProps) {
   useEffect(() => {
 
     if (!needle.points.toString().includes('e')) needleAnimatePoint.current = needle.points
-    console.log('needle points', value, needle.points.toString().includes('e'), needle.points)
   }, [value])
   // 1.4695761589768238e-15
   // 6.000000000000002,-10.392304845413264 174.2050807568878,98.26794919243098 172.2050807568878,101.73205080756874 -5.999999999999997,10.392304845413264
@@ -295,7 +294,6 @@ export default function SpeedTest(
 
 
     if (symbol2 !== undefined) {
-      console.log(pairCoinResult.difference,"pairCoinResult")
 
       if (pairCoinResult.difference < 0) {
         setPersentValue(Math.floor(Math.random() * 49) + 1)

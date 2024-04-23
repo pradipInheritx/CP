@@ -32,7 +32,6 @@ const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.D
                         setShareModalShow(false);  
                         if (setAddPaxWalletPop) {                            
                             setTimeout(() => {
-                                console.log(addPaxWalletPop, "setAddPaxWalletPop")
                                 setAddPaxWalletPop(true)
                             }, 5000);
                         }
@@ -65,7 +64,6 @@ const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.D
                                     );
                                     
                                     // setTimeout(() => {
-                                    //     console.log(addPaxWalletPop, "setAddPaxWalletPop")
                                     //     setAddPaxWalletPop(true)
                                     // }, 5000);
                                 }}

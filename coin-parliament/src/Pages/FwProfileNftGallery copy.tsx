@@ -186,7 +186,6 @@ const FwProfileNftGallery = () => {
       // @ts-ignore
       setAllCardArrayNew(data);
       // @ts-ignore
-      console.log(data, "allcardData");
     } catch (error) {
       console.log(error, "error");
     }
@@ -234,7 +233,6 @@ const FwProfileNftGallery = () => {
     //         data.push({ id: doc.id, ...doc.data() });
     //       });
 
-    //       console.log(data, "alldatacard")
     //       data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
     //       setAllCardNew(data)
     //       setCardNameNew(data)
@@ -276,7 +274,6 @@ const FwProfileNftGallery = () => {
         cardData.push({ id: doc.id, ...doc.data() });
       });
 
-      // console.log(cardData, "alldatacard");
       // @ts-ignore
       cardData.sort((a, b) => a.setName.localeCompare(b.setName));
       // @ts-ignore
@@ -380,7 +377,6 @@ const FwProfileNftGallery = () => {
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
       finalValue.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
-      //  console.log(finalValue,"serchresult")
       // setCardNameNew(finalValue)    
       setAllCardNew(finalValue)
       //  setSearchedCard((pev:any)=>finalValue)
@@ -392,7 +388,6 @@ const FwProfileNftGallery = () => {
       const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
       // setCardNameNew(finalValue)  
       setAllCardNew(finalValue)
-      //  console.log(finalValue,"serchresult")
       //  setSearchedCard((pev:any)=>finalValue)
     }
   }
@@ -615,7 +610,6 @@ const FwProfileNftGallery = () => {
     }
   };
 
-  console.log(allCardNew, "allCardNew", cardShow)
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <div className='d-flex justify-content-center pt-5 flex-wrap '>

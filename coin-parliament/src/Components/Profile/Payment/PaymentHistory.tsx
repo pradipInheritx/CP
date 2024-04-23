@@ -67,7 +67,6 @@ function PaymentHistory() {
       .then(async (response) => {
         setRowData(response.data.data)
         setTotalData(response.data.total)
-        console.log(response.data.data, "response.data")
       })
       .catch((error) => {
 
@@ -137,9 +136,6 @@ function PaymentHistory() {
   )
 }
 
-  
-  console.log(selectTab,"getconsole.log(selectTab)")
-
   return (
     <>
       <Tabs
@@ -148,7 +144,6 @@ function PaymentHistory() {
         id="Payment"
         onSelect={(k?: number) => {
           setIndex((k || 0))
-          console.log(k,"what is this ")
           setSelectTab(selectTab == "Purchase History" ? "Referral Payment" : "Purchase History")
           setHistoryTab("")
         }}

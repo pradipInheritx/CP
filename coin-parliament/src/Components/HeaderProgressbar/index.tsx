@@ -53,12 +53,10 @@ const HeaderProgressbar = ({ percentage, remainingReward }) => {
     const currentCMP = useContext(CurrentCMPContext);
     const setCurrentCMP = useContext(CurrentCMPDispatchContext);
     const { animateBox,setAnimateBox,setShow } = useContext(AppContext);
-    // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');    
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue != '0' && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
-            // console.log(progressBarValue, prevScore,"allCmp1234")
             // let prevScore = (((userInfo?.voteStatistics?.score - newScore) % 100) + newScore) - newScore < 0 ? 0 : ((userInfo?.voteStatistics?.score - newScore) % 100)        
 
             setStartValue((prevScore <= 0 || percentage == 100 ? 0 : prevScore));

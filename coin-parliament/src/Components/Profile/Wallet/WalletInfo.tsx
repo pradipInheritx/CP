@@ -54,8 +54,6 @@ function WalletInfo() {
         coin: "MATIC",
         address: "",
     });
-    console.log(paxDetails,"paxDetails")
-
     const [walletDetailsObj, setWalletDetailsObj] = useState([{
         coin: "",
         address: "",
@@ -127,7 +125,6 @@ function WalletInfo() {
             setEditCardAddress(true)
         }
         
-        console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
         setSelectRadio(userInfo?.referalReceiveType?.name || 'ONDEMAND');
         setDefaultValue();
     }, [JSON.stringify(userInfo?.wellDAddress)]);
@@ -211,7 +208,6 @@ function WalletInfo() {
         //             },
                     
         //         ]
-        //         console.log(walletDetailsObj, "walletDetailsObj")
                 
         //         const uniqueNamesArray2 = allList.filter((obj2:any) =>
         //             // @ts-ignore
@@ -319,14 +315,11 @@ function WalletInfo() {
         }
     }
 
-    console.log(PaxErrorValue,"PaxErrorValue")
-
     const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
         return axios.get(
             `https://api.blockcypher.com/v1/${"eth"}/main/addrs/${inputAddress}`
         ).then(async (response) => {            
             const { error } = response.data;
-            console.log(response,"geterror")
             
             if (!error &&checktype == "forWallet") {
                 setWalletDetails({ coin: "", address: "" })
@@ -411,17 +404,14 @@ function WalletInfo() {
                 errorCount++;
             }
             if (selectRadio === 'LIMIT' && limitType == "AMOUNT" && amountValue === "") {
-                console.log(limitType)
                 setAmountError("Please enter valid amount.");
                 errorCount++;
             }
             if (['LIMIT'].includes(selectRadio) && limitType == "ANY_OF_THEM" && timeAmount.amount !== "" &&/* timeType === 'amount' && */ (!/^\d{0,10}(\d+)?$/.test(timeAmount.amount) || parseFloat(timeAmount.amount) <= 0)) {
-                console.log(limitType)
                 setAmountError("Please enter valid amount.");
                 errorCount++;
             }
             if (['LIMIT'].includes(selectRadio) && limitType == "AMOUNT" && amountValue !== "" &&/* timeType === 'amount' && */ (!/^\d{0,10}(\d+)?$/.test(amountValue) || parseFloat(amountValue) <= 0)) {
-                console.log(limitType)
                 setAmountError("Please enter valid amount.");
                 errorCount++;
             }
@@ -452,8 +442,6 @@ function WalletInfo() {
                     // @ts-ignore
                     showToast(error.response.data.message, ToastType.ERROR);
                 }
-                
-                console.log(data,"checkreferalReceiveType")
                 setSavePaymentMethod(false);
             }   
         } else if (selectRadio === 'LIMIT' && limitType == ""){
@@ -520,7 +508,6 @@ function WalletInfo() {
         }
         axios.get(`/payment/getInstantReferalAmount/${user?.uid}`, {headers}            
         ).then(async (response) => {
-            console.log(response, "response")
             showToast("Successfully Received all Pending Payment", ToastType.SUCCESS);
             setGetPendingShow(false)
             })

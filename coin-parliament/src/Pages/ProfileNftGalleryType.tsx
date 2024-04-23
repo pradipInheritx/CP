@@ -331,7 +331,6 @@ const ProfileNftGalleryType = () => {
       const serchValue = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())
-      //  console.log(serchresult, "serchCard")
       setSearchedCard(serchresult)
     }
   }
@@ -426,8 +425,6 @@ const ProfileNftGalleryType = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      //  console.log(serchresult,"serchresult")
-
       setSearchedCard((pev: any) => finalValue)
     }
     else {
@@ -435,7 +432,6 @@ const ProfileNftGalleryType = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      //  console.log(serchresult,"serchresult")
       setSearchedCard((pev: any) => finalValue)
     }
   }

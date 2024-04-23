@@ -42,7 +42,6 @@ const Wallet = () => {
   const handleModleShow = () => setModleShow(true);
   const searchParams = new URLSearchParams(useLocation().search);
 
-  // console.log(searchParams.get('name'),"window.location.search")
   // useEffect(() => {
   //   // @ts-ignore    
   //   if (userInfo?.mfa !== undefined && !userInfo?.mfa) {
@@ -53,9 +52,7 @@ const Wallet = () => {
     if (walletTab) {      
       setSelectTab(walletTab)
     }
-    }, [walletTab])
-  console.log(walletTab,"walletTab")
-  
+    }, [walletTab])  
   return (    
     <>      
       

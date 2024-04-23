@@ -26,7 +26,6 @@ const FwPool = () => {
 // .then((snapshot) => {        
 // snapshot.docs?.map(doc=>setUserInfo(doc.data()))
 // }).catch((error) => {
-// console.log(error,"error");
 // });    
 //   }
 
@@ -53,7 +52,6 @@ const FwPool = () => {
     // getFollowerData()
   }, [userInfo?.children]);
  
-  console.log('userInfo',userInfo)
   return (
     <>
       <div className={`${window.screen.width>767?"pt-4":""}`}>

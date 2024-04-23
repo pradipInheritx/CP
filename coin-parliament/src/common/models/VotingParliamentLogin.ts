@@ -10,7 +10,6 @@ export const SignupRegularForVotingParliament = async (
     callback: Callback<User>
 ) => {
     try {
-        console.log('voting');
         validateSignup(payload);
         const auth = firebaseVotingParliament.auth();
         const userCredential = await auth.createUserWithEmailAndPassword(
@@ -24,7 +23,6 @@ export const SignupRegularForVotingParliament = async (
 
             // const documentRef = firebaseSportParliament.firestore().collection('users').doc(auth?.currentUser?.uid);
             // await documentRef.update({ firstTimeLogin: true });
-            // console.log('sport', documentRef, auth?.currentUser?.uid);
             if (auth?.currentUser?.uid) {
                 saveUsername(auth?.currentUser?.uid, '', '')
             }
@@ -35,7 +33,6 @@ export const SignupRegularForVotingParliament = async (
         callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
-        console.log('voting error');
         // @ts-ignore
         if (e?.code) {
             // @ts-ignore

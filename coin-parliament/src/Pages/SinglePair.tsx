@@ -33,7 +33,6 @@ const getCPVIForVoteV2 = httpsCallable(functions, "CPVIForCoin");
 const SinglePair = () => {
   let params = useParams();
 
-  console.log(params, "myParams")
   const translate = useTranslation();
   const { coins, setCoins, setMyCoins, totals, ws, socket, myCoins, socketConnect } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -108,7 +107,6 @@ const SinglePair = () => {
       
     ));
     if (Object.keys(pairLivePrice.current).length && coins != pairLivePrice.current) {
-      // console.log("Browser window called 3", pairLivePrice.current)
       setCoins(pairLivePrice.current)
     }
   }
@@ -124,7 +122,6 @@ const SinglePair = () => {
   }, [])
   useEffect(() => {
     if (!ws) return
-    console.log('websocket connected')
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const symbol = message?.s?.slice(0, -4)

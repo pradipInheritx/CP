@@ -26,7 +26,6 @@ const InfluencersComponent = ({
 }: InfluencersComponentProps) => {
   const scrollToTopRef = useRef<HTMLDivElement>(null);
   const scrollToTop = () => {
-    console.log("scrollToTop working")
     if (scrollToTopRef.current) {      
       // Use type assertion to assert that scrollToTopRef.current is of type HTMLElement
       (scrollToTopRef.current as HTMLElement).scrollTo({

@@ -54,11 +54,9 @@ const Votes = () => {
     },
     [user?.uid, pageSize]
   );
-  console.log(votes, isLoading,"allvotes")
   useEffect(() => {
     // @ts-ignore
     const { coins, pairs } = votes
-    console.log(coins, pairs,"coinspairsboth")
     let AllCoins = coins?.votes.filter((item: any) => {
       if (item.expiration < Date.now() && item.success == undefined) {
 
@@ -71,9 +69,7 @@ const Votes = () => {
       }
     })
     let allCoinsPair = [...AllCoins, ...AllPairs]
-    console.log(allCoinsPair,"allCoinsPair")
     let promiseArray: any = []
-    console.log(allCoinsPair.length, paxDistribution, userInfo?.uid,"yes i am calling")
     if (allCoinsPair.length > 0 && paxDistribution > 0) {
       allCoinsPair?.forEach((voteItem: any) => {
         promiseArray.push(checkprice(voteItem))
@@ -104,7 +100,6 @@ const Votes = () => {
   }, [userInfo?.uid])
     
   const checkprice = async (vote: any) => {
-    console.log("yes i am calling ")
     const voteCoins = vote?.coin.split("-");
     const coin1 = `${voteCoins[0] ? voteCoins[0].toLowerCase() || "" : ""}`
     const coin2 = `${voteCoins[1] ? voteCoins[1].toLowerCase() || "" : ""}`
@@ -131,7 +126,6 @@ const Votes = () => {
         userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
-        // console.log(res.data, "checkAndUpdateRewardTotal")
       }).catch((error) => {
         console.log(error, "checkAndUpdateRewardTotal")
       })
@@ -143,7 +137,6 @@ const Votes = () => {
         userId: vote?.userId
       }
       checkAndUpdateRewardTotal(raw).then((res) => {
-        // console.log(res.data, "checkAndUpdateRewardTotal")
       }).catch((error) => {
         console.log(error, "checkAndUpdateRewardTotal")
       })
@@ -182,16 +175,12 @@ const Votes = () => {
   useEffect(() => {
     if (user?.uid) {
       getVotes(index, runVote).then(void 0);
-      console.log('called vote count');
-
     }
   }, [getVotes, user?.uid, index]);
 
 
   useEffect(() => { // here
     if (completedVotes?.length > 0) {
-      console.log('completedVotes');
-
       getVotes(index, runVote).then(void 0).catch(() => { });
     }
   }, [JSON.stringify(completedVotes)]);

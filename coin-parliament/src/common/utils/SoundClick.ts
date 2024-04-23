@@ -32,7 +32,6 @@ const voteLast5Sec = new Audio(voteLast5SecImport);
 const claimReward = new Audio(claimRewardImport);
 
 export const handleSoundClick = () => {
-  // console.log('play sound')
   audio.play();
 };
 
@@ -81,12 +80,10 @@ export const handleSoundWinCmp = {
 };
 
 export const cardFlip = () => {
-  // console.log('play sound')
   onFlipcard.play();
 };
 
 export const claimyourreward = {
-  // console.log('play sound')
   play: () => {
     // rewardaudio.play()
   },

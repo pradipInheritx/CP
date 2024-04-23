@@ -65,12 +65,9 @@ const CoinsForm = ({
   const { timeframes, voteRules: { maxVotes, timeLimit } } = useContext(AppContext);
   var urlName = window.location.pathname.split('/');
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
-  // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
-
-  // console.log()
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -83,7 +80,6 @@ const CoinsForm = ({
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
-    console.log("checkalldataforvote give vote")
     const chosenTimeframe = timeframes[selectedTimeFrame];
     try {
       setLoading(true);
@@ -113,8 +109,6 @@ const CoinsForm = ({
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {
         // const userRef = doc(db, "users", user?.uid);
-        // console.log(userInfo, 'pkkkkkkkkkk');
-
         // const newUserInfo = {
         //   ...(userInfo as UserProps),
         //   rewardStatistics: {
@@ -178,7 +172,6 @@ const CoinsForm = ({
           votedDetails,
           disableVoteButton,
           submit: () => {
-            // console.log('votebutton',selectedOption)
             if (
               selectedTimeFrame !== undefined &&
               selectedOption !== undefined

@@ -183,9 +183,6 @@ const VotedCard = ({
     }
   };
 
-  console.log("getpair vote", vote)
-
-
   useEffect(() => {
     getBorderColor()
   }, [coins[symbol1]?.price, coins[symbol2]?.price])
@@ -216,8 +213,6 @@ const VotedCard = ({
 
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
-      // if (!voteDetails?.openResultModal && calcPer) {
-      // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
 
       let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
       let value2 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin2 || '0.00';
@@ -228,13 +223,7 @@ const VotedCard = ({
         }
         return Prev;
       })
-      // }
     }
-    // if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
-    //   setPairCoinResult((Prev) => {
-    //     return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
-    //   })
-    // }
   }, [JSON.stringify(voteEndCoinPrice[`${vote?.coin}_${vote?.timeframe?.seconds}`])]);
 
   useEffect(() => {
@@ -274,9 +263,6 @@ const VotedCard = ({
   const voted = options[vote.direction];
   const votedCoin = coin2 ? coins[voted] : coins[symbol1];
 
-
-  // console.log(coins,"votedCoin")
-
   let row1 = "",
     row2 = "",
     row3 = "";
@@ -288,8 +274,6 @@ const VotedCard = ({
       valueVotingTime = vote.valueVotingTime;
     }
 
-    // valueVotingTime = Number(valueVotingTime);
-    console.log('votetime', valueVotingTime)
     row1 = coin2
       ? `${votedCoin.symbol} : `
       : `${voted} ${votedCoin.symbol}`;
@@ -473,7 +457,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   //   coins[symbol2]?.symbol.toLowerCase() || "",
   // ];
   const TenSec = expirationTime - (expirationTime - 10000)
-  // console.log(TenSec ,"TenSec")
   // if (expirationTime == TenSec) {
 
   // }
@@ -483,7 +466,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const checkprice = async () => {
     // if (!getresultFlag) return
     // getresultFlag = false;
-    // console.log('price called')
     // const data = await getPriceCalculation({
     //   coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
     //   coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
@@ -502,7 +484,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     //   }
     // }).catch(err => {
     //   if (err && err.message) {
-    //     console.log(err.message);
     //   }
     // });
 

@@ -116,7 +116,6 @@ const Security = () => {
   //       setVerificationIdData(verificationId);
   //       setVerifiactionCodeSent(true);
   //     })
-  //     .catch((err) => console.log("err", err?.message));
   // };
   // const verifyCode = () => {
   //   const cred = PhoneAuthProvider.credential(

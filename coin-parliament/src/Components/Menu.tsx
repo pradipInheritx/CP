@@ -134,7 +134,6 @@ const Menu = ({
     setMenuOpen(false);
     // handleSoundClick()
   }
-  // console.log("hello")
   const handleShow = () => {
     if (followerPage) {
       navigate(-1)
@@ -150,7 +149,6 @@ const Menu = ({
         setLogin(true);
     setShowMenuBar(false)
     setMfaLogin(false)
-        // console.log("i am working error")	
         localStorage.removeItem("userId")    
   };
   const translate = useTranslation();

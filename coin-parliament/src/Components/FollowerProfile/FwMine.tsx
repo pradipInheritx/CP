@@ -74,7 +74,6 @@ const FwMine = () => {
   //     .then((snapshot) => {
   //       snapshot.docs?.map(doc => setUserInfo(doc.data()))
   //     }).catch((error) => {
-  //       console.log(error, "error");
   //     });
   // }
   const getFollowerData = async () => {

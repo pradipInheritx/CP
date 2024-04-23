@@ -32,7 +32,6 @@ export const getUsers = ({
   try {
     // setIsLoading(true)
     getLeaderUsersByIds({ userIds: users }).then((u) => {
-      console.log(u.data, "checkdata")
       setUsers(u.data);
       if(setIsLoading){
         setIsLoading(false)

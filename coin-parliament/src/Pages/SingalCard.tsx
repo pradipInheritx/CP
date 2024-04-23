@@ -69,9 +69,6 @@ const SingalCard = () => {
   const { albumOpen, setAlbumOpen, userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>();
 
-
-  // console.log(leaders,"allleaders")
-
   // const BackSideCard = (value: string | number) => {
   //   // @ts-ignore
   //   let allBackCard = backCards;
@@ -128,7 +125,6 @@ const SingalCard = () => {
     await getList({ cardId: id }).then((list) => {
       // @ts-ignore          
       const FollowerList = list?.data?.map((items: any) => {
-        // console.log(items,"allitems")
         return {
           leaders: items?.leader?.length || 0,
           displayName: items?.displayName,
@@ -213,12 +209,6 @@ const SingalCard = () => {
   //     })
   //     ;
   // }
-
-
-
-
-  console.log(followersDetails, "followersDetails")
-
 
   return (
     <div className=''>

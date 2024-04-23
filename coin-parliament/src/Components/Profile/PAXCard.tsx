@@ -216,7 +216,6 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   useEffect(() => {
     setLatestRewardCoins((rewardTimer?.data?.thirdRewardDiamonds || 0));
   }, [rewardTimer?.data?.thirdRewardDiamonds]);
-  // console.log(latestRewardCoins,"setLatestRewardCoins")
   useEffect(() => {  
     
     setPrevCountRef((PAX || 0) - latestRewardCoins);
@@ -225,7 +224,6 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
 
   const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide, extraVoteModule, setExtraVoteModule } = useContext(AppContext);
-  // console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const [videoShow, setVideoShow] = React.useState(false);
   const handleClose = () => setExtraVoteModule(false);

@@ -86,9 +86,6 @@ const PersonalInfo = () => {
     setPhone({ phone: userInfo?.phone })
   }, [userInfo]);
 
-  console.log(userInfo?.phone,"userInfo?.phone")
-
-
   const createPost = async (id: string) => {
     if (!id) return
     // @ts-ignore
@@ -134,8 +131,6 @@ const PersonalInfo = () => {
 
   }
 
-
-  console.log(phone , phoneErr,"Phonenumber")
   useEffect(() => {
     axios
       .get("https://ipapi.co/json/")
@@ -167,7 +162,6 @@ const PersonalInfo = () => {
     setShow(true)
   }
 
-   console.log(bio.length, "bio.length") 
   return (
     <>
 
@@ -188,14 +182,12 @@ const PersonalInfo = () => {
             setDisplayNameErr(true);
           }
           // else if (phone?.phone && phone?.phone.replace(/\D/g, '').length < 6 || phone?.phone == "") {
-          //   console.log(phone?.phone,"phone?.phone")
           //   setPhoneErr(true)
           // }          
           // else if (bio.length < 5 || bio.length > 401 || bio === "") {
           //   setBioErr(true);
           // }  
           else if (email === user?.email) {
-            console.log("i am working234234345")
             setUserInfo(newUserInfo);
             await onSubmit(newUserInfo);
             setEdit(false)

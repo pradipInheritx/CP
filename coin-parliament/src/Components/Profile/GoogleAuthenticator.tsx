@@ -96,13 +96,11 @@ const GoogleAuthenticator = () => {
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {      
       try {
         const response = await axios.post(generateGoogle2faUrl, data);
-        console.log(response.data);
         setSecretKey(response.data.result.base32);
         QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
         ).then(
           (dataUrl: string) => {
             setQrCodeDataUrl(dataUrl);
-            console.log('qrcode', dataUrl)
           }
         );
       } catch (error) {
@@ -118,7 +116,6 @@ const GoogleAuthenticator = () => {
         token: token,
         userType: "USER",
       });
-      console.log(response.data);
       const newUserInfo = {
         ...(userInfo as UserProps),
         mfa: true as boolean,
@@ -131,11 +128,9 @@ const GoogleAuthenticator = () => {
     }
   };
 
-  // console.log('user',userInfo,u)  
   useEffect(() => {
     if (!userInfo?.mfa) {
       createPost(userInfo?.uid as string)
-      console.log(userInfo?.uid,"i am runing again")
     };
     return () => setCopied(false);
   }, [userInfo?.mfa]);
@@ -149,7 +144,6 @@ const GoogleAuthenticator = () => {
       updateProfile(u, { photoURL: newUserInfo?.mfa ? "mfa" : "" })
         .then((userRecord) => {
           // See the UserRecord reference doc for the contents of userRecord.
-          console.log("Successfully updated user", userRecord);
         })
         .catch((error) => {
           console.log("Error updating user:", error);

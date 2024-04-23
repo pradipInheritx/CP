@@ -81,7 +81,6 @@ const SingleCardDetails = () => {
   const [chosen, setChosen] = useState<string | undefined>();
 
 
-  // console.log(leaders,"allleaders")
 
   // const BackSideCard = (value: string | number) => {
   //   // @ts-ignore
@@ -207,7 +206,6 @@ const SingleCardDetails = () => {
   //         });
 
   //         getsamecard(data[0])
-  //         console.log(data[0],"checkdata")
   //       }).catch((error) => {
   //         console.log(error, "error");
   //       });
@@ -230,7 +228,6 @@ const SingleCardDetails = () => {
 
           const data = snapshot.docs.map((doc) => ({ ...doc.data() }));
           getsamecard(data[0]);
-          console.log(data[0], 'checkdata');
         }
 
         if (singalCardData?.myID) {
@@ -245,7 +242,6 @@ const SingleCardDetails = () => {
   }, [singalCardData]);
 
   const getsamecard = (data: any) => {
-    console.log(data, "sameCards i am every time calling")
     var commonCard = {}
     // @ts-ignore
     const allCards = data?.rewardStatistics?.cards
@@ -253,7 +249,6 @@ const SingleCardDetails = () => {
       // @ts-ignore
       commonCard = { ...commonCard, [item]: (commonCard[item] ? commonCard[item] + 1 : 1) }
     })
-    console.log(commonCard, "commonCard")
     setSameCards(commonCard)
   }
 
@@ -300,13 +295,11 @@ const SingleCardDetails = () => {
       });
 
       setAllCardList(AllSameCard);
-      // console.log(AllSameCard, "AllSameCard");
     } catch (error) {
       console.error('Error fetching reward transactions:', error);
     }
   };
 
-  console.log(allCardList,"allCardList")
   return (
     <div className=''>
       <div className='h-100 '>

@@ -42,13 +42,11 @@ export const getUserInfo: (user?: AuthUser) => Promise<UserProps> = async (
 };
 
 export const saveUsername = async (uid: string, displayName: string, avatar: string) => {
-  console.log("i am working name")
   const userRef = doc(db, "users", uid);
   await setDoc(userRef, { userName:displayName, /* avatar */ }, { merge: true });
 };
 
 export const saveDisplayName = async (uid: string, displayName: string, country:string, avatar: string) => {
-  console.log("i am working name 2")
   const userRef = doc(db, "users", uid);
   await setDoc(userRef, { displayName, country /* avatar */ }, { merge: true });
 };

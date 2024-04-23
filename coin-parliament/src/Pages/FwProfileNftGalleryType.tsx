@@ -391,8 +391,7 @@ const FwProfileNftGalleryType = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      //  console.log(serchresult,"serchresult")
-
+      
       setSearchedCard((pev: any) => finalValue)
     }
     else {
@@ -400,7 +399,6 @@ const FwProfileNftGalleryType = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      //  console.log(serchresult,"serchresult")
       setSearchedCard((pev: any) => finalValue)
     }
   }

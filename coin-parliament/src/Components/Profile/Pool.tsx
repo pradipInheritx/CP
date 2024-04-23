@@ -19,7 +19,6 @@ const Pool = () => {
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(4) || 0
   );
-  console.log(userInfo?.userName, userInfo,"userInfo?.userName")
 
   useEffect(() => {
     if (userInfo?.children){    
@@ -28,7 +27,6 @@ const Pool = () => {
     }
   }, [userInfo?.children]);
   const navigate = useNavigate()
-  console.log(children, "userdata")
   const redirectTab = (chlidUserId:any) => {   
     // @ts-ignore
     if (chlidUserId) {
