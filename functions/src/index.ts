@@ -1106,7 +1106,10 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     const latestVoteDate = latestVoteTime?.toISOString().split('T')[0];
 
     let lastVoteDay = latestVoteDate ? latestVoteDate : '';
-
+    const timestamp = new Date(lastVoteDay); // Replace this number with your timestamp
+    const lastVoteDayTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("lastVoteDayTimestamp--->", lastVoteDayTimestamp);
+    
     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
     let numberOfDaysVoted = uniqueDates.length;
 
@@ -1116,7 +1119,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
       .firestore()
       .collection("userStatistics")
       .doc(userId)
-      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDayTimestamp }, { merge: true });
 
     console.log("User statistics data updated successfully for user:", userId);
   } catch (error) {
