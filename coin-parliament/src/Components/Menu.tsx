@@ -284,7 +284,7 @@ const Menu = ({
                   return <hr key={i} />;
                 }
                 return item?.href ? (
-                  <>
+                  <div key={i + item.href}>
                     {
                       item?.href == "https://telegram.me/VoteToEarnChat" ?
                         
@@ -315,7 +315,7 @@ const Menu = ({
                           {translate(item.label)}
                         </Nav.Link>
                     }                  
-                  </>
+                  </div>
                 ) : (
                   <Nav.Link key={i} eventKey={item?.eventKey}>
                     {item && translate(item.label)}

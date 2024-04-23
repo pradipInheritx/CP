@@ -302,7 +302,7 @@ function App() {
       // console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")
+        // console.log(message.data, "checknotification")
         //   showToast(
         //   <div>
         //     <h5>{title}</h5>
@@ -616,7 +616,7 @@ function App() {
 
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
-    console.log(messagingResolve,"messagingResolve")
+    // console.log(messagingResolve,"messagingResolve")
     if (messagingResolve) {
       getToken(messagingResolve, {
         vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
@@ -666,9 +666,7 @@ function App() {
       const userDocSnapshot = await getDoc(coinData);
 
       if (userDocSnapshot.exists()) {
-        // setDBCoins(userDocSnapshot.data());
-        // console.log(userDocSnapshot.data(),"userDocSnapshot.data()")
-        console.log("Browser window called 0",userDocSnapshot.data())
+        // setDBCoins(userDocSnapshot.data());                
         setCoins(userDocSnapshot.data());
       } else {
         console.log("Document does not exist");
