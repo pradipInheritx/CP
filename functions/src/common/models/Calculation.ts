@@ -16,18 +16,6 @@ import {
 import { errorLogging } from "../helpers/commonFunction.helper";
 
 
-
-
-
-// export const returnValue: (success: boolean, voteRules: VoteRules) => number = (
-//     success = false,
-//     voteRules
-// ) =>
-//   (Number(voteRules.givenCPM) || 1) *
-//   (success ?
-//     Number(voteRules.CPMReturnSuccess) :
-//     Number(voteRules.CPMReturnFailure));
-
 export const returnValue: (
   success: number,
   voteRules: VoteRules,
@@ -50,6 +38,27 @@ export const returnValue: (
   );
   return (Number(voteRules?.givenCPM) || 1) * CPMReturn;
 };
+
+export const returnValueOnDefault50Votes: (
+  success: number,
+  voteRules: VoteRules,
+  status: any
+) => number = (success = 0, voteRules, status) => {
+  let CPMReturn: number;
+  if (success === 1) {
+    CPMReturn = voteRules.CMPRangeOnDefault50Votes ? Number(voteRules.CMPRangeOnDefault50Votes.high) : 2;
+  } else if (success === 2) {
+    CPMReturn = voteRules.CMPRangeOnDefault50Votes ? Number(voteRules.CMPRangeOnDefault50Votes.medium) : 1.5
+  } else {
+    CPMReturn = voteRules.CMPRangeOnDefault50Votes ? Number(voteRules.CMPRangeOnDefault50Votes.low) : 1
+  }
+  console.log(
+    "GIVEN CMP >>>>>>>>>",
+    CPMReturn
+  );
+  return CPMReturn;
+};
+
 class Calculation {
   private readonly voteResult: VoteResultProps;
   private db: firestore.Firestore;
@@ -129,11 +138,20 @@ class Calculation {
 
       if (endValue && endValue < upRange && endValue > downRange) {
         successScoreValue = 2;
-        const score = returnValue(
-          successScoreValue || 0,
-          settings.data()?.voteRules,
-          user?.status
-        );
+        let score: number = 0;
+        if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+          score = await returnValueOnDefault50Votes(
+            successScoreValue || 0,
+            settings.data()?.voteRules,
+            user.status
+          );
+        } else {
+          score = await returnValue(
+            successScoreValue || 0,
+            settings.data()?.voteRules,
+            user.status
+          );
+        }
         // TODO When score reach to 100 create a function for send Pax to that user
 
         return { successScoreValue, score };
@@ -156,11 +174,20 @@ class Calculation {
       if (this.status === 0 || this.status) {
         successScoreValue = this.status;
       }
-      const score = returnValue(
-        successScoreValue || 0,
-        settings.data()?.voteRules,
-        user.status
-      );
+      let score: number = 0;
+      if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+        score = await returnValueOnDefault50Votes(
+          successScoreValue || 0,
+          settings.data()?.voteRules,
+          user.status
+        );
+      } else {
+        score = await returnValue(
+          successScoreValue || 0,
+          settings.data()?.voteRules,
+          user.status
+        );
+      }
       // TODO When score reach to 100
       return { successScoreValue, score };
     } else {
@@ -191,11 +218,21 @@ class Calculation {
         if (this.status === 0 || this.status) {
           successScoreValue = this.status;
         }
-        const score = returnValue(
-          successScoreValue || 0,
-          settings.data()?.voteRules,
-          user?.status
-        );
+
+        let score: number = 0;
+        if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+          score = await returnValueOnDefault50Votes(
+            successScoreValue || 0,
+            settings.data()?.voteRules,
+            user.status
+          );
+        } else {
+          score = await returnValue(
+            successScoreValue || 0,
+            settings.data()?.voteRules,
+            user.status
+          );
+        }
         return { successScoreValue, score };
       }
     }
@@ -332,11 +369,20 @@ class Calculation {
       const voteStatistics: VoteStatistics =
         user.voteStatistics || ({} as VoteStatistics);
       voteStatistics.successful += voteResult.success ? 1 : 0;
-      const score = returnValue(
-        voteResult.success || 0,
-        settings.data()?.voteRules,
-        user.status
-      );
+      let score: number = 0;
+      if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+        score = await returnValueOnDefault50Votes(
+          voteResult.success || 0,
+          settings.data()?.voteRules,
+          user.status
+        );
+      } else {
+        score = await returnValue(
+          voteResult.success || 0,
+          settings.data()?.voteRules,
+          user.status
+        );
+      }
       await this.db
         .collection("votes")
         .doc(this.id)
@@ -460,7 +506,8 @@ const getLeaders = async () => {
   const snapshotUsers = await firestore()
     .collection("users")
     .withConverter(userConverter)
-    .get();
+    .where("voteStatistics.total", ">", 49)
+    .get(); // Added this condition for that user will fetch only minimum vote given atleast 50
 
   return snapshotUsers.docs
     .map((u) => {
@@ -509,7 +556,7 @@ const getTotalCountOfUserType = async () => {
 
   let leaders = getLeadersResponse
     .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
-    .filter((obj: any) => obj.total > 19);
+    .filter((obj: any) => obj.total > 49);
 
   const userTypes = await firestore()
     .collection("settings")
@@ -577,13 +624,14 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     try {
       // get already existing Leader 
       let getLeadersResponse: any = await getLeaders();
+      console.info("getLeadersResponse--->", getLeadersResponse);
       // get userTypes
       const getStatusQuery: any = (await firestore().collection('settings').doc('userTypes').get()).data();
       const getStatusList = getStatusQuery.userTypes;
       console.log("getStatusList :  ", getStatusList);
       let leaders = getLeadersResponse
         .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
-        .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
+        .filter((obj: any) => obj.total > 49); // Filter Only Those Users Which Has More Than 49 Votes (Changed on 23-04-2024)
       leaders.sort((user_1: any, user_2: any) => user_1.total - user_2.total); // sort the users based on total 
       // console.log("Length With Leaders", leaders);
       console.log("leader length : ", leaders.length);
@@ -596,10 +644,11 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
         let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'speaker');
         console.log("Status: " + status);
+        let getMinVote = status && status[0] && status[0].minVote ? status[0].minVote : 50; // Get minVote From Collection userType
         for (let leader = 0; leader < leaders.length; leader++) {
           const eachUser: any = leaders[leader];
           console.info("eachUser.total", eachUser.total)
-          if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+          if ((eachUser.total > getMinVote || eachUser.total === getMinVote) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
             console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
             if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
               console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
@@ -642,9 +691,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         // console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
         let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'council');
         console.log("Status: " + status);
+        let getMinVote = status && status[0] && status[0].minVote ? status[0].minVote : 75; // Get minVote From Collection userType
         for (let leader = 0; leader < leaders.length; leader++) {
           const eachUser: any = leaders[leader];
-          if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
+          if ((eachUser.total > getMinVote || eachUser.total === getMinVote) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
             if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
               eachUser.status = "Council";
               eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -683,9 +733,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         // console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
         let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'ambassador');
         console.log("Status: " + status);
+        let getMinVote = status && status[0] && status[0].minVote ? status[0].minVote : 100; // Get minVote From Collection userType
         for (let leader = 0; leader < leaders.length; leader++) {
           const eachUser: any = leaders[leader];
-          if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+          if ((eachUser.total > getMinVote || eachUser.total == getMinVote) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
             if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
               eachUser.status = "Ambassador";
               eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -719,9 +770,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         // console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
         let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'minister');
         console.log("Status: " + status);
+        let getMinVote = status && status[0] && status[0].minVote ? status[0].minVote : 125; // Get minVote From Collection userType
         for (let leader = 0; leader < leaders.length; leader++) {
           const eachUser: any = leaders[leader];
-          if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+          if ((eachUser.total > getMinVote || eachUser.total == getMinVote) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
             if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
               eachUser.status = "Minister";
               eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
@@ -755,9 +807,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
         let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'chairman');
         console.log("Status: " + status);
+        let getMinVote = status && status[0] && status[0].minVote ? status[0].minVote : 150; // Get minVote From Collection userType
         for (let leader = 0; leader < leaders.length; leader++) {
           const eachUser: any = leaders[leader];
-          if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+          if (eachUser.total > getMinVote && leaderStatusForChairman.length < getTotalNumberOfMinister) {
             if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
               eachUser.status = "Chairman";
               eachUser['influencersScore'] = await influencersScoreCalculation(eachUser?.successful, eachUser?.total);
