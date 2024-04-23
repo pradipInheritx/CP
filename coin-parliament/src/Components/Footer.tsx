@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { texts } from "./LoginComponent/texts";
 import XTwitter from "assets/images/x-twitter-white.svg"
+import telegramIcon from "assets/images/telegramIcon.svg"
 import axios from "axios";
 const FooterContainer = styled.footer`
   bottom: 0;
@@ -158,7 +159,23 @@ const Footer = () => {
       <p> PAX BEP20 Total supply : {formatNumberAbbreviated(Number(footerData?.default))} | Minted quantity : {footerData?.used}   </p><p> Current block number : {footerData?.block} | Next halving : in {footerData?.maxPaxDistribution} blocks  </p>
       <p>Current block reward {footerData?.paxDistribution} | Current value 8.28$</p>
 
-
+      <div className="d-flex justify-content-center align-items-center" style={{ marginTop: '10px', marginBottom: '5px', cursor: 'pointer' }}
+        onClick={() =>
+          window.open(
+            `https://telegram.me/VoteToEarnChat`,
+            "_blank"
+          )
+        }
+      >
+        <p className=""
+          style={{
+            fontWeight: 'bold',
+        }}
+        >"Got a question? Talk to us on Telegram"</p>
+        {/* <button> */}
+        <img src={telegramIcon} width={'40'} className="me-1 pb-1"/>
+        {/* </button> */}
+      </div>
 
       <p style={{ marginTop: '10px', marginBottom: '5px' }}>
 

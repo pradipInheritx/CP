@@ -49,6 +49,7 @@ export const privacy = `<p><strong>I. Privacy Policy </strong><br />&nbsp;<br />
 <p>16. In the event that we sell, assign, or transfer some or all of our business or assets to a<br />successor or acquirer, directly or indirectly, including, but not limited to, in connection with the<br />sale, merger, acquisition, and/or bankruptcy and/or insolvency proceedings, we may sell, assign,<br />or transfer all of your personal information and other information provided by you or about you,<br />regardless of your opt status, to such successor or acquirer.<br />&nbsp;<br /><strong> X. Disclaimer </strong><br />&nbsp;<br />17. The transmission of information via the internet is not completely secure. Although we do<br />our best to protect your personal information, we cannot guarantee the security of the data<br />transmitted to our website, mobile site, and/or mobile application; transmission is at your own<br />risk. Accordingly, we (including our directors, officers, shareholders, suppliers, advisors,<br />contractors, and affiliates) will not be liable for any direct, indirect, incidental, consequential,<br />and/or punitive damages relating to the use or release of personal information resulting from<br />events outside of our control.&nbsp;<br />&nbsp;<br />XI.<strong> Your Acceptance of This Policy</strong> <br />&nbsp;<br />18. By agreeing to the Terms &amp; Conditions during the registration process on our website,<br />mobile site, and/or mobile application, or by continued use of the services, you agree to be bound<br />by this privacy policy and to any changes, we may make to this privacy policy from time to time.<br />We will notify you of any such changes to the Privacy Policy by posting an updated version of<br />the privacy policy on our website, mobile site, and/or mobile application. Your continued use of<br />the services will amount to and be construed as your consent to such changes.</p>`;
 const GameRule = ``;
 const Foundations = ``;
+const Telegram = ``;
 const Ambassador = ``;
 export const TermsAndCondition = `<p> <strong> I.  General </strong> <br /><br />1. We use cookies to personalise content and ads, to provide social media features <br />and to analyse our traffic We also share information about your use of our site with <br />  our social media, advertising and analytics partners who may combine it with other <br /> information that  you’ve provided to them or that they’ve collected from your use of <br /> their services.
 <br /> <br />2. We provide online and mobile financial games to you subject to the following terms<br />and conditions contained within these terms and conditions (the&quot;Terms and<br />Conditions&quot;), which should be read carefully by you in its entirety prior to your use of the<br />Services. Please note that these terms and conditions constitute a legally binding<br />agreement between you and us.<br /><br />3. In addition to these terms and conditions, please check our Privacy Policy, as well as<br />the game's rules, regulations, terms, and conditions, and the risk disclaimer - all of<br />which are included herein by reference, as well as any other policies that we may notify<br />you of from time to time.</p>
@@ -89,7 +90,13 @@ export const myPages: ContentPage[] = [
     content: privacy,
     slug: "knowledgehub",
   },
+  {
+    title: `"Got a question? Talk to us on Telegram"`,
+    content: Telegram,
+    slug: "onTelegram",
+  },
 ];
+
 
 export type Quote = { text: string; source: string }
 export const quotes: Quote[] = [

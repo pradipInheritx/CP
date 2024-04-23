@@ -21,7 +21,8 @@ import { Logout } from "common/models/Login";
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
     label: page.title,
-    href: `/${page.slug}`,
+    // href: `/${page.slug}`,
+    href: `${page.slug == "onTelegram" ? `${"https://telegram.me/VoteToEarnChat"}` : `/${page.slug}`}`,
   } as MenuItem;
 };
 
@@ -283,17 +284,38 @@ const Menu = ({
                   return <hr key={i} />;
                 }
                 return item?.href ? (
-                  <Nav.Link
-                    key={i}
-                    as={Link}
-                    to={item.href}
-                    onClick={() => {
-                      setMenuOpen(false)
-                      // handleSoundClick()
-                    }}
-                  >
-                    {translate(item.label)}
-                  </Nav.Link>
+                  <>
+                    {
+                      item?.href == "https://telegram.me/VoteToEarnChat" ?
+                        
+                        <>
+                          <Nav.Link
+                            key={i}
+                            as={Link}
+                            to={item.href}
+                            target="_blank"
+                            onClick={() => {
+                              setMenuOpen(false)
+                              // handleSoundClick()
+                            }}
+                          >
+                            {translate(item.label)}
+                          </Nav.Link>
+                        </>
+                        :
+                        <Nav.Link
+                          key={i}
+                          as={Link}
+                          to={item.href}
+                          onClick={() => {
+                            setMenuOpen(false)
+                            // handleSoundClick()
+                          }}
+                        >
+                          {translate(item.label)}
+                        </Nav.Link>
+                    }                  
+                  </>
                 ) : (
                   <Nav.Link key={i} eventKey={item?.eventKey}>
                     {item && translate(item.label)}

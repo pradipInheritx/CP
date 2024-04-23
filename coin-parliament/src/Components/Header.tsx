@@ -312,7 +312,7 @@ const Header = ({
 
 	useEffect(() => {
 		if (followerUserId) {     
-		  console.log(followerUserId, leaders ,"userId1")
+		//   console.log(followerUserId, leaders ,"userId1")
 		  const ourUser = leaders.filter((item) => item?.userId == followerUserId)     
 		  console.log(ourUser,"ouerdata");
 		   

@@ -1042,7 +1042,7 @@ function connect() {
 
   // let errorCount = 0;
   let hasReopened = false;
-  console.log(errorCount.current, socketUrl, socketConnect ,"errorCount.current")
+  // console.log(errorCount.current, socketUrl, socketConnect ,"errorCount.current")
   const handleError = () => {
     if (!hasReopened) {      
       errorCount.current++;
