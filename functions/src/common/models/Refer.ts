@@ -114,11 +114,9 @@ class Refer {
     console.log("newCommission :", newCommission)
 
     if (parentData?.parent) {
-      console.log("it go to parent of parent")
       const refer = new Refer(parentData.parent, parent.id);
       await refer.payParent(commission);
     }
-
     await this.parentRef.update({
       voteStatistics: {
         successful: Number(parentVoteStatistics?.successful || 0),

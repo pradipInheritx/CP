@@ -64,8 +64,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         //     },
         // };
 
-
-        const currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
+        let currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
 
         console.log("Current Gas Price (wei):", typeof currentGasPriceEther, parseFloat(currentGasPriceEther));
 
@@ -328,7 +327,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                     parentPendingPaymentId: null,
                     address: getMatchedCoinAddress.address,
                     receiveType: getParentSettings.name,
-                    timestamp: firestore.Timestamp.now(),
+                    timestamp: firestore.FieldValue.serverTimestamp(),
                 };
 
                 console.info("storeInParentData", storeInParentData);
@@ -394,7 +393,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
                         // const getPaymentAfterTransfer = await paymentFunction(transactionBody);
                         // Loop on getParentPayment and update status to SUCCESS
-                        const getParentPendingPaymentReference = await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.Timestamp.now() });
+                        const getParentPendingPaymentReference = await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
                         console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
 
                         getParentPayment.forEach(async (payment: any) => {
@@ -402,21 +401,21 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         });
                     } else {
                         console.info("Come Here In Else 1");
-                        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.Timestamp.now() });
+                        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
                     }
                 } else {
                     console.info("Come Here In Else ");
-                    await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.Timestamp.now() });
+                    await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
                 }
             }
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
-                await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.Timestamp.now() });
+                await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
             }
         } catch (error) {
             console.info("Error while make referal payment", error);
         }
     } else {
-        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.Timestamp.now() });
+        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() });
     }
 };
 
