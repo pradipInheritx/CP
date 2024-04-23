@@ -119,6 +119,14 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
     }
   }, [])
 
+  const getGenerateValue = () => {
+    let value = generate()
+    setUsername(value)
+    if (displayValue == "") {
+      setDisplayValue(value)
+    }
+}
+
   return (
     <>
       <Stack
@@ -193,7 +201,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
                 <Generate
                   onClick={(e) => {
                     e.preventDefault();
-                    setUsername(generate())
+                    getGenerateValue()
                   }
                   }
                 >
