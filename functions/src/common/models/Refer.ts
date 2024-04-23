@@ -10,6 +10,7 @@ export type VoteRules = {
   CPMReturnSuccess: number;
   CPMReturnFailure: number;
   CPMReturnInRange: number;
+  CMPRangeOnDefault50Votes: any;
 };
 
 export type CPMSettings = {
