@@ -139,7 +139,7 @@ class Calculation {
       if (endValue && endValue < upRange && endValue > downRange) {
         successScoreValue = 2;
         let score: number = 0;
-        if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+        if (user && user.voteStatistics && user.voteStatistics?.total < 51 && user.status?.name === "Member") {
           score = await returnValueOnDefault50Votes(
             successScoreValue || 0,
             settings.data()?.voteRules,
@@ -175,7 +175,7 @@ class Calculation {
         successScoreValue = this.status;
       }
       let score: number = 0;
-      if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+      if (user && user.voteStatistics && user.voteStatistics?.total < 51 && user.status?.name === "Member") {
         score = await returnValueOnDefault50Votes(
           successScoreValue || 0,
           settings.data()?.voteRules,
@@ -220,7 +220,7 @@ class Calculation {
         }
 
         let score: number = 0;
-        if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+        if (user && user.voteStatistics && user.voteStatistics?.total < 51 && user.status?.name === "Member") {
           score = await returnValueOnDefault50Votes(
             successScoreValue || 0,
             settings.data()?.voteRules,
@@ -370,7 +370,7 @@ class Calculation {
         user.voteStatistics || ({} as VoteStatistics);
       voteStatistics.successful += voteResult.success ? 1 : 0;
       let score: number = 0;
-      if (user && user.voteStatistics && user.voteStatistics?.total < 50 && user.status?.name === "Member") {
+      if (user && user.voteStatistics && user.voteStatistics?.total < 51 && user.status?.name === "Member") {
         score = await returnValueOnDefault50Votes(
           voteResult.success || 0,
           settings.data()?.voteRules,
