@@ -49,7 +49,7 @@ import {
 import {
   getAllCoins,
   getAllPairs,
-  // prepareCPVI,
+  prepareCPVI,
   // fetchAskBidCoin,
   // getUpdatedDataFromWebsocket,
   // getAllUpdated24HourRecords,
@@ -1830,17 +1830,17 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 //     await Promise.all([await fetchAskBidCoin()]);
 //   });
 
-// exports.prepareHourlyCPVI = functions.pubsub
-//   .schedule("0 * * * *")
-//   .onRun(async () => {
-//     await prepareCPVI(1, "hourly");
-//   });
+exports.prepareHourlyCPVI = functions.pubsub
+  .schedule("0 * * * *")
+  .onRun(async () => {
+    await prepareCPVI(1, "hourly");
+  });
 
-// exports.prepare4HourlyCPVI = functions.pubsub
-//   .schedule("0 */4 * * *")
-//   .onRun(async () => {
-//     await prepareCPVI(4, "fourHourly");
-//   });
+exports.prepare4HourlyCPVI = functions.pubsub
+  .schedule("0 */4 * * *")
+  .onRun(async () => {
+    await prepareCPVI(4, "fourHourly");
+  });
 
 // exports.prepare24HourlyCPVI = functions.pubsub
 //   .schedule("0 0 * * *")
@@ -2579,7 +2579,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
         let query = admin.firestore().collection("userStatistics").limit(batchSize);
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
-        
+
         const batchData = snapshot.docs.map((doc) => {
           const user = doc.data();
           if (user.signUpTime && user.signUpTime.trim() !== "") {
