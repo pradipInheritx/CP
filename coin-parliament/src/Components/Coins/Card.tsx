@@ -197,31 +197,6 @@ const Card = ({
   const [zoom, setZoom] = useState(false)
   const prevCountRef = useRef(currentPrice)
 
-  // console.log('reference',coins[symbol]?.randomDecimal)
-  // const OnlyCheckColor = () => {
-  //   // setInterval(() => {
-  //   if (coins[symbol]?.price == prevCountRef.current) {
-  //     setChangeColor("black")
-  //   }
-  //   else if (coins[symbol]?.price > prevCountRef.current) {
-  //     console.log("check i am working")
-  //     setChangeColor("Green")
-  //   }
-  //   else if (coins[symbol]?.price < prevCountRef.current) {
-  //     setChangeColor("Red")
-  //   }
-  //   // },5000);
-  //   // console.log(coins[symbol]?.price,"checkprice")
-  //   setCurrentPrice(coins[symbol]?.price)
-  // }
-  // useEffect(() => {
-  //   // console.log(currentPrice,"currentPrice")
-  //   prevCountRef.current = currentPrice;
-  //   OnlyCheckColor()
-  // }, [
-  //   coins[symbol]?.price,
-  // ])
-
   const OnlyCheckColor = () => {
     // setInterval(() => {            
     if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` == prevCountRef.current) {
@@ -242,8 +217,6 @@ const Card = ({
   }, [
     `${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`
   ])
-
-  // console.log(coins[symbol]?.price,"check both price")
 
   let params = useParams();
 

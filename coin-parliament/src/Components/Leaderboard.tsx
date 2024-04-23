@@ -68,7 +68,6 @@ const Leaderboard = ({
   const myUserIndex = userInfo?.uid && leaders?.sort((a, b) => (b?.influencersScore) - (a?.influencersScore)).findIndex(obj => obj.userId === userInfo?.uid) || 0;  
   const EndIndex = 25;
   // @ts-ignore
-  // console.log(leaders, "leaderscheck")
   return (
     <div>
       <LeadersContainer>

@@ -133,7 +133,6 @@ const Vote = ({
   //   const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
   //   // @ts-ignore
   //   setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
-  //   // console.log('votenumber',voteNumber, Number(voted))
   // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
   const [handleSoundClick] = useSound(buttonClick);
@@ -211,7 +210,6 @@ const Vote = ({
                     const rewardData = userInfo?.rewardStatistics
                     // @ts-ignore
                     rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
-                    console.log(rewardData, "allrewardData")
                     // const usereData = firebase
                     //   .firestore()
                     //   .collection("users")
@@ -295,7 +293,6 @@ const Vote = ({
                     const rewardData = userInfo?.rewardStatistics
                     // @ts-ignore
                     rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
-                    console.log(rewardData, "allrewardData")
                     // const usereData = firebase
                     //   .firestore()
                     //   .collection("users")

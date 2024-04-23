@@ -20,8 +20,6 @@ export const getData = ({
   }) => {
   const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
 
-  // console.log(pairs,"filterpair")
-
   return filterpair
     .map((combination:any) => {
       if (!combination) return undefined;
@@ -115,17 +113,12 @@ export const getFilteredDataByFav = (
 ) => {
   const str = filter.toUpperCase();
   const type = "fav"
-  
-  // const filterpair = filterpairdata(str, pairs)
-  // console.log(result,"resultvalue")
-
 
   return getPairData({    
     pairs:
       pairs.filter((p: any) => {
       const [coin1, coin2] = p;      
         return result.find((r: any) => {
-        console.log(r,"rvalue")
           const [val1, val2] = queryToPair(r);
           
         return (
@@ -150,8 +143,6 @@ export const getPairData = ({
   str?: any;
 }) => {
   const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
-
-  // console.log(pairs, "onlyfilterpair")
 
   return filterpair
     .map((combination: any) => {

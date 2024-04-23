@@ -30,7 +30,6 @@ export type SetsItems = {
 
 const SetsScreen = ({ type ,onSelectName, allCardNew, setsValue, winerCard }: SetsItems) => {
   const [backCards, setBackCards] = useState<any>([]);
-  console.log(allCardNew,"allCardNew")
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
     if (backCards.includes(value)) {

@@ -202,9 +202,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   //   };
   // }, []);
-
-
-  // console.log(mintedTime,"getMIntedTime")
   
   const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const rewardTransactionsCollectionRef = collection(firestore, 'reward_transactions');
@@ -236,7 +233,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       });
 // @ts-ignore
       setFulldata(cardData[0]);
-      console.log(cardData, "rewardcarddata");
 
       // Fetch reward transactions
       const rewardTransactionsQuery = query(
@@ -285,7 +281,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     const canvas = cardDiv.current;
     // @ts-ignore
     const context = canvas.getContext("2d");
-    // console.log(context,"context")
     // context.fillStyle = "#5d49df";
     // context.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -335,8 +330,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   // for PC
   const scratchStart = (e: any) => {
     handleSoundClickCardplay()
-    // console.log('scratchStart', e)
-    // console.log(scratchStart,"scratchStartWork")
     const { layerX, offsetX, layerY, offsetY } = e.nativeEvent;
     setisDrawing(true);
     setStartX(offsetX || layerX);
@@ -347,8 +340,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
   };
   const scratch = (e: any) => {
-    // console.log('scratch',e);
-
     const { offsetX, layerX, offsetY, layerY } = e.nativeEvent;
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
@@ -360,7 +351,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     if (!isDrawing) {
       return;
     }
-    // console.log(offsetX, offsetY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     // context.moveTo(startX,startY);
@@ -374,7 +364,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   };
 
   const scratchEnd = (e: any) => {
-    // console.log('scratchEnd', e);
     handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
@@ -420,12 +409,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   //for mobile
   const scratchStartMobile = (e: any) => {
     handleSoundClickCardplay()
-    // console.log('mobileStart', e);
     const { clientX, clientY } = e.touches[0];
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
 
-    // console.log(rect, "rect")
     const offsetX = clientX - rect.left;
     const offsetY = clientY - rect.top;
     setisDrawing(true);
@@ -439,7 +426,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   };
 
   const scratchMobile = (e: any) => {
-    // console.log('mobile continue');
     const { clientX, clientY } = e.touches[0];
     // if (scratchShound == true) {
     // handleSoundClickCardplay();
@@ -471,7 +457,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     setStartY(offsetY);
   };
   const scratchEndMobile = () => {
-    // console.log('mobileEnd');
     handleSoundClickCardpause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");

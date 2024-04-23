@@ -130,7 +130,6 @@ const PairsForm = ({
       if (user?.uid) {
         setVoteId(ref.id);
       }
-      console.log("after give vote")
     } catch (e) {
       console.log(e);
       showToast((e as Error).message, ToastType.ERROR);

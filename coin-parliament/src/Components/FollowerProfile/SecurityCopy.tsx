@@ -111,12 +111,10 @@ const Security = () => {
   //       );
   //     })
   //     .then(function (verificationId) {
-  //       console.log("verificationcode", verificationId);
   //       // Ask user for the verification code. Then:
   //       setVerificationIdData(verificationId);
   //       setVerifiactionCodeSent(true);
   //     })
-  //     .catch((err) => console.log("err", err?.message));
   // };
   // const verifyCode = () => {
   //   const cred = PhoneAuthProvider.credential(
@@ -282,7 +280,6 @@ const Security = () => {
                                   // @ts-ignore
                                   var options = multiFactor(auth?.currentUser).enrolledFactors;
                                     // Present user the option to unenroll.
-                                    console.log('option',options)
                                     // @ts-ignore
                                     return multiFactor(auth?.currentUser).unenroll(options[0])
                                       .then(function(res) {

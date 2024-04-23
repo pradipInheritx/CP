@@ -19,8 +19,6 @@ const InfluencersList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { chosenUserType, setChosenUserType } = useContext(AppContext);
   
-  
-  console.log(type,"pathtype")
   useEffect(() => {
     // setChosen(chosenUserType || "SPEAKER")
     setChosen(type)
@@ -29,9 +27,6 @@ const InfluencersList = () => {
       setChosenUserType('')
     }
   }, [/* chosenUserType */userTypes])
-  // @ts-ignore
-// console.log(isLoading,"leaderslist")
-  console.log(isLoading,"isLoading")
 
   return (
     <div>

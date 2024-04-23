@@ -113,7 +113,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     //             setAllCardArrayNew(data)
     //             setIsLoading(false)
     //         }).catch((error) => {
-    //             console.log(error, "error");
     //         });
     // }
 
@@ -265,8 +264,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
     const getMintedTime = (cardId: any) => {
         var getMIntedTime;
-        console.log(winerCard, "winerCardcheck")
-
         let mintedTime = winerCard?.find((winCard: any, index: number) => {
             if (winCard?.firstRewardCardId == cardId) {
                 const date = new Date(winCard?.seconds * 1000);
@@ -319,7 +316,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
     const [winnerCardId, setWinnerCardId] = useState<string[]>([]);
     const parameters = new URLSearchParams(window.location.search);
-    console.log(parameters, "parameters")
     
 
     const getCollectionType = async () => {
@@ -358,7 +354,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
     }, []);
 
-    console.log(collectionType,"collectionType")
     useEffect(() => {
         if (localStorage.getItem('filterCollection') && allCards.length > 0) {
             const filterCollection = JSON.parse(localStorage.getItem('filterCollection') || '');
@@ -439,7 +434,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     }, [collectionValue, collectionType])
 
     // const getCardDetails = () => {
-    //     console.log("")
     //     const getCollectionType = firebase
     //         .firestore()
     //         .collection("cardsDetails")
@@ -474,7 +468,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             // Sorting by albumName and setName
             data.sort((a:any, b:any) => a.albumName.localeCompare(b.albumName) || a.setName.localeCompare(b.setName));
 
-            console.log('I am working', data);
             setAllCards(data);
         } catch (error) {
             console.error('Error fetching card details:', error);
@@ -509,7 +502,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         if (searchValue !== '') {
             tempFilter = tempFilter.filter((value: any) => value.cardName.toLowerCase().includes(searchValue.toLowerCase()));
 
-            console.log("i am call for search")
         }
         if (collectionTypeValue !== 'all') {
             tempFilter = tempFilter.filter((value: any) => value.cardType.toLowerCase() === collectionTypeValue.toLowerCase());
@@ -521,7 +513,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
         }            
-        console.log(tempFilter,"tempFilter")
         setMyFilter(divideArray1(tempFilter, 4));
     }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards, winerCard]);
     //End 
@@ -529,7 +520,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     // const getTotalSameCard = (cardId: any) => {
 
     //     const samevalue = 1;
-    //     // console.log(cardId,"data.length")
     //     const getSameCard = firebase
     //         .firestore()
     //         .collection("reward_transactions")
@@ -588,7 +578,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     }, [userInfo]);
 
     const getsamecard = (data: any) => {
-        console.log(data ,"sameCards i am every time calling")
         var commonCard = {}
         // @ts-ignore
         const allCards = data?.rewardStatistics?.cards
@@ -596,11 +585,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             // @ts-ignore
             commonCard = { ...commonCard, [item]: (commonCard[item] ? commonCard[item] + 1 : 1) }
         })
-        console.log(data, "commonCard")
         setSameCards(commonCard)
     }
 
-    console.log(sameCards,"sameCards")
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }
         }>
@@ -764,7 +751,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                                                 <SwiperBar slideSize={collectionValue === 'none' ? 4 : 5}>
                                                                     {cardPart?.map((item: any, index: number) => {
                                                                         if (addAlbumSeparator !== item.albumName) {
-                                                                            console.log(item.albumName, 'adding');
                                                                             addAlbumSeparator = item.albumName;
                                                                         }
                                                                         if (myCards) {

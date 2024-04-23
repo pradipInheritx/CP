@@ -118,8 +118,6 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  console.log(currentCMPDiff, prevCMPDiff, currentCMP, remainingCMP, 'hello');
-
   useEffect(() => {
     // @ts-ignore
     setPaxValue(userInfo?.rewardStatistics?.diamonds)
@@ -222,9 +220,6 @@ const Mine = () => {
         }
       });
     }
-    else {
-      // console.log("i am working not")
-    }
   }
 
   const openpopup = () => {
@@ -254,18 +249,12 @@ const Mine = () => {
   const goBack = () => {
     navigate(-1);
   }
-  
-  // console.log(cardsDetails?.firstRewardCardCollection, cardsDetails?.firstRewardCard, cardsDetails?.firstRewardCardId, "cardsDetails")
-  
+    
   // @ts-ignore
   const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}&cardName=${cardsDetails?.firstRewardCard?.replace(" ", "-")}`;
   // const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}`;
   // const url = "https://coinparliament.com/"
   const shareText = "I won this unique card! Join the Parliament and win with me."  
-
-  // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
-
-  console.log(changeBG,"getchangeBG")
 
   return (
     <div className="border">

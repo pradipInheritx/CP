@@ -117,7 +117,6 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
   const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e, setLogin, setLoader } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
-  console.log(smsVerification)
   useEffect(() => {
 
     return () => {

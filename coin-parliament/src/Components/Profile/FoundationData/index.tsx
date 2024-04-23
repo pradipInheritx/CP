@@ -53,7 +53,6 @@ const FoundationData=()=> {
 
 
     const onSubmitAvatar = async () => {
-        console.log(FoundationArray, "FoundationArray")
         if (user?.uid) {
          
             const userRef = doc(db, "users", user?.uid);

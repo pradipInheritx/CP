@@ -66,7 +66,6 @@ const Security = () => {
   const [verificationIdData, setVerificationIdData] = useState("");
   const [tabsArray, setTabsArray] = useState<any>([])
   const auth = getAuth();
-  console.log('auth', u?.providerData[0]?.providerId == 'password')
   const authProvider = u?.providerData[0]?.providerId == 'password' ? true : false
   useEffect(() => {
     setTabsArray(authProvider ? [

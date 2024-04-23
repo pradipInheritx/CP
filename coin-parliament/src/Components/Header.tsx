@@ -236,7 +236,6 @@ const Header = ({
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
 	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd, rewardExtraVote } = useContext(AppContext);
-	// console.log(showReward,inOutReward,"inOutReward")
 	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
@@ -263,7 +262,6 @@ const Header = ({
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? score : score);
 	const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
-	// console.log(currentCMP, currentCMPDiff, prevCMPDiff, score, remainingCMP , "allCmp" )
 	const voteDetails = useContext(VoteContext);
 	const [handleSoundClick] = useSound(buttonClick);
 	// useEffect(() => {
@@ -288,7 +286,6 @@ const Header = ({
 		// 	.then((snapshot) => {
 		// 		snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
 		// 	}).catch((error) => {
-		// 		console.log(error, "error");
 		// 	});
 		const userCollection = collection(firestore, 'users');
 		try {
@@ -296,7 +293,6 @@ const Header = ({
 			const querySnapshot = await getDocs(q);
 
 			querySnapshot.forEach((doc) => {
-				console.log(doc.data(), "followerUserId")
 				setFollowerInfo(doc.data());
 			});
 		} catch (error) {
@@ -312,9 +308,7 @@ const Header = ({
 
 	useEffect(() => {
 		if (followerUserId) {     
-		  console.log(followerUserId, leaders ,"userId1")
 		  const ourUser = leaders.filter((item) => item?.userId == followerUserId)     
-		  console.log(ourUser,"ouerdata");
 		   
 		  if (ourUser && ourUser[0]?.rank) {
 			setUserRank(ourUser[0]?.rank)
@@ -338,7 +332,6 @@ const Header = ({
 	useEffect(() => {
 		// @ts-ignore
 		if (Number(userInfo?.voteValue) == 0 && user?.uid && !login && !userInfo?.lastVoteTime) {
-			console.log("yes i am working", Date.now())
 			const liveValue = Date.now()
 			// const usereData = firebase
 			// 	.firestore()
@@ -377,11 +370,8 @@ const Header = ({
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
 		prevCountRef.current = voteNumber;
-		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
-	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
-	// console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {
 		// handleSoundClick()
@@ -403,7 +393,6 @@ const Header = ({
 						Logout(setUser);
 						navigate("/")
 						setLogin(true);
-						// console.log("i am working error")	
 						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
@@ -469,8 +458,6 @@ const Header = ({
 		setAfterVotePopup(false);
 	};
 
-
-	// console.log(followerInfo,"followerInfo")
 	return (
 		<>
 			{userInfo ?
@@ -699,7 +686,6 @@ const Header = ({
 															onClick={async () => {
 																handleSoundClick()
 																setFollowUnfollow(!followUnfollow)
-																// console.log('folower',followerInfo)
 																const ll = leaders.find((l) => l.userId === followerInfo?.uid);
 																if (user && ll) {
 

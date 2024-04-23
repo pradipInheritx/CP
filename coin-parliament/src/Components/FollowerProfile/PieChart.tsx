@@ -122,7 +122,6 @@ const PieChart = (props: PieChartProps & { pax: number }) => {
               <div>CPM</div>
             </PCT> */}
             {
-              // console.log(percentage, percentage?.toString()?.substring(0, 7),"percentage")
             }
             <div className="d-flex justify-content-center align-items-center flex-column">
               <PAX style={{color: w>767?"var(--white)":"var(--black)",fontSize:`${window.screen.width > 767 ?"20px":"16px"}`}}>{percentage.toFixed(3)}/100</PAX>

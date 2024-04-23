@@ -45,7 +45,6 @@ useEffect(() => {
 }, [])
   
   // const usersCollection = async () => {
-  //   console.log("i am clicked")
   //   const usersCollectionData = await  firebase
   //     .firestore()
   //     .collection("users").get();
@@ -53,14 +52,12 @@ useEffect(() => {
   //   usersCollectionData.forEach(async (doc) => {
   //     const userData = doc.data();
   //     const foundationData = FoundationArray[Math.trunc(Math.random() * FoundationArray.length)]  
-  //     console.log(userData, "userData", !userData.hasOwnProperty("foundation"))
   //     if (!userData.hasOwnProperty("foundationData")) {
   //       await firebase
   //         .firestore()
   //         .collection("users").doc(doc.id).update({
   //           foundationData: foundationData
   //       });
-  //       console.log(`Added foundation key to user with ID: ${doc.id}`);
   //     }
   //   });
   // } 
@@ -68,7 +65,6 @@ useEffect(() => {
 
 
   const onSubmitAvatar = async (type: AvatarType) => {
-    console.log(FoundationArray,"FoundationArray")
     if (user?.uid) {
       setSelectBioEdit(true)
       const userRef = doc(db, "users", user?.uid);

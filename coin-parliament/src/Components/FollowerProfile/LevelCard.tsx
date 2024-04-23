@@ -51,7 +51,6 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
 
   useEffect(() => {
     if (userInfo?.uid) {     
-      console.log(userInfo?.uid, leaders ,"userId")
       const ourUser = leaders.filter((item) => item?.userId == userInfo?.uid)      
       if (ourUser && ourUser[0]?.rank) {
         setUserRank(ourUser[0]?.rank)
@@ -62,8 +61,6 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
 
     }
   }, [userInfo?.uid])
-
-  console.log(userInfo?.uid,"userInfo?.uid")
 
   return (
     <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{ position: 'relative' }}>

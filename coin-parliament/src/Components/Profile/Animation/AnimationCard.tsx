@@ -30,7 +30,6 @@ function AnimationCard({ cardType = "legendary" }: MintingProps) {
   }, [])
 
   const scratchStart = (e: any) => {
-    console.log(scratchStart, "scratchStartWork")
     const { layerX, layerY } = e.nativeEvent;
     setisDrawing(true);
     setStartX(layerX);
@@ -42,14 +41,12 @@ function AnimationCard({ cardType = "legendary" }: MintingProps) {
 
   const scratch = (e: any) => {
     const { layerX, layerY } = e.nativeEvent;
-    console.log(e, "scratchWOrk")
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
 
     if (!isDrawing) {
       return;
     }
-    console.log(layerX, layerY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     context.moveTo(startX, startY);
@@ -62,7 +59,6 @@ function AnimationCard({ cardType = "legendary" }: MintingProps) {
   };
 
   const scratchEnd = (e: any) => {
-    console.log(scratchEnd, "scratchEndWork")
     setisDrawing(false)
   };
 

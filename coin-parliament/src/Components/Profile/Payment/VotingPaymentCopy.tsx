@@ -537,7 +537,6 @@ const VotingPaymentCopy: React.FC<{
     useEffect(() => {
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
-      console.log(AllInfo, "AllInfo")
       // setPayamount(AllInfo[0])
       setPayamount(AllInfo[0] > 10 ? AllInfo[0] : 0.0001)
       setPayType(AllInfo[1])
@@ -555,7 +554,6 @@ const VotingPaymentCopy: React.FC<{
       {      
       // @ts-ignore 
       const carPaymentData = JSON.parse(localStorage.getItem(`${userInfo?.uid}_IntentId`));
-      console.log(carPaymentData, "carPaymentData")
       cardPaymentDone(carPaymentData[1])
     }
     return () => {      
@@ -571,33 +569,27 @@ const VotingPaymentCopy: React.FC<{
           querySnapshot.forEach((doc) => {
 
             if (doc.data()?.userId == userInfo?.uid && doc.data()?.intentId == intentId) {
-              console.log(doc.data()?.data, "livepaymentdata")
               if (doc.data()?.event == "ProcessingFiatProviderOrder" || doc.data()?.event == "BlockchainTransactionSubmission" || doc.data()?.event == "Completed") {
                 setIsLoading(false)
                 // window.scrollTo({ top: 650, behavior: 'smooth' });
                 setPaymentStatus({ type: "success", message: '' });
               }
               if (doc.data()?.event == "Failed") {
-                console.log(doc.data()?.data, "DeclinedData")
                 // window.scrollTo({ top: 650, behavior: 'smooth' });
                 setIsLoading(false)
                 setPaymentStatus({ type: "error", message: 'Payment failed, please try again' });
               }
-            } else {
-              // console.log(doc.data(),"doc.data()")
-            }
+            } 
           });
           
         } catch (error) {
           console.log(error,"payment Snapshot")
         }
       });
-      console.log(userInfo?.uid, intentId, "getbothid")    
     }
   }
 
     const handleClick = async () => {
-      console.log("web function")
       window.scrollTo({ top: 50, behavior: 'smooth' });
       if (isConnected) {
         if (coinInfo.chainId != chainId) {
@@ -633,8 +625,6 @@ const VotingPaymentCopy: React.FC<{
           setPaymentStatus({ type: "", message: '' });
 
           switchNetwork(coinInfo.chainId).then((res) => {
-            // console.log(res, chainId , coinInfo.chainId, "check chainID")
-
             if (res == null) {
               sendTransaction()
             }
@@ -658,7 +648,6 @@ const VotingPaymentCopy: React.FC<{
     }, [events])
 
     const handleClickMob = async () => {
-      console.log("Mobile function ")
       const data = mainnet?.find((network?: any) => network?.chainId == chainId && localStorage.getItem("CoinPay") == network?.name)
       window.scrollTo({ top: 50, behavior: 'smooth' });
       if (isConnected) {
@@ -723,7 +712,6 @@ const VotingPaymentCopy: React.FC<{
       }
     }, [chainId, isConnected, localStorage.getItem("CoinPay")])
 
-    // console.log(address, chainId, isConnected, "address,chainId,isConnected")
     const payNow = (detail?: any) => {
 
       const headers = {
@@ -753,14 +741,11 @@ const VotingPaymentCopy: React.FC<{
         paymentDetails: detail,
 
       }
-      console.log("afterPayment Data : ", data)
       axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
         {
           headers: headers
         }).then(async (response) => {
           // setApiCalling(false)
-          // console.log(,"response.data.data")
-          console.log(response.data, "response.data")
           // transactionId.current = response.data
           setIsLoading(false)
           setPaymentStatus({ type: "success", message: "" })
@@ -783,17 +768,14 @@ const VotingPaymentCopy: React.FC<{
         setIsLoading(false)
         setShowText(false)
         setPayButton(false)
-        console.log("take more that 5 sec")
       }, 5000);
       let ethereum = (window as any).ethereum;
 
       const amountInCrypto = Number(payamount && Number(payamount) / liveAmount[`${coinInfo?.currency}`]?.price).toFixed(18)
-      console.log(amountInCrypto, "amountInCrypto")
       
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
         await provider.send('eth_requestAccounts', []).then(response => {
-          console.log(response, "response")
           if (response.length == 0) {
             setPaymentStatus({ type: "error", message: "We apologize for the inconvenience.Get some connecting issue please try again." })
           }
@@ -809,8 +791,6 @@ const VotingPaymentCopy: React.FC<{
           const usdtContract = new ethers.Contract(usdtContractAddress, usdtContractABI, wallet);
           const recipientAddress = "0x83ae40345c9a78a3Eda393fbaCF65E77d3242c6d";
           const amountToSend = ethers.utils.parseUnits(amountInCrypto);
-          console.log(amountToSend, "amountToSend")
-          console.log(coinInfo?.currency, "coinInfo?.currency")
 
           const trax = {
             to: usdtContractAddress,
@@ -822,7 +802,6 @@ const VotingPaymentCopy: React.FC<{
           const txResponse = await wallet.sendTransaction(trax);
 
           // Handle the transaction response
-          console.log('Transaction hash:', txResponse.hash);
           if (txResponse.hash) {
             payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
           }
@@ -833,15 +812,12 @@ const VotingPaymentCopy: React.FC<{
             to: toAddress,
             value: ethers.utils.parseUnits(amountInCrypto), // Sending 0.0001 MATIC
           };
-          console.log("transaction Data : ", transaction, amountInCrypto)
           const txResponse = await wallet.sendTransaction(transaction);
           // Handle the transaction response
-          console.log('Transaction hash:', txResponse.hash);
           if (txResponse.hash) {
             payNow({ ...txResponse, orderId: `VTE-${(payType || '')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}` })
           }
         }
-        console.log('Transaction mined!');
 
       } catch (error: any) {
         console.log('errorror', error)
@@ -852,7 +828,6 @@ const VotingPaymentCopy: React.FC<{
         setPayButton(false);
 
         if (errorCodeGet == -32603) {
-          console.log("i am calling")
           // setPaymentStatus({ type: "error", message: error.data.error })
           setPaymentStatus({ type: "error", message: "Oops! It looks like there's not enough in your account. No worries – just top up to continue. We're here to help!" })
         }
@@ -888,13 +863,11 @@ const VotingPaymentCopy: React.FC<{
       let ethereum = (window as any).ethereum;
       const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
 
-      console.log(chainId, "chainIdchainList")
       try {
         if (!provider) throw new Error('Provider is not initialized.');
         // Switch network
         const chainData = await provider.send('wallet_switchEthereumChain', [{ chainId: `0x${chainId.toString(16)}` }]);
         return chainData
-        // console.log('Switched to network:', chainId);
       }
       catch (error) {
         let codeError = ""
@@ -936,7 +909,6 @@ const VotingPaymentCopy: React.FC<{
         intentLimit: 0        
       }
 
-      console.log(data, "datacehck")
       const headers = {
         "accept": "application/json",
       }
@@ -944,7 +916,6 @@ const VotingPaymentCopy: React.FC<{
         {
           headers: headers
         }).then(async (response) => {
-          console.log(response, "getresponse")
           window.open(`${response.data?.redirectUrl}`,"_self");
           // navigate(`${response.data?.redirectUrl}`)
           // const regex = /p2=([^&]*)/;          
@@ -953,7 +924,6 @@ const VotingPaymentCopy: React.FC<{
           if (match) {            
             // setIntentId(match)
             localStorage.setItem(`${userInfo?.uid}_IntentId`, JSON.stringify([userInfo?.uid, match]));
-            console.log("P2 value", match)
           }
         })
         .catch((error) => {
@@ -1441,7 +1411,6 @@ const VotingPaymentCopy: React.FC<{
                     <div
                       className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" : "pay-selected-text text-center"}
                       onClick={() => {
-                        console.log((selectCoin == "none" || isConnected == false), "showselectCoin")
                         if (payButton) {
                           return
                         }
@@ -1555,10 +1524,8 @@ const VotingPaymentCopy: React.FC<{
                           // }
                           open().then((result) => {
                             // window.scrollTo({ top: 800, behavior: 'smooth' });    
-                            // console.log("yes i am open" , events.data)
                           }).catch((err) => {
                             // window.scrollTo({ top: 800, behavior: 'smooth' });  
-                            // console.log("yes i am close", events.data)
                           });
 
                         }}

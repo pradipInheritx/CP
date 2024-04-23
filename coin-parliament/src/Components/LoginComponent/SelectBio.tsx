@@ -82,8 +82,6 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
     setBio(BioTexts[userInfo?.avatar] || "")
   }, [])
   
-  console.log(bio,"bioCheck")
-
   const UpdateBio = async () => {
     if (user?.uid) {
       const userRef = doc(db, "users", user?.uid);

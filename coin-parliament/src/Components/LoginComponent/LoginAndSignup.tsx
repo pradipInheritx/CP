@@ -80,7 +80,6 @@ var userAgent = navigator.userAgent.toLowerCase();
     }
   }, [withLoginV2e])
   
-  console.log(withLoginV2e,"withLoginV2e")
   return (
     <Stack
       gap={2}
@@ -155,7 +154,6 @@ var userAgent = navigator.userAgent.toLowerCase();
           <p className="text-center">If you have used the Google signup option to create your V2E account, please log in using the option below.</p>
           <br />
           {Object.values(LoginProviders).map((provider, i) => {
-            console.log(provider,"provider")
             return (
               <div key={i} className="mb-2 w-100" id='login'>
                 <LoginWith

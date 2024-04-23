@@ -191,7 +191,6 @@ const Complete: React.FC = () => {
                     let temp = { ...value };
                     delete temp['childPayment'];
                     let childAmountSum = value?.childPayment?.reduce((prev: number, current: any) => {
-                        // console.log(prev, prev + current?.amount, 'current?.amount 1');
                         return parseFloat(prev + current?.amount);
                     }, 0);
                     return {

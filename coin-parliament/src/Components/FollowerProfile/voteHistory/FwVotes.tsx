@@ -62,7 +62,6 @@ const [isLoading, setIsLoading] = useState(false);
     },
     [followerUserId, pageSize]
   );
-  console.log(votes, "all vote check")
   useEffect(() => {
     // @ts-ignore
     const { coins, pairs } = votes
@@ -123,8 +122,6 @@ const [isLoading, setIsLoading] = useState(false);
       getVotes(index).then(void 0);
     }
   }
-
-  //  console.log(votes,"votescoins")
 
   return (
     <Tabs

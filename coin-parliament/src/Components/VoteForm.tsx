@@ -76,10 +76,6 @@ const VoteForm = function <
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { userInfo } = useContext(UserContext);
 
-  // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
-
-  // console.log(texts?.tooltip, "all Text")
-  // console.log(voteRules, "selectedTimeFrame")
   return (
     <Form
       className='mt-3'

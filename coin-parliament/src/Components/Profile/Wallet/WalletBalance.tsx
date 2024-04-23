@@ -64,14 +64,11 @@ const WalletBalance = () => {
         axios.post("payment/getAllPendingPaxByUserId", {              
                 userId: userInfo?.uid            
         }).then((res: any) => {
-            console.log(res.data.data.result.pendingPaxTotal, "resultdatapax")
             setPendingPax(res?.data?.data?.result?.pendingPaxTotal || 0)
         }).catch((err: any) => {
             console.log(err, "resultdata")
         })
     }
-
-    console.log(pendingAmount,"pendingAmount")
 
     // const getTotalValue = () => {
     //     let total = 0;
@@ -109,7 +106,6 @@ const WalletBalance = () => {
     //                 setPopupMessage(response?.data.message)
     //                 handleShow()
     //             }
-    //             console.log(response?.data, response?.data?.status, response?.data?.message, "response?.data?.message ")
     //         })
     //         .catch((error) => {
     //             console.log(error, "error")
@@ -153,7 +149,6 @@ const WalletBalance = () => {
                                 setPopupMessage(response?.data.message)
                                 handleShow()
                             }
-                            console.log(response?.data, response?.data?.status, response?.data?.message, "response?.data?.message ")
                         })
                         .catch((error) => {
                             console.log(error, "error")
@@ -185,7 +180,6 @@ const WalletBalance = () => {
             navigate(`/profile/history`)
         }
     }
-    console.log(walletTab,"walletTab")
 
     return (
         <div className='d-flex justify-content-center align-items-center'

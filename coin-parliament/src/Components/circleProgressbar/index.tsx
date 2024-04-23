@@ -23,24 +23,27 @@ const CircularProgress = ({ percentage }) => {
     const { user, userInfo } = useContext(UserContext);
     const currentCMP = useContext(CurrentCMPContext);
     const setCurrentCMP = useContext(CurrentCMPDispatchContext);
-    // console.log(userInfo?.voteStatistics?.score, currentCMP, userInfo?.rewardStatistics?.total, userInfo?.rewardStatistics?.claimed, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
-        if (progressBarValue && newScore != '0') {
+        if (progressBarValue === 0 && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
             setStartValue((prevScore <= 0 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
             }, [5000]);
+            return () => clearTimeout(time);
         }
-    }, [progressBarValue]);
+    }, [progressBarValue, setCurrentCMP, userInfo?.voteStatistics?.score, user?.uid]);
     useEffect(() => {
-        setProgressBarValue(0);
+        if (progressBarValue === 0) {
+             setProgressBarValue(percentage);
+        }
         const time = setTimeout(() => {
             setProgressBarValue(percentage);
         }, [800]);
-    }, [percentage]);
+        return () => clearTimeout(time);
+    }, [percentage,setProgressBarValue]);
 
     // currentScore=localStorage.getItem('')
     return (

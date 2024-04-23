@@ -92,7 +92,6 @@ const Login2fa = ({
   // }
   //   try {
   //     const response = await axios.post(url, data);
-  //     console.log(response.data);
   //     setSecretKey(response.data.result.base32)
   //     QRCode.toDataURL(response.data.result.otpauth_url).then((dataUrl: string) => {
   //       setQrCodeDataUrl(dataUrl);
@@ -110,7 +109,6 @@ const Login2fa = ({
         "token": token,
         "userType": "USER"
       });
-      // console.log(response.data);
       // const newUserInfo = {
       //   ...(userInfo as UserProps),
       //   mfa: true as boolean,
@@ -129,13 +127,11 @@ const Login2fa = ({
     }
   };
 
-  // console.log('user',userInfo,u)
   useEffect(() => {
 
     if (u?.photoURL !== 'mfa') {
       setLogin(false)
       setMfaLogin(false)
-      console.log('2facalled2')
       return
     }
     else { setMfaLogin(true) }

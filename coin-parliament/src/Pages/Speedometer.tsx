@@ -77,8 +77,6 @@ const Speedometer = () => {
     // }
   }, [])
 
-
-  console.log(preValueRef.current, value, "checkvalue")
   return (
     <>
       {/* <ManiDiv>

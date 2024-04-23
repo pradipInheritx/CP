@@ -279,7 +279,6 @@ const Minting = ({
     axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
       data: {}
     }).then((res: any) => {
-      console.log(res.data.result, "resultdata")
       setPaxDistribution(res?.data?.result?.paxDistribution)
     }).catch((err: any) => {
       console.log(err, "resultdata")
@@ -309,7 +308,6 @@ const Minting = ({
   //         mintForUserAddress: "",
   //         eligibleForMint: false
   //       }).then((res) => {
-  //         console.log(res,"resdata")
   //         // @ts-ignore
   //         if (res?.data?.status) {
   //           afterpaxDistributionToUser(paxDistribution)
@@ -324,7 +322,6 @@ const Minting = ({
   //         mintForUserAddress: userInfo?.paxAddress?.address,
   //         eligibleForMint: true,
   //       }).then((res) => {
-  //         console.log(res?.data, "resdata")
   //         // @ts-ignore
   //         if (res?.data?.getResultAfterSentPaxToUser?.status) {
   //           afterpaxDistributionToUser(paxDistribution)
@@ -334,9 +331,6 @@ const Minting = ({
   //   }
 
   // }, [paxDistribution]);
-
-
-  // console.log(pendingPax,"pendingPax")
 
   useEffect(() => {
     if (CmpPopupShow) {
@@ -405,12 +399,9 @@ const Minting = ({
   // const tooltip = (props:any) => {
 
   // };
-  // console.log(claim, "setAnimateButton")
 
-  // console.log(inOutReward, "inOutReward")
   const updateState = () => {
     // setShowReward(1);
-    // console.log(inOutReward, "inOutReward2")
     // setInOutReward(1);
 
     // setCountShow(true)

@@ -28,7 +28,6 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
             setMfaLogin(true)
             setButtonShow(false)
             UpdateFunction()
-            console.log("i am working verify",response)
         } catch (error: any) {
             showToast(
                 error.response.data.message, ToastType.ERROR

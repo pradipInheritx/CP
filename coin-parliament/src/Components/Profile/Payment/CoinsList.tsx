@@ -159,7 +159,6 @@ const CoinsList: React.FC<{
       //     const allList = snapshot.data()?.coins;
       //     setCoinsList(allList && allList);
       //   }).catch((error) => {
-      //     console.log(error, "error");
       //   });
       getCoinList()
     }, [])
@@ -182,7 +181,6 @@ const CoinsList: React.FC<{
 
     useEffect(() => {
       // (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-      //   console.log(data, "username")
       // })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
@@ -290,8 +288,6 @@ const CoinsList: React.FC<{
                             key={option.id}
                             onClick={async () => {
                               setSelectCoin(option.name)
-                              console.log(option, 'selected');
-
                               setCoinInfo(option)
                               // setShowOptionList(!showOptionList)
                               // await mybtn("disconnect", "true").then(() => {

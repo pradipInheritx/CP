@@ -95,10 +95,7 @@ export const LoginAuthProvider = async (
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
-    // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
     if (callback) {
-
-      // console.log('callback called for refeer',user)
       callback({ parent: refer, child: user.uid })
     }
     if (isFirstLogin?.isNewUser) {
@@ -110,14 +107,11 @@ export const LoginAuthProvider = async (
       await sendEmailVerificationLink({
         email: user.email,
       })
-      console.log('firsttimelogin success')
       setTimeout(() => {
 
         setUser(user);
       }, 100);
     } else {
-
-      console.log('user', info)
       // @ts-ignore
       if (info?.mfa) {
 
@@ -160,7 +154,6 @@ export const LoginAuthProvider = async (
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
       };
-      // console.log('phonebook',phoneInfoOptions)
       const phoneAuthProvider = new PhoneAuthProvider(auth);
       const recaptchaVerifier = new RecaptchaVerifier(
         "loginId",
@@ -175,7 +168,6 @@ export const LoginAuthProvider = async (
         },
         auth
       );
-      // console.log('captcha',recaptchaVerifier)
       phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
         .then(function (verificationId) {
           // @ts-ignore
@@ -234,7 +226,6 @@ export const LoginRegular = async (
       localStorage.setItem('mfa_passed', 'false');
     }
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-    // console.log('firsttimelogin',isFirstLogin)   
     let country = "";
     await axios.get("https://ipapi.co/json/")
       .then((response: any) => {
@@ -332,7 +323,6 @@ export const SignupRegular = async (
   const auth = getAuth();
   try {
     validateSignup(payload);
-    console.log("this function call")
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       payload.email,
@@ -352,7 +342,6 @@ export const SignupRegular = async (
 
     const userRef = doc(db, "users", auth?.currentUser?.uid);
     await setDoc(userRef, { firstTimeLogin ,isVoteToEarn: false }, { merge: true })
-    console.log('firsttimelogin success')
     // @ts-ignore
     // saveUsername(auth?.currentUser?.uid, '', '')
     // showToast("User register successfully.", ToastType.SUCCESS);

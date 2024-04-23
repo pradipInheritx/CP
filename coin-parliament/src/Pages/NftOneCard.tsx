@@ -202,17 +202,13 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
     setImageLoaded(true);
   };
 
-  // console.log(MintedTime, "MintedTimecheck")
   return (
     <div
       className="d-flex justify-content-center"      
     >      
       <div
         // onMouseEnter={() => {
-        //   console.log("Hello i am first")
         //   if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
-        //     console.log(flip,flipCard ,"Flip Flip")
-        //     console.log(MoveCard,"MoveCard")
         //     setFlip(false);
         //     if (flipCard != true) {
         //       cardFlip()
@@ -220,7 +216,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         //   }
         // }}
         // onMouseLeave={() => {
-        //   console.log(flip,flipCard ,"Flip Flip2")
         //   if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
         //     setFlip(true);
         //     cardFlip()
@@ -250,7 +245,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
           }`}
         onClick={(e: any) => {
           if (Disable == "" || Disable == undefined && !MoveCard) {
-            console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
             if (window.screen.width > 767) {
               if (!flip && !flipCard) {
                 setFlip(true)
@@ -351,7 +345,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               <div className='card-body'
               // onMouseEnter={() => {
               //   if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
-              //     console.log(MoveCard, "MoveCard")
               //     setFlip(false);
               //     if (flipCard != true) {
               //       cardFlip()
@@ -446,7 +439,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         </div>
         <div className='back'
           // onMouseEnter={() => {
-          //   console.log("Hello i am first")  
           //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
 
           //     setFlip(false);
@@ -456,7 +448,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
           //   }
           // }}
           onMouseLeave={() => {
-            // console.log(flip,flipCard ,"Flip Flip")
             if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
               setFlip(true);
               cardFlip()

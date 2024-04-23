@@ -60,16 +60,13 @@ const Home = () => {
   //       return { userId: user.id};
   //     });
 
-  //     console.log("getAllUsers length: " + getAllUsers);
 
   //     const updateUserList = getAllUsers.map(async (user) => {
   //       // const getRefrealType = user.referalType;
-  //       console.log(user.userId,"user.userId")
   //       await setDoc(doc(usersCollectionRef, user.userId), { referalReceiveType: { amount: "", days: "", limitType:"", name: "ONDEMAND" }},{ merge: true });
   //     });
 
   //     await Promise.all(updateUserList);
-  //     console.log('All updates completed successfully');
   //   } catch (error) {
   //     console.error("scriptToUpdateAllUsers ERROR: " + error);
   //   }

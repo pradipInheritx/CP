@@ -159,11 +159,8 @@ const Carousel = ({
       // Update the property value of prop1 in each object
       livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal || 5) + (Math.random() < 0.5 ? -1 : 1)
     }
-    // console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
     // setCoinUpdated(livePrice.current)
-    // console.log(livePrice.current,"livePrice.current")
     if (Object.keys(livePrice.current).length && coins != livePrice.current) {            
-      // console.log("Browser window called 1",livePrice.current)
       setCoins(livePrice.current)
     }
   }
@@ -252,7 +249,6 @@ const Carousel = ({
 
       const data = JSON.parse(event.data);
       const dot = decimal["CRO"]
-      // console.log('cro price',data?.result?.data[0])
       if (data?.result?.data[0].a && Object.keys(coins).includes("CRO")) {
         // @ts-ignore
         livePrice.current = {
@@ -272,7 +268,6 @@ const Carousel = ({
   }, [socket, socketConnect])
 
   useEffect(() => {    
-    // console.log(socketConnect, getCoinPrice, "socketConnect , getCoinPrice")
     if (!socketConnect && getCoinPrice) {
       livePrice.current = {
         ...livePrice.current,
