@@ -2500,8 +2500,10 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
 
-        const batchData = snapshot.docs.map((doc) => {
+        const batchData = await Promise.all(snapshot.docs.map(async (doc) => {
           const user = doc.data();
+          // console.log("User Statistics: " , user);
+
           user.signUpTime = user.signUpTime
             ? moment.unix(user.signUpTime._seconds).format("YYYY-MM-DD")
             : "";
@@ -2517,23 +2519,31 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
           user.averageVotes = Math.round(user.averageVotes);
           user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
           user.Country = user.Country?.trim() || "";
+          let userData: any;
+          if (user.userId) {  // Check if userId exists
+            const userDataSnapshot = await admin.firestore().collection("users").where("uid", "==", user.userId).get();
+            userDataSnapshot.forEach(doc => {
+              userData = doc.data();
+            });
+          }
+
+          user.source = userData && userData.parent ? "Referral" : "Self";
           return user;
-        });
+        }));
 
         allData.push(...batchData);
         lastDoc = snapshot.docs[snapshot.size - 1];
-        if (!snapshot.empty) {
-          if (snapshot.size < batchSize) {
-            keepFetching = false; // Stop fetching if there's no more data
-          }
-        } else {
-          keepFetching = false; // Stop fetching if the snapshot is empty
+        if (!snapshot.empty && snapshot.size < batchSize) {
+          keepFetching = false;
+        } else if (snapshot.empty) {
+          keepFetching = false;
         }
       }
       return allData;
     };
 
-    // Stream data directly to response
+    const allData = await fetchDataInBatches();
+
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
     // Set CORS headers
@@ -2542,47 +2552,17 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
     res.set('Access-Control-Allow-Headers', 'Content-Type');
 
     const workbook = new excel.stream.xlsx.WorkbookWriter({ stream: res });
-
     const worksheet = workbook.addWorksheet('User Statistics Data');
     worksheet.addRow(headerMappings.map(mapping => mapping.customHeader));
 
-    // // Apply styles to the header row
-    // headerRow.eachCell((cell, colNumber) => {
-    //   cell.fill = {
-    //     type: 'pattern',
-    //     pattern: 'solid',
-    //     fgColor: { argb: 'FFFF00' } // Yellow color
-    //   };
-    //   cell.border = {
-    //     top: { style: 'thin' },
-    //     left: { style: 'thin' },
-    //     bottom: { style: 'thin' },
-    //     right: { style: 'thin' }
-    //   };
-    //   cell.font = { bold: true }; // Make text bold
-    //   cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
-    // });
-
-    const dataStream = await fetchDataInBatches();
-
-    for (const userData of dataStream) {
+    for (const userData of allData) {
       const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
       worksheet.addRow(rowValues);
-
-      // Apply styles to data row
-      // row.eachCell((cell, colNumber) => {
-      //   cell.border = {
-      //     top: { style: 'thin' },
-      //     left: { style: 'thin' },
-      //     bottom: { style: 'thin' },
-      //     right: { style: 'thin' }
-      //   };
-      // });
     }
 
     await workbook.commit();
-
     console.log('Data export successful');
+
   } catch (error) {
     console.error('Error exporting data:', error);
     res.status(500).send('Error exporting User Statistics data');
