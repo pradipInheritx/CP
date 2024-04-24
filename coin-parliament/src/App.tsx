@@ -495,12 +495,12 @@ function App() {
   useEffect(() => {
 
     // @ts-ignore
-    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
+    if (userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
       setShowMenuBar(true);
     }
-
-  }, [userInfo]);
+// @ts-ignore
+  }, [userInfo?.firstTimeLogin]);
   useEffect(() => {
     pwaInstallHandler.addListener((canInstall) => {
       canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
@@ -626,12 +626,15 @@ function App() {
     }
   }, []);
 
-useEffect(()=>{
-  if (userInfo) {
-    setFirstTimeAvatarSelection(!userInfo?.avatar)      
-  }
-},[JSON.stringify(userInfo)])
-  console.log((window.screen.width < 767  && sessionStorage.getItem("landing")!='true'),'loading');
+// useEffect(()=>{
+//   if (userInfo) {   
+//     setFirstTimeAvatarSelection(!userInfo?.avatar)      
+//   }
+// }, [JSON.stringify(userInfo)])
+  
+  // console.log((window.screen.width < 767 && sessionStorage.getItem("landing") != 'true'), 'loading');
+  
+  // console.log(firstTimeLogin ,firstTimeAvatarSlection ,selectBioEdit, "firstTimeAvatarSelectionallstate")
   return loader ? (
     <Spinner />
   ) : (
@@ -830,7 +833,7 @@ useEffect(()=>{
                             <Header
                             setMfaLogin={setMfaLogin}
                             />}
-                            {user && firstTimeLogin && (
+                            {user && firstTimeLogin && !firstTimeAvatarSlection && !selectBioEdit &&(
                               <FirstTimeLogin
                                 setFirstTimeAvatarSelection={
                                   setFirstTimeAvatarSelection
@@ -838,18 +841,10 @@ useEffect(()=>{
                                 generate={generateUsername}
                                 
                                 saveUsername={async (username: any, DisplayName: any) => {  
-                                  // @ts-ignore
-                                  const allAppUid = JSON.parse(localStorage.getItem("userId"))
-                                  console.log(allAppUid,"allAppUid")
+                                  // @ts-ignore                                  
                                   if (user?.uid) {                                    
                                     await saveUsername(user?.uid, username, "");
-                                    await saveDisplayName(user?.uid, DisplayName, "");                                    
-                                    
-                                    await AddAllUserName(coinParliament.firestore(), allAppUid?.coin, username, DisplayName);
-                                    await AddAllUserName(sportParliament.firestore(), allAppUid?.sport,username,DisplayName);
-                                    await AddAllUserName(votingParliament.firestore(), allAppUid?.voting,username,DisplayName);
-                                    await AddAllUserName(stockParliament.firestore(), allAppUid?.stock,username,DisplayName);
-
+                                    await saveDisplayName(user?.uid, DisplayName, "");                                                                                                            
                                     setFirstTimeAvatarSelection(true);
                                     // setFirstTimeFoundationSelection(true);
                                     setFirstTimeLogin(false);
@@ -858,7 +853,7 @@ useEffect(()=>{
                               />
                             )}
 
-                            {!firstTimeLogin && firstTimeAvatarSlection && (
+                            {!firstTimeLogin && firstTimeAvatarSlection && !selectBioEdit &&(
                               <FirstTimeAvatarSelection
                                 user={user}
                                 setFirstTimeAvatarSelection={

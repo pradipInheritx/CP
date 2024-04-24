@@ -1,7 +1,7 @@
 import React from "react";
 import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
-import { doc, Firestore, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, Firestore, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { V2EParliament, db, functions } from "../firebase";
 import { VoteResultProps } from "../common/models/Vote";
 import { httpsCallable } from "firebase/functions";
@@ -62,10 +62,45 @@ export const saveDisplayName = async (uid: string, displayName: string, avatar: 
   await setDoc(userRef, { displayName, /* avatar */ }, { merge: true });
 };
 
-export const AddAllUserName = async (database:any, uid: any, userName: string, displayName: string,) => {    
+export const AddAllUserName = async (database:any, uid: any, userName:string, displayName: string,) => {    
   const userRef = doc(database, "users", uid);  
-  await setDoc(userRef, { isVoteName: userName, displayName }, { merge: true });
+  await setDoc(userRef, {userName, displayName }, { merge: true });
   
+};
+
+export const checkValidAddUsername = async (database: any, uid: any, userName: string, displayName: any, bio: any) => {
+    
+  try {    
+
+    const q = query(collection(database, 'users'), where('userName', '==', userName));
+    const usersSnapshot = await getDocs(q);
+
+    const existingUsernames = usersSnapshot.docs.map((doc) => doc.data().userName);
+    const isUsernameTaken = await existingUsernames.length > 0;
+    // console.log(existingUsernames, "isUsernameTaken")
+    console.log(existingUsernames,isUsernameTaken,"existingUsernames")
+    if (isUsernameTaken) {
+      const characters = 'abcdefghijklmnopqrstuvwxyz_0123456789';
+      let result = '';
+      for (let i = 0; i < 5; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      const userRef = doc(database, "users", uid);
+      await setDoc(userRef, {
+        userName: `${userName}${result}`, displayName, bio,
+        firstTimeLogin:false}, { merge: true });
+      // return `${username + result}`;
+    } else {
+      // return username
+      const userRef = doc(database, "users", uid);
+      await setDoc(userRef, { userName, displayName, bio, firstTimeLogin: false }, { merge: true });
+    }
+    // return !isUsernameTaken /* && isUsernameValidLength */;
+  } catch (error) {
+    console.error("Error checking username validity:", error);
+
+    return false; // For simplicity, returning false if there's an error
+  }
 };
 
 

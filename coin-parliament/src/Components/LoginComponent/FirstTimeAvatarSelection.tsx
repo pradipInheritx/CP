@@ -56,6 +56,8 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, setSelect
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
         setFirstTimeAvatarSelection(false)
+        setFirstTimeLogin(false)
+        setSelectBioEdit(true);
         // setShowMenuBar(false)        
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
