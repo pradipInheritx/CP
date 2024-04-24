@@ -500,53 +500,53 @@ export const updateTotalCMP = async (userId: string) => {
   }
 };
 
-// const getLeadersByUserIds = async (userIds: any) => {
-//   const snapshotUsers = await firestore()
-//     .collection("users")
-//     .withConverter(userConverter)
-//     .where("uid", "in", userIds)
-//     .get(); // Added this condition for that user will fetch only minimum vote given atleast 50
+const getLeadersByUserIds = async (userIds: any) => {
+  const snapshotUsers = await firestore()
+    .collection("users")
+    .withConverter(userConverter)
+    .where("uid", "in", userIds)
+    .get(); // Added this condition for that user will fetch only minimum vote given atleast 50
 
-//   return snapshotUsers.docs
-//     .map((u) => {
-//       const {
-//         displayName,
-//         subscribers,
-//         avatar,
-//         status,
-//         voteStatistics,
-//         email,
-//         refereeScrore,
-//         firstName,
-//         lastName,
-//         country,
-//         phone,
-//         leader,
-//         isUserUpgraded,
-//       } = u.data();
-//       const { score = 0 } = voteStatistics || {};
-//       return {
-//         displayName: displayName,
-//         email,
-//         avatar,
-//         userId: u.id,
-//         score,
-//         firstName,
-//         lastName,
-//         country,
-//         phone,
-//         status,
-//         refereeScrore,
-//         subscribers: subscribers?.length || 0,
-//         leaders: leader?.length || 0,
-//         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
-//         successful: voteStatistics?.successful,
-//         total: voteStatistics?.total || 0,
-//         isUserUpgraded: isUserUpgraded ? isUserUpgraded : false
-//       } as Leader;
-//     })
-//     .sort((a, b) => Number(a.score) - Number(b.score));
-// };
+  return snapshotUsers.docs
+    .map((u) => {
+      const {
+        displayName,
+        subscribers,
+        avatar,
+        status,
+        voteStatistics,
+        email,
+        refereeScrore,
+        firstName,
+        lastName,
+        country,
+        phone,
+        leader,
+        isUserUpgraded,
+      } = u.data();
+      const { score = 0 } = voteStatistics || {};
+      return {
+        displayName: displayName,
+        email,
+        avatar,
+        userId: u.id,
+        score,
+        firstName,
+        lastName,
+        country,
+        phone,
+        status,
+        refereeScrore,
+        subscribers: subscribers?.length || 0,
+        leaders: leader?.length || 0,
+        pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
+        successful: voteStatistics?.successful,
+        total: voteStatistics?.total || 0,
+        isUserUpgraded: isUserUpgraded ? isUserUpgraded : false
+      } as Leader;
+    })
+    .sort((a, b) => Number(a.score) - Number(b.score));
+};
 
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
@@ -1067,7 +1067,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
 
   console.log("leaders =>", JSON.stringify(leaders));
 
-  const allLeaders = await getLeaders();
+  const allLeaders = await getLeadersByUserIds(userIds);
 
   return leaders
     .map((leader) => {
