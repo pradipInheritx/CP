@@ -15,11 +15,18 @@ import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import AppContext from "../../Contexts/AppContext";
 import { userConverter } from "../../common/models/User";
 import firebase from "firebase/compat";
-import UserContext from "../../Contexts/User";
+import UserContext, { AddAllUserName, checkValidAddUsername } from "../../Contexts/User";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userInfo } from "os";
 import { AvatarType } from "assets/avatars/Avatars";
+import votingParliament from "firebaseVotingParliament";
+import sportParliament from "firebaseSportParliament";
+import stockParliament from "firebaseStockParliament";
+import coinParliament from "firebaseCoinParliament";
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { showToast } from "App";
+
 const Generate = styled(Button)`
   width: auto;
   min-width: auto;
@@ -60,7 +67,7 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
 
     const translate = useTranslation();
     const { userInfo, user } = useContext(UserContext);
-    const { setShowMenuBar } = useContext(AppContext);
+    const { setShowMenuBar, setFirstTimeLogin } = useContext(AppContext);    
     const title = "Add Bio";
 
     const [bio, setBio] = useState("");
@@ -86,10 +93,47 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
 
     const UpdateBio = async (type?:any) => {
         if (user?.uid) {
+            const firstTimeLogin: Boolean = false
             const userRef = doc(db, "users", user?.uid);
-            await setDoc(userRef, { bio: type == "update" ? bio:"" }, { merge: true });
+            await setDoc(userRef, { bio: type == "update" ? bio : "", firstTimeLogin }, { merge: true });
             setSelectBioEdit(false)
-            setShowMenuBar(false);
+            setShowMenuBar(false);            
+            setFirstTimeLogin(false)
+        }              
+        // try {
+        //     // setFirstTimeAvatarSelection(true)
+        //     const firstTimeLogin: Boolean = false
+        //     // @ts-ignore
+        //     const userRef = doc(db, "users", user?.uid);
+        //     await setDoc(userRef, { firstTimeLogin }, { merge: true });
+
+        // } catch (e) {
+        //     showToast((e as Error).message, ToastType.ERROR);
+        // }
+    }    
+
+    const UpdateUserName = async () => {
+        
+        // @ts-ignore
+        const allAppUid = JSON.parse(localStorage.getItem("userId"))
+        console.log(allAppUid, "allAppUid")
+        if (userInfo?.userName && userInfo?.displayName) {  
+            console.log(userInfo?.userName, userInfo?.displayName, "displayNameusername")
+            await checkValidAddUsername(
+                coinParliament.firestore(), allAppUid?.coin, userInfo?.userName, userInfo?.displayName, bio
+            );
+            
+            await checkValidAddUsername(
+                sportParliament.firestore(), allAppUid?.sport, userInfo?.userName, userInfo?.displayName, bio
+            );
+            
+            await checkValidAddUsername(
+                votingParliament.firestore(), allAppUid?.voting, userInfo?.userName, userInfo?.displayName, bio
+            );
+            
+            await checkValidAddUsername(
+                stockParliament.firestore(), allAppUid?.stock, userInfo?.userName, userInfo?.displayName, bio
+            );            
         }
     }
 
@@ -128,6 +172,7 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
                                 }}
                                 onClick={() => {
                                     UpdateBio("update")
+                                    UpdateUserName()
                                   }}
                             // disabled={!valid}
                             >
@@ -137,6 +182,7 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
                         <div className="d-flex justify-content-center text-center mt-4">
                             <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
                                 UpdateBio("SKIP")
+                                UpdateUserName()
                               }}>
                                 Skip
                             </span>
