@@ -31,7 +31,7 @@ import {
   userConverter,
   // sendEmailVerificationLink,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 import {
   getLeaderUsers,
@@ -49,7 +49,7 @@ import {
 import {
   getAllCoins,
   getAllPairs,
-  // prepareCPVI,
+  prepareCPVI,
   // fetchAskBidCoin,
   // getUpdatedDataFromWebsocket,
   // getAllUpdated24HourRecords,
@@ -137,7 +137,7 @@ import { sendBulkEmail } from "./common/services/bulkEmailService";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com"
 });
 
 // initialize express server
@@ -574,12 +574,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
 
 async function createUserStatistics(userData: any, userId: any) {
   try {
+    const timestamp = new Date(userData?.createdAt); // Replace this number with your timestamp
+    const signUpTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("signUpTimestamp--->", signUpTimestamp);
     const userStatisticsData = {
       userId: userData.uid,
       userName: userData?.userName || "",
       email: userData?.email || "",
       Country: userData?.country || " ",
-      signUpTime: userData?.createdAt || "",
+      signUpTime: signUpTimestamp || "",
       totalVotes: userData?.voteStatistics?.total || 0, //needs to be updated  for the old users
       averageVotes: 0,
       accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
@@ -1106,7 +1109,10 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     const latestVoteDate = latestVoteTime?.toISOString().split('T')[0];
 
     let lastVoteDay = latestVoteDate ? latestVoteDate : '';
-
+    const timestamp = new Date(lastVoteDay); // Replace this number with your timestamp
+    const lastVoteDayTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("lastVoteDayTimestamp--->", lastVoteDayTimestamp);
+    
     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
     let numberOfDaysVoted = uniqueDates.length;
 
@@ -1116,7 +1122,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
       .firestore()
       .collection("userStatistics")
       .doc(userId)
-      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDayTimestamp }, { merge: true });
 
     console.log("User statistics data updated successfully for user:", userId);
   } catch (error) {
@@ -1830,17 +1836,17 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 //     await Promise.all([await fetchAskBidCoin()]);
 //   });
 
-// exports.prepareHourlyCPVI = functions.pubsub
-//   .schedule("0 * * * *")
-//   .onRun(async () => {
-//     await prepareCPVI(1, "hourly");
-//   });
+exports.prepareHourlyCPVI = functions.pubsub
+  .schedule("0 * * * *")
+  .onRun(async () => {
+    await prepareCPVI(1, "hourly");
+  });
 
-// exports.prepare4HourlyCPVI = functions.pubsub
-//   .schedule("0 */4 * * *")
-//   .onRun(async () => {
-//     await prepareCPVI(4, "fourHourly");
-//   });
+exports.prepare4HourlyCPVI = functions.pubsub
+  .schedule("0 */4 * * *")
+  .onRun(async () => {
+    await prepareCPVI(4, "fourHourly");
+  });
 
 // exports.prepare24HourlyCPVI = functions.pubsub
 //   .schedule("0 0 * * *")
@@ -2579,7 +2585,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
         let query = admin.firestore().collection("userStatistics").limit(batchSize);
         if (lastDoc) query = query.startAfter(lastDoc);
         const snapshot = await query.get();
-        
+
         const batchData = snapshot.docs.map((doc) => {
           const user = doc.data();
           if (user.signUpTime && user.signUpTime.trim() !== "") {
@@ -2591,6 +2597,7 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
           }
           user.averageVotes = Math.round(user.averageVotes);
           user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+          user.Country = user.Country?.trim() || "";
           return user;
         });
 
