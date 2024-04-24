@@ -17,6 +17,7 @@ import { handleSoundClick } from "../common/utils/SoundClick";
 import { signOut } from "firebase/auth";
 import { auth } from "firebase";
 import { Logout } from "common/models/Login";
+import telegramIcon from "assets/images/telegramIcon.svg"
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -299,7 +300,7 @@ const Menu = ({
                               // handleSoundClick()
                             }}
                           >
-                            {translate(item.label)}
+                            {translate(item.label)}<img src={telegramIcon} width={'40'} className="me-1 pb-1" />
                           </Nav.Link>
                         </>
                         :

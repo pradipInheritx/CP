@@ -171,7 +171,7 @@ const Footer = () => {
           style={{
             fontWeight: 'bold',
         }}
-        >"Got a question? Talk to us on Telegram"</p>
+        >Got a question? Talk to us on Telegram</p>
         {/* <button> */}
         <img src={telegramIcon} width={'40'} className="me-1 pb-1"/>
         {/* </button> */}

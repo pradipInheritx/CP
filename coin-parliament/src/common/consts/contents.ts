@@ -91,7 +91,7 @@ export const myPages: ContentPage[] = [
     slug: "knowledgehub",
   },
   {
-    title: `"Got a question? Talk to us on Telegram"`,
+    title: `Got a question?`,
     content: Telegram,
     slug: "onTelegram",
   },
