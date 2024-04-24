@@ -375,7 +375,7 @@ const getMaxVotes = async () => {
     .doc("settings")
     .get();
   const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
-  return getVoteAndReturnData?.voteRules.maxVotes;
+  return getVoteAndReturnData?.voteRules.defaultVotes;
 };
 
 // user's email verification link
@@ -1112,7 +1112,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     const timestamp = new Date(lastVoteDay); // Replace this number with your timestamp
     const lastVoteDayTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
     console.log("lastVoteDayTimestamp--->", lastVoteDayTimestamp);
-    
+
     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
     let numberOfDaysVoted = uniqueDates.length;
 
