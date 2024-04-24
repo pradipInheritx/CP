@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Paper, TextField } from "@material-ui/core";
+import { Box, Button, Paper, TextField, Grid } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUserSetting,
@@ -75,7 +75,13 @@ const UsersModule = () => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} style={{ padding: "30px" }}>
+        <h3
+          style={{ marginBottom: "20px", fontWeight: "bold", fontSize: "24px" }}
+        >
+          User Type Setting
+        </h3>
+
         {/* <Box className={classes.authContent}> */}
         <form className="" style={{ display: "flex" }}>
           <div className="" style={{ width: "100%" }}>
@@ -84,13 +90,88 @@ const UsersModule = () => {
                 return (
                   <div
                     style={{
-                      padding: "10px 10px 0px 10px"
+                      padding: "0px 10px 0px 10px"
                       // border: `${userTypeSettingError[index] !== "" ? "1px solid red" : ""}`
                     }}
                     key={index}
                   >
                     <label htmlFor="">{item.name} </label>
+
+                    <Grid container spacing={10}>
+                      <Grid item xs={3}>
+                        <TextField
+                          style={{
+                            width: "100%"
+                          }}
+                          type="text"
+                          label={"Cmp Vote"}
+                          onChange={event =>
+                            handelOnChangeState(event, "givenCPM", index)
+                          }
+                          value={item.givenCPM}
+                          margin="normal"
+                          variant="outlined"
+                          className={classes.textFieldRoot}
+                        />
+                      </Grid>
+
+                      <Grid item xs={3}>
+                        <TextField
+                          style={{
+                            width: "100%"
+                          }}
+                          type="text"
+                          label={"Weight"}
+                          onChange={event =>
+                            handelOnChangeState(event, "weight", index)
+                          }
+                          value={item.weight}
+                          margin="normal"
+                          variant="outlined"
+                          className={classes.textFieldRoot}
+                        />
+                      </Grid>
+
+                      <Grid item xs={3}>
+                        <TextField
+                          style={{
+                            width: "100%"
+                          }}
+                          type="text"
+                          label={"Percent"}
+                          onChange={event =>
+                            handelOnChangeState(event, "share", index)
+                          }
+                          value={item.share}
+                          margin="normal"
+                          variant="outlined"
+                          className={classes.textFieldRoot}
+                        />
+                      </Grid>
+
+                      <Grid item xs={3}>
+                        <TextField
+                          style={{
+                            width: "100%"
+                          }}
+                          type="text"
+                          label={"Min Vote"}
+                          onChange={event =>
+                            handelOnChangeState(event, "minVote", index)
+                          }
+                          value={item.minVote}
+                          margin="normal"
+                          variant="outlined"
+                          className={classes.textFieldRoot}
+                        />
+                      </Grid>
+                    </Grid>
+
                     <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateRows: "repeat(4, 1fr)"
+                      }}
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -102,55 +183,7 @@ const UsersModule = () => {
                             : ""
                         }`
                       }}
-                    >
-                      <TextField
-                        type="text"
-                        label={"Cmp Vote"}
-                        onChange={event =>
-                          handelOnChangeState(event, "givenCPM", index)
-                        }
-                        value={item.givenCPM}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textFieldRoot}
-                      />
-
-                      <TextField
-                        type="text"
-                        label={"Weight"}
-                        onChange={event =>
-                          handelOnChangeState(event, "weight", index)
-                        }
-                        value={item.weight}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textFieldRoot}
-                      />
-
-                      <TextField
-                        type="text"
-                        label={"Percent"}
-                        onChange={event =>
-                          handelOnChangeState(event, "share", index)
-                        }
-                        value={item.share}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textFieldRoot}
-                      />
-
-                      <TextField
-                        type="text"
-                        label={"Min Vote"}
-                        onChange={event =>
-                          handelOnChangeState(event, "minVote", index)
-                        }
-                        value={item.minVote}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textFieldRoot}
-                      />
-                    </Box>
+                    ></Box>
                     {userTypeSettingError[index] != "" ? (
                       <span style={{ color: "red", margin: "10px" }}>
                         {userTypeSettingError[index]}
@@ -165,7 +198,8 @@ const UsersModule = () => {
               marginY={"10px"}
               display="flex"
               alignItems="center"
-              justifyContent="space-around"
+              justifyContent="center"
+              gridGap={20}
               mb={5}
             >
               <Button

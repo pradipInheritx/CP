@@ -1,45 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableCell, TableContainer, TableRow, TextField } from '@material-ui/core';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TextField,
+  Grid
+} from "@material-ui/core";
 
-import { useDispatch, useSelector } from 'react-redux';
-import {getCMPSetting,updateCMPSetting} from '../../../redux/actions/CMPSetting';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCMPSetting,
+  updateCMPSetting
+} from "../../../redux/actions/CMPSetting";
 
-import ConfirmDialog from '../../../@jumbo/components/Common/ConfirmDialog';
-import { useDebounce } from '../../../@jumbo/utils/commonHelper';
-import useStyles from './index.style';
-import GridContainer from '@jumbo/components/GridContainer';
-import { Grid } from 'react-virtualized';
-import AppTextInput from '@jumbo/components/Common/formElements/AppTextInput';
-import IntlMessages from '@jumbo/utils/IntlMessages';
-import { NavLink } from 'react-router-dom';
-import { requiredMessage } from '@jumbo/constants/ErrorMessages';
-
+import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
+import { useDebounce } from "../../../@jumbo/utils/commonHelper";
+import useStyles from "./index.style";
+import GridContainer from "@jumbo/components/GridContainer";
+// import { Grid } from 'react-virtualized';
+import AppTextInput from "@jumbo/components/Common/formElements/AppTextInput";
+import IntlMessages from "@jumbo/utils/IntlMessages";
+import { NavLink } from "react-router-dom";
+import { requiredMessage } from "@jumbo/constants/ErrorMessages";
 
 const CMPSettingsModule = () => {
   const classes = useStyles();
- 
+
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const [userSetting, setUserSetting] = useState([]);
-  const { cmpSettingDetelis } = useSelector(({ UsersDetelis }) => UsersDetelis);  
-   
-  const [weight, setWeight] = useState('');
-  const [weightError, setWeightError] = useState('');
-  
-  const [returnCMP, setReturnCMP] = useState('');
-  const [returnCMPError, setReturnCMPError] = useState('');
-  
-  const [sharePer, setSharePer] = useState('');
-  const [sharePerError, setSharePerError] = useState('');
+  const { cmpSettingDetelis } = useSelector(({ UsersDetelis }) => UsersDetelis);
 
-  const [userTypeCpm, setUserTypeCpm] = useState('');
-  const [userTypeCpmError, setUserTypeCpmError] = useState('');   
-  
+  const [weight, setWeight] = useState("");
+  const [weightError, setWeightError] = useState("");
 
+  const [returnCMP, setReturnCMP] = useState("");
+  const [returnCMPError, setReturnCMPError] = useState("");
+
+  const [sharePer, setSharePer] = useState("");
+  const [sharePerError, setSharePerError] = useState("");
+
+  const [userTypeCpm, setUserTypeCpm] = useState("");
+  const [userTypeCpmError, setUserTypeCpmError] = useState("");
 
   const dispatch = useDispatch();
 
@@ -48,23 +60,20 @@ const CMPSettingsModule = () => {
       getCMPSetting(filterOptions, debouncedSearchTerm, () => {
         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
         setUsersFetched(true);
-      }),
+      })
     );
-  }, [dispatch, filterOptions, debouncedSearchTerm]);  
+  }, [dispatch, filterOptions, debouncedSearchTerm]);
 
-  const onSubmitClick = () => {    
+  const onSubmitClick = () => {
     if (!userTypeCpm) {
       setUserTypeCpmError(requiredMessage);
     } else if (!weight) {
       setWeightError(requiredMessage);
-    }    
-    else if (!returnCMP) {
+    } else if (!returnCMP) {
       setReturnCMPError(requiredMessage);
-    }
-    else if (!sharePer) {
+    } else if (!sharePer) {
       setSharePerError(requiredMessage);
-    }
-    else {
+    } else {
       onCmpSave();
     }
   };
@@ -75,108 +84,122 @@ const CMPSettingsModule = () => {
       weight,
       returnCMP,
       sharePer
-    };    
-      dispatch(
-        updateCMPSetting({...CmpDetail }),
-      );    
+    };
+    dispatch(updateCMPSetting({ ...CmpDetail }));
   };
-
-
-
-
 
   return (
     <div className={classes.root}>
-          <Paper className={classes.paper}>   
-              {/* <Box className={classes.authContent}> */}
-         <form className='' style={{ display: "flex",justifyContent: "center",}}>
-        <div className=''>                
-            <Box style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }} >
-              
-              <TextField
-              style={{width:"55%"}}                                  
-              type="text"
-              label={<IntlMessages id="appModule.userTypeCpm" />}            
-                onChange={event => {
-                  setUserTypeCpm(event.target.value)
-                  setUserTypeCpmError("")
-                }}
-              defaultValue={cmpSettingDetelis?.userTypeCpm}
-              margin="normal"
-              variant="outlined"
-                className={classes.textFieldRoot}
-                helperText={userTypeCpmError}
-              error={userTypeCpmError !== ''}
-                
-            />
+      <Paper className={classes.paper} style={{ padding: "30px" }}>
+        <h3
+          style={{ marginBottom: "10px", fontWeight: "bold", fontSize: "24px" }}
+        >
+          User Type Setting
+        </h3>
+        {/* <Box className={classes.authContent}> */}
+        <form>
+          <div>
+            <Grid container spacing={10}>
+              <Grid item xs={3}>
+                <TextField
+                  style={{ width: "100%" }}
+                  type="text"
+                  label={<IntlMessages id="appModule.userTypeCpm" />}
+                  onChange={event => {
+                    setUserTypeCpm(event.target.value);
+                    setUserTypeCpmError("");
+                  }}
+                  defaultValue={cmpSettingDetelis?.userTypeCpm}
+                  margin="normal"
+                  variant="outlined"
+                  className={classes.textFieldRoot}
+                  helperText={userTypeCpmError}
+                  error={userTypeCpmError !== ""}
+                />
+              </Grid>
 
-            <TextField
-            style={{width:"55%"}}
-              type="text"
-              label={<IntlMessages id="appModule.weight" />}              
-                onChange={event => {
-                  setWeight(event.target.value)
-                  setWeightError("")
-                }}
-              defaultValue={cmpSettingDetelis?.weight}
-              margin="normal"
-              variant="outlined"
-                className={classes.textFieldRoot}
-                helperText={weightError}
-              error={weightError !== ''}               
-            />
-                          
-            <TextField
-            style={{width:"55%"}}
-              type="text"
-              label={<IntlMessages id="appModule.returnCMP" />}              
-                onChange={event => {
-                  setReturnCMP(event.target.value)
-                  setReturnCMPError("")
-                }}
-              defaultValue={cmpSettingDetelis?.returnCMP}
-              margin="normal"
-              variant="outlined"
-              className={classes.textFieldRoot}
-                helperText={returnCMPError}
-              error={returnCMPError !== ''}                               
-              />
-              
-            <TextField
-            style={{width:"55%"}}
-              type="text"
-              label={<IntlMessages id="appModule.sharePercent" />}          
-                onChange={event => {
-                  setSharePer(event.target.value)
-                  setSharePerError("")
-                }}
-              defaultValue={cmpSettingDetelis?.sharePer}
-              margin="normal"
-              variant="outlined"
-              className={classes.textFieldRoot}
-                helperText={sharePerError}
-              error={sharePerError !== ''}                               
-                
-            />                                      
-            
-          </Box>
-          <Box marginY={"10px"}  display="flex" alignItems="center" justifyContent="space-around" mb={5}>
+              <Grid item xs={3}>
+                <TextField
+                  style={{ width: "100%" }}
+                  type="text"
+                  label={<IntlMessages id="appModule.weight" />}
+                  onChange={event => {
+                    setWeight(event.target.value);
+                    setWeightError("");
+                  }}
+                  defaultValue={cmpSettingDetelis?.weight}
+                  margin="normal"
+                  variant="outlined"
+                  className={classes.textFieldRoot}
+                  helperText={weightError}
+                  error={weightError !== ""}
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  style={{ width: "100%" }}
+                  type="text"
+                  label={<IntlMessages id="appModule.returnCMP" />}
+                  onChange={event => {
+                    setReturnCMP(event.target.value);
+                    setReturnCMPError("");
+                  }}
+                  defaultValue={cmpSettingDetelis?.returnCMP}
+                  margin="normal"
+                  variant="outlined"
+                  className={classes.textFieldRoot}
+                  helperText={returnCMPError}
+                  error={returnCMPError !== ""}
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  style={{ width: "100%" }}
+                  type="text"
+                  label={<IntlMessages id="appModule.sharePercent" />}
+                  onChange={event => {
+                    setSharePer(event.target.value);
+                    setSharePerError("");
+                  }}
+                  defaultValue={cmpSettingDetelis?.sharePer}
+                  margin="normal"
+                  variant="outlined"
+                  className={classes.textFieldRoot}
+                  helperText={sharePerError}
+                  error={sharePerError !== ""}
+                />
+              </Grid>
+            </Grid>
+
+            <Box
+              marginY={"10px"}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb={5}
+              gridGap={20}
+            >
               <Button
-                type="reset" 
-              //   onClick={onSubmit}
-              variant="contained" color="neutral">
-              <IntlMessages id="appModule.reset" />
-            </Button>            
-            <Button
-              onClick={onSubmitClick}
-              variant="contained" color="primary">
-              <IntlMessages id="appModule.submit" />
-            </Button>            
-            
-          </Box>
-        </div>
-      </form>
-      </Paper>      
+                type="reset"
+                //   onClick={onSubmit}
+                variant="contained"
+                color="neutral"
+              >
+                <IntlMessages id="appModule.reset" />
+              </Button>
+              <Button
+                onClick={onSubmitClick}
+                variant="contained"
+                color="primary"
+              >
+                <IntlMessages id="appModule.submit" />
+              </Button>
+            </Box>
+          </div>
+        </form>
+      </Paper>
     </div>
   );
 };

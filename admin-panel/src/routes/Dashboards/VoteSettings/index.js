@@ -1,48 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableCell, TableContainer, TableRow, TextField } from '@material-ui/core';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TextField,
+  Grid
+} from "@material-ui/core";
 
-import { useDispatch, useSelector } from 'react-redux';
-import {getVoteSetting,updateVoteSetting} from '../../../redux/actions/VoteSetting';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getVoteSetting,
+  updateVoteSetting
+} from "../../../redux/actions/VoteSetting";
 
-import ConfirmDialog from '../../../@jumbo/components/Common/ConfirmDialog';
-import { useDebounce } from '../../../@jumbo/utils/commonHelper';
-import useStyles from './index.style';
-import GridContainer from '@jumbo/components/GridContainer';
-import { Grid } from 'react-virtualized';
-import AppTextInput from '@jumbo/components/Common/formElements/AppTextInput';
-import IntlMessages from '@jumbo/utils/IntlMessages';
-import { NavLink } from 'react-router-dom';
-import { requiredMessage } from '@jumbo/constants/ErrorMessages';
-
+import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
+import { useDebounce } from "../../../@jumbo/utils/commonHelper";
+import useStyles from "./index.style";
+import GridContainer from "@jumbo/components/GridContainer";
+// import { Grid } from 'react-virtualized';
+import AppTextInput from "@jumbo/components/Common/formElements/AppTextInput";
+import IntlMessages from "@jumbo/utils/IntlMessages";
+import { NavLink } from "react-router-dom";
+import { requiredMessage } from "@jumbo/constants/ErrorMessages";
 
 const VoteSettingsModule = () => {
   const classes = useStyles();
- const  validRegExp = new RegExp(/^\d*\.?\d*$/);
+  const validRegExp = new RegExp(/^\d*\.?\d*$/);
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  
-  const { VoteSettingDetelis } = useSelector(({ VoteSetting }) => VoteSetting);  
-  const [allSettingData, setAllSettingData] = useState({});
-  const [giveTime, setGiveTime] = useState('');
-  const [giveTimeError, setGiveTimeError] = useState('');
-  
-  const [afterTimeVote, setAfterTimeVote] = useState('');
-  const [afterTimeVoteError, setAfterTimeVoteError] = useState('');
-    
-  
 
+  const { VoteSettingDetelis } = useSelector(({ VoteSetting }) => VoteSetting);
+  const [allSettingData, setAllSettingData] = useState({});
+  const [giveTime, setGiveTime] = useState("");
+  const [giveTimeError, setGiveTimeError] = useState("");
+
+  const [afterTimeVote, setAfterTimeVote] = useState("");
+  const [afterTimeVoteError, setAfterTimeVoteError] = useState("");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     // setAllSettingData(ReturnSettingDetelis)
-    if (VoteSettingDetelis) {      
-      setGiveTime(VoteSettingDetelis?.voteRules?.timeLimit)
-      setAfterTimeVote(VoteSettingDetelis?.voteRules?.maxVotes)      
-      setAllSettingData(VoteSettingDetelis)
+    if (VoteSettingDetelis) {
+      setGiveTime(VoteSettingDetelis?.voteRules?.timeLimit);
+      setAfterTimeVote(VoteSettingDetelis?.voteRules?.maxVotes);
+      setAllSettingData(VoteSettingDetelis);
     }
   }, [VoteSettingDetelis]);
 
@@ -51,106 +62,117 @@ const VoteSettingsModule = () => {
       getVoteSetting(filterOptions, debouncedSearchTerm, () => {
         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
         setUsersFetched(true);
-      }),
+      })
     );
-  }, [dispatch, filterOptions, debouncedSearchTerm]);  
+  }, [dispatch, filterOptions, debouncedSearchTerm]);
 
-  const onSubmitClick = () => {    
+  const onSubmitClick = () => {
     if (!giveTime) {
       setGiveTimeError(requiredMessage);
     } else if (!afterTimeVote) {
       setAfterTimeVoteError(requiredMessage);
-    }       
-    else {
+    } else {
       onCmpSave();
     }
   };
 
   const onCmpSave = () => {
-     var allDatainfo = {
+    var allDatainfo = {
       ...allSettingData.CPMSettings,
-      ...allSettingData.voteRules,
-    }
-    allDatainfo["maxVotes"]=afterTimeVote
-    allDatainfo["timeLimit"] = giveTime
-    
-    console.log(allDatainfo,"allDatainfo")
+      ...allSettingData.voteRules
+    };
+    allDatainfo["maxVotes"] = afterTimeVote;
+    allDatainfo["timeLimit"] = giveTime;
 
-      dispatch(
-        updateVoteSetting(allDatainfo),
-      );    
+    console.log(allDatainfo, "allDatainfo");
+
+    dispatch(updateVoteSetting(allDatainfo));
   };
-
-
-
-
 
   return (
     <div className={classes.root}>
-          <Paper className={classes.paper}>   
-              {/* <Box className={classes.authContent}> */}
-         <form className='' style={{ display: "flex" ,justifyContent: "center",}} >
-        <div className='' >                
-            <Box style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }} >
-              
+      <Paper className={classes.paper} style={{ padding: "30px" }}>
+        <h3
+          style={{ marginBottom: "10px", fontWeight: "bold", fontSize: "24px" }}
+        >
+          Vote Setting
+        </h3>
+
+        {/* <Box className={classes.authContent}> */}
+        <form>
+          <Grid container spacing={10}>
+            <Grid item xs={6}>
               <TextField
-                // style={{ width: "55%" }} 
+                style={{ width: "100%" }}
                 fullWidth
-              type="text"
-                label={"Time limit"} 
+                type="text"
+                label={"Time limit"}
                 value={giveTime}
                 onChange={event => {
-                var finalValue = validRegExp.test(event.target.value);
-                  if(finalValue) setGiveTime(event.target.value)
-                setGiveTimeError("")
-              }}
-              
-              margin="normal"
-              variant="outlined"
+                  var finalValue = validRegExp.test(event.target.value);
+                  if (finalValue) setGiveTime(event.target.value);
+                  setGiveTimeError("");
+                }}
+                margin="normal"
+                variant="outlined"
                 className={classes.textFieldRoot}
                 helperText={giveTimeError}
-              error={giveTimeError !== ''}
+                error={giveTimeError !== ""}
+              />
+            </Grid>
 
-            />
-
-            <TextField
-            // style={{width:"55%"}}
+            <Grid item xs={6}>
+              <TextField
+                style={{ width: "100%" }}
                 fullWidth
-              type="text"
+                type="text"
                 label={
                   // <IntlMessages id="appModule.weight" />
                   "Max Votes"
-                }              
+                }
                 onChange={event => {
-                var finalValue = validRegExp.test(event.target.value);
-                  if(finalValue)setAfterTimeVote(event.target.value)
-                setAfterTimeVoteError("")
-              }}
-              value={afterTimeVote}
-              margin="normal"
-              variant="outlined"
-              className={classes.textFieldRoot}
-              helperText={afterTimeVoteError}
-              error={afterTimeVoteError !== ''}
-            />                                     
-          </Box>
-          <Box marginY={"10px"}  display="flex" alignItems="center" justifyContent="space-around" mb={5}>
+                  var finalValue = validRegExp.test(event.target.value);
+                  if (finalValue) setAfterTimeVote(event.target.value);
+                  setAfterTimeVoteError("");
+                }}
+                value={afterTimeVote}
+                margin="normal"
+                variant="outlined"
+                className={classes.textFieldRoot}
+                helperText={afterTimeVoteError}
+                error={afterTimeVoteError !== ""}
+              />
+            </Grid>
+          </Grid>
+
+          <div className="">
+            <Box
+              marginY={"10px"}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb={5}
+              gridGap={20}
+            >
               <Button
-                type="reset" 
+                type="reset"
                 // onClick={rest()}
-              variant="contained" color="neutral">
-              <IntlMessages id="appModule.reset" />
-            </Button>            
-            <Button
-              onClick={onSubmitClick}
-              variant="contained" color="primary">
-              <IntlMessages id="appModule.submit" />
-            </Button>            
-            
-          </Box>
-        </div>
-      </form>
-      </Paper>      
+                variant="contained"
+                color="neutral"
+              >
+                <IntlMessages id="appModule.reset" />
+              </Button>
+              <Button
+                onClick={onSubmitClick}
+                variant="contained"
+                color="primary"
+              >
+                <IntlMessages id="appModule.submit" />
+              </Button>
+            </Box>
+          </div>
+        </form>
+      </Paper>
     </div>
   );
 };

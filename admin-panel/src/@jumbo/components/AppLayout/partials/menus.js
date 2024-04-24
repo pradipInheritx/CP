@@ -1516,7 +1516,7 @@ export const sidebarNavs = [
     name: <IntlMessages id={"sidebar.dashboards"} />,
     type: "section",
     children: dashboardsMenus
-  }
+  },
   // {
   //   name: "All Lists",
   //   type: "section",
@@ -1527,11 +1527,11 @@ export const sidebarNavs = [
   //   type: "section",
   //   children: AllTables,
   // },
-  // {
-  //   name: "All Settings",
-  //   type: "section",
-  //   children: AllSettings,
-  // },
+  {
+    name: "All Settings",
+    type: "section",
+    children: AllSettings
+  }
   // {
   //   name: "All Transactions",
   //   type: "section",
