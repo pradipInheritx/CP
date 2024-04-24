@@ -552,7 +552,7 @@ const getLeaders = async () => {
   const snapshotUsers = await firestore()
     .collection("users")
     .withConverter(userConverter)
-    //.where("voteStatistics.total", ">", 49)
+    .where("voteStatistics.total", ">", 49)
     .get(); // Added this condition for that user will fetch only minimum vote given atleast 50
 
   return snapshotUsers.docs
