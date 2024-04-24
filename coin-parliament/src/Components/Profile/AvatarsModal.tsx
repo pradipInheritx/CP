@@ -97,7 +97,7 @@ margin-bottom:10px;
 `;
 
 const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
-  const { setFirstTimeAvatarSelection, setShowMenuBar, setSelectBioEdit, avatarImage, setAvatarImage } = useContext(AppContext);
+  const { setFirstTimeAvatarSelection, setShowMenuBar, setSelectBioEdit, avatarImage, setAvatarImage, setFirstTimeLogin } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo,user } = useContext(UserContext);
@@ -155,9 +155,11 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           },
         });        
         if (response.data.status) {
-          showToast(response.data.message, ToastType.SUCCESS);
           setSelectBioEdit(true)
-          setFirstTimeAvatarSelection(false);      
+          setFirstTimeAvatarSelection(false);  
+          setFirstTimeLogin(false)
+          showToast(response.data.message, ToastType.SUCCESS);
+
           setIsLoading(false)
         } else {          
           showToast(response.data.message, ToastType.ERROR);
@@ -180,7 +182,8 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         const userRef = doc(db, "users", user?.uid);
         await setDoc(userRef, {avatar : name }, { merge: true });
           setSelectBioEdit(true);
-          setFirstTimeAvatarSelection(false);      
+      setFirstTimeAvatarSelection(false);   
+      setFirstTimeLogin(false)
           setIsLoading(false);
     }
 }
