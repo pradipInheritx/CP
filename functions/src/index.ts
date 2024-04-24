@@ -574,12 +574,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user: any) => {
 
 async function createUserStatistics(userData: any, userId: any) {
   try {
+    const timestamp = new Date(userData?.createdAt); // Replace this number with your timestamp
+    const signUpTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("signUpTimestamp--->", signUpTimestamp);
     const userStatisticsData = {
       userId: userData.uid,
       userName: userData?.userName || "",
       email: userData?.email || "",
       Country: userData?.country || " ",
-      signUpTime: userData?.createdAt || "",
+      signUpTime: signUpTimestamp || "",
       totalVotes: userData?.voteStatistics?.total || 0, //needs to be updated  for the old users
       averageVotes: 0,
       accountUpgrade: userData?.isUserUpgraded || false, //needs to be updated for the old users
@@ -1106,7 +1109,10 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     const latestVoteDate = latestVoteTime?.toISOString().split('T')[0];
 
     let lastVoteDay = latestVoteDate ? latestVoteDate : '';
-
+    const timestamp = new Date(lastVoteDay); // Replace this number with your timestamp
+    const lastVoteDayTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
+    console.log("lastVoteDayTimestamp--->", lastVoteDayTimestamp);
+    
     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
     let numberOfDaysVoted = uniqueDates.length;
 
@@ -1116,7 +1122,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
       .firestore()
       .collection("userStatistics")
       .doc(userId)
-      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDay }, { merge: true });
+      .set({ noOfVotesDays: numberOfDaysVoted, averageVotes: averageVotes, totalVotes: voteStatistics, lastVoteDay: lastVoteDayTimestamp }, { merge: true });
 
     console.log("User statistics data updated successfully for user:", userId);
   } catch (error) {
