@@ -1112,7 +1112,7 @@ const updateUserStatistics = async (userId: string, voteStatistics: Number) => {
     const timestamp = new Date(lastVoteDay); // Replace this number with your timestamp
     const lastVoteDayTimestamp = admin.firestore.Timestamp.fromDate(timestamp);
     console.log("lastVoteDayTimestamp--->", lastVoteDayTimestamp);
-    
+
     const uniqueDates = [...new Set(voteTimes.map((date) => date.toDateString()))];
     let numberOfDaysVoted = uniqueDates.length;
 
@@ -2363,30 +2363,19 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
 
     // Filter the data through the filterFields to be between start and end date
     if (startDate && endDate && filterFields && ['signUpTime', 'lastLoginDay', 'lastVoteDay'].includes(filterFields)) {
-
-      startDate = new Date(startDate).getTime() / 1000;
-      endDate = new Date(endDate).getTime() / 1000;
-
-      console.log("startDate--->", startDate);
-      console.log("endDate--->", endDate);
-
-      result = result.filter(function (item: any) {
-        let fieldDate = moment(item[filterFields]).toDate().getTime() / 1000;
+      startDate = moment(startDate).startOf('day').unix();
+      endDate = moment(endDate).endOf('day').unix();
+      result = result.filter((item: any) => {
+        let fieldDate = item[filterFields]?._seconds;
         return startDate <= fieldDate && endDate >= fieldDate;
       });
-
     }
 
+    // Format some values
     result = result.map((user: any) => {
-      if (user.signUpTime && user.signUpTime.trim() !== "") {
-        const signUpDate = new Date(user.signUpTime);
-        const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-        user.signUpTime = signUpDateFormatted;
-      } else {
-        user.signUpTime = "";
-      }
       user.averageVotes = Math.round(user.averageVotes);
       user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
+      user.Country = user.Country?.trim() || "";
       return user;
     });
 
@@ -2404,16 +2393,44 @@ exports.getAllUserStatistics = functions.https.onCall(async (data) => {
     // Sort result asc/desc acc to orderBy field
     result.sort(function (a: any, b: any) {
       if (orderBy !== 'noOfVotesDays' && (orderBy.includes('Day') || orderBy.includes('Time'))) {
-        const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
-        const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
-        return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+        // const dateA: any = orderBy == 'lastLoginDay' ? moment(a[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(a[orderBy] && a[orderBy].trim().length > 0 ? a[orderBy] : '1990-01-01');
+        // const dateB: any = orderBy == 'lastLoginDay' ? moment(b[orderBy], 'ddd, DD MMM YYYY HH:mm:ss [GMT]') : moment(b[orderBy] && b[orderBy].trim().length > 0 ? b[orderBy] : '1990-01-01');
+        // return sort.toLowerCase() === 'asc' ? (dateA - dateB) : (dateB - dateA);
+        let fieldA: any, fieldB: any;
+
+        switch (orderBy) {
+          case 'signUpTime':
+            fieldA = a.signUpTime?._seconds || 0;
+            fieldB = b.signUpTime?._seconds || 0;
+            break;
+          case 'lastVoteDay':
+            fieldA = a.lastVoteDay?._seconds || 0;
+            fieldB = b.lastVoteDay?._seconds || 0;
+            break;
+          case 'lastLoginDay':
+            fieldA = a.lastLoginDay?._seconds || 0;
+            fieldB = b.lastLoginDay?._seconds || 0;
+            break;
+          default:
+            // If orderBy parameter is not one of the expected values, return unsorted data
+            return 0;
+        }
+        if (sort === 'asc') {
+          console.log(`Sorting in Ascending order by ${orderBy}`);
+          return fieldA - fieldB;
+        } else if (sort === 'desc') {
+          console.log(`Sorting in Descending order by ${orderBy}`);
+          return fieldB - fieldA;
+        } else {
+          // If sort parameter is not one of the expected values, return unsorted data
+          return 0;
+        }
+
       } else {
         // Handle sorting for string field values
         if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
           const valueA = a[orderBy] || ''; // Default value if undefined
           const valueB = b[orderBy] || ''; // Default value if undefined
-          // console.log("valueA--->", valueA);
-          // console.log("valueB--->", valueB);
           return sort.toLowerCase() === 'asc' ? valueA.localeCompare(valueB, 'en', { sensitivity: 'base' }) : valueB.localeCompare(valueA, 'en', { sensitivity: 'base' });
 
           // Handle sorting for numeric field values
@@ -2451,109 +2468,6 @@ function paginateArray(result: any, page: number, limit: number) {
   return paginatedResult;
 }
 
-// Export User Statistics data
-// exports.exportUserStatisticsData = functions.https.onRequest(async (req, res) => {
-//   try {
-//     // Query Firestore data
-//     const snapshot = await admin.firestore().collection('userStatistics').get();
-//     let data = snapshot.docs.map(doc => doc.data());
-
-//     // Format some data
-//     data = data.map((user: any) => {
-//       if (user.signUpTime && user.signUpTime.trim() !== "") {
-//         const signUpDate = new Date(user.signUpTime);
-//         const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-//         user.signUpTime = signUpDateFormatted;
-//       } else {
-//         user.signUpTime = "";
-//       }
-//       user.averageVotes = Math.round(user.averageVotes);
-//       user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
-//       return user;
-//     });
-
-//     const headerMappings = [
-//       { customHeader: 'User Name', dbKey: 'userName' },
-//       { customHeader: 'SignUp Time', dbKey: 'signUpTime' },
-//       { customHeader: 'Last Vote Day', dbKey: 'lastVoteDay' },
-//       { customHeader: 'Last Login Day', dbKey: 'lastLoginDay' },
-//       { customHeader: 'Email', dbKey: 'email' },
-//       { customHeader: 'Game Title', dbKey: 'GameTitle' },
-//       { customHeader: 'Total CMP', dbKey: 'TotalCPM' },
-//       { customHeader: 'Total Votes', dbKey: 'totalVotes' },
-//       { customHeader: 'Average Votes', dbKey: 'averageVotes' },
-//       { customHeader: 'No of Vote Days', dbKey: 'noOfVotesDays' },
-//       { customHeader: 'Extra Vote Purchased', dbKey: 'extraVotePurchased' },
-//       { customHeader: 'Source', dbKey: 'source' },
-//       { customHeader: 'Total Ambassador Rewards', dbKey: 'TotalAmbassadorRewards' },
-//       { customHeader: 'User ID', dbKey: 'userId' }
-//     ];
-
-//     // Create a new Excel workbook
-//     const workbook = new excel.Workbook();
-//     const worksheet = workbook.addWorksheet('User Statistics Data');
-
-//     // Add headers to the worksheet
-//     const headers = headerMappings.map(mapping => mapping.customHeader);
-//     worksheet.addRow(headers);
-
-//     // Add data to the worksheet
-//     data.forEach(userData => {
-//       const rowValues = headerMappings.map(mapping => userData[mapping.dbKey] || '-');
-//       worksheet.addRow(rowValues);
-//     });
-
-//     // Apply styles to the headers
-//     const headerRow = worksheet.getRow(1);
-//     headerRow.eachCell((cell, colNumber) => {
-//       cell.fill = {
-//         type: 'pattern',
-//         pattern: 'solid',
-//         fgColor: { argb: 'FFFF00' } // Yellow color
-//       };
-//       cell.border = {
-//         top: { style: 'thin' },
-//         left: { style: 'thin' },
-//         bottom: { style: 'thin' },
-//         right: { style: 'thin' }
-//       };
-//       cell.font = { bold: true }; // Make text bold
-//       cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Center text vertically and horizontally
-//     });
-
-//     // Apply styles to the data cells
-//     worksheet.eachRow((row, rowNum) => {
-//       if (rowNum > 1) { // Skip header row
-//         row.eachCell((cell, colNumber) => {
-//           cell.border = {
-//             top: { style: 'thin' },
-//             left: { style: 'thin' },
-//             bottom: { style: 'thin' },
-//             right: { style: 'thin' }
-//           };
-//         });
-//       }
-//     });
-
-//     // Set content disposition and type
-//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-//     res.setHeader('Content-Disposition', 'attachment; filename=User-Statistics.xlsx');
-//     // Set CORS headers
-//     res.set('Access-Control-Allow-Origin', '*');
-//     res.set('Access-Control-Allow-Methods', 'GET, POST');
-//     res.set('Access-Control-Allow-Headers', 'Content-Type');
-
-//     // Write workbook to response
-//     await workbook.xlsx.write(res);
-
-//     // End response
-//     res.end();
-//   } catch (error) {
-//     console.error('Error exporting data:', error);
-//     res.status(500).send('Error exporting User Statistics data');
-//   }
-// });
-
 exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) => {
   try {
     const batchSize = 100; // Set your desired batch size
@@ -2588,13 +2502,18 @@ exports.exportUserStatisticsData = functions.https.onRequest(async (_req, res) =
 
         const batchData = snapshot.docs.map((doc) => {
           const user = doc.data();
-          if (user.signUpTime && user.signUpTime.trim() !== "") {
-            const signUpDate = new Date(user.signUpTime);
-            const signUpDateFormatted = signUpDate.toISOString().split('T')[0];
-            user.signUpTime = signUpDateFormatted;
-          } else {
-            user.signUpTime = "";
-          }
+          user.signUpTime = user.signUpTime
+            ? moment.unix(user.signUpTime._seconds).format("YYYY-MM-DD")
+            : "";
+
+          user.lastLoginDay = user.lastLoginDay
+            ? moment.unix(user.lastLoginDay._seconds).format("YYYY-MM-DD")
+            : "";
+
+          user.lastVoteDay = user.lastVoteDay && typeof user.lastVoteDay !== 'string'
+            ? moment.unix(user.lastVoteDay._seconds).format("YYYY-MM-DD")
+            : "";
+
           user.averageVotes = Math.round(user.averageVotes);
           user.TotalAmbassadorRewards = Math.floor(user.TotalAmbassadorRewards);
           user.Country = user.Country?.trim() || "";
