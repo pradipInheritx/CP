@@ -375,7 +375,7 @@ const getMaxVotes = async () => {
     .doc("settings")
     .get();
   const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
-  return getVoteAndReturnData?.voteRules.maxVotes;
+  return getVoteAndReturnData?.voteRules.defaultVotes;
 };
 
 // user's email verification link
