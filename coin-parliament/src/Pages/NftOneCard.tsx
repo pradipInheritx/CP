@@ -202,7 +202,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
     setImageLoaded(true);
   };
 
-  // console.log(MintedTime, "MintedTimecheck")
+  console.log(GeneralSerialNo, "MintedTimecheck")
   return (
     <div
       className="d-flex justify-content-center"      
