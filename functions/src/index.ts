@@ -112,7 +112,6 @@ import {
   imageUploadFunction,
   avatarUploadFunction,
 } from "./common/helpers/fileUploadConfig";
-import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
 
 // import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
@@ -1493,6 +1492,7 @@ exports.getLeaderUsers = functions.https.onCall(async (data, context) => {
 });
 
 exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
+
   const userIds = data.userIds;
   return await getLeaderUsersByIds(userIds);
 });
@@ -1810,22 +1810,9 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
     const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
     // const yesterdayTime = nowTime - 7 * 60 * 1000;
     await checkUserStatusIn24hrs(nowTime, yesterdayTime);
-    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
     console.log("---End checkTitleUpgrade24Hour -------");
   });
 
-// for Testing purposes
-exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
-  console.log("------- call set leader function -------");
-  await setLeaders();
-  console.log("set leader Done");
-  const { todayTime, yesterdayTime } = data;
-  // const date = new Date();
-  // const nowTime = date.getTime();
-  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
-  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
-});
 
 //----------End Notifications scheduler-------------
 

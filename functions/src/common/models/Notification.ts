@@ -12,6 +12,8 @@ import { sendEmailForTopInfluencerTemplate } from "../emailTemplates/sendEmailFo
 import { sendEmailForAfterUpgradeTemplate } from "../emailTemplates/sendEmailForAfterUpgradeTemplate"
 import { sendEmailForFollowerCountTemplate } from "../emailTemplates/sendEmailForFollowerCountTemplate"
 
+import { Timestamp } from 'firebase-admin/firestore';
+
 import env from "./../../env/env.json";
 
 export const sendNotification = async ({
@@ -41,7 +43,7 @@ export const sendNotification = async ({
         title,
         body,
       },
-      time: firestore.FieldValue.serverTimestamp(),
+      time: Timestamp.now(),
     });
   } catch (e) {
     console.log("Error sending message:", e, token);
