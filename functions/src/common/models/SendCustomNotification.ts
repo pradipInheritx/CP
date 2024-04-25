@@ -92,6 +92,7 @@ export const sendNotificationForFollwersFollowings = async (
   let follwersFollwing: any = [];
   console.log("userID & Coin", userId, coin)
   const checkCoin = coin.split('-')
+  console.log("checkCoin--->", checkCoin)
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log(userData);
@@ -102,22 +103,24 @@ export const sendNotificationForFollwersFollowings = async (
   // userData.leader.forEach((user: any) => {
   //   follwersFollwing.push(user);
   // });
-  console.log("Array Following--------", follwersFollwing)
 
   //remove Duplicate Values and user himself
-  // follwersFollwing = follwersFollwing.filter((item: any,
-  //   index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
+  follwersFollwing = follwersFollwing.filter((item: any,
+    index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
+
+  //console.log("Array Following--------", follwersFollwing)
 
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
     let userQuery = await firestore().collection("users").doc(id).get();
     let follwersFollwingUserData: any = userQuery.data();
 
+
     if (follwersFollwingUserData) {
       let token = follwersFollwingUserData?.token ? follwersFollwingUserData.token : null;
       if (token) {
-        console.log("userData:-------", userData)
-        console.log("token:------- ", token)
+        // console.log("userData:-------", userData)
+        console.log("token:------- ", token, "follwersFollwingUserData.UID", follwersFollwingUserData.uid);
         console.log(`${userData.displayName} just voted for ${coin} take action now!`)
         const message: messaging.Message = {
           token,
@@ -221,7 +224,7 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
     getAllVotesIn24Hours.push({ userId, status });
   });
 
-  console.log("getAllVotesIn24Hours ------", getAllVotesIn24Hours)
+  //console.log("getAllVotesIn24Hours ------", getAllVotesIn24Hours)
   // Group the array of objects by the 'userId' property
   let userVoteGroupObj = getAllVotesIn24Hours.reduce((result, item) => {
     (result[item.userId] = result[item.userId] || []).push(item);
@@ -231,44 +234,43 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
   console.log("userVoteGroupObj =>", userVoteGroupObj);
   console.log("userVoteGroupObj length =>", Object.keys(userVoteGroupObj).length);
 
-  const userTypesQuery = await firestore().collection("settings").doc("userTypes").get();
-
-  let userTypesData: any = userTypesQuery.data();
-
-  userTypesData = userTypesData.userTypes;
-
   for (let userId in userVoteGroupObj) {
     if (Object.prototype.hasOwnProperty.call(userVoteGroupObj, userId)) {
       const getUserDetailsQuery = await firestore().collection("users").doc(userId).get();
-      const getuserDetails = getUserDetailsQuery.data()
+      const getuserDetails: any = getUserDetailsQuery.data();
+
+      // console.log("Get Current User Details--->", getuserDetails.status);
 
       let userVoteList = userVoteGroupObj[userId];
+      const getUserChangeStatus: any = await userVoteList.filter((item: any) => item.status.name !== getuserDetails.status.name);
 
-      for (let vote = 0; vote < userVoteList.length; vote++) {
-        console.log("vote Index ->", vote);
-        let newStatusData = userVoteList[vote];
-        let oldStatusData = userVoteList[userVoteList?.length - 1];
-        console.log("userVoteList new =>", newStatusData);
-        console.log("userVoteList old =>", oldStatusData);
-
-        if (!newStatusData.status || !oldStatusData.status) continue;
-
-        if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
-          let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';
-          console.log("user status level: ", status)
-          let message;
-          let title;
-          let statusName: any = newStatusData?.status?.name;
-          if (status === 'Upgrade') {
-            title = upgradeMessage[statusName];
-            message = `Vote to earn more!`;
-          } else if (status === 'Downgrade') {
-            title = downGradeMessage[statusName];
-            message = `Keep Voting to Rise Again!`;
-          }
-          console.log("call sendNotificationForTitleUpgrade function")
-          await sendNotificationForTitleUpgrade(getuserDetails, message, title)
+      console.info("Get User Change Status", getUserChangeStatus);
+      if (getUserChangeStatus && getUserChangeStatus.length) {
+        //console.log("Get length:--->", JSON.stringify(getUserChangeStatus));
+        const getPreviousRecord = getUserChangeStatus[getUserChangeStatus.length - 1]
+        console.info("getPreviousRecord", getPreviousRecord.status.index);
+        let status: any;
+        let message;
+        let title;
+        let statusName: any = getuserDetails?.status?.name;
+        console.log("getuserDetails.status.index--->", getuserDetails.status.index)
+        console.log("getPreviousRecord.status.index--->", getPreviousRecord.status.index)
+        if (getPreviousRecord?.status?.index === 7) {
+          status = "Downgrade";
+        } else if (getPreviousRecord.status.index > getuserDetails.status.index) {
+          status = "Upgrade";
+        } else {
+          status = "Downgrade";
         }
+        if (status === 'Upgrade') {
+          title = upgradeMessage[statusName];
+          message = `Vote to earn more!`;
+        } else if (status === 'Downgrade') {
+          title = downGradeMessage[statusName];
+          message = `Keep Voting to Rise Again!`;
+        }
+        console.log("call sendNotificationForTitleUpgrade function", getuserDetails, message, title)
+        await sendNotificationForTitleUpgrade(getuserDetails, message, title)
       }
     }
   }
