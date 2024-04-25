@@ -811,7 +811,7 @@ function App() {
 
                         {/* <Background pathname={pathname} /> */}
                         <AppContainer
-                        style={{backgroundColor:pathname.includes("HomePage") ? ("white") : ""}}
+                        style={{backgroundColor:pathname.includes("mobilehomepage") ? ("white") : ""}}
                           fluid
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
@@ -883,8 +883,8 @@ function App() {
                                 />
                               )}
                             {!firstTimeLogin && <Routes>
-                              <Route path='/HomePage' element={<LandingPage/>} />
-                              {(window.screen.width < 767 && sessionStorage.getItem("landing")!='true') && <Route path='/' element={<LandingPage/>} />}
+                              <Route path='/mobilehomepage' element={<LandingPage/>} />
+                              {/* {(window.screen.width < 767 && sessionStorage.getItem("landing")!='true') && <Route path='/' element={<LandingPage/>} />} */}
                               <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
                                   {...{
