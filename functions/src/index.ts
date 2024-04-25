@@ -1492,6 +1492,7 @@ exports.getLeaderUsers = functions.https.onCall(async (data, context) => {
 });
 
 exports.getLeaderUsersByIds = functions.https.onCall(async (data) => {
+
   const userIds = data.userIds;
   return await getLeaderUsersByIds(userIds);
 });
