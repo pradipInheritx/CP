@@ -13,7 +13,7 @@ const LandingPage = () => {
         if (userInfo) {
             navigate('/');
         } else {
-            navigate('/login');
+            navigate('/sign-up');
         }
     }
 
