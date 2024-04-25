@@ -17,11 +17,13 @@ import { handleSoundClick } from "../common/utils/SoundClick";
 import { signOut } from "firebase/auth";
 import { auth } from "firebase";
 import { Logout } from "common/models/Login";
+import telegramIcon from "assets/images/telegramIcon.svg"
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
     label: page.title,
-    href: `/${page.slug}`,
+    // href: `/${page.slug}`,
+    href: `${page.slug == "onTelegram" ? `${"https://telegram.me/VoteToEarnChat"}` : `/${page.slug}`}`,
   } as MenuItem;
 };
 
@@ -283,17 +285,38 @@ const Menu = ({
                   return <hr key={i} />;
                 }
                 return item?.href ? (
-                  <Nav.Link
-                    key={i}
-                    as={Link}
-                    to={item.href}
-                    onClick={() => {
-                      setMenuOpen(false)
-                      // handleSoundClick()
-                    }}
-                  >
-                    {translate(item.label)}
-                  </Nav.Link>
+                  <div key={i + item.href}>
+                    {
+                      item?.href == "https://telegram.me/VoteToEarnChat" ?
+                        
+                        <>
+                          <Nav.Link
+                            key={i}
+                            as={Link}
+                            to={item.href}
+                            target="_blank"
+                            onClick={() => {
+                              setMenuOpen(false)
+                              // handleSoundClick()
+                            }}
+                          >
+                            {translate(item.label)}<img src={telegramIcon} width={'40'} className="me-1 pb-1" />
+                          </Nav.Link>
+                        </>
+                        :
+                        <Nav.Link
+                          key={i}
+                          as={Link}
+                          to={item.href}
+                          onClick={() => {
+                            setMenuOpen(false)
+                            // handleSoundClick()
+                          }}
+                        >
+                          {translate(item.label)}
+                        </Nav.Link>
+                    }                  
+                  </div>
                 ) : (
                   <Nav.Link key={i} eventKey={item?.eventKey}>
                     {item && translate(item.label)}
