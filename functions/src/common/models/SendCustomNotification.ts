@@ -92,6 +92,7 @@ export const sendNotificationForFollwersFollowings = async (
   let follwersFollwing: any = [];
   console.log("userID & Coin", userId, coin)
   const checkCoin = coin.split('-')
+  console.log("checkCoin--->", checkCoin)
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log(userData);
@@ -102,22 +103,24 @@ export const sendNotificationForFollwersFollowings = async (
   // userData.leader.forEach((user: any) => {
   //   follwersFollwing.push(user);
   // });
-  console.log("Array Following--------", follwersFollwing)
 
   //remove Duplicate Values and user himself
-  // follwersFollwing = follwersFollwing.filter((item: any,
-  //   index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
+  follwersFollwing = follwersFollwing.filter((item: any,
+    index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
+
+  //console.log("Array Following--------", follwersFollwing)
 
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
     let userQuery = await firestore().collection("users").doc(id).get();
     let follwersFollwingUserData: any = userQuery.data();
 
+
     if (follwersFollwingUserData) {
       let token = follwersFollwingUserData?.token ? follwersFollwingUserData.token : null;
       if (token) {
-        console.log("userData:-------", userData)
-        console.log("token:------- ", token)
+        // console.log("userData:-------", userData)
+        console.log("token:------- ", token, "follwersFollwingUserData.UID", follwersFollwingUserData.uid);
         console.log(`${userData.displayName} just voted for ${coin} take action now!`)
         const message: messaging.Message = {
           token,
