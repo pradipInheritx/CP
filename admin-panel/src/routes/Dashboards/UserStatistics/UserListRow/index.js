@@ -1,26 +1,10 @@
 import React from "react";
 import TableCell from "@material-ui/core/TableCell";
-import Checkbox from "@material-ui/core/Checkbox";
 import TableRow from "@material-ui/core/TableRow";
-import { timeFromNow } from "../../../../@jumbo/utils/dateHelper";
-import {
-  Block,
-  CheckCircleOutline,
-  Delete,
-  Edit,
-  Mail,
-  MoreHoriz,
-  Visibility
-} from "@material-ui/icons";
+import { MoreHoriz, Visibility } from "@material-ui/icons";
 import CmtDropdownMenu from "../../../../@coremat/CmtDropdownMenu";
-import CmtAvatar from "../../../../@coremat/CmtAvatar";
-import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch } from "react-redux";
-import {
-  sentMailToUser,
-  updateUserStatus
-} from "../../../../redux/actions/Users";
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
   titleRoot: {
@@ -32,75 +16,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getUserActions = user => {
-  const actions = [
-    { action: "view", label: "View", icon: <Visibility /> }
-    // { action: 'edit', label: 'Edit', icon: <Edit /> },
-    // { action: 'email', label: 'Email', icon: <Mail /> },
-  ];
-
-  // if (user.status === 'active') {
-  //   actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
-  // } else {
-  //   actions.push({
-  //     action: 'activate',
-  //     label: 'Reactivate',
-  //     icon: <CheckCircleOutline />,
-  //   });
-  // }
-
-  // actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
+  const actions = [{ action: "view", label: "View", icon: <Visibility /> }];
   return actions;
 };
 
-const UserListRow = ({
-  row,
-  isSelected,
-  onRowClick,
-  onUserEdit,
-  onUserDelete,
-  onUserView
-}) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-
+const UserListRow = ({ row, isSelected, onUserView }) => {
   const onUserMenuClick = menu => {
     if (menu.action === "view") {
       onUserView(row);
     }
-    // else if (menu.action === 'edit') {
-    //   onUserEdit(row);
-    // } else if (menu.action === 'email') {
-    //   dispatch(sentMailToUser());
-    // } else if (menu.action === 'suspend') {
-    //   dispatch(updateUserStatus({ id: row?.id, status: 'suspended' }));
-    // } else if (menu.action === 'activate') {
-    //   dispatch(updateUserStatus({ id: row?.id, status: 'active' }));
-    // } else if (menu.action === 'delete') {
-    //   onUserDelete(row);
-    // }
   };
 
-  const labelId = `enhanced-table-checkbox-${row?.id}`;
   const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
-  function convertToDateOnly(dateString) {
-    if (!dateString || dateString == undefined || typeof dateString == "object")
-      return "-";
-    const date = new Date(dateString);
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${date
-      .getDate()
-      .toString()
-      .padStart(2, "0")}`;
+  function convertToDate(date) {
+    if (!date) return "-";
+    const epochTime = new Date(date * 1000);
+    const formattedDate = moment(epochTime).format("YYYY-DD-MM");
     return formattedDate;
   }
 
   return (
     <TableRow
       hover
-      // onClick={event => onRowClick(event, row?.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
@@ -110,10 +49,14 @@ const UserListRow = ({
       <TableCell align="center">
         {row?.userName ? row?.userName : row?.name ? row?.name : "-"}
       </TableCell>
-      <TableCell align="center">{row?.signUpTime || "-"}</TableCell>
-      <TableCell align="center">{row?.lastVoteDay || "-"}</TableCell>
       <TableCell align="center">
-        {convertToDateOnly(row?.lastLoginDay)}
+        {convertToDate(row?.signUpTime?._seconds) || "-"}
+      </TableCell>
+      <TableCell align="center">
+        {convertToDate(row?.lastVoteDay?._seconds) || "-"}
+      </TableCell>
+      <TableCell align="center">
+        {convertToDate(row?.lastLoginDay?._seconds)}
       </TableCell>
       <TableCell align="center">{row?.email || "-"}</TableCell>
       <TableCell align="center">

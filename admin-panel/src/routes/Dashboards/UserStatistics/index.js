@@ -156,7 +156,6 @@ const UsersModule = () => {
   };
 
   const isSelected = id => selected.indexOf(id) !== -1;
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
